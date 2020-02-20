@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/yext/jamboree/issues"
   },
-  "homepage": "https://github.com/yext/jamboree#readme"
+  "homepage": "https://github.com/yext/jamboree#readme",
+  "dependencies": {
+    "prompts": "^2.3.1",
+    "yargs": "^15.1.0"
+  }
 }
