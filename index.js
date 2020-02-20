@@ -2,35 +2,38 @@ let fs = require('file-system');
 let { snakeCase } = require('change-case');
 let hbs = require('handlebars');
 
-// BUILD
 
-// Read in the root config
-let rootConfig = JSON.parse(fs.readFileSync('config.json'));
+exports.build = function (params) {
+	// BUILD
 
-// Read in the page-specific configs
+	// Read in the root config
+	let rootConfig = JSON.parse(fs.readFileSync('config.json'));
 
-let pagesConfig = {};
+	// Read in the page-specific configs
 
-fs.recurseSync('config', (path, relative, filename) => {
-	let id = snakeCase(relative);
-	pagesConfig[id] = JSON.parse(fs.readFileSync(path));
-})
+	let pagesConfig = {};
 
-// Import theme partials if necessary
-if (rootConfig.theme) {
-	fs.recurseSync('themes/' + rootConfig.getTheme(), (path, relative, filename) => {
+	fs.recurseSync('config', (path, relative, filename) => {
+		let id = snakeCase(relative);
+		pagesConfig[id] = JSON.parse(fs.readFileSync(path));
+	})
+
+	// Import theme partials if necessary
+	if (rootConfig.theme) {
+		fs.recurseSync('themes/' + rootConfig.getTheme(), (path, relative, filename) => {
+			hbs.registerPartial(snakeCase(relative), fs.readFileSync(path));
+		});
+	}
+
+	// Import partials from repository
+	// TODO: Read from root config a list of all directories containing partials
+	fs.recurseSync('overrides', (path, relative, filename) => {
 		hbs.registerPartial(snakeCase(relative), fs.readFileSync(path));
 	});
+
+	console.dir(rootConfig);
+	console.dir(pagesConfig);
+	console.dir(hbs);
+
+	// END BUILD
 }
-
-// Import partials from repository
-// TODO: Read from root config a list of all directories containing partials
-fs.recurseSync('overrides', (path, relative, filename) => {
-	hbs.registerPartial(snakeCase(relative), fs.readFileSync(path));
-});
-
-// console.dir(rootConfig);
-// console.dir(pagesConfig);
-// console.dir(hbs);
-
-// END BUILD

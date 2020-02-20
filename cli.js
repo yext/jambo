@@ -1,3 +1,4 @@
+let jambo = require('./index')
 /*
 	jambo
 		init
@@ -16,3 +17,5 @@ var argv = require('yargs')
 	.command('page', 'add a new page')
 	.command('build', 'build the answers site')
 	.argv
+
+jambo.build();
