@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/yext/jamboree#readme",
   "dependencies": {
+    "change-case": "^4.1.1",
+    "file-system": "^2.2.2",
+    "handlebars": "^4.7.3",
     "prompts": "^2.3.1",
     "yargs": "^15.1.0"
   }
