@@ -20,7 +20,7 @@ exports.build = function (params) {
 
 	// Import theme partials if necessary
 	if (rootConfig.theme) {
-		fs.recurseSync('themes/' + rootConfig.getTheme(), (path, relative, filename) => {
+		fs.recurseSync('themes/' + rootConfig.theme, (path, relative, filename) => {
 			hbs.registerPartial(snakeCase(relative), fs.readFileSync(path));
 		});
 	}
