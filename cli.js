@@ -1,4 +1,4 @@
-let jambo = require('./index')
+let jambo = require('./index');
 /*
 	jambo
 		init
