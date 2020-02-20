@@ -1,0 +1,19 @@
+{
+  "name": "jamboree",
+  "version": "1.0.0",
+  "description": "A JAMStack implementation using Handlebars",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yext/jamboree.git"
+  },
+  "author": "tmeyer@yext.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yext/jamboree/issues"
+  },
+  "homepage": "https://github.com/yext/jamboree#readme"
+}
