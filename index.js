@@ -17,7 +17,7 @@ fs.recurseSync('config', (path, relative, filename) => {
 })
 
 // Import theme partials if necessary
-if (rootConfig.getTheme()) {
+if (rootConfig.theme) {
 	fs.recurseSync('themes/' + rootConfig.getTheme(), (path, relative, filename) => {
 		hbs.registerPartial(snakeCase(relative), fs.readFileSync(path));
 	});
@@ -25,8 +25,12 @@ if (rootConfig.getTheme()) {
 
 // Import partials from repository
 // TODO: Read from root config a list of all directories containing partials
-fs.recurseSync('partials', (path, relative, filename) => {
+fs.recurseSync('overrides', (path, relative, filename) => {
 	hbs.registerPartial(snakeCase(relative), fs.readFileSync(path));
 });
+
+// console.dir(rootConfig);
+// console.dir(pagesConfig);
+// console.dir(hbs);
 
 // END BUILD
