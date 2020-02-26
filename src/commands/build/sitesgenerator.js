@@ -1,26 +1,15 @@
 const fs = require('file-system');
 const { snakeCase } = require('change-case');
 const hbs = require('handlebars');
-const mergeOptions = require('merge-options');
 
 exports.SitesGenerator = class {
-  generate() {
-    // Read in the root config
-    let config = mergeOptions(
-      {
-        dirs: {
-          themes: 'themes',
-          config: 'config',
-          overrides: 'overrides',
-          output: 'public',
-          pages: 'pages',
-          layouts: 'layouts'
-        }
-      },
-      JSON.parse(fs.readFileSync('config.json'))
-    );
+  constructor(jamboConfig) {
+    this.config = jamboConfig;
+  }
 
-    // Read in the page-specific configs
+  generate() {
+    const config = this.config;
+
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (filename) {
