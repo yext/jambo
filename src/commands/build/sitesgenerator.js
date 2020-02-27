@@ -21,10 +21,13 @@ exports.SitesGenerator = class {
     // Register needed Handlebars helpers.
     this._registerHelpers();
 
-    // Import theme partials if necessary
+    // Import theme partials and overrides if necessary
     if (config.theme) {
       const themeDir = `${config.dirs.themes}/${config.theme}`;
       this._registerPartials(themeDir);
+
+      const overrideDir = `${config.dirs.overrides}/${config.theme}`;
+      fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
     }
 
     // Import partials from overrides.

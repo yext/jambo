@@ -2,6 +2,7 @@
 
 const buildCommand = require('./commands/build/sitesgenerator');
 const addPageCommand = require('./commands/page/add/pagescaffolder');
+const overrideCommand = require('./commands/override/themeshadower');
 const configParser = require('./utils/jamboconfigparser');
 const yargs = require('yargs');
 
@@ -10,7 +11,21 @@ const jamboConfig = configParser.computeJamboConfig();
 const options = yargs
 	.usage('Usage: $0 <cmd> <operation> [options]')
 	.command('init', 'initialize the repository')
-	.command('theme', 'import or update a theme')
+  .command('theme', 'import or update a theme')
+  .command(
+    'override',
+    'override a theme, template, or component',
+    yargs => {
+      return yargs
+        .option('theme', { description: 'theme to override', demandOption: true })
+        .option('template', { description: 'template to override' })
+        .option('component', { description: 'component to override' })
+    },
+    argv => {
+      const shadowConfiguration = new overrideCommand.ShadowConfiguration(argv);
+      const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
+      themeShadower.createShadow(shadowConfiguration);
+    })
   .command(
     'page',
     'add a new page to the site',
