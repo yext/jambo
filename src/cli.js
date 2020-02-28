@@ -1,16 +1,32 @@
 #!/usr/bin/env node
 
+const initCommand = require('./commands/init/repositoryscaffolder');
 const buildCommand = require('./commands/build/sitesgenerator');
 const addPageCommand = require('./commands/page/add/pagescaffolder');
 const overrideCommand = require('./commands/override/themeshadower');
 const configParser = require('./utils/jamboconfigparser');
 const yargs = require('yargs');
+const fs = require('file-system');
 
-const jamboConfig = configParser.computeJamboConfig();
+const jamboConfig = fs.existsSync('config.json') && configParser.computeJamboConfig();
 
 const options = yargs
 	.usage('Usage: $0 <cmd> <operation> [options]')
-	.command('init', 'initialize the repository')
+  .command(
+    'init',
+    'initialize the repository',
+    yargs => {
+      return yargs
+        .option('apiKey', { description: 'the Answers API key', demandOption: true })
+        .option('businessId', { description: 'the business id', demandOption: true })
+        .option('experienceKey', { description: 'the experience key', demandOption: true })
+        .option('experienceVersion', { description: 'the experience version', default: 'STAGING' })
+    },
+    argv => {
+      const globalPageSettings = new initCommand.GlobalPageSettings(argv);
+      const repositoryScaffolder = new initCommand.RepositoryScaffolder();
+      repositoryScaffolder.create(globalPageSettings);
+    })
   .command('theme', 'import or update a theme')
   .command(
     'override',
