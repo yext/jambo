@@ -4,6 +4,7 @@ const initCommand = require('./commands/init/repositoryscaffolder');
 const buildCommand = require('./commands/build/sitesgenerator');
 const addPageCommand = require('./commands/page/add/pagescaffolder');
 const overrideCommand = require('./commands/override/themeshadower');
+const themeCommand = require('./commands/import/themeimporter');
 const configParser = require('./utils/jamboconfigparser');
 const yargs = require('yargs');
 const fs = require('file-system');
@@ -27,7 +28,17 @@ const options = yargs
       const repositoryScaffolder = new initCommand.RepositoryScaffolder();
       repositoryScaffolder.create(globalPageSettings);
     })
-  .command('theme', 'import or update a theme')
+  .command(
+    'import',
+    'import a theme',
+    yargs => {
+      return yargs
+        .option('theme', { description: 'theme to import', demandOption: true })
+    },
+    argv => {
+      const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
+      themeImporter.import(argv.theme).then(console.log).catch(console.log);
+    })
   .command(
     'override',
     'override a theme, template, or component',
