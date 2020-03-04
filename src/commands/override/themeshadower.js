@@ -1,25 +1,31 @@
 const fs = require('fs-extra');
 
+/**
+ * The ShadowConfiguration specifies what file(s) should be shadowed for a particular theme.
+ * The configuration consists of a theme and an optional path within the theme. If the path is
+ * specified, only those files within the theme will be shadowed. Otherwise, all files in the theme
+ * will be shadowed.
+ */
 exports.ShadowConfiguration = class {
-  constructor({ theme, template, component }) {
+  constructor({ theme, path }) {
     this._theme = theme;
-    this._template = template;
-    this._component = component;
+    this._path = path;
   }
 
   getTheme() {
     return this._theme;
   }
 
-  getTemplate() {
-    return this._template;
-  }
-
-  getComponent() {
-    return this._component;
+  getPath() {
+    return this._path;
   }
 };
 
+/**
+ * The ThemeShadower takes a ShadowConfiguration and produces the necessary shadows. These shadows
+ * are copies of the original files and will take precedence over them when registering partials.
+ * This allows the convenient override of bits and pieces of a theme.
+ */
 exports.ThemeShadower = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
@@ -27,31 +33,22 @@ exports.ThemeShadower = class {
 
   createShadow(shadowConfiguration) {
     const theme = shadowConfiguration.getTheme();
-    const template = shadowConfiguration.getTemplate();
-    const component = shadowConfiguration.getComponent();
+    const path = shadowConfiguration.getPath();
 
     let relativeShadowDir = theme;
-    if (template) {
-      relativeShadowDir = `${relativeShadowDir}/templates/${template}`;
+    if (path) {
+      relativeShadowDir = `${relativeShadowDir}/${path}`;
     }
-    const fullShadowDir = `${this.config.dirs.overrides}/${relativeShadowDir}`;
-    fs.mkdirSync(fullShadowDir, { recursive: true });
-
     const sourceDir = `${this.config.dirs.themes}/${relativeShadowDir}`;
+    const isShadowingFile = fs.lstatSync(sourceDir).isFile();
 
-    if (component) {
-      this._shadowComponentFile('markup', component, fullShadowDir, sourceDir);
-      this._shadowComponentFile('script', component, fullShadowDir, sourceDir);
+    let fullShadowDir = `${this.config.dirs.overrides}/${relativeShadowDir}`;
+    if (isShadowingFile) {
+      fs.mkdirSync(fullShadowDir.substring(0, fullShadowDir.lastIndexOf('/')), { recursive: true })
     } else {
-      fs.copySync(sourceDir, fullShadowDir);
+      fs.mkdirSync(fullShadowDir, { recursive: true });
     }
-  }
 
-  _shadowComponentFile(fileType, component, shadowDir, sourceDir) {
-    const fileShadowDir = `${shadowDir}/${fileType}`;
-      fs.mkdirSync(fileShadowDir);
-      fs.copyFileSync(
-        `${sourceDir}/${fileType}/${component}.hbs`,
-        `${fileShadowDir}/${component}.hbs`);
+    fs.copySync(sourceDir, fullShadowDir);
   }
 };

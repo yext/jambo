@@ -41,12 +41,11 @@ const options = yargs
     })
   .command(
     'override',
-    'override a theme, template, or component',
+    'override a theme or path within a theme',
     yargs => {
       return yargs
         .option('theme', { description: 'theme to override', demandOption: true })
-        .option('template', { description: 'template to override' })
-        .option('component', { description: 'component to override' })
+        .option('path', { description: 'path in the theme to override' })
     },
     argv => {
       const shadowConfiguration = new overrideCommand.ShadowConfiguration(argv);

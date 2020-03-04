@@ -45,7 +45,7 @@ exports.SitesGenerator = class {
 
       let template;
       if (pageLayout) {
-        hbs.registerPartial('answersContent', fs.readFileSync(path).toString());
+        hbs.registerPartial('body', fs.readFileSync(path).toString());
         const layoutPath = `${config.dirs.layouts}/${pageLayout}`;
         template = hbs.compile(fs.readFileSync(layoutPath).toString());
       } else {
