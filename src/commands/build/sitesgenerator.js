@@ -30,11 +30,11 @@ exports.SitesGenerator = class {
       fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
     }
 
-    // Import partials from overrides.
+    // Import any theme override partials.
     this._registerPartials(config.dirs.overrides);
 
-    // Import partials from layouts.
-    this._registerPartials(config.dirs.layouts);
+    // Import any additional custom partials.
+    this._registerPartials(config.dirs.partials);
 
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
@@ -46,7 +46,7 @@ exports.SitesGenerator = class {
       let template;
       if (pageLayout) {
         hbs.registerPartial('body', fs.readFileSync(path).toString());
-        const layoutPath = `${config.dirs.layouts}/${pageLayout}`;
+        const layoutPath = `${config.dirs.partials}/${pageLayout}`;
         template = hbs.compile(fs.readFileSync(layoutPath).toString());
       } else {
         template = hbs.compile(fs.readFileSync(path).toString());
