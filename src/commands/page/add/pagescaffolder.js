@@ -38,7 +38,7 @@ exports.PageScaffolder = class {
   _generateConfigFile(pageConfiguration) {
     const configFilePath = `${this.config.dirs.config}/${pageConfiguration.getName()}.json`;
     const configObject =
-      pageConfiguration.getLayout() ? { layout: `${pageConfiguration.getLayout()}.hbs` } : {};
+      pageConfiguration.getLayout() ? { layout: `${pageConfiguration.getLayout()}` } : {};
     fs.writeFileSync(configFilePath, JSON.stringify(configObject));
   }
 
