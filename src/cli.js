@@ -18,15 +18,12 @@ const options = yargs
     'initialize the repository',
     yargs => {
       return yargs
-        .option('apiKey', { description: 'the Answers API key', demandOption: true })
-        .option('businessId', { description: 'the business id', demandOption: true })
-        .option('experienceKey', { description: 'the experience key', demandOption: true })
-        .option('experienceVersion', { description: 'the experience version', default: 'STAGING' })
+        .option('theme', { description: 'a starter theme' })
     },
     argv => {
-      const globalPageSettings = new initCommand.GlobalPageSettings(argv);
+      const repositorySettings = new initCommand.RepositorySettings(argv);
       const repositoryScaffolder = new initCommand.RepositoryScaffolder();
-      repositoryScaffolder.create(globalPageSettings);
+      repositoryScaffolder.create(repositorySettings).catch(console.log);
     })
   .command(
     'import',

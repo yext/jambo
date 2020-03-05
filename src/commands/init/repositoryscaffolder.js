@@ -1,45 +1,67 @@
+const themeCommand = require('../import/themeimporter');
+
 const fs = require('file-system');
+const simpleGit = require('simple-git/promise');
+const git = simpleGit();
 
-exports.GlobalPageSettings = class {
-  constructor({ apiKey, businessId, experienceKey, experienceVersion }) {
-    this._apiKey = apiKey;
-    this._businessId = businessId;
-    this._experienceKey = experienceKey;
-    this._experienceVersion = experienceVersion;
+/**
+ * RepositorySettings contains the information needed by Jambo to scaffold a new site repository.
+ * Currently, these settings include an optional theme.
+ */
+exports.RepositorySettings = class {
+  constructor({ theme }) {
+    this._theme = theme;
   }
 
-  getApiKey() {
-    return this._apiKey;
-  }
-
-  getBusinessId() {
-    return this._businessId;
-  }
-
-  getExperienceKey() {
-    return this._experienceKey;
-  }
-
-  getExperienceVersion() {
-    return this._experienceVersion;
+  getTheme() {
+    return this._theme;
   }
 }
 
 exports.RepositoryScaffolder = class {
-  create(globalPageSettings) {
-    // Initialize pages, overrides, themes, and layouts directories.
-    this._createDirectory('pages');
-    this._createDirectory('overrides');
-    this._createDirectory('layouts');
-    this._createDirectory('themes');
+  /**
+   * This method scaffolds a new site repository based on the provided RepositorySettings object.
+   * The repository will include all directories needed by Jambo as well as the Git infrastructure
+   * needed for source control. If a theme is specified, that will also be imported.
+   *
+   * @param {RepositoryScaffolder} repositorySettings The settings for the new repository.
+   */
+  async create(repositorySettings) {
+    try {
+      await git.init();
+      fs.writeFileSync('.gitignore', 'public/\n');
 
-    // Create the config directory and initialize it with a global_config.json.
-    this._initializeConfigDirectory(globalPageSettings);
+      this._createDirectorySkeleton();
+      const jamboConfig = this._createJamboConfig();
 
-    // Create the top-level Jambo configuration.
-    this._createJamboConfig();
+      const theme = repositorySettings.getTheme();
+      if (theme) {
+        const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
+        await themeImporter.import(theme);
+      }
+    } catch (error) {
+      return Promise.reject(error.toString());
+    }
   }
 
+  /**
+   * Initialize pages, config, overrides, themes, layouts, and public directories.
+   */
+  _createDirectorySkeleton() {
+    fs.mkdirSync('pages');
+    fs.mkdirSync('config');
+    fs.mkdirSync('overrides');
+    fs.mkdirSync('layouts');
+    fs.mkdirSync('themes');
+    fs.mkdirSync('public');
+  }
+
+  /**
+   * Create the top-level Jambo config which indicates the paths to the various directories
+   * needed by Jambo.
+   *
+   * @returns {Object} The constructed config.
+   */
   _createJamboConfig() {
     const jamboConfig = {
       dirs: {
@@ -51,24 +73,8 @@ exports.RepositoryScaffolder = class {
         layouts: 'layouts'
       }
     };
-
     fs.writeFileSync('config.json', JSON.stringify(jamboConfig));
-  }
 
-  _initializeConfigDirectory(globalPageSettings) {
-    const configDirectory = 'config';
-    this._createDirectory(configDirectory);
-
-    const globalConfig = {
-      apiKey: globalPageSettings.getApiKey(),
-      experienceKey: globalPageSettings.getExperienceKey(),
-      businessId: globalPageSettings.getBusinessId(),
-      experienceVersion: globalPageSettings.getExperienceVersion()
-    };
-    fs.writeFileSync(`${configDirectory}/global_config.json`, JSON.stringify(globalConfig));
-  }
-
-  _createDirectory(directoryName) {
-    fs.mkdirSync(directoryName);
+    return jamboConfig;
   }
 };
