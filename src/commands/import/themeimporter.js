@@ -34,8 +34,8 @@ exports.ThemeImporter = class {
 
   _getRepoForTheme(themeName) {
     switch (themeName) {
-      case 'answers-cream-theme':
-        return 'git@github.com:yext/answers-cream-theme.git';
+      case 'answers-hitchhiker-theme':
+        return 'git@github.com:yext/answers-hitchhiker-theme.git';
       default:
         throw 'Unrecognized theme';
     }
