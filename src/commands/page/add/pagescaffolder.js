@@ -31,28 +31,26 @@ exports.PageScaffolder = class {
   }
 
   create(pageConfiguration) {
-    this._generateConfigFile(pageConfiguration);
-    this._generateHTMLFile(pageConfiguration);
-  }
-
-  _generateConfigFile(pageConfiguration) {
-    const configFilePath = `${this.config.dirs.config}/${pageConfiguration.getName()}.json`;
-    const configObject =
-      pageConfiguration.getLayout() ? { layout: `${pageConfiguration.getLayout()}` } : {};
-    fs.writeFileSync(configFilePath, JSON.stringify(configObject));
-  }
-
-  _generateHTMLFile(pageConfiguration) {
-    const htmlFilePath = `${this.config.dirs.pages}/${pageConfiguration.getName()}.html.hbs`;
+    const name = pageConfiguration.getName();
     const theme = pageConfiguration.getTheme();
     const template = pageConfiguration.getTemplate();
+    const layout = pageConfiguration.getLayout();
 
+    const htmlFilePath = `${this.config.dirs.pages}/${name}.html.hbs`;
+    const configFilePath = `${this.config.dirs.config}/${name}.json`;
+
+    let configContents = layout ? { layout } : {};
     if (theme && template) {
-      const rootTemplatePath =
-        `${this.config.dirs.themes}/${theme}/templates/${template}/page.html.hbs`;
-      fs.copyFileSync(rootTemplatePath, htmlFilePath);
+      const rootTemplatePath = `${this.config.dirs.themes}/${theme}/templates/${template}`;
+      fs.copyFileSync(`${rootTemplatePath}/page.html.hbs`, htmlFilePath);
+
+      configContents = Object.assign(
+        {},
+        JSON.parse(fs.readFileSync(`${rootTemplatePath}/page-config.json`)),
+        configContents);
     } else {
       fs.writeFileSync(htmlFilePath, '');
     }
+    fs.writeFileSync(configFilePath, JSON.stringify(configContents));
   }
 }

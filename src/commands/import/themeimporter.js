@@ -1,3 +1,4 @@
+const fs = require('file-system');
 const simpleGit = require('simple-git/promise');
 const git = simpleGit();
 
@@ -20,6 +21,10 @@ exports.ThemeImporter = class {
       const localPath = `${this.config.dirs.themes}/${themeName}`;
 
       await git.submoduleAdd(themeRepo, localPath);
+
+      fs.copyFileSync(
+        `${localPath}/global_config.json`,
+        `${this.config.dirs.config}/global_config.json`);
 
       return localPath;
     } catch (error) {

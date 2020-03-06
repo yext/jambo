@@ -30,9 +30,6 @@ exports.SitesGenerator = class {
       fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
     }
 
-    // Import any theme override partials.
-    this._registerPartials(config.dirs.overrides);
-
     // Import any additional custom partials.
     this._registerPartials(config.dirs.partials);
 
