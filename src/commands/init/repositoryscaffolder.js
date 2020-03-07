@@ -73,7 +73,7 @@ exports.RepositoryScaffolder = class {
         partials: 'partials'
       }
     };
-    fs.writeFileSync('config.json', JSON.stringify(jamboConfig));
+    fs.writeFileSync('config.json', JSON.stringify(jamboConfig, null, 2));
 
     return jamboConfig;
   }

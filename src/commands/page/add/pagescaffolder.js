@@ -51,6 +51,6 @@ exports.PageScaffolder = class {
     } else {
       fs.writeFileSync(htmlFilePath, '');
     }
-    fs.writeFileSync(configFilePath, JSON.stringify(configContents));
+    fs.writeFileSync(configFilePath, JSON.stringify(configContents, null, 2));
   }
 }
