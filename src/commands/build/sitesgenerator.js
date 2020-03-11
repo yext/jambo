@@ -1,6 +1,7 @@
 const fs = require('file-system');
 const { snakeCase } = require('change-case');
 const hbs = require('handlebars');
+const path = require('path');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -36,8 +37,13 @@ exports.SitesGenerator = class {
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       const pageId = filename.split('.')[0];
-      const pageConfig =
-        Object.assign({}, pagesConfig[pageId], { global_config: pagesConfig['global_config'] });
+      const pageConfig = Object.assign(
+          {},
+          pagesConfig[pageId],
+          { 
+            global_config: pagesConfig['global_config'],
+            relativePath: this._calculateRelativePath(path)
+          });
       const pageLayout = pageConfig.layout;
 
       let template;
@@ -76,5 +82,9 @@ exports.SitesGenerator = class {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
     });
+  }
+
+  _calculateRelativePath(filePath) {
+    return path.relative(path.dirname(filePath), "");
   }
 }
