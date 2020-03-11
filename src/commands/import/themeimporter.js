@@ -1,4 +1,4 @@
-const fs = require('file-system');
+const fs = require('fs-extra');
 const simpleGit = require('simple-git/promise');
 const git = simpleGit();
 
@@ -25,6 +25,11 @@ exports.ThemeImporter = class {
       fs.copyFileSync(
         `${localPath}/global_config.json`,
         `${this.config.dirs.config}/global_config.json`);
+
+      const staticAssetsPath = `${localPath}/static`;
+      if (fs.existsSync(staticAssetsPath)) {
+        fs.copySync(staticAssetsPath, 'static');
+      }
 
       return localPath;
     } catch (error) {
