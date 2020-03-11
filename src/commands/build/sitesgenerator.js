@@ -23,11 +23,12 @@ exports.SitesGenerator = class {
     this._registerHelpers();
 
     // Import theme partials and overrides if necessary
-    if (config.theme) {
-      const themeDir = `${config.dirs.themes}/${config.theme}`;
+    const defaultTheme = config.defaultTheme;
+    if (defaultTheme) {
+      const themeDir = `${config.dirs.themes}/${defaultTheme}`;
       this._registerPartials(themeDir);
 
-      const overrideDir = `${config.dirs.overrides}/${config.theme}`;
+      const overrideDir = `${config.dirs.overrides}/${defaultTheme}`;
       fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
 
       const cardsDir = `${config.dirs.cards}`;
@@ -91,11 +92,9 @@ exports.SitesGenerator = class {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
     });
+
     hbs.registerHelper('ifeq', function (arg1, arg2, options) {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
-    });
-    hbs.registerHelper('read', function (fileName) {
-      return hbs.partials[fileName];
     });
   }
 
