@@ -43,7 +43,7 @@ exports.SitesGenerator = class {
       const pageConfig = Object.assign(
           {},
           pagesConfig[pageId],
-          { 
+          {
             global_config: pagesConfig['global_config'],
             relativePath: this._calculateRelativePath(path)
           });
@@ -87,6 +87,20 @@ exports.SitesGenerator = class {
     });
     hbs.registerHelper('ifeq', function (arg1, arg2, options) {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
+    });
+    hbs.registerHelper('registerCardComponent', function(config, currentVertical) {
+      const verticalsToConfig = config.verticalsToConfig || {};
+      const verticalConfig = verticalsToConfig[currentVertical];
+      if (verticalConfig) {
+        const cardType = verticalConfig.cardType || 'Standard';
+        switch (cardType) {
+          case 'Standard':
+            return 'cards_standard_component';
+          default:
+            return `${cardType.toLowerCase()}_component`;
+        }
+      }
+      return 'cards_standard_component';
     });
   }
 

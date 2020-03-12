@@ -54,6 +54,7 @@ exports.RepositoryScaffolder = class {
     fs.mkdirSync('partials');
     fs.mkdirSync('themes');
     fs.mkdirSync('public');
+    fs.mkdirSync('cards');
   }
 
   /**
@@ -70,7 +71,8 @@ exports.RepositoryScaffolder = class {
         overrides: 'overrides',
         output: 'public',
         pages: 'pages',
-        partials: 'partials'
+        partials: 'partials',
+        cards: 'cards'
       }
     };
     fs.writeFileSync('config.json', JSON.stringify(jamboConfig, null, 2));
