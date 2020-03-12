@@ -29,6 +29,9 @@ exports.SitesGenerator = class {
 
       const overrideDir = `${config.dirs.overrides}/${config.theme}`;
       fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
+
+      const cardsDir = `${config.dirs.cards}`;
+      fs.existsSync(cardsDir) && this._registerPartials(cardsDir);
     }
 
     // Import any additional custom partials.
@@ -81,6 +84,9 @@ exports.SitesGenerator = class {
   _registerHelpers() {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
+    });
+    hbs.registerHelper('ifeq', function (arg1, arg2, options) {
+      return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
   }
 
