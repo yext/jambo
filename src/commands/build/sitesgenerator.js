@@ -57,7 +57,6 @@ exports.SitesGenerator = class {
       } else {
         template = hbs.compile(fs.readFileSync(path).toString());
       }
-
       const result = template(pageConfig);
       const outputPath =
         `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
@@ -95,12 +94,12 @@ exports.SitesGenerator = class {
         const cardType = verticalConfig.cardType || 'Standard';
         switch (cardType) {
           case 'Standard':
-            return 'cards_standard_component';
+            return 'cards_standard_card_component';
           default:
-            return `${cardType.toLowerCase()}_component`;
+            return `${cardType.toLowerCase()}_card_component`;
         }
       }
-      return 'cards_standard_component';
+      return 'cards_standard_card_component';
     });
     hbs.registerHelper('cardMappingTemplate', function(config, currentVertical) {
       const verticalsToConfig = config.verticalsToConfig || {};
@@ -118,6 +117,9 @@ exports.SitesGenerator = class {
         return 'cards_standard_mappings';
       }
       return 'cards_standard_mappings';
+    });
+    hbs.registerHelper('read', function (fileName) {
+      return hbs.partials[fileName];
     });
   }
 
