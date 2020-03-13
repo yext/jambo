@@ -37,6 +37,12 @@ exports.SitesGenerator = class {
     // Import any additional custom partials.
     this._registerPartials(config.dirs.partials);
 
+    const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
+      if (key !== 'global_config') {
+        object[key] = pagesConfig[key];
+      }
+      return object;
+    }, {});
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       const pageId = filename.split('.')[0];
@@ -44,6 +50,7 @@ exports.SitesGenerator = class {
           {},
           pagesConfig[pageId],
           {
+            verticalConfigs,
             global_config: pagesConfig['global_config'],
             relativePath: this._calculateRelativePath(path)
           });
