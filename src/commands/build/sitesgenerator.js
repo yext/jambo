@@ -87,37 +87,6 @@ exports.SitesGenerator = class {
     hbs.registerHelper('ifeq', function (arg1, arg2, options) {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
-    hbs.registerHelper('registerCardComponent', function(config, currentVertical) {
-      const verticalsToConfig = config.verticalsToConfig || {};
-      const verticalConfig = verticalsToConfig[currentVertical];
-      if (verticalConfig) {
-        const cardType = verticalConfig.cardType || 'Standard';
-        switch (cardType) {
-          case 'Standard':
-            return 'cards_standard_card_component';
-          default:
-            return `${cardType.toLowerCase()}_card_component`;
-        }
-      }
-      return 'cards_standard_card_component';
-    });
-    hbs.registerHelper('cardMappingTemplate', function(config, currentVertical) {
-      const verticalsToConfig = config.verticalsToConfig || {};
-      const verticalConfig = verticalsToConfig[currentVertical];
-      if (verticalConfig) {
-        const cardMappings = verticalConfig.cardMappings || {};
-        if (cardMappings.mappingTemplate) {
-          const templateBase = cardMappings.mappingTemplate.split('/')[0];
-          if (templateBase === 'Standard') {
-            return 'cards_standard_mappings';
-          } else {
-            return '${cardType.toLowerCase()}_mappings';
-          }
-        }
-        return 'cards_standard_mappings';
-      }
-      return 'cards_standard_mappings';
-    });
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
