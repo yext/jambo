@@ -29,6 +29,9 @@ exports.SitesGenerator = class {
 
       const overrideDir = `${config.dirs.overrides}/${config.theme}`;
       fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
+
+      const cardsDir = `${config.dirs.cards}`;
+      fs.existsSync(cardsDir) && this._registerPartials(cardsDir);
     }
 
     // Import any additional custom partials.
@@ -40,7 +43,7 @@ exports.SitesGenerator = class {
       const pageConfig = Object.assign(
           {},
           pagesConfig[pageId],
-          { 
+          {
             global_config: pagesConfig['global_config'],
             relativePath: this._calculateRelativePath(path)
           });
@@ -54,7 +57,6 @@ exports.SitesGenerator = class {
       } else {
         template = hbs.compile(fs.readFileSync(path).toString());
       }
-
       const result = template(pageConfig);
       const outputPath =
         `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
@@ -81,6 +83,43 @@ exports.SitesGenerator = class {
   _registerHelpers() {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
+    });
+    hbs.registerHelper('ifeq', function (arg1, arg2, options) {
+      return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
+    });
+    hbs.registerHelper('registerCardComponent', function(config, currentVertical) {
+      const verticalsToConfig = config.verticalsToConfig || {};
+      const verticalConfig = verticalsToConfig[currentVertical];
+      if (verticalConfig) {
+        const cardType = verticalConfig.cardType || 'Standard';
+        switch (cardType) {
+          case 'Standard':
+            return 'cards_standard_card_component';
+          default:
+            return `${cardType.toLowerCase()}_card_component`;
+        }
+      }
+      return 'cards_standard_card_component';
+    });
+    hbs.registerHelper('cardMappingTemplate', function(config, currentVertical) {
+      const verticalsToConfig = config.verticalsToConfig || {};
+      const verticalConfig = verticalsToConfig[currentVertical];
+      if (verticalConfig) {
+        const cardMappings = verticalConfig.cardMappings || {};
+        if (cardMappings.mappingTemplate) {
+          const templateBase = cardMappings.mappingTemplate.split('/')[0];
+          if (templateBase === 'Standard') {
+            return 'cards_standard_mappings';
+          } else {
+            return '${cardType.toLowerCase()}_mappings';
+          }
+        }
+        return 'cards_standard_mappings';
+      }
+      return 'cards_standard_mappings';
+    });
+    hbs.registerHelper('read', function (fileName) {
+      return hbs.partials[fileName];
     });
   }
 
