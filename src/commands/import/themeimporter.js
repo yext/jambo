@@ -25,15 +25,36 @@ exports.ThemeImporter = class {
       fs.copyFileSync(
         `${localPath}/global_config.json`,
         `${this.config.dirs.config}/global_config.json`);
-
-      const staticAssetsPath = `${localPath}/static`;
-      if (fs.existsSync(staticAssetsPath)) {
-        fs.copySync(staticAssetsPath, '.');
-      }
+      this._copyStaticAssets(localPath);
 
       return localPath;
     } catch (error) {
       return Promise.reject(error.toString());
+    }
+  }
+
+  /**
+   * Copies the static assets from the Theme to the repository, if they exist. If a 
+   * Gruntfile, webpack-config, or package.json are included among the assets, those are 
+   * moved to the top-level of the repository. All other assets are copied over into a
+   * 'static' directory.
+   * 
+   * @param {string} localPath The path of the imported theme in the repository.
+   */
+  _copyStaticAssets(localPath) {
+    const staticAssetsPath = `${localPath}/static`;
+    if (fs.existsSync(staticAssetsPath)) {
+      fs.copySync(staticAssetsPath, 'static');
+
+      const moveFileIfExists = file => {
+        if (fs.existsSync(file)) {
+          fs.moveSync(file, file.split('/').pop());
+        }
+      };
+  
+      moveFileIfExists('static/Gruntfile.js');
+      moveFileIfExists('static/webpack-config.js');
+      moveFileIfExists('static/package.json');
     }
   }
 

@@ -29,7 +29,7 @@ exports.RepositoryScaffolder = class {
   async create(repositorySettings) {
     try {
       await git.init();
-      fs.writeFileSync('.gitignore', 'public/\n');
+      fs.writeFileSync('.gitignore', 'public/\nnode_modules/\n');
 
       this._createDirectorySkeleton();
       const jamboConfig = this._createJamboConfig();
