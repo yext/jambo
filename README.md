@@ -47,6 +47,9 @@ npx jambo override --theme answers-hitchhiker-theme --path path_to_override
 The override command lets you override a specified theme, such as answers-hitchhiker-theme.
 You can also specify a specific path to override, instead of the whole theme.
 
+It does so by copying the designated theme, or just the specified path of the theme, into the 'overrides' folder.
+These copies, and any changes made to them, will be used instead of the original files.
+
 #### Page
 
 ```bash
