@@ -28,7 +28,7 @@ exports.ThemeImporter = class {
 
       const staticAssetsPath = `${localPath}/static`;
       if (fs.existsSync(staticAssetsPath)) {
-        fs.copySync(staticAssetsPath, 'static');
+        fs.copySync(staticAssetsPath, '.');
       }
 
       return localPath;
