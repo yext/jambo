@@ -23,17 +23,7 @@ exports.SitesGenerator = class {
     this._registerHelpers();
 
     // Import theme partials and overrides if necessary
-    const defaultTheme = config.defaultTheme;
-    if (defaultTheme) {
-      const themeDir = `${config.dirs.themes}/${defaultTheme}`;
-      this._registerPartials(themeDir);
-
-      const overrideDir = `${config.dirs.overrides}/${defaultTheme}`;
-      fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
-
-      const cardsDir = `${config.dirs.cards}`;
-      fs.existsSync(cardsDir) && this._registerPartials(cardsDir);
-    }
+    this._importTheme(config);
 
     // Import any additional custom partials.
     this._registerPartials(config.dirs.partials);
@@ -100,6 +90,20 @@ exports.SitesGenerator = class {
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
+  }
+  
+  _importTheme(config) {
+    const defaultTheme = config.defaultTheme;
+    if (defaultTheme) {
+      const themeDir = `${config.dirs.themes}/${defaultTheme}`;
+      this._registerPartials(themeDir);
+
+      const overrideDir = `${config.dirs.overrides}/${defaultTheme}`;
+      fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
+
+      const cardsDir = `${config.dirs.cards}`;
+      fs.existsSync(cardsDir) && this._registerPartials(cardsDir);
+    }
   }
 
   _calculateRelativePath(filePath) {
