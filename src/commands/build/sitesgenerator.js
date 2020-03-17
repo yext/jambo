@@ -96,6 +96,10 @@ exports.SitesGenerator = class {
     hbs.registerHelper('ifeq', function (arg1, arg2, options) {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
+
+    hbs.registerHelper('read', function (fileName) {
+      return hbs.partials[fileName];
+    });
   }
 
   _calculateRelativePath(filePath) {

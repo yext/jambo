@@ -1,9 +1,6 @@
 const fs = require('fs-extra');
 const simpleGit = require('simple-git/promise');
 const git = simpleGit();
-const configParser = require('../../utils/jamboconfigparser');
-
-const jamboConfig = fs.existsSync('config.json') && configParser.computeJamboConfig();
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
@@ -63,8 +60,8 @@ exports.ThemeImporter = class {
   }
 
   _updateDefaultTheme(themeName) {
-    if (!jamboConfig || jamboConfig.defaultTheme !== themeName) {
-      const updatedConfig = Object.assign({}, jamboConfig, { defaultTheme: themeName});
+    if (this.config.defaultTheme !== themeName) {
+      const updatedConfig = Object.assign({}, this.config, { defaultTheme: themeName});
       fs.writeFileSync('config.json', JSON.stringify(updatedConfig, null, 2));
     }
   }
@@ -72,7 +69,7 @@ exports.ThemeImporter = class {
   _getRepoForTheme(themeName) {
     switch (themeName) {
       case 'answers-hitchhiker-theme':
-        return 'https://github.com/yext/answers-hitchhiker-theme.git';
+        return 'git@github.com:yext/answers-hitchhiker-theme.git';
       default:
         throw 'Unrecognized theme';
     }
