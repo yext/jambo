@@ -16,6 +16,10 @@ exports.ThemeImporter = class {
    *                            a Promise containing the error.
    */
   async import(themeName) {
+    if (!this.config) {
+      console.warn('No config.json found. Did you `jambo init` yet?')
+      return;
+    }
     try {
       const themeRepo = this._getRepoForTheme(themeName);
       const localPath = `${this.config.dirs.themes}/${themeName}`;
