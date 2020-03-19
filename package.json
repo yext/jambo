@@ -1,5 +1,5 @@
 {
-  "name": "jamboree",
+  "name": "@yext/jamboree",
   "version": "1.0.0",
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "jambo": "src/cli.js"
   },
   "author": "tmeyer@yext.com",
-  "license": "BSD-3-Clause",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/yext/jamboree/issues"
   },
