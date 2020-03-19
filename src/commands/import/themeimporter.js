@@ -16,6 +16,10 @@ exports.ThemeImporter = class {
    *                            a Promise containing the error.
    */
   async import(themeName) {
+    if (!this.config) {
+      console.warn('No config.json found. Did you `jambo init` yet?')
+      return;
+    }
     try {
       const themeRepo = this._getRepoForTheme(themeName);
       const localPath = `${this.config.dirs.themes}/${themeName}`;
@@ -26,6 +30,7 @@ exports.ThemeImporter = class {
         `${localPath}/global_config.json`,
         `${this.config.dirs.config}/global_config.json`);
       this._copyStaticAssets(localPath);
+      this._updateDefaultTheme(themeName);
 
       return localPath;
     } catch (error) {
@@ -55,6 +60,13 @@ exports.ThemeImporter = class {
       moveFileIfExists('static/Gruntfile.js');
       moveFileIfExists('static/webpack-config.js');
       moveFileIfExists('static/package.json');
+    }
+  }
+
+  _updateDefaultTheme(themeName) {
+    if (this.config.defaultTheme !== themeName) {
+      const updatedConfig = Object.assign({}, this.config, { defaultTheme: themeName });
+      fs.writeFileSync('config.json', JSON.stringify(updatedConfig, null, 2));
     }
   }
 

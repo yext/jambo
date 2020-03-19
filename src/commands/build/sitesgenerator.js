@@ -22,20 +22,8 @@ exports.SitesGenerator = class {
     // Register needed Handlebars helpers.
     this._registerHelpers();
 
-    // Import theme partials and overrides if necessary
-    if (config.theme) {
-      const themeDir = `${config.dirs.themes}/${config.theme}`;
-      this._registerPartials(themeDir);
-
-      const overrideDir = `${config.dirs.overrides}/${config.theme}`;
-      fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
-
-      const cardsDir = `${config.dirs.cards}`;
-      fs.existsSync(cardsDir) && this._registerPartials(cardsDir);
-    }
-
-    // Import any additional custom partials.
-    this._registerPartials(config.dirs.partials);
+    // Register necessary partials.
+    this._registerAllPartials(config);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== 'global_config') {
@@ -79,21 +67,39 @@ exports.SitesGenerator = class {
   }
 
   _registerPartials(directory) {
-    fs.recurseSync(directory, (path, relative, filename) => {
-      if (filename) {
-        const relativeNoExtension = this._stripExtension(relative);
-        hbs.registerPartial(snakeCase(relativeNoExtension), fs.readFileSync(path).toString());
+    if (fs.existsSync(directory)) {
+      fs.recurseSync(directory, (path, relative, filename) => {
+        if (filename) {
+          const relativeNoExtension = this._stripExtension(relative);
+          hbs.registerPartial(snakeCase(relativeNoExtension), fs.readFileSync(path).toString());
+        }
+      });
+    }
+  }
+
+  _registerAllPartials({ dirs, defaultTheme}) {
+    const { partials, themes, overrides, cards } = dirs;
+    // If a theme is specified, register partials and overrides from it.
+    if (defaultTheme) {
+      for (const dir in [themes, overrides]) {
+        this._registerPartials(path.resolve(dir, defaultTheme));
       }
-    });
+      this._registerPartials(cards);
+    }
+
+    // Register custom partials.
+    this._registerPartials(partials);
   }
 
   _registerHelpers() {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
     });
+
     hbs.registerHelper('ifeq', function (arg1, arg2, options) {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
+
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
