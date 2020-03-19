@@ -23,10 +23,6 @@ npx jambo init
 
 Initiailizes the current directory as a Jambo repository.
 
-```bash
-npx jambo
-```
-
 The init command initializes a Jambo repo, and also imports the designated theme.
 Currently, only answers-hitchhiker-theme is supported.
 
@@ -42,7 +38,7 @@ Import a theme after initializing the repo.
 npx jambo import --theme answers-hitchhiker-theme
 ```
 
-The import command imports the designated theme the 'themes' folder, and registers its name to be used by other commands.
+The import command imports the designated theme into the 'themes' folder.
 
 **--theme** _theme_name_
 
@@ -63,7 +59,8 @@ The name of the theme to override.
 ###### Optional Arguments
 
 --path _path_to_override_
-You can specify a specific path to override, in which case only that path will be overridden instead of the whole theme.
+
+You can specify specific files(s) in the theme to override.
 
 #### Page
 
@@ -81,16 +78,15 @@ The name this page will be registered as.
 
 --theme _theme_name_
 
-The theme that your layout and template belong to. Required for
-both --layout and --template.
+A theme to use with your page. Required if specifying a template.
+
+--template  _template_name_
+
+The template to generate the page with.
 
 --layout _layout_name_
 
 The layout to use around the page.
-
---template  _template_name_
-
-The template to generate the path with.
 
 #### Build
 
