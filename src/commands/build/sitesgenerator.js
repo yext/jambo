@@ -22,7 +22,7 @@ exports.SitesGenerator = class {
     // Register needed Handlebars helpers.
     this._registerHelpers();
 
-    // Import any additional custom partials.
+    // Register necessary partials.
     this._registerAllPartials(config);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
@@ -78,16 +78,17 @@ exports.SitesGenerator = class {
   }
 
   _registerAllPartials({ dirs, defaultTheme}) {
-    const { partials, themes, overrides, cards } = dirs;      
-    // Register custom partials.
-    this._registerPartials(partials);
-
-    // If a theme is specified, egister partials, overrides, and cards from it.
+    const { partials, themes, overrides, cards } = dirs;
+    // If a theme is specified, register partials and overrides from it.
     if (defaultTheme) {
-      for (const dir in [themes, overrides, cards]) {
+      for (const dir in [themes, overrides]) {
         this._registerPartials(path.resolve(dir, defaultTheme));
       }
+      this._registerPartials(cards);
     }
+
+    // Register custom partials.
+    this._registerPartials(partials);
   }
 
   _registerHelpers() {
