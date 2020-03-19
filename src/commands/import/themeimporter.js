@@ -65,7 +65,7 @@ exports.ThemeImporter = class {
 
   _updateDefaultTheme(themeName) {
     if (this.config.defaultTheme !== themeName) {
-      const updatedConfig = Object.assign({}, this.config, { defaultTheme: themeName});
+      const updatedConfig = Object.assign({}, this.config, { defaultTheme: themeName });
       fs.writeFileSync('config.json', JSON.stringify(updatedConfig, null, 2));
     }
   }
