@@ -1,6 +1,6 @@
 # Jamboree
 
-Jamboree (Jambo for short) is a A JAMStack implementation using Handlebars.
+Jamboree (Jambo for short) is a JAMStack implementation using Handlebars.
 
 ## Installation
 
@@ -24,11 +24,17 @@ npx jambo init
 Initiailizes the current directory as a Jambo repository.
 
 ```bash
-npx jambo init --theme a_jambo_theme_name
+npx jambo
 ```
 
 The init command initializes a Jambo repo, and also imports the designated theme.
 Currently, only answers-hitchhiker-theme is supported.
+
+###### Optional Arguments
+
+--theme _theme_name_
+
+Import a theme after initializing the repo.
 
 #### Import
 
@@ -36,32 +42,55 @@ Currently, only answers-hitchhiker-theme is supported.
 npx jambo import --theme answers-hitchhiker-theme
 ```
 
-The import command imports the designated theme into your jambo repo.
+The import command imports the designated theme the 'themes' folder, and registers its name to be used by other commands.
+
+**--theme** _theme_name_
+
+The name of the theme to import.
 
 #### Override
 
 ```bash
-npx jambo override --theme answers-hitchhiker-theme --path path_to_override
+npx jambo override --theme answers-hitchhiker-theme
 ```
 
-The override command lets you override a specified theme, such as answers-hitchhiker-theme.
-You can also specify a specific path to override, instead of the whole theme.
+The override command lets you override a specified theme by copying its files into the **overrides** folder.
 
-It does so by copying the designated theme, or just the specified path of the theme, into the 'overrides' folder.
-These copies, and any changes made to them, will be used instead of the original files.
+**--theme** _theme_name_
+
+The name of the theme to override.
+
+###### Optional Arguments
+
+--path _path_to_override_
+You can specify a specific path to override, in which case only that path will be overridden instead of the whole theme.
 
 #### Page
 
 ```bash
-npx jambo page --name new_page_name --layout layout_name --template vertical --theme answers-hitchhiker-theme
+npx jambo page --name new_page_name
 ```
 
-The page command registers a new webpage within Jambo with the specified name. 
-The layout argument adds an optional layout to the page, which specifies content outside of your primary page content, e.g. a header or footer.
+The **page** command registers a new page, with the specified name, to be built by Jambo.
 
-The template argument specifies which template to fill the page content with.
+**--name** _page_name_
 
-The theme argument specifies which theme to look for your layout and template, if any were specified.
+The name this page will be registered as.
+
+###### - Optional Arguments
+
+--theme _theme_name_
+
+The theme that your layout and template belong to. Required for
+both --layout and --template.
+
+--layout _layout_name_
+
+The layout to use around the page.
+
+--template  _template_name_
+
+The template to generate the path with.
 
 #### Build
 
@@ -70,8 +99,8 @@ npx jambo build
 ```
 
 The build command builds all pages reigstered within Jambo, and places them inside the 'public' directory.
-The build command currently uses the 'theme' attribute in the config.json in Jambo's root directory, which must
-be added to config.json manually. Here is an example of a simple config.json.
+
+The build command uses the 'theme' attribute in the config.json in Jambo's root directory, which must be added to config.json manually. Here is an example config.json.
 
 ```json
 {
@@ -87,8 +116,6 @@ be added to config.json manually. Here is an example of a simple config.json.
   "theme": "answers-hitchhiker-theme"
 }
 ```
-
-In the future, this will not be necessary.
 
 ___
 
