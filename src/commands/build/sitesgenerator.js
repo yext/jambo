@@ -22,11 +22,8 @@ exports.SitesGenerator = class {
     // Register needed Handlebars helpers.
     this._registerHelpers();
 
-    // Import theme partials and overrides if necessary
-    this._importTheme(config);
-
     // Import any additional custom partials.
-    this._registerPartials(config.dirs.partials);
+    this._registerAllPartials(config);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== 'global_config') {
@@ -70,12 +67,27 @@ exports.SitesGenerator = class {
   }
 
   _registerPartials(directory) {
-    fs.recurseSync(directory, (path, relative, filename) => {
-      if (filename) {
-        const relativeNoExtension = this._stripExtension(relative);
-        hbs.registerPartial(snakeCase(relativeNoExtension), fs.readFileSync(path).toString());
+    if (fs.existsSync(directory)) {
+      fs.recurseSync(directory, (path, relative, filename) => {
+        if (filename) {
+          const relativeNoExtension = this._stripExtension(relative);
+          hbs.registerPartial(snakeCase(relativeNoExtension), fs.readFileSync(path).toString());
+        }
+      });
+    }
+  }
+
+  _registerAllPartials({ dirs, defaultTheme}) {
+    const { partials, themes, overrides, cards } = dirs;      
+    // Register custom partials.
+    this._registerPartials(partials);
+
+    // If a theme is specified, egister partials, overrides, and cards from it.
+    if (defaultTheme) {
+      for (const dir in [themes, overrides, cards]) {
+        this._registerPartials(path.resolve(dir, defaultTheme));
       }
-    });
+    }
   }
 
   _registerHelpers() {
@@ -90,20 +102,6 @@ exports.SitesGenerator = class {
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
-  }
-  
-  _importTheme(config) {
-    const defaultTheme = config.defaultTheme;
-    if (defaultTheme) {
-      const themeDir = `${config.dirs.themes}/${defaultTheme}`;
-      this._registerPartials(themeDir);
-
-      const overrideDir = `${config.dirs.overrides}/${defaultTheme}`;
-      fs.existsSync(overrideDir) && this._registerPartials(overrideDir);
-
-      const cardsDir = `${config.dirs.cards}`;
-      fs.existsSync(cardsDir) && this._registerPartials(cardsDir);
-    }
   }
 
   _calculateRelativePath(filePath) {
