@@ -32,6 +32,11 @@ exports.ThemeImporter = class {
       this._copyStaticAssets(localPath);
       this._updateDefaultTheme(themeName);
 
+      const layoutsPath = `${localPath}/layouts`;
+      if (fs.existsSync(layoutsPath)) {
+        fs.copySync(layoutsPath, `${this.config.dirs.partials}/layouts`);
+      }
+      
       return localPath;
     } catch (error) {
       return Promise.reject(error.toString());
