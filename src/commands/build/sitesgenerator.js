@@ -81,7 +81,7 @@ exports.SitesGenerator = class {
     const { partials, themes, overrides, cards } = dirs;
     // If a theme is specified, register partials and overrides from it.
     if (defaultTheme) {
-      for (const dir in [themes, overrides]) {
+      for (const dir of [themes, overrides]) {
         this._registerPartials(path.resolve(dir, defaultTheme));
       }
       this._registerPartials(cards);
