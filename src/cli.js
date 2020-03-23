@@ -62,7 +62,7 @@ const options = yargs
     argv => {
       const pageConfiguration = new addPageCommand.PageConfiguration(argv);
       const pageScaffolder = new addPageCommand.PageScaffolder(jamboConfig);
-      pageScaffolder.create(pageConfiguration);
+      pageScaffolder.create(pageConfiguration).catch(console.log);
     })
 	.command(
     'build',

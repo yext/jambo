@@ -1,5 +1,7 @@
 const fs = require('file-system');
 
+const scriptUtils = require('../../../utils/scriptrunner');
+
 exports.PageConfiguration = class {
   constructor({ name, layout, theme, template }) {
     this._name = name;
@@ -30,12 +32,21 @@ exports.PageScaffolder = class {
     this.config = jamboConfig;
   }
 
-  create(pageConfiguration) {
-    const name = pageConfiguration.getName();
-    const theme = pageConfiguration.getTheme();
-    const template = pageConfiguration.getTemplate();
-    const layout = pageConfiguration.getLayout();
+  async create(pageConfiguration) {
+    try {
+      const name = pageConfiguration.getName();
+      const theme = pageConfiguration.getTheme();
+      const template = pageConfiguration.getTemplate();
+      const layout = pageConfiguration.getLayout();
+  
+      this._createFiles({ name, theme, template, layout });
+      theme && await this._executeAddPageScript({ name, theme });
+    } catch (error) {
+      return Promise.reject(error.toString());
+    }
+  }
 
+  _createFiles({ name, theme, template, layout }) {
     const htmlFilePath = `${this.config.dirs.pages}/${name}.html.hbs`;
     const configFilePath = `${this.config.dirs.config}/${name}.json`;
 
@@ -52,5 +63,14 @@ exports.PageScaffolder = class {
       fs.writeFileSync(htmlFilePath, '');
     }
     fs.writeFileSync(configFilePath, JSON.stringify(configContents, null, 2));
+  }
+
+  _executeAddPageScript({ name, theme }) {
+    const addPageScript = 
+      `${this.config.dirs.themes}/${theme}/scripts/addPage.sh`;
+    if (fs.existsSync(addPageScript)) {
+      const scriptRunner = new scriptUtils.ScriptRunner(this.config);
+      return scriptRunner.execute(addPageScript, { PAGE_NAME: name});
+    }
   }
 }
