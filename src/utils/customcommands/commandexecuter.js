@@ -1,5 +1,5 @@
 const path = require('path');
-const { exec } = require('child_process');
+const { spawnSync } = require('child_process');
 
 /**
  * This class is responsible for executing a {@link CustomCommand}.
@@ -13,30 +13,20 @@ exports.CustomCommandExecuter = class {
 
     /**
      * Executes the provided {@link CustomCommand}. The result of the execution
-     * is wrapped in a Promise.
+     * is returned.
      * 
      * @param {CustomCommand} command The command to execute in the shell.
-     * @returns {Promise} A Promise wrapping the command execution. If execution
-     *                    fails, the Promise is rejected with an error. If 
-     *                    successful, the Promise resolves with stdout.
+     * @returns {Object} The result of executing the {@link CustomCommand}. This
+     *                   object contains stdout, stderr, a status code, and an
+     *                   error if the child process failed.
      */
     execute(command) {
-        command.addArgs(Object.entries(this._jamboFlags));
-        return new Promise(function(resolve, reject) {
-            exec(
-                command.toString(),
-                { cwd: command.getCwd() },
-                (error, stdout, stderr) => {
-                    if (error) {
-                        reject(error);
-                    } else if (stderr) {
-                        reject(stderr);
-                    } else {
-                        resolve(stdout);
-                    }
-                }
-            );
-        });
+        command.addArgs(this._jamboFlags);
+        return spawnSync(
+            command.getExecutable(),
+            command.getArgs(),
+            { cwd: command.getCwd(), shell: true },
+        );
     }
 
     /**
@@ -44,20 +34,21 @@ exports.CustomCommandExecuter = class {
      * absolute path for all directories is used.
      * 
      * @param {Object} jamboConfig The Jambo config object.
-     * @returns {Object} An object containing the flags to add to any
-     *                   {@link CustomCommand}.
+     * @returns {Array} An array containing the flags to add to any {@link CustomCommand}.
      */
     _generateJamboFlags(jamboConfig) {
+        const jamboFlags = [];
+
         const getAbsolutePath = jamboDir => {
             return path.isAbsolute(jamboDir) ? 
                 jamboDir : 
                 path.join(process.cwd(), jamboDir);
         }
-        return {
-            '--jambo.config_dir': getAbsolutePath(jamboConfig.dirs.config),
-            '--jambo.themes_dir': getAbsolutePath(jamboConfig.dirs.themes),
-            '--jambo.pages_dir': getAbsolutePath(jamboConfig.dirs.pages),
-            '--jambo.partials_dir': getAbsolutePath(jamboConfig.dirs.partials)
-        }
+        Object.entries(jamboConfig.dirs).forEach(([name, value]) => {
+            jamboFlags.push(`--jambo.${name}_dir`);
+            jamboFlags.push(getAbsolutePath(value));
+        });
+
+        return jamboFlags;
     }
 }

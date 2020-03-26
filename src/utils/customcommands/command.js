@@ -3,39 +3,10 @@
  * of a built-in Jambo command. These shell commands are supplied by Themes.
  */
 exports.CustomCommand = class {
-    constructor({ file, args, cwd }) {
-        this._file = file;
-        this._fileType = file.split('.').pop();
+    constructor({ executable, args, cwd }) {
+        this._executable = executable;
         this._args = args || [];
         this._cwd = cwd;
-    }
-
-    /**
-     * Returns the {@link CustomCommand} as a string. The string matches exactly
-     * what someone would type into the shell to run the command.
-     * 
-     * @returns {string} The stringified {@link CustomCommand}.
-     */
-    toString() {
-        const argReducer = (argsString, currentArgs) => {
-            const [name, value] = currentArgs;
-            return argsString.concat(` ${name}=${value}`);
-        };
-        const parsedArgs = this._args.reduce(argReducer, '');
-
-        let commandPrefix;
-        switch (this._fileType) {
-            case 'js':
-                commandPrefix = `node ${this._file}`;
-                break;
-            case 'sh':
-                commandPrefix = `./${this._file}`;
-                break;
-            default:
-                throw 'Unsupported file type';
-        }
-
-        return `${commandPrefix} ${parsedArgs}`;
     }
 
     /**
@@ -58,12 +29,12 @@ exports.CustomCommand = class {
     }
 
     /**
-     * Returns the file name of the executable.
+     * Returns the executable to be invoked.
      * 
-     * @returns {string} The name of the executable.
+     * @returns {string} The executable.
      */
-    getFile() {
-        return this._file;
+    getExecutable() {
+        return this._executable;
     }
 
     /**
