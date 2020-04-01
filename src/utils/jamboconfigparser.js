@@ -10,7 +10,8 @@ exports.computeJamboConfig = function() {
         overrides: 'overrides',
         output: 'public',
         pages: 'pages',
-        partials: 'partials'
+        partials: 'partials',
+        cards: 'cards'
       }
     },
     JSON.parse(fs.readFileSync('config.json'))
