@@ -11,22 +11,39 @@ exports.SitesGenerator = class {
   generate() {
     const config = this.config;
 
+    console.log('Reading config files');
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (filename) {
         let pageId = snakeCase(this._stripExtension(relative));
-        pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
+        try {
+          pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
+        } catch (e) {
+          if (e instanceof SyntaxError) {
+            console.error('JSON SyntaxError: could not parse ' + path);
+          } else {
+            console.error(e);
+          }
+        }
       }
     })
 
+    const globalConfigName = 'global_config';
+    if (!pagesConfig[globalConfigName]) {
+      console.error(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory, exiting.');
+      return;
+    }
+
+    console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
     this._registerHelpers();
 
+    console.log('Registering all handlebars templates');
     // Register necessary partials.
     this._registerAllPartials(config);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
-      if (key !== 'global_config') {
+      if (key !== globalConfigName) {
         object[key] = pagesConfig[key];
       }
       return object;
@@ -37,12 +54,13 @@ exports.SitesGenerator = class {
       if (!pagesConfig[pageId]) {
         throw new Error(`Error: No config found for page: ${pageId}`);
       }
+      console.log(`Writing output file for the '${pageId}' page`);
       const pageConfig = Object.assign(
           {},
           pagesConfig[pageId],
           {
             verticalConfigs,
-            global_config: pagesConfig['global_config'],
+            global_config: pagesConfig[globalConfigName],
             relativePath: this._calculateRelativePath(path)
           });
       const pageLayout = pageConfig.layout;
@@ -60,6 +78,7 @@ exports.SitesGenerator = class {
         `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
       fs.writeFileSync(outputPath, result);
     });
+    console.log('Done.');
   }
 
   _stripExtension(fn) {
