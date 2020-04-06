@@ -15,7 +15,15 @@ exports.SitesGenerator = class {
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (filename) {
         let pageId = snakeCase(this._stripExtension(relative));
-        pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
+        try {
+          pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
+        } catch (e) {
+          if (e instanceof SyntaxError) {
+            console.error('JSON SyntaxError: could not parse ' + path);
+          } else {
+            console.error(e);
+          }
+        }
       }
     })
 
