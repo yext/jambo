@@ -16,9 +16,23 @@ exports.SitesGenerator = class {
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (filename) {
         let pageId = snakeCase(this._stripExtension(relative));
-        pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
+        try {
+          pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
+        } catch (e) {
+          if (e instanceof SyntaxError) {
+            console.error('JSON SyntaxError: could not parse ' + path);
+          } else {
+            console.error(e);
+          }
+        }
       }
     })
+
+    const globalConfigName = 'global_config';
+    if (!pagesConfig[globalConfigName]) {
+      console.error(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory, exiting.');
+      return;
+    }
 
     console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
@@ -29,7 +43,7 @@ exports.SitesGenerator = class {
     this._registerAllPartials(config);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
-      if (key !== 'global_config') {
+      if (key !== globalConfigName) {
         object[key] = pagesConfig[key];
       }
       return object;
@@ -43,7 +57,7 @@ exports.SitesGenerator = class {
           pagesConfig[pageId],
           {
             verticalConfigs,
-            global_config: pagesConfig['global_config'],
+            global_config: pagesConfig[globalConfigName],
             relativePath: this._calculateRelativePath(path)
           });
       const pageLayout = pageConfig.layout;

@@ -5,6 +5,7 @@ const buildCommand = require('./commands/build/sitesgenerator');
 const addPageCommand = require('./commands/page/add/pagescaffolder');
 const overrideCommand = require('./commands/override/themeshadower');
 const themeCommand = require('./commands/import/themeimporter');
+const addCardCommand = require('./commands/card/cardcreator');
 const configParser = require('./utils/jamboconfigparser');
 const yargs = require('yargs');
 const fs = require('file-system');
@@ -63,6 +64,18 @@ const options = yargs
       const pageConfiguration = new addPageCommand.PageConfiguration(argv);
       const pageScaffolder = new addPageCommand.PageScaffolder(jamboConfig);
       pageScaffolder.create(pageConfiguration);
+    })
+  .command(
+    'card',
+    'add a new card for use in the site',
+    yargs => {
+      return yargs
+        .option('name', { description: 'name for the new card', demandOption: true })
+        .option('templateCardFolder', { description: 'folder of card to fork', demandOption: true })
+    },
+    argv => {
+      const cardCreator = new addCardCommand.CardCreator(jamboConfig);
+      cardCreator.create(argv.name, argv.templateCardFolder);
     })
 	.command(
     'build',
