@@ -11,6 +11,7 @@ exports.SitesGenerator = class {
   generate() {
     const config = this.config;
 
+    console.log('Reading config files');
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (filename) {
@@ -28,15 +29,16 @@ exports.SitesGenerator = class {
     })
 
     const globalConfigName = 'global_config';
-
     if (!pagesConfig[globalConfigName]) {
       console.error(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory, exiting.');
       return;
     }
 
+    console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
     this._registerHelpers();
 
+    console.log('Registering all handlebars templates');
     // Register necessary partials.
     this._registerAllPartials(config);
 
@@ -49,6 +51,7 @@ exports.SitesGenerator = class {
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       const pageId = filename.split('.')[0];
+      console.log(`Writing output file for the '${pageId}' page`);
       const pageConfig = Object.assign(
           {},
           pagesConfig[pageId],
@@ -72,6 +75,7 @@ exports.SitesGenerator = class {
         `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
       fs.writeFileSync(outputPath, result);
     });
+    console.log('Done.');
   }
 
   _stripExtension(fn) {
