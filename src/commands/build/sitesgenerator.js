@@ -51,6 +51,9 @@ exports.SitesGenerator = class {
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       const pageId = filename.split('.')[0];
+      if (!pagesConfig[pageId]) {
+        throw new Error(`Error: No config found for page: ${pageId}`);
+      }
       console.log(`Writing output file for the '${pageId}' page`);
       const pageConfig = Object.assign(
           {},
