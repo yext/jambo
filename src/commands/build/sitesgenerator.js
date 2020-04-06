@@ -27,6 +27,13 @@ exports.SitesGenerator = class {
       }
     })
 
+    const globalConfigName = 'global_config';
+
+    if (!pagesConfig[globalConfigName]) {
+      console.error(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory, exiting.');
+      return;
+    }
+
     // Register needed Handlebars helpers.
     this._registerHelpers();
 
@@ -34,7 +41,7 @@ exports.SitesGenerator = class {
     this._registerAllPartials(config);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
-      if (key !== 'global_config') {
+      if (key !== globalConfigName) {
         object[key] = pagesConfig[key];
       }
       return object;
@@ -47,7 +54,7 @@ exports.SitesGenerator = class {
           pagesConfig[pageId],
           {
             verticalConfigs,
-            global_config: pagesConfig['global_config'],
+            global_config: pagesConfig[globalConfigName],
             relativePath: this._calculateRelativePath(path)
           });
       const pageLayout = pageConfig.layout;
