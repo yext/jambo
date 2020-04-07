@@ -17,7 +17,7 @@ exports.ThemeImporter = class {
    */
   async import(themeName) {
     if (!this.config) {
-      console.warn('No config.json found. Did you `jambo init` yet?')
+      console.warn('No jambo.json found. Did you `jambo init` yet?')
       return;
     }
     try {
@@ -71,7 +71,7 @@ exports.ThemeImporter = class {
   _updateDefaultTheme(themeName) {
     if (this.config.defaultTheme !== themeName) {
       const updatedConfig = Object.assign({}, this.config, { defaultTheme: themeName });
-      fs.writeFileSync('config.json', JSON.stringify(updatedConfig, null, 2));
+      fs.writeFileSync('jambo.json', JSON.stringify(updatedConfig, null, 2));
     }
   }
 

@@ -14,7 +14,7 @@ exports.computeJamboConfig = function() {
         cards: 'cards'
       }
     },
-    JSON.parse(fs.readFileSync('config.json'))
+    JSON.parse(fs.readFileSync('jambo.json'))
   );
 
   return config;

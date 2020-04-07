@@ -10,7 +10,7 @@ const configParser = require('./utils/jamboconfigparser');
 const yargs = require('yargs');
 const fs = require('file-system');
 
-const jamboConfig = fs.existsSync('config.json') && configParser.computeJamboConfig();
+const jamboConfig = fs.existsSync('jambo.json') && configParser.computeJamboConfig();
 
 const options = yargs
 	.usage('Usage: $0 <cmd> <operation> [options]')

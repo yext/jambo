@@ -96,7 +96,7 @@ npx jambo build
 
 The build command builds all pages reigstered within Jambo, and places them inside the 'public' directory.
 
-The build command uses the 'theme' attribute in the config.json in Jambo's root directory, which must be added to config.json manually. Here is an example config.json.
+The build command uses the 'defaultTheme' attribute in the jambo.json in Jambo's root directory, which must be added to jambo.json manually. Here is an example jambo.json.
 
 ```json
 {
@@ -109,7 +109,7 @@ The build command uses the 'theme' attribute in the config.json in Jambo's root 
     "pages":"pages",
     "layouts":"layouts"
   },
-  "theme": "answers-hitchhiker-theme"
+  "defaultTheme": "answers-hitchhiker-theme"
 }
 ```
 
