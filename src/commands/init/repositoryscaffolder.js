@@ -75,7 +75,7 @@ exports.RepositoryScaffolder = class {
         cards: 'cards'
       }
     };
-    fs.writeFileSync('config.json', JSON.stringify(jamboConfig, null, 2));
+    fs.writeFileSync('jambo.json', JSON.stringify(jamboConfig, null, 2));
 
     return jamboConfig;
   }
