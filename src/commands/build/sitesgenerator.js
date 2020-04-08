@@ -14,7 +14,7 @@ exports.SitesGenerator = class {
     console.log('Reading config files');
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
-      if (filename) {
+      if (this._isValidFile(filename)) {
         let pageId = snakeCase(this._stripExtension(relative));
         try {
           pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
@@ -50,33 +50,35 @@ exports.SitesGenerator = class {
     }, {});
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
-      const pageId = filename.split('.')[0];
-      if (!pagesConfig[pageId]) {
-        throw new Error(`Error: No config found for page: ${pageId}`);
+      if (this._isValidFile(filename)) {
+        const pageId = filename.split('.')[0];
+        if (!pagesConfig[pageId]) {
+          throw new Error(`Error: No config found for page: ${pageId}`);
+        }
+        console.log(`Writing output file for the '${pageId}' page`);
+        const pageConfig = Object.assign(
+            {},
+            pagesConfig[pageId],
+            {
+              verticalConfigs,
+              global_config: pagesConfig[globalConfigName],
+              relativePath: this._calculateRelativePath(path)
+            });
+        const pageLayout = pageConfig.layout;
+  
+        let template;
+        if (pageLayout) {
+          hbs.registerPartial('body', fs.readFileSync(path).toString());
+          const layoutPath = `${config.dirs.partials}/${pageLayout}`;
+          template = hbs.compile(fs.readFileSync(layoutPath).toString());
+        } else {
+          template = hbs.compile(fs.readFileSync(path).toString());
+        }
+        const result = template(pageConfig);
+        const outputPath =
+          `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
+        fs.writeFileSync(outputPath, result); 
       }
-      console.log(`Writing output file for the '${pageId}' page`);
-      const pageConfig = Object.assign(
-          {},
-          pagesConfig[pageId],
-          {
-            verticalConfigs,
-            global_config: pagesConfig[globalConfigName],
-            relativePath: this._calculateRelativePath(path)
-          });
-      const pageLayout = pageConfig.layout;
-
-      let template;
-      if (pageLayout) {
-        hbs.registerPartial('body', fs.readFileSync(path).toString());
-        const layoutPath = `${config.dirs.partials}/${pageLayout}`;
-        template = hbs.compile(fs.readFileSync(layoutPath).toString());
-      } else {
-        template = hbs.compile(fs.readFileSync(path).toString());
-      }
-      const result = template(pageConfig);
-      const outputPath =
-        `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
-      fs.writeFileSync(outputPath, result);
     });
     console.log('Done.');
   }
@@ -129,5 +131,9 @@ exports.SitesGenerator = class {
 
   _calculateRelativePath(filePath) {
     return path.relative(path.dirname(filePath), "");
+  }
+
+  _isValidFile(fileName) {
+    return fileName && !fileName.startsWith('.');
   }
 }
