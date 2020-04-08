@@ -93,7 +93,7 @@ exports.SitesGenerator = class {
   _registerPartials(directory) {
     if (fs.existsSync(directory)) {
       fs.recurseSync(directory, (path, relative, filename) => {
-        if (filename) {
+        if (this._isValidFile(filename)) {
           const relativeNoExtension = this._stripExtension(relative);
           hbs.registerPartial(snakeCase(relativeNoExtension), fs.readFileSync(path).toString());
         }
