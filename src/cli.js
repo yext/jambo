@@ -39,14 +39,14 @@ const options = yargs
     })
   .command(
     'override',
-    'override a theme or path within a theme',
+    'override a path within the theme',
     yargs => {
       return yargs
-        .option('theme', { description: 'theme to override', demandOption: true })
         .option('path', { description: 'path in the theme to override' })
     },
     argv => {
-      const shadowConfiguration = new overrideCommand.ShadowConfiguration(argv);
+      const shadowConfiguration = 
+        new overrideCommand.ShadowConfiguration(addThemeToArgs(argv));
       const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
       themeShadower.createShadow(shadowConfiguration);
     })
@@ -57,11 +57,11 @@ const options = yargs
       return yargs
         .option('name', { description: 'name for the new files', demandOption: true })
         .option('layout', { description: 'layout to use with page' })
-        .option('theme', { description: 'theme to use with page' })
         .option('template', { description: 'template to use within theme' });
     },
     argv => {
-      const pageConfiguration = new addPageCommand.PageConfiguration(argv);
+      const pageConfiguration = 
+        new addPageCommand.PageConfiguration(addThemeToArgs(argv));
       const pageScaffolder = new addPageCommand.PageScaffolder(jamboConfig);
       pageScaffolder.create(pageConfiguration);
     })
@@ -86,3 +86,14 @@ const options = yargs
       sitesGenerator.generate();
     })
   .argv;
+
+  /**
+   * Augments command line options with the defaultTheme from
+   * Jambo.
+   * 
+   * @param {Object} argv An object containing the command line
+   *                      options and the Jambo defaultTheme.
+   */
+  function addThemeToArgs(argv) {
+    return { ...argv, theme: jamboConfig.defaultTheme };
+  }
