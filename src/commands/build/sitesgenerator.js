@@ -1,5 +1,4 @@
 const fs = require('file-system');
-const { snakeCase } = require('change-case');
 const hbs = require('handlebars');
 const path = require('path');
 
@@ -15,7 +14,7 @@ exports.SitesGenerator = class {
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        let pageId = snakeCase(this._stripExtension(relative));
+        let pageId = this._stripExtension(relative);
         try {
           pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
         } catch (e) {
@@ -95,7 +94,7 @@ exports.SitesGenerator = class {
       fs.recurseSync(directory, (path, relative, filename) => {
         if (this._isValidFile(filename)) {
           const relativeNoExtension = this._stripExtension(relative);
-          hbs.registerPartial(snakeCase(relativeNoExtension), fs.readFileSync(path).toString());
+          hbs.registerPartial(relativeNoExtension, fs.readFileSync(path).toString());
         }
       });
     }
