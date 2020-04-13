@@ -8,6 +8,10 @@ const fs = require('fs-extra');
  */
 exports.ShadowConfiguration = class {
   constructor({ theme, path }) {
+    if (!theme) {
+      throw new Error('Theme must be specified when shadowing');
+    }
+
     this._theme = theme;
     this._path = path;
   }
