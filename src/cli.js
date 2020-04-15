@@ -6,11 +6,11 @@ const addPageCommand = require('./commands/page/add/pagescaffolder');
 const overrideCommand = require('./commands/override/themeshadower');
 const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
-const configParser = require('./utils/jamboconfigparser');
+const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
 
-const jamboConfig = fs.existsSync('jambo.json') && configParser.computeJamboConfig();
+const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
 
 const options = yargs
 	.usage('Usage: $0 <cmd> <operation> [options]')
@@ -42,7 +42,7 @@ const options = yargs
     'override a path within the theme',
     yargs => {
       return yargs
-        .option('path', { description: 'path in the theme to override' })
+        .option('path', { description: 'path in the theme to override', demandOption: true })
     },
     argv => {
       const shadowConfiguration = 

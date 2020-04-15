@@ -45,16 +45,14 @@ exports.RepositoryScaffolder = class {
   }
 
   /**
-   * Initialize pages, config, overrides, themes, partials, and public directories.
+   * Initialize pages, config, themes, partials, and public directories.
    */
   _createDirectorySkeleton() {
     fs.mkdirSync('pages');
     fs.mkdirSync('config');
-    fs.mkdirSync('overrides');
     fs.mkdirSync('partials');
     fs.mkdirSync('themes');
     fs.mkdirSync('public');
-    fs.mkdirSync('cards');
   }
 
   /**
@@ -68,11 +66,9 @@ exports.RepositoryScaffolder = class {
       dirs: {
         themes: 'themes',
         config: 'config',
-        overrides: 'overrides',
         output: 'public',
         pages: 'pages',
-        partials: 'partials',
-        cards: 'cards'
+        partials: ['partials'],
       }
     };
     fs.writeFileSync('jambo.json', JSON.stringify(jamboConfig, null, 2));

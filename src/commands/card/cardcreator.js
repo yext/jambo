@@ -1,8 +1,10 @@
 const fs = require('fs-extra');
+const { addToPartials } = require('../../utils/jamboconfigutils');
 
 exports.CardCreator = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
+    this._customCardsDir = 'cards';
   }
 
   /**
@@ -20,23 +22,32 @@ exports.CardCreator = class {
     const defaultTheme = this.config.defaultTheme;
     const themeCardsDir = 
         `${this.config.dirs.themes}/${defaultTheme}/cards`;
-    const customCardsDir = this.config.dirs.cards;
 
     const cardFolderName = cardName.toLowerCase();
     const isFolderInUse = 
         fs.existsSync(`${themeCardsDir}/${cardFolderName}`) ||
-        fs.existsSync(`${customCardsDir}/${cardFolderName}`);
+        fs.existsSync(`${this._customCardsDir}/${cardFolderName}`);
     if (isFolderInUse) {
         console.error(`A folder with name ${cardFolderName} already exists`);
         return;
     }
 
-    const cardFolder = `${customCardsDir}/${cardFolderName}`;
+    const cardFolder = `${this._customCardsDir}/${cardFolderName}`;
     if (fs.existsSync(templateCardFolder)) {
+        !fs.existsSync(this._customCardsDir) && this._createCustomCardsDir();
         fs.copySync(templateCardFolder, cardFolder);
     } else {
         console.error(`The folder ${templateCardFolder} does not exist`);
         return;
     }
+  }
+
+  /**
+   * Creates the 'cards' directory in the Jambo repository and adds the newly 
+   * created directory to the list of partials in the Jambo config.
+   */
+  _createCustomCardsDir() {
+    fs.mkdirSync(this._customCardsDir);
+    addToPartials(this._customCardsDir);  
   }
 }

@@ -1,15 +1,16 @@
 const fs = require('fs-extra');
+const path = require('path');
+const { addToPartials } = require('../../utils/jamboconfigutils');
 
 /**
  * The ShadowConfiguration specifies what file(s) should be shadowed for a particular theme.
- * The configuration consists of a theme and an optional path within the theme. If the path is
- * specified, only those files within the theme will be shadowed. Otherwise, all files in the theme
- * will be shadowed.
+ * The configuration consists of a theme and a path within the theme. The path indicates which
+ * file(s) in the Theme should have local shadows.
  */
 exports.ShadowConfiguration = class {
   constructor({ theme, path }) {
-    if (!theme) {
-      throw new Error('Theme must be specified when shadowing');
+    if (!theme || !path) {
+      throw new Error('Theme and path must be specified when shadowing');
     }
 
     this._theme = theme;
@@ -39,20 +40,29 @@ exports.ThemeShadower = class {
     const theme = shadowConfiguration.getTheme();
     const path = shadowConfiguration.getPath();
 
-    let relativeShadowDir = theme;
-    if (path) {
-      relativeShadowDir = `${relativeShadowDir}/${path}`;
-    }
-    const sourceDir = `${this.config.dirs.themes}/${relativeShadowDir}`;
-    const isShadowingFile = fs.lstatSync(sourceDir).isFile();
+    const pathToTheme = `${this.config.dirs.themes}/${theme}`;
+    const fullPathInThemes = `${pathToTheme}/${path}`;
 
-    let fullShadowDir = `${this.config.dirs.overrides}/${relativeShadowDir}`;
-    if (isShadowingFile) {
-      fs.mkdirSync(fullShadowDir.substring(0, fullShadowDir.lastIndexOf('/')), { recursive: true })
-    } else {
-      fs.mkdirSync(fullShadowDir, { recursive: true });
-    }
+    const isShadowingFile = fs.lstatSync(fullPathInThemes).isFile();
+    this._createShadowDir(isShadowingFile, path);
+    fs.copySync(fullPathInThemes, path);
+    addToPartials(path);
+  }
 
-    fs.copySync(sourceDir, fullShadowDir);
+  /**
+   * Creates the necessary local directories for the provided shadow. If the
+   * shadow corresponds to a top-level file, no new directories will be created.
+   * 
+   * @param {boolean} isFile If the shadow corresponds to a single file.
+   * @param {string} localShadowPath The path of the new, local shadow.
+   */
+  _createShadowDir(isFile, localShadowPath) {
+    if (isFile && localShadowPath.includes(path.sep)) {
+      fs.mkdirSync(
+        localShadowPath.substring(0, localShadowPath.lastIndexOf(path.sep)), 
+        { recursive: true });
+    } else if (!isFile) {
+      fs.mkdirSync(localShadowPath, { recursive: true });
+    }
   }
 };
