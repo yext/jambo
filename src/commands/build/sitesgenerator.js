@@ -39,9 +39,11 @@ exports.SitesGenerator = class {
 
     console.log('Registering all handlebars templates');
     // Register Theme partials.
-    this._registerThemePartials(config);
+    const defaultTheme = config.defaultTheme;
+    defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
+
     // Register all custom partials.
-    this._registerCustomPartials(config);
+    this._registerCustomPartials(config.dirs.partials);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName) {
@@ -92,27 +94,23 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Registers all of the custom partials listed in the Jambo config.
+   * Registers all custom Handlebars partials in the provided paths.
    * 
-   * @param {Object} config The Jambo config.
+   * @param {Array} partialPaths The set of paths to traverse for partials.
    */
-  _registerCustomPartials(config) {
-    const partialDirs = config.dirs.partials;
-    partialDirs.forEach(partialPath => this._registerPartials(partialPath, true));
+  _registerCustomPartials(partialPaths) {
+    partialPaths.forEach(partialPath => this._registerPartials(partialPath, true));
   }
 
   /**
-   * Registers all of the partials in the default Theme. If no default Theme has
-   * been specified, nothing will be done.
+   * Registers all of the partials in the default Theme.
    * 
-   * @param {Object} config The Jambo config. 
+   * @param {string} defaultTheme The default Theme in the Jambo config.
+   * @param {string} themesDir The Jambo Themes directory.
    */
-  _registerThemePartials(config) {
-    const defaultTheme = config.defaultTheme;
-    if (defaultTheme) {
-      const themeDir = path.resolve(config.dirs.themes, defaultTheme);
-      this._registerPartials(themeDir, false);
-    }
+  _registerThemePartials(defaultTheme, themesDir) {
+    const themeDir = path.resolve(themesDir, defaultTheme);
+    this._registerPartials(themeDir, false);
   }
 
   /**
