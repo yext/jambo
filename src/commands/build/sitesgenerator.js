@@ -38,8 +38,12 @@ exports.SitesGenerator = class {
     this._registerHelpers();
 
     console.log('Registering all handlebars templates');
-    // Register necessary partials.
-    this._registerAllPartials(config);
+    // Register Theme partials.
+    const defaultTheme = config.defaultTheme;
+    defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
+
+    // Register all custom partials.
+    this._registerCustomPartials(config.dirs.partials);
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName) {
@@ -89,29 +93,51 @@ exports.SitesGenerator = class {
     return fn.substring(0, fn.lastIndexOf("."));
   }
 
-  _registerPartials(directory) {
-    if (fs.existsSync(directory)) {
-      fs.recurseSync(directory, (path, relative, filename) => {
-        if (this._isValidFile(filename)) {
-          const relativeNoExtension = this._stripExtension(relative);
-          hbs.registerPartial(relativeNoExtension, fs.readFileSync(path).toString());
-        }
-      });
-    }
+  /**
+   * Registers all custom Handlebars partials in the provided paths.
+   * 
+   * @param {Array} partialPaths The set of paths to traverse for partials.
+   */
+  _registerCustomPartials(partialPaths) {
+    partialPaths.forEach(partialPath => this._registerPartials(partialPath, true));
   }
 
-  _registerAllPartials({ dirs, defaultTheme}) {
-    const { partials, themes, overrides, cards } = dirs;
-    // If a theme is specified, register partials and overrides from it.
-    if (defaultTheme) {
-      for (const dir of [themes, overrides]) {
-        this._registerPartials(path.resolve(dir, defaultTheme));
-      }
-      this._registerPartials(cards);
-    }
+  /**
+   * Registers all of the partials in the default Theme.
+   * 
+   * @param {string} defaultTheme The default Theme in the Jambo config.
+   * @param {string} themesDir The Jambo Themes directory.
+   */
+  _registerThemePartials(defaultTheme, themesDir) {
+    const themeDir = path.resolve(themesDir, defaultTheme);
+    this._registerPartials(themeDir, false);
+  }
 
-    // Register custom partials.
-    this._registerPartials(partials);
+  /**
+   * Registers all partials in the provided path. If the path is a directory,
+   * the useFullyQualifiedName parameter dictates if the path's root will be
+   * included in the partial naming scheme.
+   * 
+   * @param {string} partialsPath The set of partials to register.
+   * @param {boolean} useFullyQualifiedName Whether or not to include the path's root
+   *                                        in the name of the newly registered partials. 
+   */
+  _registerPartials(partialsPath, useFullyQualifiedName) {
+    const pathExists = fs.existsSync(partialsPath);
+    if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
+      fs.recurseSync(partialsPath, (path, relative, filename) => {
+        if (this._isValidFile(filename)) {
+          const partialName = useFullyQualifiedName
+            ? this._stripExtension(path)
+            : this._stripExtension(relative);
+          hbs.registerPartial(partialName, fs.readFileSync(path).toString());
+        }
+      });
+    } else if (pathExists) {
+      hbs.registerPartial(
+        this._stripExtension(partialsPath), 
+        fs.readFileSync(partialsPath).toString());
+    }
   }
 
   _registerHelpers() {
