@@ -9,6 +9,9 @@ exports.SitesGenerator = class {
 
   generate() {
     const config = this.config;
+    if (!config) {
+      throw new Error('Cannot find Jambo config in this directory, exiting.');
+    }
 
     console.log('Reading config files');
     const pagesConfig = {};
