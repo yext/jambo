@@ -68,7 +68,7 @@ exports.SitesGenerator = class {
               relativePath: this._calculateRelativePath(path)
             });
         const pageLayout = pageConfig.layout;
-
+  
         let template;
         if (pageLayout) {
           hbs.registerPartial('body', fs.readFileSync(path).toString());
@@ -80,7 +80,7 @@ exports.SitesGenerator = class {
         const result = template(pageConfig);
         const outputPath =
           `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
-        fs.writeFileSync(outputPath, result);
+        fs.writeFileSync(outputPath, result); 
       }
     });
     console.log('Done.');
@@ -95,7 +95,7 @@ exports.SitesGenerator = class {
 
   /**
    * Registers all custom Handlebars partials in the provided paths.
-   *
+   * 
    * @param {Array} partialPaths The set of paths to traverse for partials.
    */
   _registerCustomPartials(partialPaths) {
@@ -104,7 +104,7 @@ exports.SitesGenerator = class {
 
   /**
    * Registers all of the partials in the default Theme.
-   *
+   * 
    * @param {string} defaultTheme The default Theme in the Jambo config.
    * @param {string} themesDir The Jambo Themes directory.
    */
@@ -117,10 +117,10 @@ exports.SitesGenerator = class {
    * Registers all partials in the provided path. If the path is a directory,
    * the useFullyQualifiedName parameter dictates if the path's root will be
    * included in the partial naming scheme.
-   *
+   * 
    * @param {string} partialsPath The set of partials to register.
    * @param {boolean} useFullyQualifiedName Whether or not to include the path's root
-   *                                        in the name of the newly registered partials.
+   *                                        in the name of the newly registered partials. 
    */
   _registerPartials(partialsPath, useFullyQualifiedName) {
     const pathExists = fs.existsSync(partialsPath);
@@ -135,7 +135,7 @@ exports.SitesGenerator = class {
       });
     } else if (pathExists) {
       hbs.registerPartial(
-        this._stripExtension(partialsPath),
+        this._stripExtension(partialsPath), 
         fs.readFileSync(partialsPath).toString());
     }
   }
