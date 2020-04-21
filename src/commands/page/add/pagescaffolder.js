@@ -1,4 +1,9 @@
 const fs = require('file-system');
+const {
+  parse,
+  stringify,
+  assign 
+} = require('comment-json');
 
 exports.PageConfiguration = class {
   constructor({ name, layout, theme, template }) {
@@ -44,13 +49,12 @@ exports.PageScaffolder = class {
       const rootTemplatePath = `${this.config.dirs.themes}/${theme}/templates/${template}`;
       fs.copyFileSync(`${rootTemplatePath}/page.html.hbs`, htmlFilePath);
 
-      configContents = Object.assign(
-        {},
-        JSON.parse(fs.readFileSync(`${rootTemplatePath}/page-config.json`)),
+      configContents = assign(
+        parse(fs.readFileSync(`${rootTemplatePath}/page-config.json`, 'utf8')),
         configContents);
     } else {
       fs.writeFileSync(htmlFilePath, '');
     }
-    fs.writeFileSync(configFilePath, JSON.stringify(configContents, null, 2));
+    fs.writeFileSync(configFilePath, stringify(configContents, null, 2));
   }
 }

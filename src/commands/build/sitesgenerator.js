@@ -1,6 +1,7 @@
 const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
+const { parse } = require('comment-json');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -19,7 +20,7 @@ exports.SitesGenerator = class {
       if (this._isValidFile(filename)) {
         let pageId = this._stripExtension(relative);
         try {
-          pagesConfig[pageId] = JSON.parse(fs.readFileSync(path));
+          pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (e) {
           if (e instanceof SyntaxError) {
             console.error('JSON SyntaxError: could not parse ' + path);
