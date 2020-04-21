@@ -1,6 +1,10 @@
 const fs = require('fs-extra');
 const simpleGit = require('simple-git/promise');
 const git = simpleGit();
+const {
+  stringify,
+  assign 
+} = require('comment-json');
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
@@ -70,8 +74,8 @@ exports.ThemeImporter = class {
 
   _updateDefaultTheme(themeName) {
     if (this.config.defaultTheme !== themeName) {
-      const updatedConfig = Object.assign({}, this.config, { defaultTheme: themeName });
-      fs.writeFileSync('jambo.json', JSON.stringify(updatedConfig, null, 2));
+      const updatedConfig = assign({ defaultTheme: themeName }, this.config);
+      fs.writeFileSync('jambo.json', stringify(updatedConfig, null, 2));
     }
   }
 

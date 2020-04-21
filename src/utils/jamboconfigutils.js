@@ -1,6 +1,10 @@
 const fs = require('file-system');
 const path = require('path');
 const mergeOptions = require('merge-options');
+const {
+  parse,
+  stringify
+} = require('comment-json');
 
 /**
  * Parses the repository's Jambo config file. If certain attributes are not
@@ -19,7 +23,7 @@ parseJamboConfig = function() {
         partials: ['partials'],
       }
     },
-    JSON.parse(fs.readFileSync('jambo.json'))
+    parse(fs.readFileSync('jambo.json', 'utf8'))
   );
   return config;
 }
@@ -42,6 +46,6 @@ exports.addToPartials = function(partialsPath) {
   
   if (shouldAddNewPartialsPath) {
     existingPartials.push(partialsPath);
-    fs.writeFileSync('jambo.json', JSON.stringify(jamboConfig, null, 2));
+    fs.writeFileSync('jambo.json', stringify(jamboConfig, null, 2));
   }
 }
