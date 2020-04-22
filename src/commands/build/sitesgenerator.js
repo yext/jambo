@@ -49,6 +49,9 @@ exports.SitesGenerator = class {
     // Register all custom partials.
     this._registerCustomPartials(config.dirs.partials);
 
+    // Pull account data from the YEXT_CI_INJECTED_DATA environment variable.
+    const envvars = this._extractDataFromEnvVar();
+
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName) {
         object[key] = pagesConfig[key];
@@ -69,7 +72,8 @@ exports.SitesGenerator = class {
             {
               verticalConfigs,
               global_config: pagesConfig[globalConfigName],
-              relativePath: this._calculateRelativePath(path)
+              relativePath: this._calculateRelativePath(path),
+              envvars
             });
         const pageLayout = pageConfig.layout;
   
@@ -142,6 +146,18 @@ exports.SitesGenerator = class {
         this._stripExtension(partialsPath), 
         fs.readFileSync(partialsPath).toString());
     }
+  }
+
+  /**
+   * Parses the serialized data stored in the specified environment variable.
+   * Note, this method assumes the data has been serialized as a JSON string.
+   * 
+   * @param {string} envVar The environment variable. Defaults to 'YEXT_CI_INJECTED_DATA'.
+   * @returns {Object|Array} The parsed data, represented as an {@link Object} or
+   *                         {@link Array}.
+   */
+  _extractDataFromEnvVar(envVar='YEXT_CI_INJECTED_DATA') {
+    return process.env[envVar] ? JSON.parse(process.env[envVar]) : {};
   }
 
   _registerHelpers() {
