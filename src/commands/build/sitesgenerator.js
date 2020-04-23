@@ -3,12 +3,22 @@ const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
 
+const { EnviornmentVariableParser } = require('../../utils/envvarparser');
+
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
 
-  generate() {
+  /**
+   * Renders the static HTML for each site in the pages directory. All Handlebars
+   * partials needed to do this are registered. Parameters, driven by the data in
+   * any environment variables and the config directory, are supplied to these partials.
+   * 
+   * @param {Array<string>} jsonEnvVars Those environment variables that were serialized
+   *                                    using JSON.
+   */
+  generate(jsonEnvVars=[]) {
     const config = this.config;
     if (!config) {
       throw new Error('Cannot find Jambo config in this directory, exiting.');
@@ -49,8 +59,9 @@ exports.SitesGenerator = class {
     // Register all custom partials.
     this._registerCustomPartials(config.dirs.partials);
 
-    // Pull account data from the YEXT_CI_INJECTED_DATA environment variable.
-    const envvars = this._extractDataFromEnvVar();
+    // Pull all data from environment variables.
+    const envVarParser = EnviornmentVariableParser.create();
+    const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName) {
@@ -73,7 +84,7 @@ exports.SitesGenerator = class {
               verticalConfigs,
               global_config: pagesConfig[globalConfigName],
               relativePath: this._calculateRelativePath(path),
-              envvars
+              env
             });
         const pageLayout = pageConfig.layout;
   
@@ -146,18 +157,6 @@ exports.SitesGenerator = class {
         this._stripExtension(partialsPath), 
         fs.readFileSync(partialsPath).toString());
     }
-  }
-
-  /**
-   * Parses the serialized data stored in the specified environment variable.
-   * Note, this method assumes the data has been serialized as a JSON string.
-   * 
-   * @param {string} envVar The environment variable. Defaults to 'YEXT_CI_INJECTED_DATA'.
-   * @returns {Object|Array} The parsed data, represented as an {@link Object} or
-   *                         {@link Array}.
-   */
-  _extractDataFromEnvVar(envVar='YEXT_CI_INJECTED_DATA') {
-    return process.env[envVar] ? JSON.parse(process.env[envVar]) : {};
   }
 
   _registerHelpers() {

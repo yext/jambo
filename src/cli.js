@@ -71,7 +71,7 @@ const options = yargs
     yargs => {
       return yargs
         .option('name', { description: 'name for the new card', demandOption: true })
-        .option('templateCardFolder', { description: 'folder of card to fork', demandOption: true })
+        .option('templateCardFolder', { description: 'folder of card to fork', demandOption: true });
     },
     argv => {
       const cardCreator = new addCardCommand.CardCreator(jamboConfig);
@@ -80,10 +80,15 @@ const options = yargs
 	.command(
     'build',
     'build the static pages for the site',
-    () => {},
+    yargs => {
+      return yargs
+        .option(
+          'jsonEnvVars', 
+          { description: 'environment variables containing JSON', type: 'array' });
+    },
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
-      sitesGenerator.generate();
+      sitesGenerator.generate(argv.jsonEnvVars);
     })
   .argv;
 
