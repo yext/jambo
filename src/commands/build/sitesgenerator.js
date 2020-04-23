@@ -3,12 +3,22 @@ const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
 
+const { EnvironmentVariableParser } = require('../../utils/envvarparser');
+
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
 
-  generate() {
+  /**
+   * Renders the static HTML for each site in the pages directory. All Handlebars
+   * partials needed to do this are registered. Parameters, driven by the data in
+   * any environment variables and the config directory, are supplied to these partials.
+   * 
+   * @param {Array<string>} jsonEnvVars Those environment variables that were serialized
+   *                                    using JSON.
+   */
+  generate(jsonEnvVars=[]) {
     const config = this.config;
     if (!config) {
       throw new Error('Cannot find Jambo config in this directory, exiting.');
@@ -49,6 +59,10 @@ exports.SitesGenerator = class {
     // Register all custom partials.
     this._registerCustomPartials(config.dirs.partials);
 
+    // Pull all data from environment variables.
+    const envVarParser = EnvironmentVariableParser.create();
+    const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
+
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName) {
         object[key] = pagesConfig[key];
@@ -69,7 +83,8 @@ exports.SitesGenerator = class {
             {
               verticalConfigs,
               global_config: pagesConfig[globalConfigName],
-              relativePath: this._calculateRelativePath(path)
+              relativePath: this._calculateRelativePath(path),
+              env
             });
         const pageLayout = pageConfig.layout;
   
