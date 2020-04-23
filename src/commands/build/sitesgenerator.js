@@ -3,7 +3,7 @@ const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
 
-const { EnviornmentVariableParser } = require('../../utils/envvarparser');
+const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -60,7 +60,7 @@ exports.SitesGenerator = class {
     this._registerCustomPartials(config.dirs.partials);
 
     // Pull all data from environment variables.
-    const envVarParser = EnviornmentVariableParser.create();
+    const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {

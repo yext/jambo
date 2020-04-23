@@ -1,6 +1,6 @@
-const { EnviornmentVariableParser } = require('../../src/utils/envvarparser');
+const { EnvironmentVariableParser } = require('../../src/utils/envvarparser');
 
-describe('EnviornmentVariableParser works correctly', () => {
+describe('EnvironmentVariableParser works correctly', () => {
     const var1 = {
         'foo': {
             'bar': 'a string'
@@ -8,7 +8,7 @@ describe('EnviornmentVariableParser works correctly', () => {
         'baz': 'a string'
     };
     const var2 = 'a string';
-    const envVarsParser = new EnviornmentVariableParser( { var2, var1: JSON.stringify(var1) });
+    const envVarsParser = new EnvironmentVariableParser( { var2, var1: JSON.stringify(var1) });
 
     it('deserializes environment variables correctly', () => {
         expect(envVarsParser.parse(['var1'])).toEqual({ var1, var2 });

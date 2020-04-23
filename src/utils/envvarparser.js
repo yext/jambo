@@ -4,7 +4,7 @@ const { parse } = require('comment-json');
  * This class stores a mapping of environment variable to serialized value.
  * It exposes a method to retrieve unserialized values from this mapping.
  */
-class EnviornmentVariableParser {
+class EnvironmentVariableParser {
     constructor(envVars) {
         this._envVars = envVars;
     }
@@ -21,11 +21,7 @@ class EnviornmentVariableParser {
     parse(jsonEnvVars) {
         const parsedValuesAccumulator = (accumulator, envVar) => {
             if (jsonEnvVars.includes(envVar)) {
-                try {
-                    accumulator[envVar] = parse(this._envVars[envVar], null, true);
-                } catch (error) {
-                    throw error;
-                }
+                accumulator[envVar] = parse(this._envVars[envVar], null, true);
             } else {
                 accumulator[envVar] = this._envVars[envVar];
             }
@@ -36,13 +32,13 @@ class EnviornmentVariableParser {
     }
 
     /**
-     * Creates an instance of an {@link EnviornmentVariableParser} from the
+     * Creates an instance of an {@link EnvironmentVariableParser} from the
      * process.env object.
      * 
-     * @returns {EnviornmentVariableParser} The new parser.
+     * @returns {EnvironmentVariableParser} The new parser.
      */
     static create() {
-        return new EnviornmentVariableParser(process.env);
+        return new EnvironmentVariableParser(process.env);
     }
 }
-exports.EnviornmentVariableParser = EnviornmentVariableParser;
+exports.EnvironmentVariableParser = EnvironmentVariableParser;
