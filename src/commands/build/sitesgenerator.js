@@ -172,7 +172,7 @@ exports.SitesGenerator = class {
       return Array.prototype.every.call(arguments, Boolean);
     });
 
-    hbs.registerHelper('or', function (...args) {
+    hbs.registerHelper('or', function () {
       return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
     });
 
