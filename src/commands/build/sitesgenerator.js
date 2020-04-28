@@ -168,6 +168,14 @@ exports.SitesGenerator = class {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
 
+    hbs.registerHelper('and', function () {
+      return Array.prototype.every.call(arguments, Boolean);
+    });
+
+    hbs.registerHelper('or', function (...args) {
+      return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+    });
+
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
