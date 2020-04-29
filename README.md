@@ -1,10 +1,10 @@
-# Jamboree
+# Jambo
 
 Jambo is a JAMStack implementation using Handlebars.
 
 ## Installation
 
-Install jamboree from npm, and save it to your package.json as a dev-dependency.
+Install jambo from npm, and save it to your package.json as a dev-dependency.
 
 ```bash
 npm install -D jambo
