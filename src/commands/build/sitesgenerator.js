@@ -33,9 +33,9 @@ exports.SitesGenerator = class {
           pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (e) {
           if (e instanceof SyntaxError) {
-            console.error('JSON SyntaxError: could not parse ' + path);
+            throw new Error('JSON SyntaxError: could not parse ' + path);
           } else {
-            console.error(e);
+            throw e;
           }
         }
       }
