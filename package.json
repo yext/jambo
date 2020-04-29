@@ -1,6 +1,6 @@
 {
   "name": "jambo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yext/jamboree.git"
+    "url": "git+https://github.com/yext/jambo.git"
   },
   "bin": {
     "jambo": "src/cli.js"
