@@ -171,6 +171,15 @@ exports.SitesGenerator = class {
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
+
+    hbs.registerHelper('partialPattern', function (cardPath, opt) {
+      let result = '';
+      Object.keys(hbs.partials)
+        .filter(key => key.match(new RegExp(cardPath)))
+        .map(key => {return {key}})
+        .forEach(key => result += opt.fn(key));
+      return result;
+    });
   }
 
   _calculateRelativePath(filePath) {
