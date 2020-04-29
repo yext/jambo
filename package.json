@@ -1,6 +1,6 @@
 {
-  "name": "@yext/jamboree",
-  "version": "1.0.6",
+  "name": "jambo",
+  "version": "1.0.0",
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
@@ -13,12 +13,12 @@
   "bin": {
     "jambo": "src/cli.js"
   },
-  "author": "tmeyer@yext.com",
+  "author": "nbramblett@yext.com",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yext/jamboree/issues"
+    "url": "https://github.com/yext/jambo/issues"
   },
-  "homepage": "https://github.com/yext/jamboree#readme",
+  "homepage": "https://github.com/yext/jambo#readme",
   "dependencies": {
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
