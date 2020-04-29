@@ -172,9 +172,13 @@ exports.SitesGenerator = class {
       return hbs.partials[fileName];
     });
 
-    hbs.registerHelper('importCards', function (cardPath) {
-      return Object.keys(hbs.partials)
+    hbs.registerHelper('importCards', function (cardPath, opt) {
+      let result = '';
+      Object.keys(hbs.partials)
         .filter(key => !!key.match(new RegExp(cardPath)))
+        .map(key => {return {key}})
+        .forEach(key => result += opt.fn(key));
+      return result;
     });
   }
 
