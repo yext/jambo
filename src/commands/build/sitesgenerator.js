@@ -172,7 +172,7 @@ exports.SitesGenerator = class {
       return hbs.partials[fileName];
     });
 
-    hbs.registerHelper('importCards', function (cardPath, opt) {
+    hbs.registerHelper('partialPattern', function (cardPath, opt) {
       let result = '';
       Object.keys(hbs.partials)
         .filter(key => !!key.match(new RegExp(cardPath)))
