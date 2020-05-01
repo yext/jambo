@@ -20,6 +20,14 @@ const options = yargs
     yargs => {
       return yargs
         .option('theme', { description: 'a starter theme' })
+        .option(
+          'addThemeAsSubmodule', 
+          { 
+            description: 'if starter theme should be imported as submodule', 
+            default: true,
+            type: 'boolean' 
+          }
+        );
     },
     argv => {
       const repositorySettings = new initCommand.RepositorySettings(argv);
@@ -32,10 +40,13 @@ const options = yargs
     yargs => {
       return yargs
         .option('theme', { description: 'theme to import', demandOption: true })
+        .option(
+          'addAsSubmodule', 
+          { description: 'import the theme as a submodule', default: true, type: 'boolean' });
     },
     argv => {
       const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
-      themeImporter.import(argv.theme).then(console.log).catch(console.log);
+      themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log).catch(console.log);
     })
   .command(
     'override',
