@@ -12,14 +12,16 @@ exports.ThemeImporter = class {
   }
 
   /**
-   * Imports the requested theme as a Git submodule in Jambo's Themes directory.
+   * Imports the requested theme into Jambo's Themes directory. Note that the theme can either
+   * be cloned directly into this directory or added there as a submodule.
    *
    * @param {string} themeName The name of the theme
+   * @param {boolean} addAsSubmodule If the theme should be imported as a submodule.
    * @returns {Promise<string>} If the addition of the submodule was successful, a Promise
    *                            containing the new submodule's local path. If the addition failed,
    *                            a Promise containing the error.
    */
-  async import(themeName) {
+  async import(themeName, addAsSubmodule) {
     if (!this.config) {
       console.warn('No jambo.json found. Did you `jambo init` yet?')
       return;
@@ -28,7 +30,11 @@ exports.ThemeImporter = class {
       const themeRepo = this._getRepoForTheme(themeName);
       const localPath = `${this.config.dirs.themes}/${themeName}`;
 
-      await git.submoduleAdd(themeRepo, localPath);
+      if (addAsSubmodule) {
+        await git.submoduleAdd(themeRepo, localPath);
+      } else {
+        await git.clone(themeRepo, localPath);
+      }
 
       fs.copyFileSync(
         `${localPath}/global_config.json`,
