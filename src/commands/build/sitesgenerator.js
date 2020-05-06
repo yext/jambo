@@ -72,7 +72,9 @@ exports.SitesGenerator = class {
 
     // Clear the output directory before writing new files
     console.log('Cleaning output directory');
-    fs.rmdirSync(config.dirs.output);
+    if (fs.existsSync(config.dirs.output)) {
+      fs.rmdirSync(config.dirs.output);
+    }
     fs.mkdirSync(config.dirs.output);
 
     // Write out a file to the output directory per file in the pages directory
