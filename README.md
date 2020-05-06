@@ -94,7 +94,7 @@ The layout to use around the page.
 npx jambo build
 ```
 
-The build command builds all pages reigstered within Jambo, and places them inside the 'public' directory.
+The build command builds all pages reigstered within Jambo, and places them inside the 'public' directory. The public directory will be cleared prior to each build, so any static assets in that directory will need to be re-generated.
 
 The build command uses the 'defaultTheme' attribute in the jambo.json in Jambo's root directory, which must be added to jambo.json manually. Here is an example jambo.json.
 
