@@ -112,9 +112,3 @@ The build command uses the 'defaultTheme' attribute in the jambo.json in Jambo's
   "defaultTheme": "answers-hitchhiker-theme"
 }
 ```
-
-___
-
-## License
-
-[ISC](https://opensource.org/licenses/ISC)
