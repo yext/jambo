@@ -183,7 +183,17 @@ exports.SitesGenerator = class {
 
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
-      return babel.transformSync(srcCode, { compact: true, minified: true }).code;
+      return babel.transformSync(srcCode, {
+          compact: true,
+          minified: true,
+          presets: [
+            '@babel/preset-env',
+          ],
+          plugins: [
+            '@babel/plugin-transform-arrow-functions',
+            '@babel/plugin-proposal-object-rest-spread'
+          ]
+        }).code;
     })
 
     hbs.registerHelper('partialPattern', function (cardPath, opt) {

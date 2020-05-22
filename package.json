@@ -22,6 +22,7 @@
   "dependencies": {
     "@babel/core": "^7.9.6",
     "@babel/plugin-transform-arrow-functions": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/runtime-corejs3": "^7.9.6",
     "comment-json": "^3.0.2",
