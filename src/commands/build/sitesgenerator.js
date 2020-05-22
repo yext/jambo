@@ -2,6 +2,7 @@ const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
+const babel = require("@babel/core");
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 
@@ -179,6 +180,11 @@ exports.SitesGenerator = class {
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
+
+    hbs.registerHelper('babel', function(options) {
+      const srcCode = options.fn(this);
+      return babel.transformSync(srcCode, { compact: true, minified: true }).code;
+    })
 
     hbs.registerHelper('partialPattern', function (cardPath, opt) {
       let result = '';
