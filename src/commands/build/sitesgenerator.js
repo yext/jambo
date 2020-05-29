@@ -3,6 +3,7 @@ const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
 const babel = require("@babel/core");
+var globToRegExp = require('glob-to-regexp');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 
@@ -123,11 +124,16 @@ exports.SitesGenerator = class {
 
   _isInDirectory(filename, directory) {
     for (var i = 0; i < directory.length; i++) {
-      if (directory[i] == filename) {
+      if (this._matchFileName(filename, directory[i])) {
           return true;
       }
     }
     return false;
+  }
+
+  _matchFileName(filename, wildcard) {
+    var regex = globToRegExp(wildcard);
+    return regex.test(filename);
   }
 
   _stripExtension(fn) {

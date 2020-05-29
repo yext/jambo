@@ -25,6 +25,7 @@
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
+    "glob-to-regexp": "^0.4.1",
     "handlebars": "^4.7.3",
     "merge-options": "^2.0.0",
     "prompts": "^2.3.1",
