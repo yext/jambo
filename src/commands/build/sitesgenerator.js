@@ -74,9 +74,9 @@ exports.SitesGenerator = class {
     // Clear the output directory before writing new files
     console.log('Cleaning output directory');
     if (fs.existsSync(config.dirs.output)) {
-
       fs.recurseSync(config.dirs.output, (path, relative, filename) => {
-        if (!config.dirs.preservedFiles[filename]) {
+        if (!this._isInDirectory(filename, config.dirs.preservedFiles)) {
+          console.log(`Removing ${filename}`);
           const filePath = `${config.dirs.output}/${filename}`;
           fs.unlinkSync(filePath);
         }
@@ -119,6 +119,15 @@ exports.SitesGenerator = class {
       }
     });
     console.log('Done.');
+  }
+
+  _isInDirectory(filename, directory) {
+    for (var i = 0; i < directory.length; i++) {
+      if (directory[i] == filename) {
+          return true;
+      }
+    }
+    return false;
   }
 
   _stripExtension(fn) {
