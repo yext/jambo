@@ -72,7 +72,7 @@ exports.SitesGenerator = class {
       return object;
     }, {});
 
-    // Clear the output directory before writing new files
+    // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
     if (fs.existsSync(config.dirs.output)) {
       fs.recurseSync(config.dirs.output, (path, relative, filename) => {
@@ -82,41 +82,49 @@ exports.SitesGenerator = class {
           fs.unlinkSync(filePath);
         }
       });
-      //fs.rmdirSync(config.dirs.output);
     }
-    //fs.mkdirSync(config.dirs.output);
 
-    // Write out a file to the output directory per file in the pages directory
+    // Write out a file to the output directory per file in the pages directory if it is not a preserved file
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
         const pageId = filename.split('.')[0];
-        if (!pagesConfig[pageId]) {
-          throw new Error(`Error: No config found for page: ${pageId}`);
-        }
-        console.log(`Writing output file for the '${pageId}' page`);
-        const pageConfig = Object.assign(
+        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
+
+        //Check if file is a preserved file before writing the file
+        if (!this._isInDirectory(outputFileName, config.dirs.preservedFiles)) {
+          if (!pagesConfig[pageId]) {
+            throw new Error(`Error: No config found for page: ${pageId}`);
+          }
+
+          console.log(`Writing output file for the '${pageId}' page`);
+          const pageConfig = Object.assign(
             {},
             pagesConfig[pageId],
             {
               verticalConfigs,
-              global_config: pagesConfig[globalConfigName],
-              relativePath: this._calculateRelativePath(path),
-              env
-            });
-        const pageLayout = pageConfig.layout;
-  
-        let template;
-        if (pageLayout) {
-          hbs.registerPartial('body', fs.readFileSync(path).toString());
-          const layoutPath = `${config.dirs.partials}/${pageLayout}`;
-          template = hbs.compile(fs.readFileSync(layoutPath).toString());
-        } else {
-          template = hbs.compile(fs.readFileSync(path).toString());
+                global_config: pagesConfig[globalConfigName],
+                relativePath: this._calculateRelativePath(path),
+                env
+              });
+          const pageLayout = pageConfig.layout;
+
+          let template;
+          if (pageLayout) {
+            hbs.registerPartial('body', fs.readFileSync(path).toString());
+            const layoutPath = `${config.dirs.partials}/${pageLayout}`;
+            template = hbs.compile(fs.readFileSync(layoutPath).toString());
+          } else {
+            template = hbs.compile(fs.readFileSync(path).toString());
+          }
+
+          const result = template(pageConfig);
+          const outputPath =
+            `${config.dirs.output}/${outputFileName}`;
+          fs.writeFileSync(outputPath, result); 
         }
-        const result = template(pageConfig);
-        const outputPath =
-          `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
-        fs.writeFileSync(outputPath, result); 
+        else {
+          console.log(`Warning: ${pageId} page cannot be modified.`);
+        }
       }
     });
     console.log('Done.');
