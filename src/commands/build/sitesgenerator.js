@@ -74,9 +74,16 @@ exports.SitesGenerator = class {
     // Clear the output directory before writing new files
     console.log('Cleaning output directory');
     if (fs.existsSync(config.dirs.output)) {
-      fs.rmdirSync(config.dirs.output);
+
+      fs.recurseSync(config.dirs.output, (path, relative, filename) => {
+        if (!config.dirs.preservedFiles[filename]) {
+          const filePath = `${config.dirs.output}/${filename}`;
+          fs.unlinkSync(filePath);
+        }
+      });
+      //fs.rmdirSync(config.dirs.output);
     }
-    fs.mkdirSync(config.dirs.output);
+    //fs.mkdirSync(config.dirs.output);
 
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
@@ -184,10 +191,10 @@ exports.SitesGenerator = class {
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
-          compact: true,
-          minified: true,
-          presets: [
-            '@babel/preset-env',
+        //compact: true,
+        //minified: true,
+        presets: [
+          '@babel/preset-env',
           ],
         }).code;
     })
