@@ -3,7 +3,7 @@ const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
 const babel = require("@babel/core");
-var globToRegExp = require('glob-to-regexp');
+const globToRegExp = require('glob-to-regexp');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 
@@ -91,7 +91,10 @@ exports.SitesGenerator = class {
         const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
 
         //Check if file is a preserved file before writing the file
-        if (!this._isInDirectory(outputFileName, config.dirs.preservedFiles)) {
+        if (this._isInDirectory(outputFileName, config.dirs.preservedFiles)) {
+          console.log(`Warning: ${pageId} page cannot be modified.`);
+        }
+        else {
           if (!pagesConfig[pageId]) {
             throw new Error(`Error: No config found for page: ${pageId}`);
           }
@@ -102,10 +105,10 @@ exports.SitesGenerator = class {
             pagesConfig[pageId],
             {
               verticalConfigs,
-                global_config: pagesConfig[globalConfigName],
-                relativePath: this._calculateRelativePath(path),
-                env
-              });
+              global_config: pagesConfig[globalConfigName],
+              relativePath: this._calculateRelativePath(path),
+              env
+            });
           const pageLayout = pageConfig.layout;
 
           let template;
@@ -121,9 +124,6 @@ exports.SitesGenerator = class {
           const outputPath =
             `${config.dirs.output}/${outputFileName}`;
           fs.writeFileSync(outputPath, result); 
-        }
-        else {
-          console.log(`Warning: ${pageId} page cannot be modified.`);
         }
       }
     });
