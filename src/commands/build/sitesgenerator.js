@@ -90,15 +90,15 @@ exports.SitesGenerator = class {
         const pageId = filename.split('.')[0];
         const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
 
+        if (!pagesConfig[pageId]) {
+          throw new Error(`Error: No config found for page: ${pageId}`);
+        }
+        
         //Check if file is a preserved file before writing the file
         if (this._isInDirectory(outputFileName, config.dirs.preservedFiles)) {
           console.log(`Warning: ${pageId} page cannot be modified.`);
         }
         else {
-          if (!pagesConfig[pageId]) {
-            throw new Error(`Error: No config found for page: ${pageId}`);
-          }
-
           console.log(`Writing output file for the '${pageId}' page`);
           const pageConfig = Object.assign(
             {},
