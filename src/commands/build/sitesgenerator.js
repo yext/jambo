@@ -3,6 +3,7 @@ const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
 const babel = require("@babel/core");
+const globToRegExp = require('glob-to-regexp');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 
@@ -71,22 +72,35 @@ exports.SitesGenerator = class {
       return object;
     }, {});
 
-    // Clear the output directory before writing new files
+    // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
     if (fs.existsSync(config.dirs.output)) {
-      fs.rmdirSync(config.dirs.output);
+      fs.recurseSync(config.dirs.output, (path, relative, filename) => {
+        if (!this._isInDirectory(filename, config.dirs.preservedFiles)) {
+          console.log(`Removing ${filename}`);
+          const filePath = `${config.dirs.output}/${filename}`;
+          fs.unlinkSync(filePath);
+        }
+      });
     }
-    fs.mkdirSync(config.dirs.output);
 
-    // Write out a file to the output directory per file in the pages directory
+    // Write out a file to the output directory per file in the pages directory if it is not a preserved file
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
         const pageId = filename.split('.')[0];
+        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
+
         if (!pagesConfig[pageId]) {
           throw new Error(`Error: No config found for page: ${pageId}`);
         }
-        console.log(`Writing output file for the '${pageId}' page`);
-        const pageConfig = Object.assign(
+        
+        //Check if file is a preserved file before writing the file
+        if (this._isInDirectory(outputFileName, config.dirs.preservedFiles)) {
+          console.log(`Warning: ${pageId} page cannot be modified.`);
+        }
+        else {
+          console.log(`Writing output file for the '${pageId}' page`);
+          const pageConfig = Object.assign(
             {},
             pagesConfig[pageId],
             {
@@ -95,23 +109,39 @@ exports.SitesGenerator = class {
               relativePath: this._calculateRelativePath(path),
               env
             });
-        const pageLayout = pageConfig.layout;
-  
-        let template;
-        if (pageLayout) {
-          hbs.registerPartial('body', fs.readFileSync(path).toString());
-          const layoutPath = `${config.dirs.partials}/${pageLayout}`;
-          template = hbs.compile(fs.readFileSync(layoutPath).toString());
-        } else {
-          template = hbs.compile(fs.readFileSync(path).toString());
+          const pageLayout = pageConfig.layout;
+
+          let template;
+          if (pageLayout) {
+            hbs.registerPartial('body', fs.readFileSync(path).toString());
+            const layoutPath = `${config.dirs.partials}/${pageLayout}`;
+            template = hbs.compile(fs.readFileSync(layoutPath).toString());
+          } else {
+            template = hbs.compile(fs.readFileSync(path).toString());
+          }
+
+          const result = template(pageConfig);
+          const outputPath =
+            `${config.dirs.output}/${outputFileName}`;
+          fs.writeFileSync(outputPath, result); 
         }
-        const result = template(pageConfig);
-        const outputPath =
-          `${config.dirs.output}/${this._stripExtension(relative).substring(config.dirs.pages)}`;
-        fs.writeFileSync(outputPath, result); 
       }
     });
     console.log('Done.');
+  }
+
+  _isInDirectory(filename, directory) {
+    for (var i = 0; i < directory.length; i++) {
+      if (this._matchFileName(filename, directory[i])) {
+          return true;
+      }
+    }
+    return false;
+  }
+
+  _matchFileName(filename, wildcard) {
+    var regex = globToRegExp(wildcard);
+    return regex.test(filename);
   }
 
   _stripExtension(fn) {
@@ -184,10 +214,10 @@ exports.SitesGenerator = class {
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
-          compact: true,
-          minified: true,
-          presets: [
-            '@babel/preset-env',
+        //compact: true,
+        //minified: true,
+        presets: [
+          '@babel/preset-env',
           ],
         }).code;
     })
