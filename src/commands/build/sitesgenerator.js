@@ -214,8 +214,8 @@ exports.SitesGenerator = class {
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
-        //compact: true,
-        //minified: true,
+        compact: true,
+        minified: true,
         presets: [
           '@babel/preset-env',
           ],
