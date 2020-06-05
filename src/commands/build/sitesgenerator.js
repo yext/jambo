@@ -84,19 +84,12 @@ exports.SitesGenerator = class {
       });
     }
 
-    console.log('Sync the theme static directory');
-    let themeStaticDir = `${config.dirs.themes}/${config.defaultTheme}/static`;
-    // Sync the theme static directory
-    fs.recurseSync(themeStaticDir, (path, relative, filename) => {
-      let pathWithoutThemeDirs = path.split('/').slice(2).join('/');
-      this._copyFileOrDirectory(path,`${config.dirs.output}/${pathWithoutThemeDirs}`);
-    });
-
-    console.log('Sync the site static directory');
-    // Sync the site static directory
-    fs.recurseSync('static', (path, relative, filename) => {
-      this._copyFileOrDirectory(path,`${config.dirs.output}/${path}`);
-    });
+    console.log('Creating static output directory');
+    let staticDirs = [
+      `${config.dirs.themes}/${config.defaultTheme}/static`,
+      'static'
+    ];
+    this._createStaticOutput(staticDirs, config.dirs.output);
 
     // Write out a file to the output directory per file in the pages directory if it is not a preserved file
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
@@ -154,13 +147,32 @@ exports.SitesGenerator = class {
   }
 
   /**
+   * Creates and populates static directory inside jambo output directory.
+   *
+   * @param {Array} staticDirs An array of paths for static directories, each
+   *                           static directory's contents will be copied into the
+   *                           output. Order matters; if there are conflicts,
+   *                           files/directories from staticDirs later in the array
+   *                           will overwrite the contents of earlier ones.
+   * @param {string} outputDir The path of the jambo output directory; the
+   *                           output will be written in [outputDir]/static
+   */
+  _createStaticOutput(staticDirs, outputDir) {
+    for (let staticDir of staticDirs) {
+      fs.recurseSync(staticDir, (path, relative, filename) => {
+        this._copyFileOrCreateDirectory(path, `${outputDir}/static/${relative}`);
+      });
+    }
+  }
+
+  /**
    * If path is a file, copies file to output directory, if path is a directory,
    * creates an empty directory.
    *
-   * @param {string} path The paths of the file or directory.
-   * @param {string} outputDir The paths of the output directory.
+   * @param {string} path The path of the file or directory.
+   * @param {string} outputDir The path of the output directory.
    */
-  _copyFileOrDirectory(path, outputDir) {
+  _copyFileOrCreateDirectory(path, outputDir) {
     if (fs.lstatSync(path).isFile()) {
       fs.copyFileSync(path, outputDir);
     } else if (fs.lstatSync(path).isDirectory()) {
