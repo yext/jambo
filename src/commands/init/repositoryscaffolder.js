@@ -53,7 +53,7 @@ exports.RepositoryScaffolder = class {
   }
 
   /**
-   * Initialize pages, config, themes, partials, and public directories.
+   * Initialize pages, config, themes, partials, public, and static directories.
    */
   _createDirectorySkeleton() {
     fs.mkdirSync('pages');
@@ -61,6 +61,9 @@ exports.RepositoryScaffolder = class {
     fs.mkdirSync('partials');
     fs.mkdirSync('themes');
     fs.mkdirSync('public');
+    fs.writeFile(`static/js/.gitkeep`, '');
+    fs.writeFile(`static/scss/.gitkeep`, '');
+    fs.writeFile(`static/assets/.gitkeep`, '');
   }
 
   /**
