@@ -75,65 +75,97 @@ exports.SitesGenerator = class {
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
     if (fs.existsSync(config.dirs.output)) {
-      fs.recurseSync(config.dirs.output, (path, relative, filename) => {
-        if (!this._isInDirectory(filename, config.dirs.preservedFiles)) {
-          console.log(`Removing ${filename}`);
-          const filePath = `${config.dirs.output}/${filename}`;
-          fs.unlinkSync(filePath);
-        }
-      });
+      this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
-
+    
     // Write out a file to the output directory per file in the pages directory if it is not a preserved file
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
         const pageId = filename.split('.')[0];
-        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
 
         if (!pagesConfig[pageId]) {
           throw new Error(`Error: No config found for page: ${pageId}`);
         }
+
+        console.log(`Writing output file for the '${pageId}' page`);
+        const pageConfig = Object.assign(
+          {},
+          pagesConfig[pageId],
+          {
+            verticalConfigs,
+            global_config: pagesConfig[globalConfigName],
+            relativePath: this._calculateRelativePath(path),
+            env
+          });
+        const pageLayout = pageConfig.layout;
+
+        let template;
+        if (pageLayout) {
+          hbs.registerPartial('body', fs.readFileSync(path).toString());
+          const layoutPath = `${config.dirs.partials}/${pageLayout}`;
+          template = hbs.compile(fs.readFileSync(layoutPath).toString());
+        } else {
+          template = hbs.compile(fs.readFileSync(path).toString());
+        }
+
+        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
+        const result = template(pageConfig);
+        const outputPath =
+          `${config.dirs.output}/${outputFileName}`;
+        fs.writeFileSync(outputPath, result); 
         
-        //Check if file is a preserved file before writing the file
-        if (this._isInDirectory(outputFileName, config.dirs.preservedFiles)) {
-          console.log(`Warning: ${pageId} page cannot be modified.`);
-        }
-        else {
-          console.log(`Writing output file for the '${pageId}' page`);
-          const pageConfig = Object.assign(
-            {},
-            pagesConfig[pageId],
-            {
-              verticalConfigs,
-              global_config: pagesConfig[globalConfigName],
-              relativePath: this._calculateRelativePath(path),
-              env
-            });
-          const pageLayout = pageConfig.layout;
-
-          let template;
-          if (pageLayout) {
-            hbs.registerPartial('body', fs.readFileSync(path).toString());
-            const layoutPath = `${config.dirs.partials}/${pageLayout}`;
-            template = hbs.compile(fs.readFileSync(layoutPath).toString());
-          } else {
-            template = hbs.compile(fs.readFileSync(path).toString());
-          }
-
-          const result = template(pageConfig);
-          const outputPath =
-            `${config.dirs.output}/${outputFileName}`;
-          fs.writeFileSync(outputPath, result); 
-        }
       }
     });
     console.log('Done.');
   }
 
+  _clearDirectory(filePath, preservedFiles) {
+    var stats = fs.statSync(filePath);
+    if (stats.isFile() && !this._isInDirectory(filePath, preservedFiles)) {
+      fs.unlinkSync(filePath);
+    }
+    else if (stats.isDirectory()) {
+      var files = fs.readdirSync(filePath);
+      for (var i = 0; i < files.length; i++) {
+        var filename = path.join(filePath, files[i]);
+        if (!this._isInDirectory(files[i], preservedFiles)) {
+          var fileStats = fs.statSync(filename);
+          if (fileStats.isFile()) {
+            console.log(`Deleting ${filename} file`)
+            fs.unlinkSync(filename);
+          }
+          else if (fileStats.isDirectory()) {
+            if (this._containsPreservedFiles(filename, preservedFiles)) {
+              this._clearDirectory(filename, preservedFiles);
+            }
+            else {
+              console.log(`Deleting ${filename} directory`);
+              fs.rmdirSync(filename);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  _containsPreservedFiles(directory, preservedFiles) {
+    var hasPreservedFile = false;
+    if (preservedFiles && preservedFiles.length > 0) {
+      fs.recurseSync(directory, (path, relative, filename) => {
+        if (this._isInDirectory(relative, preservedFiles)) {
+          hasPreservedFile = true;
+        }
+      });
+    }
+    return hasPreservedFile;
+  }
+
   _isInDirectory(filename, directory) {
-    for (var i = 0; i < directory.length; i++) {
-      if (this._matchFileName(filename, directory[i])) {
-          return true;
+    if (filename && directory) {
+      for (var i = 0; i < directory.length; i++) {
+        if (this._matchFileName(filename, directory[i])) {
+            return true;
+        }
       }
     }
     return false;

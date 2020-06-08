@@ -77,6 +77,7 @@ exports.RepositoryScaffolder = class {
         output: 'public',
         pages: 'pages',
         partials: ['partials'],
+        preservedFiles: []
       }
     };
     fs.writeFileSync('jambo.json', JSON.stringify(jamboConfig, null, 2));
