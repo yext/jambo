@@ -74,11 +74,11 @@ exports.SitesGenerator = class {
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
-    if (fs.existsSync(config.dirs.output)) {
+    if (fs.existsSync(config.dirs.output) && (config.dirs.output != config.dirs.preservedFiles)) {
       this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
     
-    // Write out a file to the output directory per file in the pages directory if it is not a preserved file
+    // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
         const pageId = filename.split('.')[0];
@@ -120,16 +120,16 @@ exports.SitesGenerator = class {
   }
 
   _clearDirectory(filePath, preservedFiles) {
-    var stats = fs.statSync(filePath);
-    if (stats.isFile() && !this._isInDirectory(filePath, preservedFiles)) {
+    const stats = fs.statSync(filePath);
+    if (stats.isFile() && !this._isPreserved(filePath, preservedFiles)) {
       fs.unlinkSync(filePath);
     }
     else if (stats.isDirectory()) {
-      var files = fs.readdirSync(filePath);
-      for (var i = 0; i < files.length; i++) {
-        var filename = path.join(filePath, files[i]);
-        if (!this._isInDirectory(files[i], preservedFiles)) {
-          var fileStats = fs.statSync(filename);
+      const files = fs.readdirSync(filePath);
+      files.forEach(file => {
+        const filename = path.join(filePath, file);
+        if (!this._isPreserved(filename, preservedFiles)) {
+          const fileStats = fs.statSync(filename);
           if (fileStats.isFile()) {
             console.log(`Deleting ${filename} file`)
             fs.unlinkSync(filename);
@@ -144,36 +144,33 @@ exports.SitesGenerator = class {
             }
           }
         }
-      }
+      }); 
     }
+  }
+
+  _isPreserved(path, preservedFiles) {
+    var preserved = false;
+    if (path && preservedFiles) {
+      preservedFiles.forEach(file => {
+        const regex = globToRegExp(file);
+        if (regex.test(path)) {
+          preserved = true;
+        }
+      });
+    }
+    return preserved;
   }
 
   _containsPreservedFiles(directory, preservedFiles) {
     var hasPreservedFile = false;
-    if (preservedFiles && preservedFiles.length > 0) {
+    if (preservedFiles) {
       fs.recurseSync(directory, (path, relative, filename) => {
-        if (this._isInDirectory(relative, preservedFiles)) {
+        if (this._isPreserved(path, preservedFiles)) {
           hasPreservedFile = true;
         }
       });
     }
     return hasPreservedFile;
-  }
-
-  _isInDirectory(filename, directory) {
-    if (filename && directory) {
-      for (var i = 0; i < directory.length; i++) {
-        if (this._matchFileName(filename, directory[i])) {
-            return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  _matchFileName(filename, wildcard) {
-    var regex = globToRegExp(wildcard);
-    return regex.test(filename);
   }
 
   _stripExtension(fn) {
