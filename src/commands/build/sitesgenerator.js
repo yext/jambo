@@ -74,7 +74,7 @@ exports.SitesGenerator = class {
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
-    if (fs.existsSync(config.dirs.output) && (config.dirs.output != config.dirs.preservedFiles)) {
+    if (fs.existsSync(config.dirs.output) && !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles))) {
       this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
     
@@ -119,28 +119,32 @@ exports.SitesGenerator = class {
     console.log('Done.');
   }
 
+  /**
+   * Clears given directory by traversing the directory and removing unpreserved files.
+   * 
+   * @param {string} filePath The path of a directory or file to be cleared.
+   * @param {Array} preservedFiles List of glob wildcards of preserved files.
+   */
   _clearDirectory(filePath, preservedFiles) {
     const stats = fs.statSync(filePath);
     if (stats.isFile() && !this._isPreserved(filePath, preservedFiles)) {
       fs.unlinkSync(filePath);
     }
     else if (stats.isDirectory()) {
-      const files = fs.readdirSync(filePath);
-      files.forEach(file => {
-        const filename = path.join(filePath, file);
-        if (!this._isPreserved(filename, preservedFiles)) {
-          const fileStats = fs.statSync(filename);
+      const fsNodes = fs.readdirSync(filePath);
+      fsNodes.forEach(fsNode => {
+        const fsNodePath = path.join(filePath, fsNode);
+        if (!this._isPreserved(fsNodePath, preservedFiles)) {
+          const fileStats = fs.statSync(fsNodePath);
           if (fileStats.isFile()) {
-            console.log(`Deleting ${filename} file`)
-            fs.unlinkSync(filename);
+            fs.unlinkSync(fsNodePath);
           }
           else if (fileStats.isDirectory()) {
-            if (this._containsPreservedFiles(filename, preservedFiles)) {
-              this._clearDirectory(filename, preservedFiles);
+            if (this._containsPreservedFiles(fsNodePath, preservedFiles)) {
+              this._clearDirectory(fsNodePath, preservedFiles);
             }
             else {
-              console.log(`Deleting ${filename} directory`);
-              fs.rmdirSync(filename);
+              fs.rmdirSync(fsNodePath);
             }
           }
         }
@@ -148,21 +152,30 @@ exports.SitesGenerator = class {
     }
   }
 
+  /**
+   * Checks whether a file or directory matches a glob wildcard in list of preserved files.
+   * 
+   * @param {string} path The path of a directory or file.
+   * @param {Array} preservedFiles List of glob wildcards of preserved files.
+   */
   _isPreserved(path, preservedFiles) {
-    var preserved = false;
     if (path && preservedFiles) {
-      preservedFiles.forEach(file => {
-        const regex = globToRegExp(file);
-        if (regex.test(path)) {
-          preserved = true;
-        }
+      return preservedFiles.some(wildcard => {
+        const regex = globToRegExp(wildcard);
+        return regex.test(path);
       });
     }
-    return preserved;
+    return false;
   }
 
+  /**
+   * Recursively traverses a directory to check if it contains preserved files.
+   * 
+   * @param {string} directory The path of a directory or file.
+   * @param {Array} preservedFiles List of glob wildcards of preserved files.
+   */
   _containsPreservedFiles(directory, preservedFiles) {
-    var hasPreservedFile = false;
+    let hasPreservedFile = false;
     if (preservedFiles) {
       fs.recurseSync(directory, (path, relative, filename) => {
         if (this._isPreserved(path, preservedFiles)) {
