@@ -73,7 +73,6 @@ exports.ThemeImporter = class {
         }
       };
 
-      copyFileIfExists(`${staticAssetsPath}/entry.js`, `${siteStaticDir}/entry.js`);
       copyFileIfExists(`${staticAssetsPath}/scss/answers.scss`, `${siteStaticDir}/scss/answers.scss`);
       copyFileIfExists(`${staticAssetsPath}/scss/answers-variables.scss`, `${siteStaticDir}/scss/answers-variables.scss`);
       copyFileIfExists(`${staticAssetsPath}/scss/fonts.scss`, `${siteStaticDir}/scss/fonts.scss`);
@@ -81,6 +80,7 @@ exports.ThemeImporter = class {
       copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
       copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
       copyFileIfExists(`${staticAssetsPath}/package.json`, 'package.json');
+      copyFileIfExists(`${staticAssetsPath}/package-lock.json`, 'package-lock.json');
     }
   }
 
