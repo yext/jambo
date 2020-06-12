@@ -16,7 +16,7 @@ exports.SitesGenerator = class {
    * Renders the static HTML for each site in the pages directory. All Handlebars
    * partials needed to do this are registered. Parameters, driven by the data in
    * any environment variables and the config directory, are supplied to these partials.
-   * 
+   *
    * @param {Array<string>} jsonEnvVars Those environment variables that were serialized
    *                                    using JSON.
    */
@@ -74,14 +74,8 @@ exports.SitesGenerator = class {
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
-    if (fs.existsSync(config.dirs.output)) {
-      fs.recurseSync(config.dirs.output, (path, relative, filename) => {
-        if (!this._isInDirectory(filename, config.dirs.preservedFiles)) {
-          console.log(`Removing ${filename}`);
-          const filePath = `${config.dirs.output}/${filename}`;
-          fs.unlinkSync(filePath);
-        }
-      });
+    if (fs.existsSync(config.dirs.output) && !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles))) {
+      this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
 
     console.log('Creating static output directory');
@@ -91,59 +85,112 @@ exports.SitesGenerator = class {
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
-    // Write out a file to the output directory per file in the pages directory if it is not a preserved file
+    // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
         const pageId = filename.split('.')[0];
-        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
 
         if (!pagesConfig[pageId]) {
           throw new Error(`Error: No config found for page: ${pageId}`);
         }
-        
-        //Check if file is a preserved file before writing the file
-        if (this._isInDirectory(outputFileName, config.dirs.preservedFiles)) {
-          console.log(`Warning: ${pageId} page cannot be modified.`);
-        }
-        else {
-          console.log(`Writing output file for the '${pageId}' page`);
-          const pageConfig = Object.assign(
-            {},
-            pagesConfig[pageId],
-            {
-              verticalConfigs,
-              global_config: pagesConfig[globalConfigName],
-              relativePath: this._calculateRelativePath(path),
-              env
-            });
-          const pageLayout = pageConfig.layout;
 
-          let template;
-          if (pageLayout) {
-            hbs.registerPartial('body', fs.readFileSync(path).toString());
-            const layoutPath = `${config.dirs.partials}/${pageLayout}`;
-            template = hbs.compile(fs.readFileSync(layoutPath).toString());
-          } else {
-            template = hbs.compile(fs.readFileSync(path).toString());
-          }
+        console.log(`Writing output file for the '${pageId}' page`);
+        const pageConfig = Object.assign(
+          {},
+          pagesConfig[pageId],
+          {
+            verticalConfigs,
+            global_config: pagesConfig[globalConfigName],
+            relativePath: this._calculateRelativePath(path),
+            env
+          });
+        const pageLayout = pageConfig.layout;
 
-          const result = template(pageConfig);
-          const outputPath =
-            `${config.dirs.output}/${outputFileName}`;
-          fs.writeFileSync(outputPath, result); 
+        let template;
+        if (pageLayout) {
+          hbs.registerPartial('body', fs.readFileSync(path).toString());
+          const layoutPath = `${config.dirs.partials}/${pageLayout}`;
+          template = hbs.compile(fs.readFileSync(layoutPath).toString());
+        } else {
+          template = hbs.compile(fs.readFileSync(path).toString());
         }
+
+        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
+        const result = template(pageConfig);
+        const outputPath =
+          `${config.dirs.output}/${outputFileName}`;
+        fs.writeFileSync(outputPath, result);
+
       }
     });
     console.log('Done.');
   }
 
-  _isInDirectory(filename, directory) {
-    for (var i = 0; i < directory.length; i++) {
-      if (this._matchFileName(filename, directory[i])) {
-          return true;
-      }
+  /**
+   * Clears given directory by traversing the directory and removing unpreserved files.
+   *
+   * @param {string} filePath The path of a directory or file to be cleared.
+   * @param {Array} preservedFiles List of glob wildcards of preserved files.
+   */
+  _clearDirectory(filePath, preservedFiles) {
+    const stats = fs.statSync(filePath);
+    if (stats.isFile() && !this._isPreserved(filePath, preservedFiles)) {
+      fs.unlinkSync(filePath);
+    }
+    else if (stats.isDirectory()) {
+      const fsNodes = fs.readdirSync(filePath);
+      fsNodes.forEach(fsNode => {
+        const fsNodePath = path.join(filePath, fsNode);
+        if (!this._isPreserved(fsNodePath, preservedFiles)) {
+          const fileStats = fs.statSync(fsNodePath);
+          if (fileStats.isFile()) {
+            fs.unlinkSync(fsNodePath);
+          }
+          else if (fileStats.isDirectory()) {
+            if (this._containsPreservedFiles(fsNodePath, preservedFiles)) {
+              this._clearDirectory(fsNodePath, preservedFiles);
+            }
+            else {
+              fs.rmdirSync(fsNodePath);
+            }
+          }
+        }
+      });
+    }
+  }
+
+  /**
+   * Checks whether a file or directory matches a glob wildcard in list of preserved files.
+   *
+   * @param {string} path The path of a directory or file.
+   * @param {Array} preservedFiles List of glob wildcards of preserved files.
+   */
+  _isPreserved(path, preservedFiles) {
+    if (path && preservedFiles) {
+      return preservedFiles.some(wildcard => {
+        const regex = globToRegExp(wildcard);
+        return regex.test(path);
+      });
     }
     return false;
+  }
+
+  /**
+   * Recursively traverses a directory to check if it contains preserved files.
+   *
+   * @param {string} directory The path of a directory or file.
+   * @param {Array} preservedFiles List of glob wildcards of preserved files.
+   */
+  _containsPreservedFiles(directory, preservedFiles) {
+    let hasPreservedFile = false;
+    if (preservedFiles) {
+      fs.recurseSync(directory, (path, relative, filename) => {
+        if (this._isPreserved(path, preservedFiles)) {
+          hasPreservedFile = true;
+        }
+      });
+    }
+    return hasPreservedFile;
   }
 
   /**
@@ -167,11 +214,6 @@ exports.SitesGenerator = class {
     }
   }
 
-  _matchFileName(filename, wildcard) {
-    var regex = globToRegExp(wildcard);
-    return regex.test(filename);
-  }
-
   _stripExtension(fn) {
     if (fn.indexOf(".") === -1) {
       return fn;
@@ -181,7 +223,7 @@ exports.SitesGenerator = class {
 
   /**
    * Registers all custom Handlebars partials in the provided paths.
-   * 
+   *
    * @param {Array} partialPaths The set of paths to traverse for partials.
    */
   _registerCustomPartials(partialPaths) {
@@ -190,7 +232,7 @@ exports.SitesGenerator = class {
 
   /**
    * Registers all of the partials in the default Theme.
-   * 
+   *
    * @param {string} defaultTheme The default Theme in the Jambo config.
    * @param {string} themesDir The Jambo Themes directory.
    */
@@ -203,10 +245,10 @@ exports.SitesGenerator = class {
    * Registers all partials in the provided path. If the path is a directory,
    * the useFullyQualifiedName parameter dictates if the path's root will be
    * included in the partial naming scheme.
-   * 
+   *
    * @param {string} partialsPath The set of partials to register.
    * @param {boolean} useFullyQualifiedName Whether or not to include the path's root
-   *                                        in the name of the newly registered partials. 
+   *                                        in the name of the newly registered partials.
    */
   _registerPartials(partialsPath, useFullyQualifiedName) {
     const pathExists = fs.existsSync(partialsPath);
@@ -221,7 +263,7 @@ exports.SitesGenerator = class {
       });
     } else if (pathExists) {
       hbs.registerPartial(
-        this._stripExtension(partialsPath), 
+        this._stripExtension(partialsPath),
         fs.readFileSync(partialsPath).toString());
     }
   }
@@ -242,8 +284,8 @@ exports.SitesGenerator = class {
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
-        //compact: true,
-        //minified: true,
+        compact: true,
+        minified: true,
         presets: [
           '@babel/preset-env',
           ],
