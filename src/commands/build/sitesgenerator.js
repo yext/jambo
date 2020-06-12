@@ -160,23 +160,10 @@ exports.SitesGenerator = class {
   _createStaticOutput(staticDirs, outputDir) {
     for (let staticDir of staticDirs) {
       fs.recurseSync(staticDir, (path, relative, filename) => {
-        this._copyFileOrCreateDirectory(path, `${outputDir}/static/${relative}`);
+        if (fs.lstatSync(path).isFile()) {
+          fs.copyFileSync(path, `${outputDir}/static/${relative}`);
+        }
       });
-    }
-  }
-
-  /**
-   * If path is a file, copies file to output directory, if path is a directory,
-   * creates an empty directory.
-   *
-   * @param {string} path The path of the file or directory.
-   * @param {string} outputDir The path of the output directory.
-   */
-  _copyFileOrCreateDirectory(path, outputDir) {
-    if (fs.lstatSync(path).isFile()) {
-      fs.copyFileSync(path, outputDir);
-    } else if (fs.lstatSync(path).isDirectory()) {
-      fs.mkdirSync(path);
     }
   }
 
