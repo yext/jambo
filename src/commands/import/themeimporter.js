@@ -1,9 +1,9 @@
-const fs = require('fs-extra');
+const fs = require('file-system');
 const simpleGit = require('simple-git/promise');
 const git = simpleGit();
 const {
   stringify,
-  assign 
+  assign
 } = require('comment-json');
 
 exports.ThemeImporter = class {
@@ -49,27 +49,33 @@ exports.ThemeImporter = class {
   }
 
   /**
-   * Copies the static assets from the Theme to the repository, if they exist. If a 
-   * Gruntfile, webpack-config, or package.json are included among the assets, those are 
-   * moved to the top-level of the repository. All other assets are copied over into a
-   * 'static' directory.
-   * 
+   * Copies the static assets from the Theme to the repository, if they exist. If a
+   * Gruntfile, webpack-config, or package.json are included among the assets, those are
+   * moved to the top-level of the repository. If a entry.js file, scss/answers.scss, or
+   * answers-variables.scss, scss/fonts.scss are included among the assets, those are
+   * moved under the static dir of the repository.
+   *
    * @param {string} localPath The path of the imported theme in the repository.
    */
   _copyStaticAssets(localPath) {
+    const siteStaticDir = 'static';
+
     const staticAssetsPath = `${localPath}/static`;
     if (fs.existsSync(staticAssetsPath)) {
-      fs.copySync(staticAssetsPath, 'static');
-
-      const moveFileIfExists = file => {
+      const copyFileIfExists = (file, destPath) => {
         if (fs.existsSync(file)) {
-          fs.moveSync(file, file.split('/').pop());
+          fs.copyFileSync(file, destPath);
         }
       };
-  
-      moveFileIfExists('static/Gruntfile.js');
-      moveFileIfExists('static/webpack-config.js');
-      moveFileIfExists('static/package.json');
+
+      copyFileIfExists(`${staticAssetsPath}/scss/answers.scss`, `${siteStaticDir}/scss/answers.scss`);
+      copyFileIfExists(`${staticAssetsPath}/scss/answers-variables.scss`, `${siteStaticDir}/scss/answers-variables.scss`);
+      copyFileIfExists(`${staticAssetsPath}/scss/fonts.scss`, `${siteStaticDir}/scss/fonts.scss`);
+
+      copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
+      copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
+      copyFileIfExists(`${staticAssetsPath}/package.json`, 'package.json');
+      copyFileIfExists(`${staticAssetsPath}/package-lock.json`, 'package-lock.json');
     }
   }
 
