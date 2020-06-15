@@ -16,7 +16,7 @@ exports.SitesGenerator = class {
    * Renders the static HTML for each site in the pages directory. All Handlebars
    * partials needed to do this are registered. Parameters, driven by the data in
    * any environment variables and the config directory, are supplied to these partials.
-   * 
+   *
    * @param {Array<string>} jsonEnvVars Those environment variables that were serialized
    *                                    using JSON.
    */
@@ -77,7 +77,14 @@ exports.SitesGenerator = class {
     if (fs.existsSync(config.dirs.output) && !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles))) {
       this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
-    
+
+    console.log('Creating static output directory');
+    let staticDirs = [
+      `${config.dirs.themes}/${config.defaultTheme}/static`,
+      'static'
+    ];
+    this._createStaticOutput(staticDirs, config.dirs.output);
+
     // Write out a file to the output directory per file in the pages directory
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
@@ -112,8 +119,8 @@ exports.SitesGenerator = class {
         const result = template(pageConfig);
         const outputPath =
           `${config.dirs.output}/${outputFileName}`;
-        fs.writeFileSync(outputPath, result); 
-        
+        fs.writeFileSync(outputPath, result);
+
       }
     });
     console.log('Done.');
@@ -121,7 +128,7 @@ exports.SitesGenerator = class {
 
   /**
    * Clears given directory by traversing the directory and removing unpreserved files.
-   * 
+   *
    * @param {string} filePath The path of a directory or file to be cleared.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
    */
@@ -148,13 +155,13 @@ exports.SitesGenerator = class {
             }
           }
         }
-      }); 
+      });
     }
   }
 
   /**
    * Checks whether a file or directory matches a glob wildcard in list of preserved files.
-   * 
+   *
    * @param {string} path The path of a directory or file.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
    */
@@ -170,7 +177,7 @@ exports.SitesGenerator = class {
 
   /**
    * Recursively traverses a directory to check if it contains preserved files.
-   * 
+   *
    * @param {string} directory The path of a directory or file.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
    */
@@ -186,6 +193,27 @@ exports.SitesGenerator = class {
     return hasPreservedFile;
   }
 
+  /**
+   * Creates and populates static directory inside jambo output directory.
+   *
+   * @param {Array} staticDirs An array of paths for static directories, each
+   *                           static directory's contents will be copied into the
+   *                           output. Order matters; if there are conflicts,
+   *                           files/directories from staticDirs later in the array
+   *                           will overwrite the contents of earlier ones.
+   * @param {string} outputDir The path of the jambo output directory; the
+   *                           output will be written in [outputDir]/static
+   */
+  _createStaticOutput(staticDirs, outputDir) {
+    for (let staticDir of staticDirs) {
+      fs.recurseSync(staticDir, (path, relative, filename) => {
+        if (fs.lstatSync(path).isFile()) {
+          fs.copyFileSync(path, `${outputDir}/static/${relative}`);
+        }
+      });
+    }
+  }
+
   _stripExtension(fn) {
     if (fn.indexOf(".") === -1) {
       return fn;
@@ -195,7 +223,7 @@ exports.SitesGenerator = class {
 
   /**
    * Registers all custom Handlebars partials in the provided paths.
-   * 
+   *
    * @param {Array} partialPaths The set of paths to traverse for partials.
    */
   _registerCustomPartials(partialPaths) {
@@ -204,7 +232,7 @@ exports.SitesGenerator = class {
 
   /**
    * Registers all of the partials in the default Theme.
-   * 
+   *
    * @param {string} defaultTheme The default Theme in the Jambo config.
    * @param {string} themesDir The Jambo Themes directory.
    */
@@ -217,10 +245,10 @@ exports.SitesGenerator = class {
    * Registers all partials in the provided path. If the path is a directory,
    * the useFullyQualifiedName parameter dictates if the path's root will be
    * included in the partial naming scheme.
-   * 
+   *
    * @param {string} partialsPath The set of partials to register.
    * @param {boolean} useFullyQualifiedName Whether or not to include the path's root
-   *                                        in the name of the newly registered partials. 
+   *                                        in the name of the newly registered partials.
    */
   _registerPartials(partialsPath, useFullyQualifiedName) {
     const pathExists = fs.existsSync(partialsPath);
@@ -235,7 +263,7 @@ exports.SitesGenerator = class {
       });
     } else if (pathExists) {
       hbs.registerPartial(
-        this._stripExtension(partialsPath), 
+        this._stripExtension(partialsPath),
         fs.readFileSync(partialsPath).toString());
     }
   }
