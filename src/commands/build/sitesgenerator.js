@@ -4,6 +4,7 @@ const path = require('path');
 const { parse } = require('comment-json');
 const babel = require("@babel/core");
 const globToRegExp = require('glob-to-regexp');
+const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 
@@ -299,6 +300,13 @@ exports.SitesGenerator = class {
         .map(key => {return {key}})
         .forEach(key => result += opt.fn(key));
       return result;
+    });
+
+    /**
+     * Performs a deep merge of the given objects.
+     */
+    hbs.registerHelper('deepMerge', function (...args) {
+      return _.merge({}, ...args.slice(0, args.length - 1));
     });
   }
 
