@@ -6,10 +6,12 @@ const {
   assign
 } = require('comment-json');
 const { addToPartials } = require('../../utils/jamboconfigutils');
+const { ShadowConfiguration, ThemeShadower } = require('../override/themeshadower');
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
+    this._themeShadower = new ThemeShadower(jamboConfig);
   }
 
   /**
@@ -42,25 +44,13 @@ exports.ThemeImporter = class {
         `${this.config.dirs.config}/global_config.json`);
       this._copyStaticAssets(localPath);
       this._updateDefaultTheme(themeName);
-      this._copyLayoutFiles();
+      this._copyLayoutFiles(themeName);
 
       return localPath;
     } catch (error) {
       return Promise.reject(error.toString());
     }
   }
-
-  /**
-   * Copies the file to the given destination path, if exists.
-   *
-   * @param {string} file The path of the file to copy
-   * @param {string} destPath The path where the copy of the file will be put
-   */
-  _copyFileIfExists = (file, destPath) => {
-    if (fs.existsSync(file)) {
-      fs.copyFileSync(file, destPath);
-    }
-  };
 
   /**
    * Copies the static assets from the Theme to the repository, if they exist. If a
@@ -76,23 +66,41 @@ exports.ThemeImporter = class {
 
     const staticAssetsPath = `${localPath}/static`;
     if (fs.existsSync(staticAssetsPath)) {
-      this._copyFileIfExists(`${staticAssetsPath}/scss/answers.scss`, `${siteStaticDir}/scss/answers.scss`);
-      this._copyFileIfExists(`${staticAssetsPath}/scss/answers-variables.scss`, `${siteStaticDir}/scss/answers-variables.scss`);
-      this._copyFileIfExists(`${staticAssetsPath}/scss/fonts.scss`, `${siteStaticDir}/scss/fonts.scss`);
+      const copyFileIfExists = (file, destPath) => {
+        if (fs.existsSync(file)) {
+          fs.copyFileSync(file, destPath);
+        }
+      };
 
-      this._copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
-      this._copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
-      this._copyFileIfExists(`${staticAssetsPath}/package.json`, 'package.json');
-      this._copyFileIfExists(`${staticAssetsPath}/package-lock.json`, 'package-lock.json');
+      copyFileIfExists(`${staticAssetsPath}/scss/answers.scss`, `${siteStaticDir}/scss/answers.scss`);
+      copyFileIfExists(`${staticAssetsPath}/scss/answers-variables.scss`, `${siteStaticDir}/scss/answers-variables.scss`);
+      copyFileIfExists(`${staticAssetsPath}/scss/fonts.scss`, `${siteStaticDir}/scss/fonts.scss`);
+
+      copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
+      copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
+      copyFileIfExists(`${staticAssetsPath}/package.json`, 'package.json');
+      copyFileIfExists(`${staticAssetsPath}/package-lock.json`, 'package-lock.json');
     }
   }
 
-  _copyLayoutFiles(themePath) {
-    let layoutPath = 'layouts';
-    addToPartials(layoutPath);
-    this._copyFileIfExists(`${themePath}/${layoutPath}/header.hbs`, `${layoutPath}/header.hbs`);
-    this._copyFileIfExists(`${themePath}/${layoutPath}/footer.hbs`, `${layoutPath}/footer.hbs`);
-    this._copyFileIfExists(`${themePath}/${layoutPath}/headincludes.hbs`, `${layoutPath}/headincludes.hbs`);
+  _copyLayoutFiles(themeName) {
+    console.log('importing header');
+    this._themeShadower.createShadow(new ShadowConfiguration({
+      theme: themeName,
+      path: 'layouts/header.hbs',
+    }));
+
+    console.log('importing footer');
+    this._themeShadower.createShadow(new ShadowConfiguration({
+      theme: themeName,
+      path: 'layouts/footer.hbs',
+    }));
+
+    console.log('importing headincludes');
+    this._themeShadower.createShadow(new ShadowConfiguration({
+      theme: themeName,
+      path: 'layouts/headincludes.hbs',
+    }));
   }
 
   _updateDefaultTheme(themeName) {
