@@ -5,7 +5,6 @@ const {
   stringify,
   assign
 } = require('comment-json');
-const { addToPartials } = require('../../utils/jamboconfigutils');
 const { ShadowConfiguration, ThemeShadower } = require('../override/themeshadower');
 
 exports.ThemeImporter = class {

@@ -42,11 +42,8 @@ exports.ThemeShadower = class {
 
     const pathToTheme = `${this.config.dirs.themes}/${theme}`;
     const fullPathInThemes = `${pathToTheme}/${path}`;
-    console.log('fullPathInThemes');
-    console.log(fullPathInThemes);
 
     this._createShadowDir(fullPathInThemes, path);
-    // fs.copySync(fullPathInThemes, path);
     addToPartials(path);
   }
 
