@@ -5,10 +5,12 @@ const {
   stringify,
   assign
 } = require('comment-json');
+const { ShadowConfiguration, ThemeShadower } = require('../override/themeshadower');
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
+    this._themeShadower = new ThemeShadower(jamboConfig);
   }
 
   /**
@@ -41,7 +43,8 @@ exports.ThemeImporter = class {
         `${this.config.dirs.config}/global_config.json`);
       this._copyStaticAssets(localPath);
       this._updateDefaultTheme(themeName);
-      
+      this._copyLayoutFiles(themeName);
+
       return localPath;
     } catch (error) {
       return Promise.reject(error.toString());
@@ -77,6 +80,26 @@ exports.ThemeImporter = class {
       copyFileIfExists(`${staticAssetsPath}/package.json`, 'package.json');
       copyFileIfExists(`${staticAssetsPath}/package-lock.json`, 'package-lock.json');
     }
+  }
+
+  _copyLayoutFiles(themeName) {
+    console.log('importing header');
+    this._themeShadower.createShadow(new ShadowConfiguration({
+      theme: themeName,
+      path: 'layouts/header.hbs',
+    }));
+
+    console.log('importing footer');
+    this._themeShadower.createShadow(new ShadowConfiguration({
+      theme: themeName,
+      path: 'layouts/footer.hbs',
+    }));
+
+    console.log('importing headincludes');
+    this._themeShadower.createShadow(new ShadowConfiguration({
+      theme: themeName,
+      path: 'layouts/headincludes.hbs',
+    }));
   }
 
   _updateDefaultTheme(themeName) {

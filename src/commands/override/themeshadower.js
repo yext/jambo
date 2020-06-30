@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('file-system');
 const path = require('path');
 const { addToPartials } = require('../../utils/jamboconfigutils');
 
@@ -43,26 +43,28 @@ exports.ThemeShadower = class {
     const pathToTheme = `${this.config.dirs.themes}/${theme}`;
     const fullPathInThemes = `${pathToTheme}/${path}`;
 
-    const isShadowingFile = fs.lstatSync(fullPathInThemes).isFile();
-    this._createShadowDir(isShadowingFile, path);
-    fs.copySync(fullPathInThemes, path);
+    this._createShadowDir(fullPathInThemes, path);
     addToPartials(path);
   }
 
   /**
    * Creates the necessary local directories for the provided shadow. If the
    * shadow corresponds to a top-level file, no new directories will be created.
-   * 
+   *
    * @param {boolean} isFile If the shadow corresponds to a single file.
    * @param {string} localShadowPath The path of the new, local shadow.
    */
-  _createShadowDir(isFile, localShadowPath) {
-    if (isFile && localShadowPath.includes(path.sep)) {
-      fs.mkdirSync(
-        localShadowPath.substring(0, localShadowPath.lastIndexOf(path.sep)), 
-        { recursive: true });
-    } else if (!isFile) {
-      fs.mkdirSync(localShadowPath, { recursive: true });
+  _createShadowDir(fullPathInThemes, localShadowPath) {
+    if (fs.lstatSync(fullPathInThemes).isFile()) {
+      fs.copyFileSync(fullPathInThemes, localShadowPath);
+    } else if (fs.lstatSync(fullPathInThemes).isDirectory()) {
+      fs.recurseSync(fullPathInThemes, (path, relative, filename) => {
+        if (fs.lstatSync(path).isFile()) {
+          fs.copyFileSync(path, `${localShadowPath}/${relative}`);
+        } else {
+          fs.mkdirSync(`${localShadowPath}/${relative}`);
+        }
+      });
     }
   }
 };
