@@ -60,7 +60,9 @@ exports.ThemeShadower = class {
     } else if (fs.lstatSync(fullPathInThemes).isDirectory()) {
       fs.recurseSync(fullPathInThemes, (path, relative, filename) => {
         if (fs.lstatSync(path).isFile()) {
-          fs.copyFileSync(path, localShadowPath);
+          fs.copyFileSync(path, `${localShadowPath}/${relative}`);
+        } else {
+          fs.mkdirSync(`${localShadowPath}/${relative}`);
         }
       });
     }
