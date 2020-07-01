@@ -74,6 +74,7 @@ exports.ThemeImporter = class {
       copyFileIfExists(`${staticAssetsPath}/scss/answers.scss`, `${siteStaticDir}/scss/answers.scss`);
       copyFileIfExists(`${staticAssetsPath}/scss/answers-variables.scss`, `${siteStaticDir}/scss/answers-variables.scss`);
       copyFileIfExists(`${staticAssetsPath}/scss/fonts.scss`, `${siteStaticDir}/scss/fonts.scss`);
+      copyFileIfExists(`${staticAssetsPath}/webpack/html-image-loader.js`, `${siteStaticDir}/webpack/html-image-loader.js`);
 
       copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
       copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
