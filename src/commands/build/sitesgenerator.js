@@ -26,6 +26,11 @@ exports.SitesGenerator = class {
     if (!config) {
       throw new Error('Cannot find Jambo config in this directory, exiting.');
     }
+    
+    // Pull all data from environment variables.
+    const envVarParser = EnvironmentVariableParser.create();
+    const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
+    console.log('Jambo Injected Data:', env);
 
     console.log('Reading config files');
     const pagesConfig = {};
@@ -61,10 +66,6 @@ exports.SitesGenerator = class {
 
     // Register all custom partials.
     this._registerCustomPartials(config.dirs.partials);
-
-    // Pull all data from environment variables.
-    const envVarParser = EnvironmentVariableParser.create();
-    const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName) {
