@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const { addToPartials } = require('../../utils/jamboconfigutils');
+const path = require('path');
 
 exports.CardCreator = class {
   constructor(jamboConfig) {
@@ -36,10 +37,44 @@ exports.CardCreator = class {
     if (fs.existsSync(templateCardFolder)) {
         !fs.existsSync(this._customCardsDir) && this._createCustomCardsDir();
         fs.copySync(templateCardFolder, cardFolder);
+        this._renameCardComponent(cardFolderName, cardFolder);
     } else {
         console.error(`The folder ${templateCardFolder} does not exist`);
         return;
     }
+  }
+
+  _renameCardComponent (customCardName, cardFolder) {
+    const cardComponentPath = path.resolve(cardFolder, 'component.js');
+    const originalComponent = fs.readFileSync(cardComponentPath).toString();
+    const renamedComponent = this._getRenamedCardComponent(originalComponent, customCardName);
+    fs.writeFileSync(cardComponentPath, renamedComponent);
+  }
+
+  /**
+   * Returns the internal contents for a newly-created card, updated based on
+   * the given customCardName. (e.g. StandardCardComponent -> [CustomName]CardComponent)
+   * @param {string} content
+   * @param {string} customCardName
+   * @returns {string}
+   */
+  _getRenamedCardComponent (content, customCardName) {
+    const cardNameSuffix = 'CardComponent';
+    const registerComponentTypeRegex = /\([\w_]+CardComponent\)/g;
+    const regexArray = [ ...content.matchAll(/componentName\s*=\s*'(.*)'/g) ];
+    if (regexArray.length === 0 || regexArray[0].length < 2) {
+      return content;
+    }
+    const originalComponentName = regexArray[0][1];
+
+    const customComponentClassName =
+      customCardName.replace(/-/g, '_') + cardNameSuffix;
+
+    return content
+      .replace(/class (.*) extends/g, `class ${customComponentClassName} extends`)
+      .replace(registerComponentTypeRegex, `(${customComponentClassName})`)
+      .replace(new RegExp(originalComponentName, 'g'), customCardName)
+      .replace(/cards[/_](.*)[/_]template/g, `cards/${customCardName}/template`);
   }
 
   /**
