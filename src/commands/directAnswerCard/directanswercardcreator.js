@@ -2,16 +2,15 @@ const fs = require('fs-extra');
 const { addToPartials } = require('../../utils/jamboconfigutils');
 const path = require('path');
 
-exports.CardCreator = class {
+exports.DirectAnswerCardCreator = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
-    this._customCardsDir = 'cards';
+    this._customCardsDir = 'directanswercards';
   }
 
   /**
-   * Creates a new, custom card in the top-level 'Cards' directory. This card
-   * will be based off either an existing custom card or one supplied by the
-   * Theme.
+   * Creates a new, custom direct answer card in the top-level 'directanswercards' directory.
+   * This card will be based off either an existing custom card or one supplied by the Theme.
    * 
    * @param {string} cardName           The name of the new card. A folder with a
    *                                    lowercased version of this name will be
@@ -52,15 +51,15 @@ exports.CardCreator = class {
   }
 
   /**
-   * Returns the internal contents for a newly-created card, updated based on
-   * the given customCardName. (e.g. StandardCardComponent -> [CustomName]CardComponent)
+   * Returns the internal contents for a newly-created direct answer card, updated based on
+   * the given customCardName. (e.g. allfields_standardComponent -> [CustomName]Component)
    * @param {string} content
    * @param {string} customCardName
    * @returns {string}
    */
   _getRenamedCardComponent (content, customCardName) {
-    const cardNameSuffix = 'CardComponent';
-    const registerComponentTypeRegex = /\([\w_]+CardComponent\)/g;
+    const cardNameSuffix = 'Component';
+    const registerComponentTypeRegex = /\([\w_]+Component\)/g;
     const regexArray = [ ...content.matchAll(/componentName\s*=\s*'(.*)'/g) ];
     if (regexArray.length === 0 || regexArray[0].length < 2) {
       return content;
@@ -74,11 +73,11 @@ exports.CardCreator = class {
       .replace(/class (.*) extends/g, `class ${customComponentClassName} extends`)
       .replace(registerComponentTypeRegex, `(${customComponentClassName})`)
       .replace(new RegExp(originalComponentName, 'g'), customCardName)
-      .replace(/cards[/_](.*)[/_]template/g, `cards/${customCardName}/template`);
+      .replace(/directanswercards[/_](.*)[/_]template/g, `directanswercards/${customCardName}/template`);
   }
 
   /**
-   * Creates the 'cards' directory in the Jambo repository and adds the newly 
+   * Creates the 'directanswercards' directory in the Jambo repository and adds the newly 
    * created directory to the list of partials in the Jambo config.
    */
   _createCustomCardsDir() {
