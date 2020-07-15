@@ -95,7 +95,9 @@ const options = yargs
     yargs => {
       return yargs
         .option('name', { description: 'name for the new direct answer card', demandOption: true })
-        .option('templateCardFolder', { description: 'folder of direct answer card to fork', demandOption: true });
+        .option(
+          'templateCardFolder',
+          { description: 'folder of direct answer card to fork', demandOption: true });
     },
     argv => {
       const cardCreator = new addDirectAnswerCardCommand.DirectAnswerCardCreator(jamboConfig);

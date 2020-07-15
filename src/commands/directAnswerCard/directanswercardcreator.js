@@ -73,7 +73,8 @@ exports.DirectAnswerCardCreator = class {
       .replace(/class (.*) extends/g, `class ${customComponentClassName} extends`)
       .replace(registerComponentTypeRegex, `(${customComponentClassName})`)
       .replace(new RegExp(originalComponentName, 'g'), customCardName)
-      .replace(/directanswercards[/_](.*)[/_]template/g, `directanswercards/${customCardName}/template`);
+      .replace(
+        /directanswercards[/_](.*)[/_]template/g, `directanswercards/${customCardName}/template`);
   }
 
   /**
