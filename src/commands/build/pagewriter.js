@@ -8,9 +8,6 @@ const { PageSet } = require('../../models/pageset');
  */
 exports.PageWriter = class {
   constructor(config) {
-    this.globalConfig = config.globalConfig;
-    this.pageIdToConfig = config.pageIdToConfig;
-    this.params = config.params;
     this.env = config.env;
 
     this.partialsDirectory = config.partialsDirectory;
@@ -25,17 +22,20 @@ exports.PageWriter = class {
   writePages (pageSet) {
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
-        throw new Error(`Error: No config found for page: ${page.getPageId()}`);
+        throw new Error(`Error: No config found for page: ${page.getPageName()}`);
       }
       if (!page.getTemplatePath()) {
-        throw new Error(`Error: No template found for page: ${page.getPageId()}`);
+        throw new Error(`Error: No template found for page: ${page.getPageName()}`);
       }
 
-      console.log(`Writing output file for the '${page.getPageId()}' page`);
-      const templateArguments = this._buildArgsForTemplate(
-        page.getConfig(),
-        page.getOutputPath()
-      );
+      console.log(`Writing output file for the '${page.getPageName()}' page`);
+      const templateArguments = this._buildArgsForTemplate({
+        pageConfig: page.getConfig(),
+        path: page.getOutputPath(),
+        params: pageSet.getParams(),
+        globalConfig: pageSet.getGlobalConfig(),
+        pageNameToConfig: pageSet.getPageNameToConfig(),
+      });
       const template = this._getHandlebarsTemplate(page.getTemplatePath());
       const outputHTML = template(templateArguments);
 
@@ -49,7 +49,7 @@ exports.PageWriter = class {
   /**
    * Gets the page template for a given path
    *
-   * @param {string} path the path to the page handlebars template
+   * @param {String} path the path to the page handlebars template
    * @returns {HandlebarsTemplateDelegate<T>}
    */
   _getHandlebarsTemplate (path) {
@@ -60,19 +60,21 @@ exports.PageWriter = class {
    * Merges the configuration to make the arguments for the templates
    *
    * @param {Object} pageConfig the configuration for the current page
-   * @param {string} path the path to the page handlebars template
+   * @param {String} path the path to the page handlebars template
+   * @param {String} params
+   * @param {Object} globalConfig
+   * @param {Object} pageNameToConfig
    * @returns {Object}
    */
-  _buildArgsForTemplate (pageConfig, path) {
+  _buildArgsForTemplate ({ pageConfig, path, params, globalConfig, pageNameToConfig }) {
     return Object.assign(
       {},
-      this.params || {},
       pageConfig,
       {
-        verticalConfigs: this.pageIdToConfig,
-        global_config: this.globalConfig,
+        verticalConfigs: pageNameToConfig,
+        global_config: globalConfig,
         relativePath: this._calculateRelativePath(path),
-        params: this.params,
+        params: params,
         env: this.env
      }
     );

@@ -3,14 +3,10 @@
  */
 
 // TODO assumes language and suffix of locale are separated by a "-" (e.g. en-US)
-exports.LocaleConfig = class {
-  constructor({ localeConfig, localeConfigName, directoryConfigName}) {
-    if (!localeConfig) {
-      console.warn(`Cannot find ${localeConfigName} file in ${directoryConfigName} directory, writing pages without locale information.`);
-    }
-
-    const config = localeConfig || {};
-    this._defaultLocale = config.default || '';
+exports.LocalizationConfig = class {
+  constructor(localizationConfig) {
+    const config = localizationConfig || {};
+    this._defaultLocale = config.default || ''; // TODO do we want this to be the default
 
     /**
      * localeToConfig is an Object mapping locale to configuration

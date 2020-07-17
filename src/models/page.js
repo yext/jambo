@@ -1,41 +1,83 @@
 const { stripExtension } = require('../utils/fileutils');
+const { PageConfig } = require('./pageconfig');
+const { PageTemplate } = require('./pagetemplate');
 
 exports.Page = class {
-  constructor({ pageId, config, templatePath, urlFormatter }) {
-    this.pageId = pageId;
-    this.config = config;
-    this.templatePath = templatePath;
-    this.outputPath = this._buildUrl(pageId, templatePath, urlFormatter);
+  constructor({ config, pageTemplate, urlFormatter }) {
+    if (config.getPageName() != pageTemplate.getPageName()) {
+      throw new Error(`Mismatch in pageName between config and pageTemplate for page,
+        '${config.getPageName()}' and '${pageTemplate.getPageName()}'`);
+    }
+
+    if (config.getLocale() != pageTemplate.getLocale()) {
+      throw new Error(`Mismatch in locale between config and pageTemplate for page '${config.getPageName()}',
+        '${config.getLocale()}' and '${pageTemplate.getLocale()}'`);
+    }
+
+    /**
+     * @type {PageConfig}
+     */
+    this.pageConfig = config;
+
+    /**
+     * @type {PageTemplate}
+     */
+    this.pageTemplate = pageTemplate;
+
+    /**
+     * @type {String}
+     */
+    this.outputPath = this._buildUrl(config.getPageName(), pageTemplate.getTemplatePath(), urlFormatter);
   }
 
-  getPageId () {
-    return this.pageId;
+  /**
+   * Returns the page name
+   *
+   * @returns {String}
+   */
+  getPageName () {
+    return this.pageConfig.getPageName();
   }
 
+  /**
+   * Returns the page's raw config
+   *
+   * @returns {Object}
+   */
   getConfig () {
-    return this.config;
+    return this.pageConfig.getConfig();
   }
 
+  /**
+   * Returns the page's template path
+   *
+   * @returns {String}
+   */
   getTemplatePath () {
-    return this.templatePath;
+    return this.pageTemplate.getTemplatePath();
   }
 
+  /**
+   * Returns the page's output path
+   *
+   * @returns {String}
+   */
   getOutputPath () {
     return this.outputPath;
   }
 
   /**
-   * Returns the URL for a given pageId, path and formatting function
+   * Returns the URL for a given pageName, path and formatting function
    *
-   * @param {string} pageId
+   * @param {string} pageName
    * @param {string} path
    * @param {string} urlFormatter
    * @returns {string}
    */
-  _buildUrl (pageId, path, urlFormatter) {
+  _buildUrl (pageName, path, urlFormatter) {
     const pathWithoutHbsExtension = stripExtension(path);
     const pageExt = pathWithoutHbsExtension
       .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);
-    return urlFormatter(pageId, pageExt);
+    return urlFormatter(pageName, pageExt);
   }
 }

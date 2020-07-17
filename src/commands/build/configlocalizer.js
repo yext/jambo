@@ -1,55 +1,88 @@
+const { PageConfig } = require("../../models/pageconfig");
+const { LocalizationConfig } = require("../../models/localizationconfig");
+
 /**
  * Merges the relevant page configurations based on locale
  */
 exports.ConfigLocalizer = class {
-  /**
-   * Merges the relevant page configurations based on locale. If there
-   * is no locale data provided, this will return a copy of the original
-   * page config.
-   *
-   * @param {Object} configIdToConfig
-   * @param {string} locale
-   * @param {Array<string>} localeFallbacks
-   * @returns {Object} pageIdToLocalizedConfig
-   */
-  generateLocalizedPageConfigs(configIdToConfig, locale, localeFallbacks) {
-    let configs = { ...configIdToConfig };
-    if (localeFallbacks && localeFallbacks.length) {
-      for (const configId of Object.keys(configs)) {
-        for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
-          configs[configId] = this._mergeConfigs(
-            configs[configId],
-            configs[`${configId}.${localeFallbacks[i]}`]
-          );
-        }
-      }
-    }
+  constructor({ localizationConfig, defaultLocale }) {
+    /**
+     * @type {LocalizationConfig}
+     */
+    this.localizationConfig = localizationConfig;
 
-    let pageIdToLocalizedConfig = {};
-    for (const [configId, pageConfig] of Object.entries(configs)) {
-      const isConfigIdPageId = !configId.includes('.');
-      if (isConfigIdPageId) {
-        pageIdToLocalizedConfig[configId] = this._mergeConfigs(
-          pageConfig,
-          configs[`${configId}.${locale}`]
-        );
-      }
-    }
-
-    // TODO (agrow) consolidate this method a bit by using reduce.
-    return pageIdToLocalizedConfig;
+    /**
+     * @type {String}
+     */
+    this.defaultLocale = defaultLocale;
   }
 
   /**
-   * Merges two objects. This is a shallow merge, the second argument takes precedent.
+   * Creates localized PageConfigs
    *
-   * @param {Object} config1
-   * @param {Object} config2
-   * @returns {Object}
+   * @param {Array<PageConfig>} pageConfigs
+   * @returns {Array<PageConfig>}
    */
-  _mergeConfigs(config1, config2) {
-    const a = config1 || {};
-    const b = config2 || {};
-    return Object.assign({}, a, b);
+  localize(pageConfigs) {
+    if (!pageConfigs || pageConfigs.length < 1) {
+      return [];
+    }
+
+    let localizedPageConfigs = [];
+    for (const locale of this.localizationConfig.getLocales()) {
+      const configsForPage = [];
+
+      const localeSpecificConfig = configsForPage.find(config => config.getLocale() === locale);
+
+      const localeFallbacks = this.localizationConfig.getFallbacks(locale);
+      const fallbackConfigs = [];
+      for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
+        const fallbackConfig = configsForPage.find(config => config.getLocale() === localeFallbacks[i]);
+        if (fallbackConfig) {
+          fallbackConfigs.push(fallbackConfig);
+        }
+      }
+      const defaultConfig = configsForPage
+        .find(config => (config.getLocale() === defaultLocale) || (!config.getLocale()));
+
+      const localizedConfig = this._mergeConfigs(
+        defaultConfig,
+        ...fallbackConfigs,
+        localeSpecificConfig
+      );
+
+      localizedPageConfigs.push(localizedConfig);
+    }
+    return localizedPageConfigs;
+  }
+
+  /**
+   * Merges config objects. This is a shallow merge, the later arguments take precedent.
+   *
+   * @param {Array<PageConfig>} configs
+   * @returns {PageConfig}
+   */
+  _mergeConfigs(...configs) {
+    if (!configs) {
+      return {};
+    }
+
+    const locale = configs[0].getLocale() || '';
+    const pageName = configs[0].getPageName();
+
+    let rawConfig = {};
+    for (const config of configs) {
+      if (!config) {
+        continue;
+      }
+
+      rawConfig = Object.assign(rawConfig, config.getConfig());
+    }
+
+    return new PageConfig({
+      pageName: pageName,
+      locale: locale,
+      rawConfig: rawConfig
+    })
   }
 }

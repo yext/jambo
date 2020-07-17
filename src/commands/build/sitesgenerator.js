@@ -8,10 +8,10 @@ const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const { PageWriter } = require('./pagewriter');
-const { PageSetCreator } = require('./pagesetcreator');
 const { GeneratedData } = require('../../models/generateddata');
 const { stripExtension } = require('../../utils/fileutils');
 const { PageTemplate } = require('../../models/pagetemplate');
+const { Configs } = require('../../models/configs');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -38,12 +38,12 @@ exports.SitesGenerator = class {
     console.log('Jambo Injected Data:', env);
 
     console.log('Reading config files');
-    const pagesConfig = {};
+    const configNameToRawConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        let pageId = stripExtension(relative);
+        let configName = stripExtension(relative);
         try {
-          pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
+          configNameToRawConfig[configName] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (e) {
           if (e instanceof SyntaxError) {
             throw new Error('JSON SyntaxError: could not parse ' + path);
@@ -53,7 +53,7 @@ exports.SitesGenerator = class {
         }
       }
     });
-    const GENERATED_DATA = new GeneratedData(pagesConfig, config.dirs.config);
+    const configs = new Configs(configNameToRawConfig, config.dirs.config);
 
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
@@ -61,9 +61,15 @@ exports.SitesGenerator = class {
         pageTemplates.push(new PageTemplate({
           path: path,
           filename: filename,
-          defaultLocale: GENERATED_DATA.getDefaultLocale()
         }));
       }
+    });
+
+    const GENERATED_DATA = new GeneratedData({
+      globalConfig: configs.getGlobalConfig(),
+      localizationConfig: configs.getLocalizationConfig(),
+      pageConfigs: configs.getPageConfigs(),
+      pageTemplates: pageTemplates
     });
 
     console.log('Registering Jambo Handlebars helpers');
@@ -93,22 +99,11 @@ exports.SitesGenerator = class {
 
     for (let locale of GENERATED_DATA.getLocales()) {
       console.log(`Writing files for '${locale}' locale`);
-      const pageSet = new PageSetCreator({
-        pageTemplates: pageTemplates,
-        pageIds: GENERATED_DATA.getPageIdsForLocale(locale),
-        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
-        locale: locale,
-        localeFallbacks: GENERATED_DATA.getLocaleFallbacks(locale),
-        urlFormatter: GENERATED_DATA.getUrlFormatter(locale),
-      }).build();
 
+      const pageSet = GENERATED_DATA.buildPageSet(locale);
       new PageWriter({
-        pagesDirectory: config.dirs.pages,
         partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
-        globalConfig: GENERATED_DATA.getGlobalConfig(locale),
-        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
-        params: GENERATED_DATA.getParams(locale),
         env: env,
       }).writePages(pageSet);
     }
