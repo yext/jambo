@@ -13,7 +13,7 @@ ___
 
 ## Usage
 
-Jambo has 5 commands, init, import, override, page, and build.
+Jambo has 6 official commands, init, import, override, page, build, and upgrade.
 
 #### Init
 
@@ -43,6 +43,12 @@ The import command imports the designated theme into the 'themes' folder.
 **--theme** _theme_name_
 
 The name of the theme to import.
+
+###### Optional Arguments
+
+--addAsSubmodule _true/false_
+
+Whether to import the theme as a submodule, defaults to true.
 
 #### Override
 
@@ -112,3 +118,18 @@ The build command uses the 'defaultTheme' attribute in the jambo.json in Jambo's
   "defaultTheme": "answers-hitchhiker-theme"
 }
 ```
+
+### Upgrade
+
+```bash
+npx jambo upgrade
+```
+
+The upgrade command updates your current defaultTheme to the latest version.
+
+###### Optional Arguments
+
+--postUpgradeCommand
+
+You can specify a command to be run post upgrade (like running an executable),
+which will additionally receive the jambo config through command line arguments.

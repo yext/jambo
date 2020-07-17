@@ -6,6 +6,7 @@ const {
   assign
 } = require('comment-json');
 const { ShadowConfiguration, ThemeShadower } = require('../override/themeshadower');
+const { getRepoForTheme } = require('../../utils/gitutils');
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
@@ -29,7 +30,7 @@ exports.ThemeImporter = class {
       return;
     }
     try {
-      const themeRepo = this._getRepoForTheme(themeName);
+      const themeRepo = getRepoForTheme(themeName);
       const localPath = `${this.config.dirs.themes}/${themeName}`;
 
       if (addAsSubmodule) {
@@ -106,15 +107,6 @@ exports.ThemeImporter = class {
     if (this.config.defaultTheme !== themeName) {
       const updatedConfig = assign({ defaultTheme: themeName }, this.config);
       fs.writeFileSync('jambo.json', stringify(updatedConfig, null, 2));
-    }
-  }
-
-  _getRepoForTheme(themeName) {
-    switch (themeName) {
-      case 'answers-hitchhiker-theme':
-        return 'git@github.com:yext/answers-hitchhiker-theme.git';
-      default:
-        throw 'Unrecognized theme';
     }
   }
 }

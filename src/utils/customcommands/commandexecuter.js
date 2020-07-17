@@ -34,21 +34,30 @@ exports.CustomCommandExecuter = class {
      * absolute path for all directories is used.
      * 
      * @param {Object} jamboConfig The Jambo config object.
+     * @param {Array<string>} flagPath The currently traversed path of the config
      * @returns {Array} An array containing the flags to add to any {@link CustomCommand}.
      */
-    _generateJamboFlags(jamboConfig) {
+    _generateJamboFlags(jamboConfig, flagPath = []) {
         const jamboFlags = [];
-
         const getAbsolutePath = jamboDir => {
             return path.isAbsolute(jamboDir) ? 
                 jamboDir : 
                 path.join(process.cwd(), jamboDir);
         }
-        Object.entries(jamboConfig.dirs).forEach(([name, value]) => {
-            jamboFlags.push(`--jambo.${name}_dir`);
-            jamboFlags.push(getAbsolutePath(value));
-        });
-
+        
+        for (const [name, value] of Object.entries(jamboConfig)) {
+            if (Array.isArray(value)) {
+                jamboFlags.push(['--jambo', ...flagPath, name].join('.'));
+                const valueWithAbsolutePaths = value.map(getAbsolutePath);
+                jamboFlags.push(valueWithAbsolutePaths);
+            } else if (typeof value === 'string') {
+                jamboFlags.push(['--jambo', ...flagPath, name].join('.'));
+                jamboFlags.push(getAbsolutePath(value));
+            } else if (typeof value === 'object') {
+                const subConfigFlags = this._generateJamboFlags(value, [...flagPath, name]);
+                jamboFlags.push(...subConfigFlags)
+            }
+        }
         return jamboFlags;
     }
 }
