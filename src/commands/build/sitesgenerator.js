@@ -7,6 +7,8 @@ const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
+const { PageWriter } = require('./pagewriter');
+const { LocaleTransformer } = require('./localetransformer');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -87,44 +89,51 @@ exports.SitesGenerator = class {
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
-    // Write out a file to the output directory per file in the pages directory
-    fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
-      if (this._isValidFile(filename)) {
-        const pageId = filename.split('.')[0];
+     /**
+      * TODO
+      *   - CLEANUP -> Move site generation logic to another place (or just a helper??), Move locale stuff, Figure out fallbacks + what should error
+      *   - translationFile, path is relative from root AND there is a entry in jambo config.dirs
+      */
 
-        if (!pagesConfig[pageId]) {
-          throw new Error(`Error: No config found for page: ${pageId}`);
-        }
+    const localeConfigName = 'locale_config';
+    if (!pagesConfig[localeConfigName]) {
+      console.warn(`TEMP ERROR: Cannot find ${localeConfigName} file in '` + config.dirs.config + '/\' directory, writing pages without locale information.'); // TODO
+      new PageWriter()._writePages({
+        config: config,
+        pagesDirectory: config.dirs.pages,
+        partialsDirectory: config.dirs.partials,
+        outputDirectory: config.dirs.output,
+        globalConfig: pagesConfig[globalConfigName],
+        pagesConfig: pagesConfig,
+        verticalConfigs: verticalConfigs,
+        env: env,
+      });
+    } else {
+      let allLocaleStuff = new LocaleTransformer({
+        pagesConfig: pagesConfig,
+        localeConfigName: localeConfigName,
+        globalConfigName: globalConfigName,
+      })._transformConfigsForLocale();
 
-        console.log(`Writing output file for the '${pageId}' page`);
-        const pageConfig = Object.assign(
-          {},
-          pagesConfig[pageId],
-          {
-            verticalConfigs,
-            global_config: pagesConfig[globalConfigName],
-            relativePath: this._calculateRelativePath(path),
-            env
-          });
-        const pageLayout = pageConfig.layout;
+      for (const [key, localeStuff] of Object.entries(allLocaleStuff)) {
+        console.log(`Writing files for '${key}' locale`);
 
-        let template;
-        if (pageLayout) {
-          hbs.registerPartial('body', fs.readFileSync(path).toString());
-          const layoutPath = `${config.dirs.partials}/${pageLayout}`;
-          template = hbs.compile(fs.readFileSync(layoutPath).toString());
-        } else {
-          template = hbs.compile(fs.readFileSync(path).toString());
-        }
-
-        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
-        const result = template(pageConfig);
-        const outputPath =
-          `${config.dirs.output}/${outputFileName}`;
-        fs.writeFileSync(outputPath, result);
-
+        new PageWriter()._writePages({
+          config: config,
+          pagesDirectory: config.dirs.pages,
+          partialsDirectory: config.dirs.partials,
+          outputDirectory: config.dirs.output,
+          globalConfig: localeStuff.globalConfig,
+          pagesConfig: localeStuff.pagesConfig,
+          verticalConfigs: localeStuff.verticalConfigs,
+          env: env,
+          urlFormatter: localeStuff.urlFormatter,
+          pageParamsFromLocale: localeStuff.pageParamsFromLocale,
+        });
       }
-    });
+    }
+
+
     console.log('Done.');
   }
 
@@ -309,10 +318,6 @@ exports.SitesGenerator = class {
     hbs.registerHelper('deepMerge', function (...args) {
       return _.merge({}, ...args.slice(0, args.length - 1));
     });
-  }
-
-  _calculateRelativePath(filePath) {
-    return path.relative(path.dirname(filePath), "");
   }
 
   _isValidFile(fileName) {
