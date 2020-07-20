@@ -27,6 +27,8 @@
     "fs-extra": "^8.1.0",
     "glob-to-regexp": "^0.4.1",
     "handlebars": "^4.7.3",
+    "i18next": "^19.6.2",
+    "i18next-conv": "^10.0.2",
     "lodash": "^4.17.15",
     "merge-options": "^2.0.0",
     "prompts": "^2.3.1",
