@@ -6,7 +6,7 @@ const addPageCommand = require('./commands/page/add/pagescaffolder');
 const overrideCommand = require('./commands/override/themeshadower');
 const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
-const addDirectAnswerCardCommand = require('./commands/directanswercard/directanswercardcreator');
+const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
@@ -100,7 +100,7 @@ const options = yargs
           { description: 'folder of direct answer card to fork', demandOption: true });
     },
     argv => {
-      const cardCreator = new addDirectAnswerCardCommand.DirectAnswerCardCreator(jamboConfig);
+      const cardCreator = new DirectAnswerCardCreator(jamboConfig);
       cardCreator.create(argv.name, argv.templateCardFolder);
     })
 	.command(
