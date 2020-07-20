@@ -22,6 +22,9 @@ const options = yargs
       return yargs
         .option('theme', { description: 'a starter theme' })
         .option(
+          'includeTranslations',
+          { description: 'if i18n support will be needed', default: false, type: 'boolean' })
+        .option(
           'addThemeAsSubmodule', 
           { 
             description: 'if starter theme should be imported as submodule', 

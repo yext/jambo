@@ -8,7 +8,7 @@ const {
 
 /**
  * Parses the repository's Jambo config file. If certain attributes are not
- * present, defaults will be applied.
+ * present, defaults will be applied for them.
  * 
  * @returns {Object} The parsed Jambo configuration, as an {@link Object}. 
  */
