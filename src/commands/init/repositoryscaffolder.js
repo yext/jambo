@@ -11,9 +11,10 @@ const git = simpleGit();
  * the theme should be imported as a submodule.
  */
 exports.RepositorySettings = class {
-  constructor({ theme, addThemeAsSubmodule }) {
+  constructor({ theme, addThemeAsSubmodule, includeTranslations }) {
     this._theme = theme;
     this._addThemeAsSubmodule = addThemeAsSubmodule;
+    this._includeTranslations = includeTranslations;
   }
 
   getTheme() {
@@ -22,6 +23,10 @@ exports.RepositorySettings = class {
 
   shouldAddThemeAsSubmodule() {
     return this._addThemeAsSubmodule;
+  }
+
+  shouldIncludeTranslations() {
+    return this._includeTranslations;
   }
 }
 
@@ -39,8 +44,10 @@ exports.RepositoryScaffolder = class {
       await git.init();
       fs.writeFileSync('.gitignore', 'public/\nnode_modules/\n');
 
-      this._createDirectorySkeleton();
-      const jamboConfig = this._createJamboConfig();
+      const includeTranslations = 
+        repositorySettings.shouldIncludeTranslations();
+      this._createDirectorySkeleton(includeTranslations);
+      const jamboConfig = this._createJamboConfig(includeTranslations);
 
       const theme = repositorySettings.getTheme();
       if (theme) {
@@ -56,22 +63,29 @@ exports.RepositoryScaffolder = class {
 
   /**
    * Initialize pages, config, themes, partials, and public directories.
+   * Optionally initializes a translations directory as well.
+   * 
+   * @param {boolean} includeTranslations Whether or not a translations directory
+   *                                      should be included.
    */
-  _createDirectorySkeleton() {
+  _createDirectorySkeleton(includeTranslations) {
     fs.mkdirSync('pages');
     fs.mkdirSync('config');
     fs.mkdirSync('partials');
     fs.mkdirSync('themes');
     fs.mkdirSync('public');
+    includeTranslations && fs.mkdirSync('translations');
   }
 
   /**
    * Create the top-level Jambo config which indicates the paths to the various
    * directories needed by Jambo.
    *
+   * @param {boolean} includeTranslations Whether or not a translations directory
+   *                                      should be included in the config.
    * @returns {Object} The constructed config.
    */
-  _createJamboConfig() {
+  _createJamboConfig(includeTranslations) {
     const jamboConfig = {
       dirs: {
         themes: 'themes',
@@ -82,6 +96,10 @@ exports.RepositoryScaffolder = class {
         preservedFiles: []
       }
     };
+    if (includeTranslations) {
+      jamboConfig.dirs.translsations = 'translations';
+    }
+
     fs.writeFileSync('jambo.json', JSON.stringify(jamboConfig, null, 2));
 
     return jamboConfig;
