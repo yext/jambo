@@ -28,7 +28,7 @@ exports.SitesGenerator = class {
     if (!config) {
       throw new Error('Cannot find Jambo config in this directory, exiting.');
     }
-    
+
     // Pull all data from environment variables.
     const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
@@ -89,17 +89,10 @@ exports.SitesGenerator = class {
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
-     /**
-      * TODO
-      *   - CLEANUP -> Move site generation logic to another place (or just a helper??), Move locale stuff, Figure out fallbacks + what should error
-      *   - translationFile, path is relative from root AND there is a entry in jambo config.dirs
-      */
-
     const localeConfigName = 'locale_config';
     if (!pagesConfig[localeConfigName]) {
-      console.warn(`TEMP ERROR: Cannot find ${localeConfigName} file in '` + config.dirs.config + '/\' directory, writing pages without locale information.'); // TODO
-      new PageWriter()._writePages({
-        config: config,
+      console.warn(`Cannot find ${localeConfigName} file in \'${config.dirs.config}\' directory, writing pages without locale information.`);
+      new PageWriter({
         pagesDirectory: config.dirs.pages,
         partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
@@ -107,29 +100,29 @@ exports.SitesGenerator = class {
         pagesConfig: pagesConfig,
         verticalConfigs: verticalConfigs,
         env: env,
-      });
+      }).writePages();
     } else {
-      let allLocaleStuff = new LocaleTransformer({
+      let localeToPageConfig = new LocaleTransformer({
         pagesConfig: pagesConfig,
         localeConfigName: localeConfigName,
         globalConfigName: globalConfigName,
-      })._transformConfigsForLocale();
+      }).transformConfigsForLocale();
 
-      for (const [key, localeStuff] of Object.entries(allLocaleStuff)) {
-        console.log(`Writing files for '${key}' locale`);
+      for (const [localeName, localeInfo] of Object.entries(localeToPageConfig)) {
+        console.log(`Writing files for '${localeName}' locale`);
 
-        new PageWriter()._writePages({
-          config: config,
+        new PageWriter({
           pagesDirectory: config.dirs.pages,
           partialsDirectory: config.dirs.partials,
           outputDirectory: config.dirs.output,
-          globalConfig: localeStuff.globalConfig,
-          pagesConfig: localeStuff.pagesConfig,
-          verticalConfigs: localeStuff.verticalConfigs,
+          globalConfig: localeInfo.globalConfig,
+          pagesConfig: localeInfo.pagesConfig,
+          verticalConfigs: localeInfo.verticalConfigs,
           env: env,
-          urlFormatter: localeStuff.urlFormatter,
-          pageParamsFromLocale: localeStuff.pageParamsFromLocale,
-        });
+          urlFormatter: localeInfo.urlFormatter,
+          pageParamsFromLocale: localeInfo.pageParamsFromLocale,
+          locale: localeName,
+        }).writePages();
       }
     }
 

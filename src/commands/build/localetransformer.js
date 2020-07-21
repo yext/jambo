@@ -15,40 +15,24 @@ exports.LocaleTransformer = class {
     this.baseLocaleFormat = urlFormatConfig.baseLocale || '';
   }
 
-  _transformConfigsForLocale() {
-    let thinkOfABetterNameLocales = {}; // TODO naming
+  transformConfigsForLocale() {
+    let localeToPageConfig = {};
 
     // For each locale, do this
     for (const [locale, configForLocale] of Object.entries(this.locales)) {
       // FORMAT GLOBAL CONFIG FOR LOCALE
-      let globalConfigForLocale = Object.assign({},
+      let globalConfigForLocale = this._mergeConfigWithLocalizedConfig(
         this.pagesConfig[this.globalConfigName],
-        {
-          experienceKey: configForLocale.experienceKey,
-          apiKey: configForLocale.apiKey,
-        }
+        configForLocale
       );
 
       // For each locale fallback, if there is a pageName.[LOCALE].json, ADD/ASSIGN any config
-      let pagesConfigsForLocale = { ...this.pagesConfig };
-      for (const [configName, pageConfig] of Object.entries(pagesConfigsForLocale)) {
-        if (configForLocale.fallback) {
-          for (let fallbackLocale of configForLocale.fallback) {
-            // MERGE PAGE CONFIG WITH FALLBACK CONFIG
-            pagesConfigsForLocale[configName] = this._mergeConfigs(pageConfig, pagesConfigsForLocale[`${configName}.${fallbackLocale}`]);
-          }
-        }
-      }
+      let pagesConfigsForLocale = this._mergeConfigWithLocalizedFallbacks(this.pagesConfig, configForLocale.fallback);
 
       // FORMAT PAGE CONFIGS FOR LOCALE
-      for (const [configName, pageConfig] of Object.entries(pagesConfigsForLocale)) {
-        let pageName = this._getPageName(configName);
-        // If there is a pageName.[LOCALE].json instead of just a pageName.json, ADD/ASSIGN any config
-        // from the locale specific config for the regular one
-        pagesConfigsForLocale[pageName] = this._mergeConfigs(pageConfig, pagesConfigsForLocale[`${configName}.${locale}`]);
-      }
+      pagesConfigsForLocale = this._mergeConfigWithLocalizedConfig(pagesConfigsForLocale, locale);
 
-      thinkOfABetterNameLocales[locale] = {
+      localeToPageConfig[locale] = {
         urlFormatter: this.getUrlFormatter(locale, configForLocale.urlOverride),
         verticalConfigs: this._filterExtraConfigs(pagesConfigsForLocale),
         globalConfig: globalConfigForLocale,
@@ -56,7 +40,44 @@ exports.LocaleTransformer = class {
         pageParams: configForLocale.params || {},
       };
     }
-    return thinkOfABetterNameLocales;
+    return localeToPageConfig;
+  }
+
+  _mergeGlobalConfigAndLocaleConfig(globalConfig, localizedConfig) {
+    return Object.assign({},
+      globalConfig,
+      {
+        experienceKey: localizedConfig.experienceKey,
+        apiKey: localizedConfig.apiKey,
+      }
+    );
+  }
+
+  // For each locale fallback specified in the locale_config, if there is a configName.[LOCALE].json, ADD/ASSIGN any config
+  _mergeConfigWithLocalizedFallbacks(pagesConfig, localeFallbacks) {
+    let pagesConfigsForLocale = { ...pagesConfig };
+    for (const [configName, pageConfig] of Object.entries(pagesConfigsForLocale)) {
+      if (localeFallbacks) {
+        for (let fallbackLocale of localeFallbacks) {
+          // MERGE PAGE CONFIG WITH FALLBACK CONFIG
+          pagesConfigsForLocale[configName] = this._mergeConfigs(pageConfig, pagesConfigsForLocale[`${configName}.${fallbackLocale}`]);
+        }
+      }
+    }
+    return pagesConfigsForLocale;
+  }
+
+  // If there is a pageName.[LOCALE].json instead of just a pageName.json, ADD/ASSIGN any config
+  // from the locale specific config for the regular one
+  _mergeConfigWithLocalizedConfig(pagesConfig, locale) {
+    let pagesConfigsForLocale = { ...pagesConfig };
+    for (const [configName, pageConfig] of Object.entries(pagesConfigsForLocale)) {
+      let pageName = this._getPageName(configName);
+      // If there is a pageName.[LOCALE].json instead of just a pageName.json, ADD/ASSIGN any config
+      // from the locale specific config for the regular one
+      pagesConfigsForLocale[pageName] = this._mergeConfigs(pageConfig, pagesConfigsForLocale[`${configName}.${locale}`]);
+    }
+    return pagesConfigsForLocale;
   }
 
   _getPageName(configName) {
