@@ -129,7 +129,7 @@ The upgrade command updates your current defaultTheme to the latest version.
 
 ###### Optional Arguments
 
---postUpgradeCommand
+--postUpgradeScript
 
-You can specify a command to be run post upgrade (like running an executable),
+You can specify a script to be run post upgrade,
 which will additionally receive the jambo config through command line arguments.
