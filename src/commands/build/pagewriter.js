@@ -4,85 +4,51 @@ const path = require('path');
 
 exports.PageWriter = class {
   constructor(config) {
-    this.pagesConfig = config.pagesConfig;
     this.verticalConfigs = config.verticalConfigs;
     this.global_config = config.global_config;
+    this.params = config.params;
+    this.env = config.env;
 
-    this.pagesDirectory = config.pagesDirectory;
     this.partialsDirectory = config.partialsDirectory;
     this.outputDirectory = config.outputDirectory;
-
-    this.env = config.env;
-    this.pageParamsFromLocale = config.pageParamsFromLocale;
-
-    this.urlFormatter = config.urlFormatter;
-    this.locale = config.locale;
   }
 
+  /**s
+   * Writes a file to the output directory per entry in this.verticalConfigs.
+   */
   writePages() {
-    let pageIdToTemplatePath = this._buildPageIdToTemplatePath();
-
-    // TODO this should technically only loop through the files for the locale we're currently on...
-    // this will reallyyyy slow down if we're looping through every page for every locale
-
-    // Write out a file to the output directory per file in the pages directory
-    fs.recurseSync(this.pagesDirectory, (path, relative, filename) => {
-      if (this._isValidFile(filename)) {
-        const pageId = filename.split('.')[0];
-        const pageConfig = this.pagesConfig[pageId];
-
-        // Ensure page config exists
-        this._ensurePageExists(pageConfig, pageId);
-
-        // Combine all config to build args for the template
-        const templateArguments = this._buildArgsForTemplate(pageConfig, path);
-
-        // Get template for page based on layout!
-        const pageLayout = templateArguments.layout; // TODO hmm
-        let template = this._getTemplate(pageLayout, pageIdToTemplatePath[pageId]);
-
-        // Compile the hbs
-        const outputHTML = template(templateArguments);
-
-        // Actually write file
-        console.log(`Writing output file for the '${pageId}' page`);
-        this._writeFile(
-          this._getPageUrl(pageId, path),
-          outputHTML
-        );
+    for (const [pageId, pageConfig] of Object.entries(this.verticalConfigs)) {
+      if (!pageConfig) {
+        throw new Error(`Error: No config found for page: ${pageId}`);
       }
-    });
-  }
-
-  // TODO this func is so messy
-  _buildPageIdToTemplatePath() {
-    let pageIdToTemplateExists = {};
-    fs.recurseSync(this.pagesDirectory, (path, relative, filename) => {
-      const pageId = filename.split('.')[0];
-      let localeForPage = this._getLocaleFromPageName(filename);
-      pageIdToTemplateExists[pageId] = pageIdToTemplateExists[pageId] || localeForPage === this.locale;
-    });
-
-    let pageIdToTemplatePath = {};
-    fs.recurseSync(this.pagesDirectory, (path, relative, filename) => {
-      const pageId = filename.split('.')[0];
-      let localeForPage = this._getLocaleFromPageName(filename);
-      let localizedPageTemplateExists = pageIdToTemplateExists[pageId];
-
-      if (localeForPage === this.locale || !localizedPageTemplateExists) {
-        pageIdToTemplatePath[pageId] = path;
+      if (!pageConfig.templatePath) {
+        throw new Error(`Error: No url found for page: ${pageId}`);
       }
-    });
 
-    return pageIdToTemplatePath;
+      console.log(`Writing output file for the '${pageId}' page`);
+
+      const path = pageConfig.templatePath; // TODO remove from object
+      delete pageConfig.templatePath;
+
+      const templateArguments = this._buildArgsForTemplate(pageConfig, path);
+      const template = this._getHandlebarsTemplate(templateArguments.layout, path);
+      const outputHTML = template(templateArguments);
+
+      fs.writeFileSync(
+        `${this.outputDirectory}/${pageConfig.url}`,
+        outputHTML
+      );
+    }
   }
 
-  _getLocaleFromPageName(filename) {
-    let pageParts = this._stripExtension(this._stripExtension(filename)).split('.');
-    return pageParts.length > 1 && pageParts[1];
-  }
-
-  _getTemplate(pageLayout, path) {
+  /**
+   * Gets the page template for a given path
+   *
+   * @param {string} pageLayout the path to the pageLayout
+   * @param {string} path the path to the page handlebars template
+   * @returns {HandlebarsTemplateDelegate<T>}
+   */
+  _getHandlebarsTemplate(pageLayout, path) {
     if (!pageLayout) {
       return hbs.compile(fs.readFileSync(path).toString());
     }
@@ -93,43 +59,29 @@ exports.PageWriter = class {
     return hbs.compile(fs.readFileSync(layoutPath).toString());
   }
 
-  _ensurePageExists(pageConfig, pageId) {
-    if (!pageConfig) {
-      throw new Error(`Error: No config found for page: ${pageId}`);
-    }
-  }
-
+  /**
+   * Merges the configuration to make the arguments for the templates
+   *
+   * @param {Object} pageConfig the configuration for the current page
+   * @param {string} path the path to the page handlebars template
+   * @returns {Object}
+   */
   _buildArgsForTemplate(pageConfig, path) {
     return Object.assign(
       {},
-      this.pageParamsFromLocale || {},
+      this.params || {},
       pageConfig,
       {
         verticalConfigs: this.verticalConfigs,
         global_config: this.globalConfig,
-        relativePath: this._calculateRelativePath(path), // TODO why not use fileSync's relative path for this??
+        relativePath: this._calculateRelativePath(path),
         env: this.env
      }
     );
   }
 
-  _getPageUrl(pageId, path) {
-    let pageUrlWithoutHbsExtension = this._stripExtension(path);
-    let pageExt = pageUrlWithoutHbsExtension.substring(pageUrlWithoutHbsExtension.lastIndexOf('.') + 1); // TODO this seems like a hack
-    let urlFormatter = this.urlFormatter || ((page, extension) => `${page}.${extension}`);
-    return `${this.outputDirectory}/${urlFormatter(pageId, pageExt)}`;
-  }
-
-  _writeFile(outputPath, outputHTML) {
-    fs.writeFileSync(outputPath, outputHTML);
-  }
-
   _calculateRelativePath(filePath) {
     return path.relative(path.dirname(filePath), "");
-  }
-
-  _isValidFile(fileName) {
-    return fileName && !fileName.startsWith('.');
   }
 
   _stripExtension(fn) {

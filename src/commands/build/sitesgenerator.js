@@ -8,7 +8,7 @@ const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const { PageWriter } = require('./pagewriter');
-const { LocaleTransformer } = require('./localetransformer');
+const { GeneratedData } = require('../../models/generateddata');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -49,13 +49,20 @@ exports.SitesGenerator = class {
           }
         }
       }
-    })
+    });
 
-    const globalConfigName = 'global_config';
-    if (!pagesConfig[globalConfigName]) {
-      console.error(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory, exiting.');
-      return;
-    }
+    // Find the page that's the best match for the locale
+    let pageTemplateInfo = [];
+    fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
+      if (this._isValidFile(filename)) {
+        pageTemplateInfo.push({
+          path: path,
+          pageId: this._getPageId(filename),
+          locale: this._getLocale(filename) || ''
+        });
+      }
+    });
+    const GENERATED_DATA = new GeneratedData(pagesConfig, pageTemplateInfo, config.dirs.config);
 
     console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
@@ -68,13 +75,6 @@ exports.SitesGenerator = class {
 
     // Register all custom partials.
     this._registerCustomPartials(config.dirs.partials);
-
-    const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
-      if (key !== globalConfigName) {
-        object[key] = pagesConfig[key];
-      }
-      return object;
-    }, {});
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
@@ -89,45 +89,69 @@ exports.SitesGenerator = class {
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
-    const localeConfigName = 'locale_config';
-    if (!pagesConfig[localeConfigName]) {
-      console.warn(`Cannot find ${localeConfigName} file in \'${config.dirs.config}\' directory, writing pages without locale information.`);
+    for (let locale of GENERATED_DATA.getLocales()) {
+      console.log(`Writing files for '${locale}' locale`);
       new PageWriter({
         pagesDirectory: config.dirs.pages,
         partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
-        globalConfig: pagesConfig[globalConfigName],
-        pagesConfig: pagesConfig,
-        verticalConfigs: verticalConfigs,
+        globalConfig: GENERATED_DATA.getGlobalConfig(locale),
+        verticalConfigs: GENERATED_DATA.getVerticalConfigs(locale),
         env: env,
       }).writePages();
-    } else {
-      let localeToPageConfig = new LocaleTransformer({
-        pagesConfig: pagesConfig,
-        localeConfigName: localeConfigName,
-        globalConfigName: globalConfigName,
-      }).transformConfigsForLocale();
-
-      for (const [localeName, localeInfo] of Object.entries(localeToPageConfig)) {
-        console.log(`Writing files for '${localeName}' locale`);
-
-        new PageWriter({
-          pagesDirectory: config.dirs.pages,
-          partialsDirectory: config.dirs.partials,
-          outputDirectory: config.dirs.output,
-          globalConfig: localeInfo.globalConfig,
-          pagesConfig: localeInfo.pagesConfig,
-          verticalConfigs: localeInfo.verticalConfigs,
-          env: env,
-          urlFormatter: localeInfo.urlFormatter,
-          pageParamsFromLocale: localeInfo.pageParamsFromLocale,
-          locale: localeName,
-        }).writePages();
-      }
     }
 
-
     console.log('Done.');
+  }
+
+  /**
+   * Returns a map of pageId to pageTemplatePath, where the pageTemplatePath is the path
+   * to the page template that should be used for the given locale.
+   *
+   * @param {Object} pagesDirectory the path to the pages directory
+   * @param {string} locale the current locale
+   * @returns {Object}
+   */
+  _determineWhichPageTemplatesToUse (pagesDirectory, locale) {
+    let localizedPages = [];
+    fs.recurseSync(pagesDirectory, (path, relative, filename) => {
+      if (this._isValidFile(filename) && this._getLocale(filename) === locale) {
+        localizedPages.push(this._getPageId(filename));
+      }
+    });
+
+    let pageIdToPageTemplatePath = {};
+    fs.recurseSync(pagesDirectory, (path, relative, filename) => {
+      const pageId = this._getPageId(filename);
+      const isForCurrentLocale = this._getLocale(filename) === locale;
+
+      if (isForCurrentLocale || !localizedPages.includes(pageId)) {
+        pageIdToPageTemplatePath[pageId] = path;
+      }
+    });
+
+    return pageIdToPageTemplatePath;
+  };
+
+  /**
+   * Extracts the pageId from a given file name
+   *
+   * @param {string} filename the file name of the page handlebars template
+   * @returns {string}
+   */
+  _getPageId(filename) {
+    return filename.split('.')[0];
+  }
+
+  /**
+   * Extracts the locale from a given file name
+   *
+   * @param {string} filename the file name of the page handlebars template
+   * @returns {string}
+   */
+  _getLocale(filename) {
+    let pageParts = this._stripExtension(this._stripExtension(filename)).split('.');
+    return pageParts.length > 1 && pageParts[1];  // TODO seems brittle
   }
 
   /**
