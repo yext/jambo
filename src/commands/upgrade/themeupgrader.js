@@ -10,7 +10,7 @@ const git = simpleGit();
 
 /**
  * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest version.
- * It has detects whether the theme was imported as a submodule or raw files, then handles
+ * It first detects whether the theme was imported as a submodule or raw files, then handles
  * the upgrade accordingly.
  */
 exports.ThemeUpgrader = class {
