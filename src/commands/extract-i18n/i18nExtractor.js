@@ -29,7 +29,10 @@ exports.i18nExtractor = class {
   async _parseGitignorePaths() {
     if (await fsExtra.pathExists('.gitignore')) {
       const ignoredPaths = await fsExtra.readFile('.gitignore', 'utf-8');
-      return ignoredPaths.split('\n');
+      return ignoredPaths.split('\n').map(pathname => {
+          const isFile = path.extname(pathname);
+          return isFile ? pathname : `${pathname}/**/*`
+        });
     }
     return [];
   }

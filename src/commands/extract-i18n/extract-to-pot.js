@@ -32,7 +32,6 @@ function extractJsToPot(options) {
       }
     })
   ]);
-
   options.directories.forEach(dirpath => {
     const directoryGlob = `${dirpath}/**/*.js`;
     jsParser.parseFilesGlob(directoryGlob, { ignore: options.ignore });
@@ -44,8 +43,7 @@ function extractJsToPot(options) {
 async function appendHbsToPot(options) {
   const directoryGlobs = options.directories.map(dirpath => `${dirpath}/**/*.hbs`);
   const ignoreGlobs = options.ignore.map(dirpath => `!${dirpath}`);
-  const globFiles = await globby([...directoryGlobs, ...ignoreGlobs]);
-  const files = [...globFiles, ...options.files];
+  const files = await globby([...directoryGlobs, ...options.files, ...ignoreGlobs]);
 
   // For more detail see https://github.com/gmarty/xgettext
   const args = [
