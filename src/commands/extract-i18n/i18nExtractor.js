@@ -12,6 +12,7 @@ exports.i18nExtractor = class {
    */
   async extract() {
     const { files, directories } = this._getInputFilesAndDirs();
+    directories.push('static');
     const gitignorePaths = await this._parseGitignorePaths();
     const options = {
       files: files,
