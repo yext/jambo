@@ -127,8 +127,7 @@ const options = yargs
     argv => {
       const extractor = new i18nExtractor(jamboConfig);
       extractor.extract();
-    }
-  )
+    })
   .argv;
 
   /**

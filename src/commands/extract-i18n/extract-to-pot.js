@@ -3,6 +3,26 @@ const { spawnSync } = require('child_process');
 const globby = require('globby');
 const { GettextExtractor, JsExtractors } = require('gettext-extractor');
 
+/**
+ * Extracts i18n strings from .js files to an output file (defaulting to message.pot),
+ * then extracts i18n strings from .hbs files and appends to that output file.
+ * @param {Array.<string>} options.files
+ * @param {Array.<string>} options.directories
+ * @param {Array.<string>} options.ignore
+ * @param {string} options.output
+ */
+module.exports = async function (options) {
+  const optionsWithDefaulting = {
+    files: [],
+    directories: [],
+    ignore: [],
+    output: 'messages.pot',
+    ...options
+  };
+  extractJsToPot(optionsWithDefaulting);
+  await appendHbsToPot(optionsWithDefaulting);
+}
+
 function extractJsToPot(options) {
   const extractor = new GettextExtractor();
 
@@ -53,16 +73,4 @@ async function appendHbsToPot(options) {
     '--join-existing', true
   ];
   spawnSync('npx', ['xgettext-template', ...args]);
-}
-
-module.exports = async function (options) {
-  const optionsWithDefaulting = {
-    files: [],
-    directories: [],
-    ignore: [],
-    output: 'messages.pot',
-    ...options
-  };
-  extractJsToPot(optionsWithDefaulting);
-  await appendHbsToPot(optionsWithDefaulting);
 }

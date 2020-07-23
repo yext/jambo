@@ -25,15 +25,15 @@ exports.i18nExtractor = class {
 
   /**
    * Gets the list of gitignored paths, if a .gitignore file exists.
-   * @returns {Array.<string>}
+   * @returns {Promise.<Array.<string>>}
    */
   async _parseGitignorePaths() {
     if (await fsExtra.pathExists('.gitignore')) {
       const ignoredPaths = await fsExtra.readFile('.gitignore', 'utf-8');
       return ignoredPaths.split('\n').map(pathname => {
-          const isFile = path.extname(pathname);
-          return isFile ? pathname : `${pathname}/**/*`
-        });
+        const isFile = path.extname(pathname);
+        return isFile ? pathname : `${pathname}/**/*`;
+      });
     }
     return [];
   }
@@ -50,6 +50,6 @@ exports.i18nExtractor = class {
       const isFile = path.extname(pathname);
       isFile ? files.push(pathname) : directories.push(pathname);
     }
-    return { files: files, directories: directories }
+    return { files: files, directories: directories };
   }
 }
