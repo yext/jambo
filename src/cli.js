@@ -122,14 +122,20 @@ const options = yargs
     'upgrade the default theme to the latest version',
     yargs => {
       return yargs
-        .option('postUpgradeScript', {
-            description: 'a script that is executed after the upgrade is complete.',
-            type: 'string'
-          });
+        .option('disableScript', {
+            description: 'disable automatic execution ./upgrade.js after the upgrade is done',
+            type: 'boolean'
+          })
+        .option('isLegacy', {
+          description: 'whether to pass the --isLegacy flag to ./upgrade.js',
+          type: 'boolean'
+        })
     },
     argv => {
       const themeUpgrader = new ThemeUpgrader(jamboConfig);
-      themeUpgrader.upgrade(jamboConfig.defaultTheme, argv.postUpgradeScript).catch(console.error);
+      themeUpgrader
+        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
+        .catch(console.error);
     })
   .argv;
 

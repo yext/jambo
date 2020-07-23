@@ -17,14 +17,16 @@ exports.ThemeUpgrader = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
     this._themesDir = jamboConfig.dirs.themes;
+    this.upgradeScript = 'upgrade.js';
   }
 
   /**
    * Upgrades the given theme to the latest version.
    * @param {string} themeName 
-   * @param {string} postUpgradeScript
+   * @param {boolean} disableScript
+   * @param {booolean} isLegacy
    */
-  async upgrade(themeName, postUpgradeScript) {
+  async upgrade(themeName, disableScript, isLegacy) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
       throw new Error(`theme "${themeName}" not found within the "${this._themesDir}" folder`)
@@ -32,22 +34,33 @@ exports.ThemeUpgrader = class {
     await this._isGitSubmodule(themePath)
       ? await this._upgradeSubmodule(themePath)
       : await this._recloneTheme(themeName, themePath);
-    if (postUpgradeScript) {
-      this._executePostUpgradeScript(postUpgradeScript);
+    const upgradeScriptPath = path.join(themePath, this.upgradeScript);
+    if (!disableScript) {
+      this._executePostUpgradeScript(upgradeScriptPath, isLegacy);
+    }
+    if (isLegacy) {
+      console.log(
+        'Legacy theme upgrade complete. \n' +
+        'You may need to manually reinstall dependencies (e.g. an npm install).');
     } else {
       console.log(
-        'Theme upgrade complete, but no post upgrade commands were run.\n'
-        + 'You may need to manually reinstall dependencies (e.g. an npm install).');
+        'Theme upgrade complete. \n' +
+        'You may need to manually reinstall dependencies (e.g. an npm install).');
     }
   }
 
   /**
-   * @param {string} postUpgradeScript e.g. 'echo "start upgrade"; ./my-upgrade-script.sh'
+   * Executes the upgrade script, and outputs its stdout and stderr.
+   * @param {string} upgradeScriptPath
+   * @param {boolean} isLegacy
    */
-  _executePostUpgradeScript (postUpgradeScript) {
+  _executePostUpgradeScript (upgradeScriptPath, isLegacy) {
     const customCommand = new CustomCommand({
-      executable: `./${postUpgradeScript}`,
+      executable: `./${upgradeScriptPath}`
     });
+    if (isLegacy) {
+      customCommand.addArgs(['--isLegacy'])
+    }
     const { stdout, stderr } = new CustomCommandExecuter(this.config).execute(customCommand);
     const stdoutString = stdout.toString().trim();
     const stderrString = stderr.toString().trim();
