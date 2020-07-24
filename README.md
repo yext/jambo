@@ -13,7 +13,7 @@ ___
 
 ## Usage
 
-Jambo has 6 official commands, init, import, override, page, build, and upgrade.
+Jambo has 6 official commands: init, import, override, page, build, and upgrade.
 
 #### Init
 
@@ -137,5 +137,6 @@ Defaults to false.
 
 --isLegacy _true/false_
 
-You can signal whether to pass an --isLegacy flag to the theme's upgrade.js
-Defaults to false.
+You can signal whether to pass an --isLegacy flag to the theme's upgrade.js.
+This can be useful when you need different/additional upgrade logic to upgrade
+from older versions of a theme. Defaults to false.
