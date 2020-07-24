@@ -9,7 +9,7 @@ describe('LocalFileParser works correctly', () => {
     const expectedTranslations = {
       Item: 'Article',
       Item_plural: 'Articles',
-      Hello: 'Bonjour',
+      'Hello {{name}}': 'Bonjour {{name}}',
       Child_male: 'fils',
       Child_female: 'fille'
     };
