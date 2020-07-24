@@ -126,10 +126,16 @@ npx jambo upgrade
 ```
 
 The upgrade command updates your current defaultTheme to the latest version.
+It will also automatically execute the theme's upgrade.js script.
 
 ###### Optional Arguments
 
---postUpgradeScript
+--disableScript _true/false_
 
-You can specify a script to be run post upgrade,
-which will additionally receive the jambo config through command line arguments.
+You can disable automatic execution of the upgrade.js script in the theme.
+Defaults to false.
+
+--isLegacy _true/false_
+
+You can signal whether to pass an --isLegacy flag to the theme's upgrade.js
+Defaults to false.
