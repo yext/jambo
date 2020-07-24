@@ -11,7 +11,7 @@ exports.i18nExtractor = class {
    * Extracts i18n strings from a jambo repo into a .pot file.
    */
   async extract() {
-    const { files, directories } = this._getInputFilesAndDirs();
+    const { files, directories } = this._getFilesAndDirsFromJamboConfig();
     directories.push('static');
     const gitignorePaths = await this._parseGitignorePaths();
     const options = {
@@ -39,10 +39,10 @@ exports.i18nExtractor = class {
   }
 
   /**
-   * Returns an array of files and array of directories to search for i18n strings.
+   * Returns an array of files and array of directories contained in the jamboConfig.
    * @returns {{files: Array.<string>, directories: Array.<string>}}
    */
-  _getInputFilesAndDirs() {
+  _getFilesAndDirsFromJamboConfig() {
     const { themes, pages, partials } = this.config.dirs;
     const files = [];
     const directories = [];
