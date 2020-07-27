@@ -30,24 +30,31 @@ exports.CustomCommandExecuter = class {
     }
 
     /**
-     * Makes command line flags for the various Jambo directories. Ensures that the
-     * absolute path for all directories is used.
+     * Makes command line flags for all of the properties in the given jambo config.
      * 
      * @param {Object} jamboConfig The Jambo config object.
      * @returns {Array} An array containing the flags to add to any {@link CustomCommand}.
      */
     _generateJamboFlags(jamboConfig) {
         const jamboFlags = [];
-
+        const prefix = '--jambo';
         const getAbsolutePath = jamboDir => {
             return path.isAbsolute(jamboDir) ? 
                 jamboDir : 
                 path.join(process.cwd(), jamboDir);
         }
         Object.entries(jamboConfig.dirs).forEach(([name, value]) => {
-            jamboFlags.push(`--jambo.${name}_dir`);
-            jamboFlags.push(getAbsolutePath(value));
+            jamboFlags.push([prefix, 'dirs', name].join('.'));  
+            if (Array.isArray(value)) {
+                jamboFlags.push(value.map(dirpath => getAbsolutePath(dirpath)));
+            } else {
+                jamboFlags.push(getAbsolutePath(value));
+            }
         });
+        if (jamboConfig.defaultTheme) {
+            jamboFlags.push([prefix, 'defaultTheme'].join('.'));
+            jamboFlags.push(jamboConfig.defaultTheme);
+        }
 
         return jamboFlags;
     }

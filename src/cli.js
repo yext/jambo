@@ -7,6 +7,7 @@ const overrideCommand = require('./commands/override/themeshadower');
 const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
 const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
+const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
@@ -115,6 +116,26 @@ const options = yargs
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
       sitesGenerator.generate(argv.jsonEnvVars);
+    })
+  .command(
+    'upgrade',
+    'upgrade the default theme to the latest version',
+    yargs => {
+      return yargs
+        .option('disableScript', {
+            description: 'disable automatic execution ./upgrade.js after the upgrade is done',
+            type: 'boolean'
+          })
+        .option('isLegacy', {
+          description: 'whether to pass the --isLegacy flag to ./upgrade.js',
+          type: 'boolean'
+        })
+    },
+    argv => {
+      const themeUpgrader = new ThemeUpgrader(jamboConfig);
+      themeUpgrader
+        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
+        .catch(console.error);
     })
   .argv;
 
