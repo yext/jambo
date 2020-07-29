@@ -1,39 +1,38 @@
 const extractToPot = require('./extract-to-pot');
 const path = require('path');
 const fsExtra = require('fs-extra');
+const fs = require('fs');
 
 exports.i18nExtractor = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
+    const { files, directories } = this._getFilesAndDirsFromJamboConfig();
+    this.files = files;
+    this.directories = directories;
+    this.gitignorePaths = this._parseGitignorePaths();
   }
 
   /**
-   * Extracts i18n strings from a jambo repo into a .pot file.
+   * Extracts i18n strings from a jambo repo for a given locale
    */
-  async extract() {
-    const { files, directories } = this._getFilesAndDirsFromJamboConfig();
-    directories.push('static');
-    const gitignorePaths = await this._parseGitignorePaths();
+  extract(locale) {
     const options = {
-      files: files,
-      directories: directories,
-      output: 'messages.pot',
-      ignore: gitignorePaths
+      files: this.files,
+      directories: this.directories,
+      output: `${locale}.pot`,
+      ignore: this.gitignorePaths
     };
-    await extractToPot(options);
+    extractToPot(options);
   }
 
   /**
    * Gets the list of gitignored paths, if a .gitignore file exists.
    * @returns {Promise.<Array.<string>>}
    */
-  async _parseGitignorePaths() {
-    if (await fsExtra.pathExists('.gitignore')) {
-      const ignoredPaths = await fsExtra.readFile('.gitignore', 'utf-8');
-      return ignoredPaths.split('\n').map(pathname => {
-        const isFile = path.extname(pathname);
-        return isFile ? pathname : `${pathname}/**/*`;
-      });
+  _parseGitignorePaths() {
+    if (fsExtra.pathExistsSync('.gitignore')) {
+      const ignoredPaths = fs.readFileSync('.gitignore', 'utf-8');
+      return ignoredPaths.split('\n').filter(pathname => pathname);
     }
     return [];
   }
@@ -43,10 +42,10 @@ exports.i18nExtractor = class {
    * @returns {{files: Array.<string>, directories: Array.<string>}}
    */
   _getFilesAndDirsFromJamboConfig() {
-    const { themes, pages, partials } = this.config.dirs;
+    const { pages, partials } = this.config.dirs;
     const files = [];
     const directories = [];
-    for (const pathname of [themes, pages, ...partials]) {
+    for (const pathname of [pages, ...partials]) {
       const isFile = path.extname(pathname);
       isFile ? files.push(pathname) : directories.push(pathname);
     }
