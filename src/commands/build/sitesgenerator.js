@@ -286,7 +286,7 @@ exports.SitesGenerator = class {
     }
   }
 
-  _registerHelpers() {
+  _registerHelpers(translator) {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
     });
@@ -346,6 +346,15 @@ exports.SitesGenerator = class {
      */
     hbs.registerHelper('deepMerge', function(...args) {
       return _.merge({}, ...args.slice(0, args.length - 1));
+    });
+
+    /**
+     * Performs a simple translation of the provided phrase. Interpolation is
+     * supported as well.
+     */
+    hbs.registerHelper('translate', function (phrase, options) {
+      const interpValues = options.hash;
+      return translator.translate(phrase, interpValues);
     });
   }
 
