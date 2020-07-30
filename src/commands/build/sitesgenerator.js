@@ -31,7 +31,7 @@ exports.SitesGenerator = class {
     const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
     console.log('Jambo Injected Data:', env);
-
+    console.log('testing');
     console.log('Reading config files');
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
@@ -281,6 +281,10 @@ exports.SitesGenerator = class {
 
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
+    });
+
+    hbs.registerHelper('concat', function(prefix, id) {
+      return (prefix + id);
     });
 
     hbs.registerHelper('babel', function(options) {
