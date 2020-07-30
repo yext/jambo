@@ -283,6 +283,10 @@ exports.SitesGenerator = class {
       return hbs.partials[fileName];
     });
 
+    hbs.registerHelper('concat', function(prefix, id) {
+      return (prefix + id);
+    });
+
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
