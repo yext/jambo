@@ -2,6 +2,7 @@ const globby = require('globby');
 const { GettextExtractor, JsExtractors } = require('gettext-extractor');
 const xgettextTemplate = require('xgettext-template');
 const path = require('path');
+const fs = require('fs');
 
 /**
  * Extracts i18n strings from .js files to an output file (defaulting to message.pot),
@@ -12,48 +13,65 @@ const path = require('path');
  * @param {Object} options.translateMethods the method names to search for
  * @param {string} options.output
  */
-module.exports = function (options) {
+function extractTranslations(options) {
   const optionsWithDefaulting = {
     files: [],
     directories: [],
     ignore: [],
     output: 'messages.pot',
-    ...options,
     translateMethods: {
       translate: 'translate',
       translatePlural: 'translateN',
       translateWithContext: 'translateC',
       translatePluralWithContext: 'translateCN',
-      ...options.translateMethods
-    }
+    },
+    ...options,
   };
-  extractJsToPot(optionsWithDefaulting);
-  appendHbsToPot(optionsWithDefaulting);
+  extractJsTranslations(optionsWithDefaulting);
+  extractHbsTranslations(optionsWithDefaulting);
 }
+module.exports = extractTranslations;
 
-function extractJsToPot(options) {
+function extractJsTranslations(options) {
   const extractor = new GettextExtractor();
   const {
     translate, translatePlural, translateWithContext, translatePluralWithContext
   } = options.translateMethods;
 
-  const jsParser = extractor.createJsParser([
-    JsExtractors.callExpression(translate, {
+  const extractors = [];
+  if (translate) {
+    translateExtractor = JsExtractors.callExpression(translate, {
       arguments: { text: 0 }
-    }),
-    JsExtractors.callExpression(translatePlural, {
+    });
+    extractors.push(translateExtractor);
+  }
+
+  if (translatePlural) {
+    translatePluralExtractor = JsExtractors.callExpression(translatePlural, {
       arguments: { text: 0, textPlural: 1 }
-    }),
-    JsExtractors.callExpression(translateWithContext, {
+    });
+    extractors.push(translatePluralExtractor);
+  }
+
+  if (translateWithContext) {
+    translateWithContextExtractor = JsExtractors.callExpression(translateWithContext, {
       arguments: { text: 0, context: 1 }
-    }),
-    JsExtractors.callExpression(translatePluralWithContext, {
+    });
+    extractors.push(translateWithContextExtractor);
+  }
+
+  if (translatePluralWithContext) {
+    translatePluralWithContextExtractor = JsExtractors.callExpression(translatePluralWithContext, {
       arguments: { text: 0, textPlural: 1, context: 2 }
-    })
-  ]);
+    });
+    extractors.push(translatePluralWithContextExtractor);
+  }
+
+  const jsParser = extractor.createJsParser(extractors);
 
   const ignore = options.ignore.map(pathname => {
-    return path.extname(pathname) ? pathname : `${pathname}/**/*`
+    const isFile = fs.existsSync(pathname) && fs.lstatSync(pathname).isFile();
+    return isFile ? pathname : `${pathname}/**/*`
   });
   options.directories.forEach(dirpath => {
     const directoryGlob = `${dirpath}/**/*.js`;
@@ -67,7 +85,7 @@ function extractJsToPot(options) {
   extractor.savePotFile(options.output);
 }
 
-function appendHbsToPot(options) {
+function extractHbsTranslations(options) {
   const directoryGlobs = options.directories.map(dirpath => `${dirpath}/**/*.hbs`);
   const ignoreGlobs = options.ignore.map(dirpath => `!${dirpath}`);
   const files = options.files.filter(filepath => path.extname(filepath) === '.hbs');
@@ -77,17 +95,14 @@ function appendHbsToPot(options) {
   } = options.translateMethods;
 
   /** 
-   * Needed because xgettext-template does an if check for the callback,
-   * instead of setting it to an empty function if one is not specified.
-   * The output .pot file will not be written to if the callback is falsy.
-   * @param {Buffer} potContent the .pot file content extracted from the .hbs files
+   * The empty callback is needed because xgettext-template does an if check for the callback,
+   * and if the callback is not present will not write to the output file.
    */
-  const necessaryEmptyCallback = potContent => {};
   xgettextTemplate(input, {
     output: options.output,
     keyword:
       `${translate}, ${translatePlural}:1,2, ${translateWithContext}:1,2c, ${translatePluralWithContext}:1,2,3c`,
     'join-existing': true,
     'force-po': true
-  }, necessaryEmptyCallback);
+  }, () => {});
 }

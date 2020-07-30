@@ -1,8 +1,10 @@
-const extractToPot = require('./extract-to-pot');
-const path = require('path');
+const extractTranslations = require('./extracttranslations');
 const fsExtra = require('fs-extra');
 const fs = require('fs');
 
+/**
+ * i18nExtractor extracts i18n messages from a jambo repo.
+ */
 exports.i18nExtractor = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
@@ -22,7 +24,7 @@ exports.i18nExtractor = class {
       output: `${locale}.pot`,
       ignore: this.gitignorePaths
     };
-    extractToPot(options);
+    extractTranslations(options);
   }
 
   /**
@@ -46,7 +48,7 @@ exports.i18nExtractor = class {
     const files = [];
     const directories = [];
     for (const pathname of [pages, ...partials]) {
-      const isFile = path.extname(pathname);
+      const isFile = fs.existsSync(pathname) && fs.lstatSync(pathname).isFile();
       isFile ? files.push(pathname) : directories.push(pathname);
     }
     return { files: files, directories: directories };
