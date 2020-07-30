@@ -1,3 +1,5 @@
+const { stripExtension } = require('../utils/fileutils');
+
 /**
  * Data model for the locale_config file.
  */
@@ -62,15 +64,33 @@ exports.LocaleConfig = class {
   }
 
   /**
-   * Returns the URL formatting function for a given locale
+   * Returns the URL for a given pageId, pageExtension, and locale
    *
-   * @param {Object} locale
-   * @param {Object} urlOverride the pattern to use if overriding the URL pattern for this locale
+   * @param {string} pageId
+   * @param {string} path
+   * @param {string} locale
    * @returns {function}
    */
-  getUrlFormatter (locale) {
-    const language = locale ? locale.substring(0, locale.lastIndexOf("-")) || locale : ''; // TODO do we wanna standardize with underscores?
-    const basicUrlPattern = locale === this._defaultLocale ? this._baseLocalePattern : this._defaultUrlPattern;
+  getUrl (pageId, path, locale) {
+    const pathWithoutHbsExtension = stripExtension(path);
+    const pageExt = pathWithoutHbsExtension
+      .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);
+    return this._getUrlFormatter(locale)(pageId, pageExt);
+  }
+
+  /**
+   * Returns the URL formatting function for a given locale
+   *
+   * @param {string} locale
+   * @returns {function}
+   */
+  _getUrlFormatter (locale) {
+    const language = locale
+      ? locale.substring(0, locale.lastIndexOf("-")) || locale
+      : '';
+    const basicUrlPattern = locale === this._defaultLocale
+      ? this._baseLocalePattern
+      : this._defaultUrlPattern;
     let urlPattern = this._getUrlOverride(locale) || basicUrlPattern || '{pageName}.{pageExt}';
     return (pageName, pageExt) => {
       return urlPattern

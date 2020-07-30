@@ -1,7 +1,7 @@
 /**
  * Determines which pages should be written based on locale information.
  */
-exports.PageDeterminer = class {
+exports.PageResolver = class {
   /**
    * Returns a map of pageId to pageTemplatePath, where the pageTemplatePath is the path
    * to the page template that should be used for the given locale.
@@ -59,37 +59,5 @@ exports.PageDeterminer = class {
       }
     }
     return uniquePageIds;
-  }
-
-  /**
-   * Extracts the pageId from a given file name
-   *
-   * @param {string} filename the file name of the page handlebars template
-   * @returns {string}
-   */
-  _getPageId(filename) {
-    return filename.split('.')[0];
-  }
-
-  /**
-   * Extracts the locale from a given file name
-   *
-   * @param {string} filename the file name of the page handlebars template
-   * @returns {string}
-   */
-  _getLocale(filename) {
-    let pageParts = this._stripExtension(this._stripExtension(filename)).split('.');
-    return pageParts.length > 1 && pageParts[1];  // TODO seems brittle
-  }
-
-  _stripExtension(fn) {
-    if (fn.indexOf(".") === -1) {
-      return fn;
-    }
-    return fn.substring(0, fn.lastIndexOf("."));
-  }
-
-  _isValidFile(fileName) {
-    return fileName && !fileName.startsWith('.');
   }
 }

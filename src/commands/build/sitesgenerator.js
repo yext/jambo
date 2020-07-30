@@ -9,6 +9,7 @@ const _ = require('lodash');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const { PageWriter } = require('./pagewriter');
 const { GeneratedData } = require('../../models/generateddata');
+const { stripExtension } = require('../../utils/fileutils');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -38,7 +39,7 @@ exports.SitesGenerator = class {
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        let pageId = this._stripExtension(relative);
+        let pageId = stripExtension(relative);
         try {
           pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (e) {
@@ -51,7 +52,6 @@ exports.SitesGenerator = class {
       }
     });
 
-    // Find the page that's the best match for the locale
     let pageTemplateInfo = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
@@ -105,35 +105,6 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Returns a map of pageId to pageTemplatePath, where the pageTemplatePath is the path
-   * to the page template that should be used for the given locale.
-   *
-   * @param {Object} pagesDirectory the path to the pages directory
-   * @param {string} locale the current locale
-   * @returns {Object}
-   */
-  _determineWhichPageTemplatesToUse (pagesDirectory, locale) {
-    let localizedPages = [];
-    fs.recurseSync(pagesDirectory, (path, relative, filename) => {
-      if (this._isValidFile(filename) && this._getLocale(filename) === locale) {
-        localizedPages.push(this._getPageId(filename));
-      }
-    });
-
-    let pageIdToPageTemplatePath = {};
-    fs.recurseSync(pagesDirectory, (path, relative, filename) => {
-      const pageId = this._getPageId(filename);
-      const isForCurrentLocale = this._getLocale(filename) === locale;
-
-      if (isForCurrentLocale || !localizedPages.includes(pageId)) {
-        pageIdToPageTemplatePath[pageId] = path;
-      }
-    });
-
-    return pageIdToPageTemplatePath;
-  };
-
-  /**
    * Extracts the pageId from a given file name
    *
    * @param {string} filename the file name of the page handlebars template
@@ -150,7 +121,7 @@ exports.SitesGenerator = class {
    * @returns {string}
    */
   _getLocale(filename) {
-    let pageParts = this._stripExtension(this._stripExtension(filename)).split('.');
+    let pageParts = stripExtension(stripExtension(filename)).split('.');
     return pageParts.length > 1 && pageParts[1];  // TODO seems brittle
   }
 
@@ -242,13 +213,6 @@ exports.SitesGenerator = class {
     }
   }
 
-  _stripExtension(fn) {
-    if (fn.indexOf(".") === -1) {
-      return fn;
-    }
-    return fn.substring(0, fn.lastIndexOf("."));
-  }
-
   /**
    * Registers all custom Handlebars partials in the provided paths.
    *
@@ -284,14 +248,14 @@ exports.SitesGenerator = class {
       fs.recurseSync(partialsPath, (path, relative, filename) => {
         if (this._isValidFile(filename)) {
           const partialName = useFullyQualifiedName
-            ? this._stripExtension(path)
-            : this._stripExtension(relative);
+            ? stripExtension(path)
+            : stripExtension(relative);
           hbs.registerPartial(partialName, fs.readFileSync(path).toString());
         }
       });
     } else if (pathExists) {
       hbs.registerPartial(
-        this._stripExtension(partialsPath),
+        stripExtension(partialsPath),
         fs.readFileSync(partialsPath).toString());
     }
   }

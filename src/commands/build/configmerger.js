@@ -17,7 +17,7 @@ exports.ConfigMerger = class {
     let pageConfigs = { ...verticalConfigs };
     if (localeFallbacks) {
       for (const configName of Object.keys(pageConfigs)) {
-        for (let fallbackLocale of localeFallbacks) {
+        for (let fallbackLocale of localeFallbacks) { // TODO is this backwards
           pageConfigs[configName] = this._mergeConfigs(
             pageConfigs[configName],
             pageConfigs[`${configName}.${fallbackLocale}`]

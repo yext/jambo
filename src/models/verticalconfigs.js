@@ -1,6 +1,6 @@
 const { LocaleConfig } = require('./localeconfig');
 const { ConfigMerger } = require('../commands/build/configmerger');
-const { PageDeterminer } = require('../commands/build/pagedeterminer');
+const { PageResolver } = require('../commands/build/pageresolver');
 
 /**
  * Data model for the vertical config files.
@@ -24,7 +24,7 @@ exports.VerticalConfigs = class {
     this._localeToConfigs = {};
     for (let locale of locales) {
       let localeFallbacks = localeConfig.getFallbacks(locale);
-      let pageIdToPath = new PageDeterminer().buildPageIdToPath(
+      let pageIdToPath = new PageResolver().buildPageIdToPath(
         pageTemplateInfo,
         locale || this.locale,
         localeFallbacks
@@ -41,25 +41,10 @@ exports.VerticalConfigs = class {
 
         let pageConfig = this._localeToConfigs[locale][pageId];
         const path = pageIdToPath[pageId];
-        const urlFormatter = localeConfig.getUrlFormatter(locale);
         pageConfig.templatePath = pageIdToPath[pageId];
-        pageConfig.url = this._getPageUrl(pageId, path, urlFormatter);
+        pageConfig.url = localeConfig.getUrl(pageId, path, locale);
       }
     }
-  }
-
-  /**
-   * Gets a function to format the URL
-   *
-   * @param {Object} pageId the configuration for the current page
-   * @param {string} path the path to the page handlebars template
-   * @returns {function} the URL formatting function
-   */
-  _getPageUrl(pageId, path, urlFormatter) {
-    const pathWithoutHbsExtension = path.substring(0, path.lastIndexOf("."));
-    const pageExt = pathWithoutHbsExtension.substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);
-    const formattingFunc = urlFormatter || ((page, extension) => `${page}.${extension}`);
-    return formattingFunc(pageId, pageExt);
   }
 
   /**

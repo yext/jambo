@@ -2,10 +2,13 @@ const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
 
+/**
+ * Writes output files for the specified pages.
+ */
 exports.PageWriter = class {
   constructor(config) {
     this.verticalConfigs = config.verticalConfigs;
-    this.global_config = config.global_config;
+    this.globalConfig = config.globalConfig;
     this.params = config.params;
     this.env = config.env;
 
@@ -27,7 +30,7 @@ exports.PageWriter = class {
 
       console.log(`Writing output file for the '${pageId}' page`);
 
-      const path = pageConfig.templatePath; // TODO remove from object
+      const path = pageConfig.templatePath;
       delete pageConfig.templatePath;
 
       const templateArguments = this._buildArgsForTemplate(pageConfig, path);
@@ -81,13 +84,6 @@ exports.PageWriter = class {
   }
 
   _calculateRelativePath(filePath) {
-    return path.relative(path.dirname(filePath), "");
-  }
-
-  _stripExtension(fn) {
-    if (fn.indexOf(".") === -1) {
-      return fn;
-    }
-    return fn.substring(0, fn.lastIndexOf("."));
+    return path.relative(filePath, '');
   }
 }

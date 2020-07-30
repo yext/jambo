@@ -55,7 +55,7 @@ exports.GeneratedData = class {
   }
 
   /**
-   * Gets the vertical config set for a given locale
+   * Gets the params for a given locale
    *
    * @param {string} locale
    * @returns {Object}
