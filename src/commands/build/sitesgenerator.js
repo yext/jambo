@@ -7,6 +7,11 @@ const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
+const { PageWriter } = require('./pagewriter');
+const { PageSetCreator } = require('./pagesetcreator');
+const { GeneratedData } = require('../../models/generateddata');
+const { stripExtension } = require('../../utils/fileutils');
+const { PageTemplate } = require('../../models/pagetemplate');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -26,7 +31,7 @@ exports.SitesGenerator = class {
     if (!config) {
       throw new Error('Cannot find Jambo config in this directory, exiting.');
     }
-    
+
     // Pull all data from environment variables.
     const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
@@ -36,7 +41,7 @@ exports.SitesGenerator = class {
     const pagesConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        let pageId = this._stripExtension(relative);
+        let pageId = stripExtension(relative);
         try {
           pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (e) {
@@ -47,13 +52,19 @@ exports.SitesGenerator = class {
           }
         }
       }
-    })
+    });
+    const GENERATED_DATA = new GeneratedData(pagesConfig, config.dirs.config);
 
-    const globalConfigName = 'global_config';
-    if (!pagesConfig[globalConfigName]) {
-      console.error(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory, exiting.');
-      return;
-    }
+    let pageTemplates = [];
+    fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
+      if (this._isValidFile(filename)) {
+        pageTemplates.push(new PageTemplate({
+          path: path,
+          filename: filename,
+          defaultLocale: GENERATED_DATA.getDefaultLocale()
+        }));
+      }
+    });
 
     console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
@@ -66,13 +77,6 @@ exports.SitesGenerator = class {
 
     // Register all custom partials.
     this._registerCustomPartials(config.dirs.partials);
-
-    const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
-      if (key !== globalConfigName) {
-        object[key] = pagesConfig[key];
-      }
-      return object;
-    }, {});
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
@@ -87,44 +91,28 @@ exports.SitesGenerator = class {
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
-    // Write out a file to the output directory per file in the pages directory
-    fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
-      if (this._isValidFile(filename)) {
-        const pageId = filename.split('.')[0];
+    for (let locale of GENERATED_DATA.getLocales()) {
+      console.log(`Writing files for '${locale}' locale`);
+      const pageSet = new PageSetCreator({
+        pageTemplates: pageTemplates,
+        pageIds: GENERATED_DATA.getPageIdsForLocale(locale),
+        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
+        locale: locale,
+        localeFallbacks: GENERATED_DATA.getLocaleFallbacks(locale),
+        urlFormatter: GENERATED_DATA.getUrlFormatter(locale),
+      }).build();
 
-        if (!pagesConfig[pageId]) {
-          throw new Error(`Error: No config found for page: ${pageId}`);
-        }
+      new PageWriter({
+        pagesDirectory: config.dirs.pages,
+        partialsDirectory: config.dirs.partials,
+        outputDirectory: config.dirs.output,
+        globalConfig: GENERATED_DATA.getGlobalConfig(locale),
+        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
+        params: GENERATED_DATA.getParams(locale),
+        env: env,
+      }).writePages(pageSet);
+    }
 
-        console.log(`Writing output file for the '${pageId}' page`);
-        const pageConfig = Object.assign(
-          {},
-          pagesConfig[pageId],
-          {
-            verticalConfigs,
-            global_config: pagesConfig[globalConfigName],
-            relativePath: this._calculateRelativePath(path),
-            env
-          });
-        const pageLayout = pageConfig.layout;
-
-        let template;
-        if (pageLayout) {
-          hbs.registerPartial('body', fs.readFileSync(path).toString());
-          const layoutPath = `${config.dirs.partials}/${pageLayout}`;
-          template = hbs.compile(fs.readFileSync(layoutPath).toString());
-        } else {
-          template = hbs.compile(fs.readFileSync(path).toString());
-        }
-
-        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
-        const result = template(pageConfig);
-        const outputPath =
-          `${config.dirs.output}/${outputFileName}`;
-        fs.writeFileSync(outputPath, result);
-
-      }
-    });
     console.log('Done.');
   }
 
@@ -216,13 +204,6 @@ exports.SitesGenerator = class {
     }
   }
 
-  _stripExtension(fn) {
-    if (fn.indexOf(".") === -1) {
-      return fn;
-    }
-    return fn.substring(0, fn.lastIndexOf("."));
-  }
-
   /**
    * Registers all custom Handlebars partials in the provided paths.
    *
@@ -258,14 +239,14 @@ exports.SitesGenerator = class {
       fs.recurseSync(partialsPath, (path, relative, filename) => {
         if (this._isValidFile(filename)) {
           const partialName = useFullyQualifiedName
-            ? this._stripExtension(path)
-            : this._stripExtension(relative);
+            ? stripExtension(path)
+            : stripExtension(relative);
           hbs.registerPartial(partialName, fs.readFileSync(path).toString());
         }
       });
     } else if (pathExists) {
       hbs.registerPartial(
-        this._stripExtension(partialsPath),
+        stripExtension(partialsPath),
         fs.readFileSync(partialsPath).toString());
     }
   }
@@ -318,10 +299,6 @@ exports.SitesGenerator = class {
       const interpValues = options.hash;
       return translator.translate(phrase, interpValues);
     });
-  }
-
-  _calculateRelativePath(filePath) {
-    return path.relative(path.dirname(filePath), "");
   }
 
   _isValidFile(fileName) {
