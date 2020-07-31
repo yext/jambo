@@ -34,7 +34,7 @@ exports.PageWriter = class {
       console.log(`Writing output file for the '${page.getPageId()}' page`);
       const templateArguments = this._buildArgsForTemplate(
         page.getConfig(),
-        page.getTemplatePath()
+        page.getOutputPath()
       );
       const template = this._getHandlebarsTemplate(page.getTemplatePath());
       const outputHTML = template(templateArguments);
@@ -78,6 +78,6 @@ exports.PageWriter = class {
   }
 
   _calculateRelativePath (filePath) {
-    return path.relative(filePath, '');
+    return path.relative(path.dirname(filePath), "");;
   }
 }
