@@ -5,13 +5,13 @@ const path = require('path');
 const fs = require('fs');
 
 /**
- * Extracts i18n strings from .js files to an output file (defaulting to message.pot),
- * then extracts i18n strings from .hbs files and appends to that output file.
+ * Extracts i18n strings from .js and .hbs files to an output file (defaulting to message.pot).
  * @param {Array.<string>} options.files specific files extract from e.g. webpack.config.js
  * @param {Array.<string>} options.directories directories to recursively extract from e.g. src
  * @param {Array.<string>} options.ignore paths to recursively ignore e.g. node_modules
  * @param {Object} options.translateMethods the method names to search for
  * @param {string} options.output
+ * @returns {Promise}
  */
 function extractTranslations(options) {
   const optionsWithDefaulting = {
@@ -28,10 +28,14 @@ function extractTranslations(options) {
     ...options,
   };
   extractJsTranslations(optionsWithDefaulting);
-  extractHbsTranslations(optionsWithDefaulting);
+  return extractHbsTranslations(optionsWithDefaulting);
 }
 module.exports = extractTranslations;
 
+/**
+ * Extracts translations from .js files.
+ * @param {Object} options 
+ */
 function extractJsTranslations(options) {
   const extractor = new GettextExtractor();
   const {
@@ -85,6 +89,11 @@ function extractJsTranslations(options) {
   extractor.savePotFile(options.output);
 }
 
+/**
+ * Extracts translations from .hbs files.
+ * @param {Object} options
+ * @returns {Promise}
+ */
 function extractHbsTranslations(options) {
   const directoryGlobs = options.directories.map(dirpath => `${dirpath}/**/*.hbs`);
   const ignoreGlobs = options.ignore.map(dirpath => `!${dirpath}`);
@@ -95,14 +104,15 @@ function extractHbsTranslations(options) {
   } = options.translateMethods;
 
   /** 
-   * The empty callback is needed because xgettext-template does an if check for the callback,
-   * and if the callback is not present will not write to the output file.
+   * Return a promise is necessary because xgettextTemplate runs asynchronously.
    */
-  xgettextTemplate(input, {
-    output: options.output,
-    keyword:
-      `${translate}, ${translatePlural}:1,2, ${translateWithContext}:1,2c, ${translatePluralWithContext}:1,2,3c`,
-    'join-existing': true,
-    'force-po': true
-  }, () => {});
+  return new Promise(resolve => {
+    xgettextTemplate(input, {
+      output: options.output,
+      keyword:
+        `${translate}, ${translatePlural}:1,2, ${translateWithContext}:1,2c, ${translatePluralWithContext}:1,2,3c`,
+      'join-existing': true,
+      'force-po': true
+    }, resolve);
+  });
 }

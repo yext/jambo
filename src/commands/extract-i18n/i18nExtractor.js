@@ -1,4 +1,4 @@
-const extractTranslations = require('./extracttranslations');
+const extractTranslations = require('../../i18n/extract/extracttranslations');
 const fsExtra = require('fs-extra');
 const fs = require('fs');
 
@@ -15,16 +15,18 @@ exports.i18nExtractor = class {
   }
 
   /**
-   * Extracts i18n strings from a jambo repo for a given locale
+   * Extracts i18n strings from a jambo repo for a given locale.
    */
-  extract(locale) {
+  async extract(locale) {
+    const outputFile = `${locale}.pot`;
     const options = {
       files: this.files,
       directories: this.directories,
-      output: `${locale}.pot`,
+      output: outputFile,
       ignore: this.gitignorePaths
     };
-    extractTranslations(options);
+    await extractTranslations(options);
+    console.log(`Extracted translations to ${outputFile}`);
   }
 
   /**

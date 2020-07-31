@@ -39,12 +39,16 @@
     "yargs": "^15.1.0"
   },
   "devDependencies": {
+    "gettext-handlebars": "^1.0.2",
     "jest": "^25.4.0"
   },
   "jest": {
     "verbose": true,
     "testMatch": [
       "**/tests/**/*.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/tests/fixtures/"
     ]
   }
 }

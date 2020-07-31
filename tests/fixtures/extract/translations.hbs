@@ -1,0 +1,29 @@
+<div>
+  {{translate 'Regular translation in hbs'}}
+  {{translate '{someVar} translation in hbs' someVar='Interpolated'}}
+</div>
+<div>
+  {{translateN '{count} translation in hbs' '{count} translations' count='2'}}
+  {{translateN
+    '{count} translation with {someVar} in hbs'
+    '{count} translations with {someVar} in hbs'
+    count='2'
+    someVar='interpolation'
+  }}
+</div>
+<div>
+  {{translateC 'Translation with context in hbs' 'This is a test translation'}}
+  {{translateC
+    '{another} translation with context in hbs'
+    'This is another test translation with context in hbs'
+    another='Another'
+  }}
+</div>
+<div>
+  {{translateCN
+    '{count} plural translation with context in hbs'
+    '{count} plural translations with context in hbs'
+    'This is a plural translation with context'
+    count='9000'
+  }}
+</div>
