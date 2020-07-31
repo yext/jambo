@@ -83,7 +83,6 @@ exports.GeneratedData = class {
     return this.localeConfig.getFallbacks(locale);
   }
 
-
   /**
    * Get the fallbacks for a given locale
    *
