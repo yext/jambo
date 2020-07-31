@@ -6,8 +6,9 @@ exports.PageResolver = class {
    * Returns a map of pageId to pageTemplatePath, where the pageTemplatePath is the path
    * to the page template that should be used for the given locale.
    *
-   * @param {Object} pagesDirectory the path to the pages directory
+   * @param {Array} pages the pages
    * @param {string} locale the current locale
+   * @param {Array} localeFallbacks the fallbacks for the locale
    * @returns {Object}
    */
   buildPageIdToPath(pages, locale, localeFallbacks = []) {

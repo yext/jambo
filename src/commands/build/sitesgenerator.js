@@ -96,9 +96,8 @@ exports.SitesGenerator = class {
         partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
         globalConfig: GENERATED_DATA.getGlobalConfig(locale),
-        verticalConfigs: GENERATED_DATA.getVerticalConfigs(locale),
         env: env,
-      }).writePages();
+      }).writePages(GENERATED_DATA.getVerticalConfigs(locale));
     }
 
     console.log('Done.');

@@ -31,7 +31,7 @@ exports.VerticalConfigs = class {
       );
 
       this._localeToConfigs[locale] = new ConfigMerger()
-        .mergeConfigsForLocale(this._verticalConfigs, localeFallbacks, locale);
+        .generateLocalizedPageConfigs(this._verticalConfigs, localeFallbacks, locale);
 
       for (let pageId of Object.keys(this._localeToConfigs[locale])) {
         if (!pageIdToPath[pageId]) {

@@ -1,3 +1,4 @@
+const { VerticalConfigs } = require('../../models/verticalconfigs');
 
 /**
  * Merges the relevant page configurations based on locale
@@ -8,12 +9,12 @@ exports.ConfigMerger = class {
    * is no locale data provided, this will return a copy of the original
    * page config.
    *
-   * @param {Object} verticalConfigs
+   * @param {VerticalConfigs} verticalConfigs
    * @param {Array} localeFallbacks
    * @param {string} locale
    * @returns {Object}
    */
-  mergeConfigsForLocale(verticalConfigs, localeFallbacks, locale) {
+  generateLocalizedPageConfigs(verticalConfigs, localeFallbacks, locale) {
     let pageConfigs = { ...verticalConfigs };
     if (localeFallbacks) {
       for (const configName of Object.keys(pageConfigs)) {
@@ -35,6 +36,8 @@ exports.ConfigMerger = class {
         );
       }
     }
+
+    // TODO (agrow) consolidate this method a bit by using reduce.
     return mergedConfigs;
   }
 

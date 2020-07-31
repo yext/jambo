@@ -20,7 +20,7 @@ exports.GeneratedData = class {
       directoryConfigName: configDir
     });
 
-    this.locale = this.localeConfig.getDefaultLocale() || this.globalConfig.locale || '';
+    this.defaultLocale = this.localeConfig.getDefaultLocale() || this.globalConfig.locale || '';
 
     let verticalConfigObjects = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName && key !== localeConfigName) {
@@ -32,7 +32,7 @@ exports.GeneratedData = class {
       verticalConfigs: verticalConfigObjects,
       pageTemplateInfo: pageTemplateInfo,
       localeConfig: this.localeConfig,
-      defaultLocale: this.locale
+      defaultLocale: this.defaultLocale
     });
   }
 
@@ -72,7 +72,7 @@ exports.GeneratedData = class {
    */
   getLocales() {
     const locales = this.localeConfig.getLocales();
-    return locales.length ? locales : [ this.locale ];
+    return locales.length ? locales : [ this.defaultLocale ];
   }
 
   /**
