@@ -1,19 +1,17 @@
 const { LocaleConfig } = require('./localeconfig');
 const { ConfigLocalizer } = require('../commands/build/configlocalizer');
-const { PageResolver } = require('../commands/build/pageresolver');
 
 /**
  * Data model for the vertical config files.
  */
 exports.VerticalConfigs = class {
   /**
-   * @param {Object} verticalConfigs
-   * @param {Array} pageTemplateInfo
+   * @param {Object} configIdToConfig
    * @param {LocaleConfig} localeConfig
    * @param {string} defaultLocale
    */
-  constructor({ verticalConfigs, pageTemplateInfo, localeConfig, defaultLocale }) {
-    this._verticalConfigs = verticalConfigs;
+  constructor({ configIdToConfig, localeConfig, defaultLocale }) {
+    this._configIdToConfig = configIdToConfig;
     this._defaultLocale = defaultLocale;
 
     let locales = localeConfig.getLocales();
@@ -21,30 +19,7 @@ exports.VerticalConfigs = class {
       locales = [ defaultLocale ];
     }
 
-    this._localeToConfigs = {};
-    for (let locale of locales) {
-      let localeFallbacks = localeConfig.getFallbacks(locale);
-      let pageIdToPath = new PageResolver().buildPageIdToPath(
-        pageTemplateInfo,
-        locale || this.locale,
-        localeFallbacks
-      );
-
-      this._localeToConfigs[locale] = new ConfigLocalizer()
-        .generateLocalizedPageConfigs(this._verticalConfigs, localeFallbacks, locale);
-
-      for (let pageId of Object.keys(this._localeToConfigs[locale])) {
-        if (!pageIdToPath[pageId]) {
-          delete this._localeToConfigs[locale][pageId];
-          continue;
-        }
-
-        let pageConfig = this._localeToConfigs[locale][pageId];
-        const path = pageIdToPath[pageId];
-        pageConfig.templatePath = pageIdToPath[pageId];
-        pageConfig.url = localeConfig.getUrl(pageId, path, locale);
-      }
-    }
+    this._localeToConfigs = this._sortConfigsByLocale(configIdToConfig, locales, localeConfig);
   }
 
   /**
@@ -53,7 +28,34 @@ exports.VerticalConfigs = class {
    * @param {string} locale
    * @returns {Object}
    */
-  getConfigsForLocale(locale = this._defaultLocale) {
+  getPageIdToConfig(locale = this._defaultLocale) {
     return this._localeToConfigs[locale];
+  }
+
+  /**
+   * Uses config and locales to build an object of the following format:
+   * {
+   *   [locale] : {
+   *     [pageId] : { config },
+   *     [pageId] : { config },
+   *     [pageId] : { config },
+   *   },
+   *   [locale2] : { ... },
+   *   ...
+   * }
+   *
+   * @param {Object} configIdToConfig
+   * @param {Array<string>} locales
+   * @param {LocaleConfig} localeConfig
+   */
+  _sortConfigsByLocale(configIdToConfig, locales, localeConfig) {
+    let localeToPageIdToConfig = {};
+
+    for (let locale of locales) {
+      let localeFallbacks = localeConfig.getFallbacks(locale);
+      localeToPageIdToConfig[locale] = new ConfigLocalizer()
+        .generateLocalizedPageConfigs(configIdToConfig, locale, localeFallbacks);
+    }
+    return localeToPageIdToConfig;
   }
 }

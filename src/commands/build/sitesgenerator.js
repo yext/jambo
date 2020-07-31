@@ -8,8 +8,10 @@ const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const { PageWriter } = require('./pagewriter');
+const { PageSetCreator } = require('./pagesetcreator');
 const { GeneratedData } = require('../../models/generateddata');
 const { stripExtension } = require('../../utils/fileutils');
+const { PageTemplate } = require('../../models/pagetemplate');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -52,17 +54,16 @@ exports.SitesGenerator = class {
       }
     });
 
-    let pageTemplateInfo = [];
+    let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        pageTemplateInfo.push({
+        pageTemplates.push(new PageTemplate({
           path: path,
-          pageId: this._getPageId(filename),
-          locale: this._getLocale(filename) || ''
-        });
+          filename: filename
+        }));
       }
     });
-    const GENERATED_DATA = new GeneratedData(pagesConfig, pageTemplateInfo, config.dirs.config);
+    const GENERATED_DATA = new GeneratedData(pagesConfig, config.dirs.config);
 
     console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
@@ -91,37 +92,27 @@ exports.SitesGenerator = class {
 
     for (let locale of GENERATED_DATA.getLocales()) {
       console.log(`Writing files for '${locale}' locale`);
+      const pageConfigsForLocale = GENERATED_DATA.getPageIdToConfig(locale);
+      const pageSet = new PageSetCreator({
+        pageIdToConfig: pageConfigsForLocale,
+        urlFormatter: GENERATED_DATA.getUrlFormatter(locale)
+      }).buildPageSetForLocale({
+        pageTemplates: pageTemplates,
+        locale: locale,
+        localeFallbacks: GENERATED_DATA.getLocaleFallbacks(locale)
+      });
+
       new PageWriter({
         pagesDirectory: config.dirs.pages,
         partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
         globalConfig: GENERATED_DATA.getGlobalConfig(locale),
+        pageIdToConfig: pageConfigsForLocale,
         env: env,
-      }).writePages(GENERATED_DATA.getVerticalConfigs(locale));
+      }).writePages(pageSet);
     }
 
     console.log('Done.');
-  }
-
-  /**
-   * Extracts the pageId from a given file name
-   *
-   * @param {string} filename the file name of the page handlebars template
-   * @returns {string}
-   */
-  _getPageId(filename) {
-    return filename.split('.')[0];
-  }
-
-  /**
-   * Extracts the locale from a given file name
-   *
-   * @param {string} filename the file name of the page handlebars template
-   * @returns {string}
-   */
-  _getLocale(filename) {
-    let pageParts = stripExtension(stripExtension(filename)).split('.');
-    return pageParts.length > 1 && pageParts[1];  // TODO seems brittle
   }
 
   /**

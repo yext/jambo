@@ -1,5 +1,3 @@
-const { stripExtension } = require('../utils/fileutils');
-
 /**
  * Data model for the locale_config file.
  */
@@ -27,7 +25,6 @@ exports.LocaleConfig = class {
      *   ...
      * }
      */
-
     this._localeToConfig = config.localeConfig || {};
 
     let urlFormat = config.urlFormat || {};
@@ -64,27 +61,12 @@ exports.LocaleConfig = class {
   }
 
   /**
-   * Returns the URL for a given pageId, pageExtension, and locale
-   *
-   * @param {string} pageId
-   * @param {string} path
-   * @param {string} locale
-   * @returns {function}
-   */
-  getUrl (pageId, path, locale) {
-    const pathWithoutHbsExtension = stripExtension(path);
-    const pageExt = pathWithoutHbsExtension
-      .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);
-    return this._getUrlFormatter(locale)(pageId, pageExt);
-  }
-
-  /**
    * Returns the URL formatting function for a given locale
    *
    * @param {string} locale
    * @returns {function}
    */
-  _getUrlFormatter (locale) {
+  getUrlFormatter (locale) {
     const language = locale
       ? locale.substring(0, locale.lastIndexOf("-")) || locale
       : '';

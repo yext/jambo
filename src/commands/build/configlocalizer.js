@@ -1,5 +1,3 @@
-const { VerticalConfigs } = require('../../models/verticalconfigs');
-
 /**
  * Merges the relevant page configurations based on locale
  */
@@ -9,36 +7,38 @@ exports.ConfigLocalizer = class {
    * is no locale data provided, this will return a copy of the original
    * page config.
    *
-   * @param {VerticalConfigs} verticalConfigs
-   * @param {Array} localeFallbacks
+   * @param {Object} configIdToConfig
    * @param {string} locale
+   * @param {Array<string>} localeFallbacks
    * @returns {Object}
    */
-  generateLocalizedPageConfigs(verticalConfigs, localeFallbacks, locale) {
-    let pageConfigs = { ...verticalConfigs };
-    if (localeFallbacks) {
-      for (const configName of Object.keys(pageConfigs)) {
-        for (let fallbackLocale of localeFallbacks) { // TODO is this backwards
-          pageConfigs[configName] = this._mergeConfigs(
-            pageConfigs[configName],
-            pageConfigs[`${configName}.${fallbackLocale}`]
+  generateLocalizedPageConfigs(configIdToConfig, locale, localeFallbacks) {
+    let configs = { ...configIdToConfig };
+    if (localeFallbacks && localeFallbacks.length) {
+      for (const configId of Object.keys(configs)) {
+        for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
+          let fallbackLocale = localeFallbacks[i]
+          configs[configId] = this._mergeConfigs(
+            configs[configId],
+            configs[`${configId}.${fallbackLocale}`]
           );
         }
       }
     }
 
-    let mergedConfigs = {};
-    for (const [configName, pageConfig] of Object.entries(pageConfigs)) {
-      if (!configName.includes('.')) {
-        mergedConfigs[configName] = this._mergeConfigs(
+    let pageIdToConfig = {};
+    for (const [configId, pageConfig] of Object.entries(configs)) {
+      let isConfigNamePageId = !configId.includes('.');
+      if (isConfigNamePageId) {
+        pageIdToConfig[configId] = this._mergeConfigs(
           pageConfig,
-          pageConfigs[`${configName}.${locale}`]
+          configs[`${configId}.${locale}`]
         );
       }
     }
 
     // TODO (agrow) consolidate this method a bit by using reduce.
-    return mergedConfigs;
+    return pageIdToConfig;
   }
 
   /**
