@@ -1,4 +1,4 @@
-const { getPageId, getLocale } = require('../utils/fileutils');
+const { getPageId, getLocaleForPage } = require('../utils/fileutils');
 
 exports.PageTemplate = class {
   constructor({filename, path}) {
@@ -8,7 +8,7 @@ exports.PageTemplate = class {
 
     this.path = path;
     this.pageId = getPageId(filename);
-    this.locale = getLocale(filename) || '';
+    this.locale = getLocaleForPage(filename) || '';
   }
 
   getPageId() {

@@ -6,7 +6,16 @@ exports.PageSet = class {
     this.pages = this._buildPages(pageIdToPath, pageIdToConfig);
   }
 
-  /**s
+  /**
+   * Returns the pages
+   *
+   * @returns {Array<Page>} pages
+   */
+  getPages () {
+    return this.pages;
+  }
+
+  /**
    * Returns the locale
    *
    * @param {Object} pageIdToPath
@@ -18,7 +27,7 @@ exports.PageSet = class {
       const pagePath = pageIdToPath[pageId];
 
       if (!pagePath) {
-        console.warn(`No page found for config '${pageId}'`);// TODO  this happens when there are configs in the config dir that don't have pages.
+        console.warn(`No page found for config '${pageId}'`);
         continue;
       }
 
@@ -30,14 +39,5 @@ exports.PageSet = class {
       }));
     }
     return pages;
-  }
-
-  /**
-   * Returns the pages
-   *
-   * @returns {Array<Page>} pages
-   */
-  getPages () {
-    return this.pages;
   }
 }

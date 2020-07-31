@@ -28,8 +28,8 @@ exports.getPageId = getPageId;
  * @param {string} filename the file name of the page handlebars template
  * @returns {string}
  */
-getLocale = function (filename) {
+getLocaleForPage = function (filename) {
   const pageParts = stripExtension(stripExtension(filename)).split('.');
-  return pageParts.length > 1 && pageParts[1];  // TODO seems brittle
+  return pageParts.length > 1 && pageParts[1];
 }
-exports.getLocale = getLocale;
+exports.getLocaleForPage = getLocaleForPage;
