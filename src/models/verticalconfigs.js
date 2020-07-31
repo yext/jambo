@@ -1,5 +1,6 @@
 const { LocaleConfig } = require('./localeconfig');
 const { ConfigLocalizer } = require('../commands/build/configlocalizer');
+const { getPageId } = require('../utils/fileutils');
 
 /**
  * Data model for the vertical config files.
@@ -19,6 +20,7 @@ exports.VerticalConfigs = class {
       locales = [ defaultLocale ];
     }
 
+    this._localesWithLocalizedConfig = this._getPageIdsForLocalizedConfigs(configIdToConfig);
     this._localeToConfigs = this._sortConfigsByLocale(configIdToConfig, locales, localeConfig);
   }
 
@@ -30,6 +32,16 @@ exports.VerticalConfigs = class {
    */
   getPageIdToConfig(locale = this._defaultLocale) {
     return this._localeToConfigs[locale];
+  }
+
+  /**
+   * Gets the pageIds that correspond to the configs with a locale-specific config.
+   *
+   * @param {string} locale
+   * @returns {Array<string>} pageIds
+   */
+  getPageIdsWithLocalizedConfig(locale = this._defaultLocale) {
+    return this._localesWithLocalizedConfig[locale];
   }
 
   /**
@@ -57,5 +69,37 @@ exports.VerticalConfigs = class {
         .generateLocalizedPageConfigs(configIdToConfig, locale, localeFallbacks);
     }
     return localeToPageIdToConfig;
+  }
+
+  /**
+   * Gets an object mapping locale to a collection of pageIds for that have localized
+   * configs.
+   *
+   * @param {Object} configIdToConfig
+   * @returns {Object}
+   */
+  _getPageIdsForLocalizedConfigs (configIdToConfig) {
+    let localeToPageIds = {};
+    for (const configId of Object.keys(configIdToConfig)) {
+      const locale = this._getLocale(configId) || this._defaultLocale;
+      const pageId = getPageId(configId);
+
+      localeToPageIds[locale] = localeToPageIds[locale]
+        ? localeToPageIds[locale].push(pageId)
+        : [ pageId ];
+    }
+
+    return localeToPageIds;
+  }
+
+  /**
+   * Extracts the locale from a given configId
+   *
+   * @param {string} filename the file name of the page handlebars template
+   * @returns {string}
+   */
+  _getLocale (configId) {
+    const configIdParts = configId.split('.');
+    return configIdParts.length > 1 && configIdParts[1];
   }
 }

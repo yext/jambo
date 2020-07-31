@@ -53,17 +53,18 @@ exports.SitesGenerator = class {
         }
       }
     });
+    const GENERATED_DATA = new GeneratedData(pagesConfig, config.dirs.config);
 
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
         pageTemplates.push(new PageTemplate({
           path: path,
-          filename: filename
+          filename: filename,
+          defaultLocale: GENERATED_DATA.getDefaultLocale()
         }));
       }
     });
-    const GENERATED_DATA = new GeneratedData(pagesConfig, config.dirs.config);
 
     console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
@@ -92,22 +93,21 @@ exports.SitesGenerator = class {
 
     for (let locale of GENERATED_DATA.getLocales()) {
       console.log(`Writing files for '${locale}' locale`);
-      const pageConfigsForLocale = GENERATED_DATA.getPageIdToConfig(locale);
       const pageSet = new PageSetCreator({
-        pageIdToConfig: pageConfigsForLocale,
-        urlFormatter: GENERATED_DATA.getUrlFormatter(locale)
-      }).buildPageSetForLocale({
         pageTemplates: pageTemplates,
+        pageIds: GENERATED_DATA.getPageIdsWithLocalizedConfig(locale),
+        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
         locale: locale,
-        localeFallbacks: GENERATED_DATA.getLocaleFallbacks(locale)
-      });
+        localeFallbacks: GENERATED_DATA.getLocaleFallbacks(locale),
+        urlFormatter: GENERATED_DATA.getUrlFormatter(locale),
+      }).build();
 
       new PageWriter({
         pagesDirectory: config.dirs.pages,
         partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
         globalConfig: GENERATED_DATA.getGlobalConfig(locale),
-        pageIdToConfig: pageConfigsForLocale,
+        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
         env: env,
       }).writePages(pageSet);
     }

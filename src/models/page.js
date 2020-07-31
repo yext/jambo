@@ -17,7 +17,7 @@ exports.Page = class {
   }
 
   getTemplatePath () {
-    return this.path;
+    return this.templatePath;
   }
 
   getOutputPath () {

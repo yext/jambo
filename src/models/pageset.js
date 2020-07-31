@@ -2,8 +2,7 @@ const { Page } = require("./page");
 
 exports.PageSet = class {
   constructor({ urlFormatter, pageIdToPath, pageIdToConfig }) {
-    this.urlFormatter = urlFormatter;
-    this.pages = this._buildPages(pageIdToPath, pageIdToConfig);
+    this.pages = this._buildPages(urlFormatter, pageIdToPath, pageIdToConfig);
   }
 
   /**
@@ -16,27 +15,28 @@ exports.PageSet = class {
   }
 
   /**
-   * Returns the locale
+   * Returns the pages
    *
+   * @param {function} urlFormatter
    * @param {Object} pageIdToPath
    * @param {Object} pageIdToConfig
    */
-  _buildPages(pageIdToPath, pageIdToConfig) {
+  _buildPages(urlFormatter, pageIdToPath, pageIdToConfig) {
+    if (!pageIdToConfig) {
+      return [];
+    }
+
     let pages = [];
-    for (const [pageId, pageConfig] of Object.keys(pageIdToConfig)) {
+    for (const [pageId, pageConfig] of Object.entries(pageIdToConfig)) {
       const pagePath = pageIdToPath[pageId];
-
-      if (!pagePath) {
-        console.warn(`No page found for config '${pageId}'`);
-        continue;
+      if (pagePath) {
+        pages.push(new Page({
+          pageId: pageId,
+          config: pageConfig,
+          templatePath: pagePath,
+          urlFormatter: urlFormatter,
+        }));
       }
-
-      pages.push(new Page({
-        pageId: pageId,
-        config: pageConfig,
-        templatePath: pagePath,
-        urlFormatter: urlFormatter,
-      }));
     }
     return pages;
   }

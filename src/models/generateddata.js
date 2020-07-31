@@ -22,14 +22,14 @@ exports.GeneratedData = class {
 
     this.defaultLocale = this.localeConfig.getDefaultLocale() || this.globalConfig.locale || '';
 
-    const verticalConfigObjects = Object.keys(pagesConfig).reduce((object, key) => {
+    const verticalConfigIdToConfig = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName && key !== localeConfigName) {
         object[key] = pagesConfig[key];
       }
       return object;
     }, {});
     this.verticalConfigs = new VerticalConfigs({
-      verticalConfigs: verticalConfigObjects,
+      configIdToConfig: verticalConfigIdToConfig,
       localeConfig: this.localeConfig,
       defaultLocale: this.defaultLocale
     });
@@ -60,6 +60,15 @@ exports.GeneratedData = class {
    */
   getParams (locale) {
     return this.localeConfig.getParams(locale);
+  }
+
+  /**
+   * Gets the default locale
+   *
+   * @returns {string}
+   */
+  getDefaultLocale () {
+    return this.defaultLocale;
   }
 
   /**
@@ -104,12 +113,12 @@ exports.GeneratedData = class {
   }
 
   /**
-   * Get configs that are localized
+   * Gets the pageIds that correspond to the configs with a locale-specific config.
    *
    * @param {string} locale
    * @returns {Object}
    */
-  getConfigsThatAreLocalized (locale) {
-    return this.verticalConfigs.getConfigsForLocale(locale);
+  getPageIdsWithLocalizedConfig (locale) {
+    return this.verticalConfigs.getPageIdsWithLocalizedConfig(locale);
   }
 }

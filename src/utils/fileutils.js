@@ -22,14 +22,3 @@ getPageId = function (filename) {
 }
 exports.getPageId = getPageId;
 
-/**
- * Extracts the locale from a given file name
- *
- * @param {string} filename the file name of the page handlebars template
- * @returns {string}
- */
-getLocaleForPage = function (filename) {
-  const pageParts = stripExtension(stripExtension(filename)).split('.');
-  return pageParts.length > 1 && pageParts[1];
-}
-exports.getLocaleForPage = getLocaleForPage;

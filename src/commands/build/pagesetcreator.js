@@ -4,11 +4,16 @@ const { PageTemplate } = require("../../models/pagetemplate");
 exports.PageSetCreator = class {
   /**
    * @param {Object} pageIdToConfig
+   * @param {Arrays} pageIds
    * @param {function} urlFormatter
    */
-  constructor({ pageIdToConfig, urlFormatter }) {
+  constructor({ pageIdToConfig, urlFormatter, pageIds, pageTemplates, locale, localeFallbacks = [] }) {
     this.pageIdToConfig = pageIdToConfig;
     this.urlFormatter = urlFormatter;
+    this.pageIds = this._getUniquePageIds(pageIds);
+    this.pageTemplates = pageTemplates;
+    this.locale = locale;
+    this.localeFallbacks = localeFallbacks;
   }
 
   /**
@@ -19,8 +24,18 @@ exports.PageSetCreator = class {
    * @param {Array} localeFallbacks the fallbacks for the locale
    * @returns {PageSet}
    */
-  buildPageSetForLocale ({ pageTemplates, locale, localeFallbacks = []}) {
-    const pageIdToPath = this._getPageIdToPath(pageTemplates, locale, localeFallbacks);
+  build () {
+    if (!this.pageIds || !this.pageIdToConfig) {
+      console.warn(`Warning: Missing config for locale '${this.locale}', can't build pageset`);
+      return new PageSet({});
+    }
+
+    let pageIdToPath = this._getPageIdToPath(
+      this.pageIds,
+      this.pageTemplates,
+      this.locale,
+      this.localeFallbacks
+    );
     return new PageSet({
       pageIdToPath: pageIdToPath,
       pageIdToConfig: this.pageIdToConfig,
@@ -32,13 +47,13 @@ exports.PageSetCreator = class {
    * Returns a map of pageId to templatePath, where the templatePath is the path
    * to the page template that should be used for the given locale.
    *
+   * @param {Array<string>} pageIds the pageIds to find paths for
    * @param {Array<PageTemplate>} pageTemplates the pageTemplates
    * @param {string} locale the current locale
    * @param {Array} localeFallbacks the fallbacks for the locale
    * @returns {Object}
    */
-  _getPageIdToPath (pageTemplates, locale, localeFallbacks = []) {
-    const pageIds = this._getUniquePageIds(pageTemplates);
+  _getPageIdToPath (pageIds, pageTemplates, locale, localeFallbacks = []) {
     let pageIdToTemplatePath = {};
 
     for (const pageId of pageIds) {
@@ -54,9 +69,9 @@ exports.PageSetCreator = class {
         }
       }
 
-      page = page || pageTemplates.find(page => !page.getLocale());
       if (!page) {
-        throw new Error(`ERROR: No page '${pageId}' found for given locale '${locale}'`);
+        console.warn(`Warning: No page '${pageId}' found for given locale '${locale}', not generating a '${pageId}' page for '${locale}'`);
+        continue;
       }
 
       pageIdToTemplatePath[page.getPageId()] = page.getTemplatePath();
@@ -66,19 +81,12 @@ exports.PageSetCreator = class {
   }
 
   /**
-   * Returns a collection of the unique pageIds from the given pageTemplates
+   * Returns a collection of the unique pageIds from the given pageIds
    *
-   * @param {Array<PageTemplate>} pageTemplates
+   * @param {Array<string>} pageIds
    * @returns {Array<string>}
    */
-  _getUniquePageIds (pageTemplates) {
-    let uniquePageIds = [];
-
-    for (const pageTemplate of pageTemplates) {
-      if (!uniquePageIds.includes(pageTemplate.getPageId())) {
-        uniquePageIds.push(pageTemplate.getPageId());
-      }
-    }
-    return uniquePageIds;
+  _getUniquePageIds (pageIds) {
+    return pageIds && pageIds.filter((id, index) => pageIds.indexOf(id) === index);
   }
 }
