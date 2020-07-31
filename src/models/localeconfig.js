@@ -9,7 +9,7 @@ exports.LocaleConfig = class {
       console.warn(`Cannot find ${localeConfigName} file in ${directoryConfigName} directory, writing pages without locale information.`);
     }
 
-    let config = localeConfig || {};
+    const config = localeConfig || {};
     this._defaultLocale = config.default || '';
 
     /**
@@ -27,7 +27,7 @@ exports.LocaleConfig = class {
      */
     this._localeToConfig = config.localeConfig || {};
 
-    let urlFormat = config.urlFormat || {};
+    const urlFormat = config.urlFormat || {};
     this._defaultUrlPattern = urlFormat.default || '';
     this._baseLocalePattern = urlFormat.baseLocale || '';
   }

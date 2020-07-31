@@ -29,7 +29,7 @@ exports.getPageId = getPageId;
  * @returns {string}
  */
 getLocale = function (filename) {
-  let pageParts = stripExtension(stripExtension(filename)).split('.');
+  const pageParts = stripExtension(stripExtension(filename)).split('.');
   return pageParts.length > 1 && pageParts[1];  // TODO seems brittle
 }
 exports.getLocale = getLocale;

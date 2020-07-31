@@ -1,7 +1,6 @@
 const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
-const { VerticalConfigs } = require('../../models/verticalconfigs');
 const { PageSet } = require('../../models/pageset');
 
 /**

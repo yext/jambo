@@ -1,23 +1,26 @@
 const { PageSet } = require("../../models/pageset");
 const { PageTemplate } = require("../../models/pagetemplate");
-const { VerticalConfigs } = require("../../models/verticalconfigs");
 
 exports.PageSetCreator = class {
+  /**
+   * @param {Object} pageIdToConfig
+   * @param {function} urlFormatter
+   */
   constructor({ pageIdToConfig, urlFormatter }) {
     this.pageIdToConfig = pageIdToConfig;
     this.urlFormatter = urlFormatter;
   }
+
   /**
    * Returns a pageSet for the given locale
    *
    * @param {Array<PageTemplate>} pageTemplates the pageTemplates
    * @param {string} locale the current locale
    * @param {Array} localeFallbacks the fallbacks for the locale
-   * @param {Object} pageIdToConfig the configs for the pages
    * @returns {PageSet}
    */
   buildPageSetForLocale ({ pageTemplates, locale, localeFallbacks = []}) {
-    let pageIdToPath = this.getPageIdToPath(pageTemplates, locale, localeFallbacks);
+    const pageIdToPath = this._getPageIdToPath(pageTemplates, locale, localeFallbacks);
     return new PageSet({
       pageIdToPath: pageIdToPath,
       pageIdToConfig: this.pageIdToConfig,
@@ -26,7 +29,7 @@ exports.PageSetCreator = class {
   }
 
   /**
-   * Returns a map of pageId to pageTemplatePath, where the pageTemplatePath is the path
+   * Returns a map of pageId to templatePath, where the templatePath is the path
    * to the page template that should be used for the given locale.
    *
    * @param {Array<PageTemplate>} pageTemplates the pageTemplates
@@ -34,7 +37,7 @@ exports.PageSetCreator = class {
    * @param {Array} localeFallbacks the fallbacks for the locale
    * @returns {Object}
    */
-  getPageIdToPath (pageTemplates, locale, localeFallbacks = []) {
+  _getPageIdToPath (pageTemplates, locale, localeFallbacks = []) {
     const pageIds = this._getUniquePageIds(pageTemplates);
     let pageIdToTemplatePath = {};
 
@@ -52,7 +55,6 @@ exports.PageSetCreator = class {
       }
 
       page = page || pageTemplates.find(page => !page.getLocale());
-
       if (!page) {
         throw new Error(`ERROR: No page '${pageId}' found for given locale '${locale}'`);
       }
@@ -72,7 +74,7 @@ exports.PageSetCreator = class {
   _getUniquePageIds (pageTemplates) {
     let uniquePageIds = [];
 
-    for (let pageTemplate of pageTemplates) {
+    for (const pageTemplate of pageTemplates) {
       if (!uniquePageIds.includes(pageTemplate.getPageId())) {
         uniquePageIds.push(pageTemplate.getPageId());
       }

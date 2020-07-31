@@ -18,7 +18,7 @@ exports.PageSet = class {
       const pagePath = pageIdToPath[pageId];
 
       if (!pagePath) {
-        // TODO console warn here? This happens when there are configs in the config dir that don't have pages.
+        console.warn(`No page found for config '${pageId}'`);// TODO  this happens when there are configs in the config dir that don't have pages.
         continue;
       }
 

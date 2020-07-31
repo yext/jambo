@@ -51,8 +51,8 @@ exports.VerticalConfigs = class {
   _sortConfigsByLocale(configIdToConfig, locales, localeConfig) {
     let localeToPageIdToConfig = {};
 
-    for (let locale of locales) {
-      let localeFallbacks = localeConfig.getFallbacks(locale);
+    for (const locale of locales) {
+      const localeFallbacks = localeConfig.getFallbacks(locale);
       localeToPageIdToConfig[locale] = new ConfigLocalizer()
         .generateLocalizedPageConfigs(configIdToConfig, locale, localeFallbacks);
     }

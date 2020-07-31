@@ -10,27 +10,26 @@ exports.ConfigLocalizer = class {
    * @param {Object} configIdToConfig
    * @param {string} locale
    * @param {Array<string>} localeFallbacks
-   * @returns {Object}
+   * @returns {Object} pageIdToLocalizedConfig
    */
   generateLocalizedPageConfigs(configIdToConfig, locale, localeFallbacks) {
     let configs = { ...configIdToConfig };
     if (localeFallbacks && localeFallbacks.length) {
       for (const configId of Object.keys(configs)) {
         for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
-          let fallbackLocale = localeFallbacks[i]
           configs[configId] = this._mergeConfigs(
             configs[configId],
-            configs[`${configId}.${fallbackLocale}`]
+            configs[`${configId}.${localeFallbacks[i]}`]
           );
         }
       }
     }
 
-    let pageIdToConfig = {};
+    let pageIdToLocalizedConfig = {};
     for (const [configId, pageConfig] of Object.entries(configs)) {
-      let isConfigNamePageId = !configId.includes('.');
-      if (isConfigNamePageId) {
-        pageIdToConfig[configId] = this._mergeConfigs(
+      const isConfigIdPageId = !configId.includes('.');
+      if (isConfigIdPageId) {
+        pageIdToLocalizedConfig[configId] = this._mergeConfigs(
           pageConfig,
           configs[`${configId}.${locale}`]
         );
@@ -38,7 +37,7 @@ exports.ConfigLocalizer = class {
     }
 
     // TODO (agrow) consolidate this method a bit by using reduce.
-    return pageIdToConfig;
+    return pageIdToLocalizedConfig;
   }
 
   /**

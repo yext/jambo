@@ -22,7 +22,7 @@ exports.GeneratedData = class {
 
     this.defaultLocale = this.localeConfig.getDefaultLocale() || this.globalConfig.locale || '';
 
-    let verticalConfigObjects = Object.keys(pagesConfig).reduce((object, key) => {
+    const verticalConfigObjects = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName && key !== localeConfigName) {
         object[key] = pagesConfig[key];
       }
@@ -42,7 +42,7 @@ exports.GeneratedData = class {
    * @returns {Object}
    */
   getGlobalConfig (locale) {
-    let test = Object.assign({},
+    return Object.assign({},
       this.globalConfig,
       {
         experienceKey: this.localeConfig.getExperienceKey(locale) || this.globalConfig.experienceKey,
@@ -50,7 +50,6 @@ exports.GeneratedData = class {
         locale: locale || this.globalConfig.locale
       }
     );
-    return test;
   }
 
   /**
@@ -112,6 +111,6 @@ exports.GeneratedData = class {
    * @returns {Object}
    */
   getConfigsThatAreLocalized (locale) {
-    return this.verticalConfigs.getConfigsForLocale(locale)
+    return this.verticalConfigs.getConfigsForLocale(locale);
   }
 }
