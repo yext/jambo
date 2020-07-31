@@ -118,7 +118,13 @@ exports.GeneratedData = class {
    * @param {string} locale
    * @returns {Object}
    */
-  getPageIdsWithLocalizedConfig (locale) {
-    return this.verticalConfigs.getPageIdsWithLocalizedConfig(locale);
+  getPageIdsForLocale (locale) {
+    let pageIds = this.verticalConfigs.getPageIdsWithLocalizedConfig(locale);
+
+    for (const fallback in this.getLocaleFallbacks(locale)) {
+      const additionalPageIds = this.verticalConfigs.getPageIdsWithLocalizedConfig(fallback) || [];
+      pageIds.push(...additionalPageIds);
+    }
+    return pageIds;
   }
 }

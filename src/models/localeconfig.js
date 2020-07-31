@@ -57,7 +57,7 @@ exports.LocaleConfig = class {
   }
 
   getFallbacks (locale) {
-    return this._getConfigForLocale(locale).fallbacks || [];
+    return this._getConfigForLocale(locale).fallback || [];
   }
 
   /**

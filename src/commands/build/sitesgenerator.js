@@ -95,7 +95,7 @@ exports.SitesGenerator = class {
       console.log(`Writing files for '${locale}' locale`);
       const pageSet = new PageSetCreator({
         pageTemplates: pageTemplates,
-        pageIds: GENERATED_DATA.getPageIdsWithLocalizedConfig(locale),
+        pageIds: GENERATED_DATA.getPageIdsForLocale(locale),
         pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
         locale: locale,
         localeFallbacks: GENERATED_DATA.getLocaleFallbacks(locale),
