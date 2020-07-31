@@ -1,5 +1,5 @@
 const { LocaleConfig } = require('./localeconfig');
-const { ConfigMerger } = require('../commands/build/configmerger');
+const { ConfigLocalizer } = require('../commands/build/configlocalizer');
 const { PageResolver } = require('../commands/build/pageresolver');
 
 /**
@@ -30,7 +30,7 @@ exports.VerticalConfigs = class {
         localeFallbacks
       );
 
-      this._localeToConfigs[locale] = new ConfigMerger()
+      this._localeToConfigs[locale] = new ConfigLocalizer()
         .generateLocalizedPageConfigs(this._verticalConfigs, localeFallbacks, locale);
 
       for (let pageId of Object.keys(this._localeToConfigs[locale])) {

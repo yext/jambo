@@ -3,7 +3,7 @@ const { VerticalConfigs } = require('../../models/verticalconfigs');
 /**
  * Merges the relevant page configurations based on locale
  */
-exports.ConfigMerger = class {
+exports.ConfigLocalizer = class {
   /**
    * Merges the relevant page configurations based on locale. If there
    * is no locale data provided, this will return a copy of the original
