@@ -19,9 +19,9 @@ function extractTranslations(options) {
     extensions: ['.hbs', '.js'],
     translateMethods: {
       translate: 'translate',
-      translatePlural: 'translateN',
-      translateWithContext: 'translateC',
-      translatePluralWithContext: 'translateCN',
+      translatePlural: 'translatePlural',
+      translateWithContext: 'translateWithContext',
+      translatePluralWithContext: 'translatePluralWithContext',
     },
     ...options,
   };
