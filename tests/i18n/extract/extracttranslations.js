@@ -1,17 +1,17 @@
 const extractTranslations = require('../../../src/i18n/extract/extracttranslations');
 const fs = require('fs');
 const path = require('path');
-const gettextParser = require('gettext-parser');
-const expectedPot = require('../../fixtures/extract/expectedpot');
+const expectedJson = require('../../fixtures/extract/expectedjson');
+const { gettextToI18next } = require('i18next-conv');
 
 /**
  * Helper for getting the parsed content of a .pot file.
  * @param {string} potFile 
  */
-function getPotContent(potFile) {
+async function getI18nextJson(potFile) {
   const rawPot = fs.readFileSync(potFile);
-  const pot = gettextParser.po.parse(rawPot);
-  return pot.translations[''];
+  return gettextToI18next('en', rawPot)
+    .then(jsonString => JSON.parse(jsonString));
 }
 
 describe('extractTranslations', () => {
@@ -33,7 +33,8 @@ describe('extractTranslations', () => {
       output: outputFile,
       files: [hbsTranslationFile]
     });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.hbs);
+    const i18nextJson = await getI18nextJson(outputFile);
+    expect(i18nextJson).toEqual(expectedJson.hbs);
   });
 
   it('can extract translations from .js files', async () => {
@@ -41,7 +42,8 @@ describe('extractTranslations', () => {
       output: outputFile,
       files: [jsTranslationFile]
     });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.js);
+    const i18nextJson = await getI18nextJson(outputFile);
+    expect(i18nextJson).toEqual(expectedJson.js);
   });
 
   it('can extract all strings from a folder', async () => {
@@ -51,7 +53,8 @@ describe('extractTranslations', () => {
       output: outputFile,
       directories: [translationDir]
     });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.combined);
+    const i18nextJson = await getI18nextJson(outputFile);
+    expect(i18nextJson).toEqual(expectedJson.combined);
   });
 
   it('can ignore an entire folder', async () => {
@@ -62,10 +65,11 @@ describe('extractTranslations', () => {
       directories: [translationDir],
       ignore: [translationDir]
     });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.empty);
+    const i18nextJson = await getI18nextJson(outputFile);
+    expect(i18nextJson).toEqual(expectedJson.empty);
   });
 
-  it('can ignore a specific js file', async () => {
+  it('can ignore a specific file when specifying a directory', async () => {
     const translationDir =
       path.relative(process.cwd(), path.join(fixturesDir));
     await extractTranslations({
@@ -73,35 +77,17 @@ describe('extractTranslations', () => {
       directories: [translationDir],
       ignore: [jsTranslationFile]
     });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.hbs);
+    const i18nextJson = await getI18nextJson(outputFile);
+    expect(i18nextJson).toEqual(expectedJson.hbs);
   });
 
-  it('ignoring a specific js file takes priority over the file', async () => {
+  it('ignoring a specific file takes priority over specifying that file', async () => {
     await extractTranslations({
       output: outputFile,
       files: [jsTranslationFile],
       ignore: [jsTranslationFile]
     });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.empty);
-  });
-
-  it('can ignore a specific hbs file', async () => {
-    const translationDir =
-      path.relative(process.cwd(), path.join(fixturesDir));
-    await extractTranslations({
-      output: outputFile,
-      directories: [translationDir],
-      ignore: [hbsTranslationFile]
-    });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.js);
-  });
-
-  it('ignoring a specific hbs file takes priority over the file', async () => {
-    await extractTranslations({
-      output: outputFile,
-      files: [hbsTranslationFile],
-      ignore: [hbsTranslationFile]
-    });
-    expect(getPotContent(outputFile)).toEqual(expectedPot.empty);
+    const i18nextJson = await getI18nextJson(outputFile);
+    expect(i18nextJson).toEqual(expectedJson.empty);
   });
 });
