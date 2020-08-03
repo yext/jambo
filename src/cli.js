@@ -7,6 +7,7 @@ const overrideCommand = require('./commands/override/themeshadower');
 const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
 const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
+const { i18nExtractor } = require('./commands/extract-i18n/i18nExtractor')
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
@@ -118,6 +119,20 @@ const options = yargs
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
       sitesGenerator.generate(argv.jsonEnvVars);
+    })
+  .command(
+    'extract-i18n',
+    'extract i18n strings from .hbs and .js files for the given locale',
+    yargs => {
+      return yargs
+        .option('locale', {
+          description: 'the locale to extract a .pot file for',
+          demandOption: true
+      });
+    },
+    argv => {
+      const extractor = new i18nExtractor(jamboConfig);
+      extractor.extract(argv.locale);
     })
   .argv;
 

@@ -25,7 +25,9 @@
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
+    "gettext-extractor": "^3.5.2",
     "glob-to-regexp": "^0.4.1",
+    "globby": "^11.0.1",
     "handlebars": "^4.7.3",
     "i18next": "^19.6.2",
     "i18next-conv": "^10.0.2",
@@ -33,6 +35,7 @@
     "merge-options": "^2.0.0",
     "prompts": "^2.3.1",
     "simple-git": "^1.131.0",
+    "xgettext-template": "^4.0.4",
     "yargs": "^15.1.0"
   },
   "devDependencies": {
@@ -42,6 +45,9 @@
     "verbose": true,
     "testMatch": [
       "**/tests/**/*.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/tests/fixtures/"
     ]
   }
 }
