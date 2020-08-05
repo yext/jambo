@@ -97,7 +97,7 @@ exports.RepositoryScaffolder = class {
       }
     };
     if (includeTranslations) {
-      jamboConfig.dirs.translsations = 'translations';
+      jamboConfig.dirs.translations = 'translations';
     }
 
     fs.writeFileSync('jambo.json', JSON.stringify(jamboConfig, null, 2));
