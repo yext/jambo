@@ -294,6 +294,18 @@ exports.SitesGenerator = class {
       const interpValues = options.hash;
       return translator.translate(phrase, interpValues);
     });
+
+    /**
+     * Translates the provided phrase. The translation will be pluralized depending
+     * on the count. Interpolation is supported for both singular and plural forms.
+     */
+    hbs.registerHelper(
+      'translatePlural', 
+      function (singularPhrase, pluralPhrase, count, options) {
+        const interpValues = options.hash;
+        return translator.translatePlural(singularPhrase, pluralPhrase, count, interpValues);
+      }
+    );
   }
 
   _registerHelpers() {
