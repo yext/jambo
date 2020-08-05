@@ -68,6 +68,10 @@ exports.SitesGenerator = class {
       }
     });
 
+    console.log('Registering Jambo Handlebars helpers');
+    // Register needed Handlebars helpers.
+    this._registerHelpers();
+
     console.log('Registering all handlebars templates');
     // Register Theme partials.
     const defaultTheme = config.defaultTheme;
@@ -93,7 +97,7 @@ exports.SitesGenerator = class {
     const translations = 
       config.dirs.translations ? await this._extractTranslations(locales) : {};
 
-    for (let locale of locales) {
+    for (const locale of locales) {
       console.log(`Writing files for '${locale}' locale`);
 
       const localeFallbacks = GENERATED_DATA.getLocaleFallbacks(locale);
@@ -107,9 +111,9 @@ exports.SitesGenerator = class {
       }).build();
 
       const translator = await Translator.create(locale, localeFallbacks, translations);
-      console.log('Registering Jambo Handlebars helpers');
-      // Register needed Handlebars helpers.
-      this._registerHelpers(translator);
+      console.log('Registering Jambo Handlebars translation helpers');
+      // Register needed Handlebars translation helpers.
+      this._registerTranslationHelpers(translator);
 
       new PageWriter({
         pagesDirectory: config.dirs.pages,
@@ -260,7 +264,24 @@ exports.SitesGenerator = class {
     }
   }
 
-  _registerHelpers(translator) {
+  /**
+   * Registers the various translation helpers with the Handlebars instance.
+   * 
+   * @param {Translator} translator The {@link Translator} that will be used
+   *                                to supply translations. 
+   */
+  _registerTranslationHelpers(translator) {
+    /**
+     * Performs a simple translation of the provided phrase. Interpolation is
+     * supported as well.
+     */
+    hbs.registerHelper('translate', function (phrase, options) {
+      const interpValues = options.hash;
+      return translator.translate(phrase, interpValues);
+    });
+  }
+
+  _registerHelpers() {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
     });
@@ -299,15 +320,6 @@ exports.SitesGenerator = class {
     hbs.registerHelper('deepMerge', function (...args) {
       return _.merge({}, ...args.slice(0, args.length - 1));
     });
-
-    /**
-     * Performs a simple translation of the provided phrase. Interpolation is
-     * supported as well.
-     */
-    hbs.registerHelper('translate', function (phrase, options) {
-      const interpValues = options.hash;
-      return translator.translate(phrase, interpValues);
-    });
   }
   
   /**
@@ -315,6 +327,7 @@ exports.SitesGenerator = class {
    * are returned in i18next format.
    * 
    * @param {Array<string>} locales The list of locales.
+   * @returns {Object<string, Object} A map of locale to formatted translations.
    */
   async _extractTranslations(locales) {
     const localFileParser = new LocalFileParser(this.config.dirs.translations);
