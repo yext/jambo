@@ -11,7 +11,9 @@ describe('LocalFileParser works correctly', () => {
       Item_plural: 'Articles',
       'Hello {{name}}': 'Bonjour {{name}}',
       Child_male: 'fils',
-      Child_female: 'fille'
+      Child_female: 'fille',
+      'There is {{count}} item {{name}}': 'Il y a {{count}} article {{name}}',
+      'There is {{count}} item {{name}}_plural': 'Il y a {{count}} articles {{name}}',
     };
 
     return localFileParser.fetch('fr-FR').then(translations => {

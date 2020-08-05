@@ -27,6 +27,28 @@ class Translator {
   }
 
   /**
+   * Translates the provided phrase. Depending on the count, either the singular or
+   * plural form of the translation will be supplied. The translated phrase can be
+   * interpolated.
+   * 
+   * @param {string} phrase The phrase to translate.
+   * @param {string} pluralForm The untranslated, plural form of the phrase.
+   * @param {number} count A count used to switch between singular and plural forms.
+   * @param {Object<string, ?>} interpValues Optional, any values needed to interpolate
+   *                                         the translated string.
+   */
+  translatePlural(phrase, pluralForm, count, interpValues) {
+    const parsedInterpValues = { ...interpValues, count };
+
+    // If i18next has no translations for the phrase and the count is not
+    // unity, we should fallback to the pluralForm. We use i18next.t to allow
+    // the pluralForm to be interpolated.
+    return this._i18next.exists(phrase) || count === 1 ?
+      this._i18next.t(phrase, parsedInterpValues) :
+      this._i18next.t(pluralForm, parsedInterpValues);
+  }
+
+  /**
    * Creates a {@link Translator} for the given locale, wrapping a properly configured,
    * new {@link i18next} instance.
    * 
