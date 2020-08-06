@@ -30,7 +30,7 @@ exports.SitesGenerator = class {
     // Pull all data from environment variables.
     const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
-    console.log('Jambo Injected Data:', env);
+    console.log('Jambo Injected Data:', env['JAMBO_INJECTED_DATA']);
 
     console.log('Reading config files');
     const pagesConfig = {};
