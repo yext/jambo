@@ -29,3 +29,11 @@ msgstr "fils"
 msgctxt "female"
 msgid "Child"
 msgstr "fille"
+
+msgctxt "male"
+msgid "I am looking for my child named {{name}}"
+msgstr "Je cherche mon fils nommé {{name}}"
+
+msgctxt "female"
+msgid "I am looking for my child named {{name}}"
+msgstr "Je cherche mon fille nommé {{name}}"
