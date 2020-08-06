@@ -49,8 +49,8 @@ class Translator {
   }
 
   /**
-     * Translates the provided phrase depending on the context.
-     * Supports interpolation.
+   * Translates the provided phrase depending on the context.
+   * Supports interpolation.
    * 
    * @param {string} phrase The phrase to translate.
    * @param {string} context The context of the translation
