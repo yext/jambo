@@ -18,71 +18,120 @@ exports.ConfigLocalizer = class {
   }
 
   /**
-   * Creates localized PageConfigs
+   * Creates a localized PageConfig for every page and locale, merging the rawConfigs
+   * based on the fallbacks and locale configuration in this.localizationConfig.
    *
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Array<PageConfig>}
    */
   localize(pageConfigs) {
-    if (!pageConfigs || pageConfigs.length < 1) {
-      return [];
-    }
+    const pageNameToConfigs = this._getPageNameToConfigs(pageConfigs);
 
     let localizedPageConfigs = [];
     for (const locale of this.localizationConfig.getLocales()) {
-      const configsForPage = [];
+      for (const [pageName, configsForPage] of Object.entries(pageNameToConfigs)) {
+        const mergedPageConfigForLocale = this._mergePageConfigs(pageName, locale, configsForPage);
 
-      const localeSpecificConfig = configsForPage.find(config => config.getLocale() === locale);
-
-      const localeFallbacks = this.localizationConfig.getFallbacks(locale);
-      const fallbackConfigs = [];
-      for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
-        const fallbackConfig = configsForPage.find(config => config.getLocale() === localeFallbacks[i]);
-        if (fallbackConfig) {
-          fallbackConfigs.push(fallbackConfig);
+        if (mergedPageConfigForLocale) {
+          localizedPageConfigs.push(mergedPageConfigForLocale);
         }
       }
-      const defaultConfig = configsForPage
-        .find(config => (config.getLocale() === defaultLocale) || (!config.getLocale()));
-
-      const localizedConfig = this._mergeConfigs(
-        defaultConfig,
-        ...fallbackConfigs,
-        localeSpecificConfig
-      );
-
-      localizedPageConfigs.push(localizedConfig);
     }
     return localizedPageConfigs;
   }
 
   /**
-   * Merges config objects. This is a shallow merge, the later arguments take precedent.
+   * Builds a new PageConfig for the given pageName and locale with a merged config
+   * based on the locale and fallbacks.
    *
+   * @param {String} pageName
+   * @param {String} locale
    * @param {Array<PageConfig>} configs
    * @returns {PageConfig}
    */
-  _mergeConfigs(...configs) {
-    if (!configs) {
-      return {};
-    }
+  _mergePageConfigs(pageName, locale, configs) {
+    const localeSpecificConfig = configs.find(config => config.getLocale() === locale);
 
-    const locale = configs[0].getLocale() || '';
-    const pageName = configs[0].getPageName();
+    const localeFallbacks = this.localizationConfig.getFallbacks(locale);
+    const fallbackConfigs = [];
+    for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
 
-    let rawConfig = {};
-    for (const config of configs) {
-      if (!config) {
-        continue;
+      const fallbackConfig = configs.find(config => {
+        return config.getLocale() === localeFallbacks[i]
+          || this._isDefaultLocale(config.getLocale() && this._isDefaultLocale(localeFallbacks[i]));
+      });
+      if (fallbackConfig) {
+        fallbackConfigs.push(fallbackConfig);
       }
-
-      rawConfig = Object.assign(rawConfig, config.getConfig());
     }
+    const defaultConfig = configs
+      .find(config => this._isDefaultLocale(config.getLocale()));
+
+    const hasLocalizedConfig = localeSpecificConfig
+      || fallbackConfigs.length > 0
+      || this._isDefaultLocale(locale);
+
+    if (!hasLocalizedConfig) {
+      return;
+    }
+
+    const mergedConfig = this._merge([
+      defaultConfig && defaultConfig.getConfig(),
+      ...fallbackConfigs.map(config => config && config.getConfig()),
+      localeSpecificConfig && localeSpecificConfig.getConfig()
+    ]);
 
     return new PageConfig({
       pageName: pageName,
       locale: locale,
-      rawConfig: rawConfig
-    })
+      rawConfig: mergedConfig,
+    });
+  }
+
+  /**
+   * Builds an Object mapping page name to PageConfigs with for the corresponding page.
+   *
+   * @param {Array<PageConfig>} configs
+   * @returns {Object}
+   */
+  _getPageNameToConfigs(pageConfigs) {
+    if (!pageConfigs || pageConfigs.length < 1) {
+      return {};
+    }
+
+    let pageNameToConfigs = {};
+    for (const config of pageConfigs) {
+      const pageName = config.getPageName();
+      if (!pageNameToConfigs[pageName]) {
+        pageNameToConfigs[pageName] = [];
+      }
+      pageNameToConfigs[pageName].push(config);
+    }
+    return pageNameToConfigs;
+  }
+
+  /**
+   * Determines whether the given locale is the default locale
+   *
+   * @param {String} locale
+   * @returns {boolean}
+   */
+  _isDefaultLocale(locale) {
+    return (locale === this.defaultLocale) || !locale;
+  }
+
+  /**
+   * Merges raw configs. This is a shallow merge, the later arguments take precedent.
+   *
+   * @param {Array<Object>} objects
+   * @returns {Object}
+   */
+  _merge(objects) {
+    const truthyObjects = objects && objects.filter(config => config);
+    if (!truthyObjects || truthyObjects.length < 1) {
+      return {};
+    }
+
+    return Object.assign({}, ...truthyObjects);
   }
 }

@@ -1,8 +1,7 @@
 const { Page } = require("./page");
-const { PageConfig } = require("./pageconfig");
 
 exports.PageSet = class {
-  constructor({ pages, pageConfigs, globalConfig, params }) {
+  constructor({ pages, globalConfig, params }) {
     /**
      * @type {Array<Page>}
      */
@@ -16,7 +15,7 @@ exports.PageSet = class {
     /**
      * @type {Object}
      */
-    this.pageNameToConfig = this._buildPageNameToConfig(pageConfigs);
+    this.pageNameToConfig = this._buildPageNameToConfig(pages);
 
     /**
      * @type {Object}
@@ -61,15 +60,15 @@ exports.PageSet = class {
   }
 
   /**
-   * Returns the pageNameToConfig from the given pageConfigs
+   * Returns the pageNameToConfig from the given pages
    *
-   * @param {Array<PageConfig>} pageConfigs
+   * @param {Array<Page>} pages
    * @returns {Object} pageNameToConfig
    */
-  _buildPageNameToConfig(pageConfigs) {
+  _buildPageNameToConfig(pages) {
     const pageNameToConfig = {};
-    for (const config of pageConfigs) {
-      pageNameToConfig[config.getPageName()] = config.getConfig();
+    for (const page of pages) {
+      pageNameToConfig[page.getPageName()] = page.getConfig();
     }
     return pageNameToConfig;
   }

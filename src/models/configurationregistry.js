@@ -3,9 +3,9 @@ const { LocalizationConfig } = require('./localizationconfig');
 const { getPageName } = require('../utils/fileutils');
 
 /**
- * Configs
+ * ConfigurationRegistry
  */
-exports.Configs = class {
+exports.ConfigurationRegistry = class {
   constructor(configs, configDir) {
     const globalConfigName = 'global_config';
     const localizationConfigName = 'locale_config';

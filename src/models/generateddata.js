@@ -76,7 +76,7 @@ exports.GeneratedData = class {
   }
 
   /**
-   * Gets the PageSet for the given locale // TODO generates??
+   * Builds the PageSet for the given locale
    *
    * @param {String} locale
    * @returns {PageSet}
@@ -92,7 +92,6 @@ exports.GeneratedData = class {
 
     return new PageSet({
       pages: pages,
-      pageNameToConfig: this.getPageConfigs(locale),
       params: this.localizationConfig.getParams(locale),
       globalConfig: this.getGlobalConfig(locale),
     });

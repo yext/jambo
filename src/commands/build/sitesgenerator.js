@@ -11,7 +11,7 @@ const { PageWriter } = require('./pagewriter');
 const { GeneratedData } = require('../../models/generateddata');
 const { stripExtension } = require('../../utils/fileutils');
 const { PageTemplate } = require('../../models/pagetemplate');
-const { Configs } = require('../../models/configs');
+const { ConfigurationRegistry } = require('../../models/configurationregistry');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -53,7 +53,7 @@ exports.SitesGenerator = class {
         }
       }
     });
-    const configs = new Configs(configNameToRawConfig, config.dirs.config);
+    const configRegistry = new ConfigurationRegistry(configNameToRawConfig, config.dirs.config);
 
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
@@ -66,9 +66,9 @@ exports.SitesGenerator = class {
     });
 
     const GENERATED_DATA = new GeneratedData({
-      globalConfig: configs.getGlobalConfig(),
-      localizationConfig: configs.getLocalizationConfig(),
-      pageConfigs: configs.getPageConfigs(),
+      globalConfig: configRegistry.getGlobalConfig(),
+      localizationConfig: configRegistry.getLocalizationConfig(),
+      pageConfigs: configRegistry.getPageConfigs(),
       pageTemplates: pageTemplates
     });
 
