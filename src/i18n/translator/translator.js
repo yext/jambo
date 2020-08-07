@@ -49,6 +49,21 @@ class Translator {
   }
 
   /**
+   * Translates the provided phrase depending on the context.
+   * Supports interpolation.
+   * 
+   * @param {string} phrase The phrase to translate.
+   * @param {string} context The context of the translation
+   * @param {Object<string, ?>} interpValues Optional, any values needed to interpolate
+   *                                         the translated string.
+   */
+  translateWithContext(phrase, context, interpValues) {
+    const parsedInterpValues = { ...interpValues, 'context': context};
+
+    return this._i18next.t(phrase, parsedInterpValues);
+  }
+
+  /**
    * Creates a {@link Translator} for the given locale, wrapping a properly configured,
    * new {@link i18next} instance.
    * 
