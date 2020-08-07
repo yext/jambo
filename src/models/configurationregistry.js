@@ -1,4 +1,5 @@
 const { getPageName } = require('../utils/fileutils');
+const GlobalConfig = require('./globalconfig');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
 
@@ -10,13 +11,13 @@ const PageConfig = require('./pageconfig');
  */
 module.exports = class ConfigurationRegistry {
   /**
-   * @param {Object} globalConfig
+   * @param {GlobalConfig} globalConfig
    * @param {LocalizationConfig} localizationConfig
    * @param {Array<PageConfig>} pageConfigs
    */
   constructor({ globalConfig, localizationConfig, pageConfigs }) {
     /**
-     * @type {Object}
+     * @type {GlobalConfig}
      */
     this._globalConfig = globalConfig;
 
@@ -34,7 +35,7 @@ module.exports = class ConfigurationRegistry {
   /**
    * Returns the global config
    *
-   * @returns {Object} global config
+   * @returns {GlobalConfig} global config
    */
   getGlobalConfig () {
     return this._globalConfig;
@@ -58,7 +59,6 @@ module.exports = class ConfigurationRegistry {
     return this._pageConfigs;
   }
 
-
   /**
    * @param {Object} configNameToRawConfig
    */
@@ -66,16 +66,15 @@ module.exports = class ConfigurationRegistry {
     const globalConfigName = 'global_config';
     const localizationConfigName = 'locale_config';
 
-    const globalConfig = configNameToRawConfig[globalConfigName];
-    if (!globalConfig) {
+    const rawGlobalConfig = configNameToRawConfig[globalConfigName];
+    if (!rawGlobalConfig) {
       throw new Error(`Error: Cannot find '${globalConfigName}', exiting.`);
     }
 
-    const localeConfig = configNameToRawConfig[localizationConfigName];
-    if (!localeConfig) {
+    const rawLocaleConfig = configNameToRawConfig[localizationConfigName];
+    if (!rawLocaleConfig) {
       console.log(`Cannot find '${localizationConfigName}', writing pages without locale information.`);
     }
-    const localizationConfig = new LocalizationConfig(localeConfig);
 
     const pageConfigs = Object.keys(configNameToRawConfig)
       .map((configName) => {
@@ -90,8 +89,8 @@ module.exports = class ConfigurationRegistry {
       .filter(value => value);
 
     return new ConfigurationRegistry({
-      globalConfig: globalConfig,
-      localizationConfig: localizationConfig,
+      globalConfig: new GlobalConfig(rawGlobalConfig),
+      localizationConfig: new LocalizationConfig(rawLocaleConfig),
       pageConfigs: pageConfigs,
     });
   }

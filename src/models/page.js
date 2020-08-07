@@ -30,6 +30,15 @@ module.exports = class Page {
   }
 
   /**
+   * Returns the locale
+   *
+   * @returns {String}
+   */
+  getLocale () {
+    return this.pageConfig.getLocale();
+  }
+
+  /**
    * Returns the page name
    *
    * @returns {String}

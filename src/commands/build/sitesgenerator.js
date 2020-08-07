@@ -67,7 +67,7 @@ exports.SitesGenerator = class {
       }
     });
 
-    const GENERATED_DATA = new GeneratedData({
+    const GENERATED_DATA = GeneratedData.from({
       globalConfig: configRegistry.getGlobalConfig(),
       localizationConfig: configRegistry.getLocalizationConfig(),
       pageConfigs: configRegistry.getPageConfigs(),

@@ -1,3 +1,4 @@
+const GlobalConfig = require("./globalconfig");
 const Page = require("./page");
 
 /**
@@ -8,29 +9,29 @@ const Page = require("./page");
 module.exports = class PageSet {
   /**
    * @param {Array<Page>} pages
-   * @param {Object} globalConfig
+   * @param {GlobalConfig} globalConfig
    * @param {Object} params
    */
   constructor({ pages, globalConfig, params }) {
     /**
      * @type {Array<Page>}
      */
-    this.pages = pages;
+    this.pages = pages || [];
 
     /**
-     * @type {Object}
+     * @type {GlobalConfig}
      */
     this.globalConfig = globalConfig;
 
     /**
      * @type {Object}
      */
-    this.pageNameToConfig = this._buildPageNameToConfig(pages);
+    this.pageNameToConfig = this._buildPageNameToConfig(pages) || {};
 
     /**
      * @type {Object}
      */
-    this.params = params;
+    this.params = params || {};
   }
 
   /**
@@ -54,7 +55,7 @@ module.exports = class PageSet {
   /**
    * Returns the globalConfig
    *
-   * @returns {Object} globalConfig
+   * @returns {GlobalConfig} globalConfig
    */
   getGlobalConfig () {
     return this.globalConfig;

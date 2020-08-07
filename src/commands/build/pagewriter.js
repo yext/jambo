@@ -40,7 +40,7 @@ module.exports = class PageWriter {
         pageConfig: page.getConfig(),
         path: this._calculateRelativePath(page.getOutputPath()),
         params: pageSet.getParams(),
-        globalConfig: pageSet.getGlobalConfig(),
+        globalConfig: pageSet.getGlobalConfig().getConfig(),
         pageNameToConfig: pageSet.getPageNameToConfig(),
       });
       const template = this._getHandlebarsTemplate(page.getTemplatePath());

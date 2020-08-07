@@ -2,13 +2,13 @@ const LocalizationConfig = require("../../models/localizationconfig");
 const PageConfig = require("../../models/pageconfig");
 
  /**
- * ConfigLocalizer creates a set of localized @type {PageConfig}s.
+ * PageConfigLocalizer creates a set of localized @type {PageConfig}s.
  *
  * This class localizes @type {PageConfig}s by merging the relevant page
  * configurations based on locale information and creating new, localized
  * @type {PageConfig} objects.
  */
-module.exports = class ConfigLocalizer {
+module.exports = class PageConfigLocalizer {
   constructor({ localizationConfig, defaultLocale }) {
     /**
      * @type {LocalizationConfig}
