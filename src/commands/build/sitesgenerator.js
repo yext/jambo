@@ -55,7 +55,7 @@ exports.SitesGenerator = class {
         }
       }
     });
-    const configRegistry = new ConfigurationRegistry(configNameToRawConfig, config.dirs.config);
+    const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
 
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {

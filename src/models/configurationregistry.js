@@ -10,43 +10,25 @@ const PageConfig = require('./pageconfig');
  */
 module.exports = class ConfigurationRegistry {
   /**
-   * @param {Object} configNameToRawConfig
+   * @param {Object} globalConfig
+   * @param {LocalizationConfig} localizationConfig
+   * @param {Array<PageConfig>} pageConfigs
    */
-  constructor(configNameToRawConfig) {
-    const globalConfigName = 'global_config';
-    const localizationConfigName = 'locale_config';
-
+  constructor({ globalConfig, localizationConfig, pageConfigs }) {
     /**
      * @type {Object}
      */
-    this._globalConfig = configNameToRawConfig[globalConfigName];
-    if (!this._globalConfig) {
-      throw new Error(`Error: Cannot find '${globalConfigName}', exiting.`);
-    }
+    this._globalConfig = globalConfig;
 
-    const localizationConfig = configNameToRawConfig[localizationConfigName];
-    if (!localizationConfig) {
-      console.log(`Cannot find '${localizationConfigName}', writing pages without locale information.`);
-    }
     /**
      * @type {LocalizationConfig}
      */
-    this._localizationConfig = new LocalizationConfig(configNameToRawConfig[localizationConfigName]);
+    this._localizationConfig = localizationConfig;
 
     /**
      * @type {Array<PageConfig>}
      */
-    this._pageConfigs = Object.keys(configNameToRawConfig)
-      .map((configName) => {
-        if (configName !== globalConfigName && configName !== localizationConfigName) {
-          return new PageConfig({
-            pageName: getPageName(configName),
-            locale: this._parseLocale(configName),
-            rawConfig: configNameToRawConfig[configName]
-          });
-        }
-      })
-      .filter(value => value);
+    this._pageConfigs = pageConfigs;
   }
 
   /**
@@ -76,13 +58,51 @@ module.exports = class ConfigurationRegistry {
     return this._pageConfigs;
   }
 
+
   /**
-   * Extracts the locale from a given configName
+   * @param {Object} configNameToRawConfig
+   */
+  static from(configNameToRawConfig) {
+    const globalConfigName = 'global_config';
+    const localizationConfigName = 'locale_config';
+
+    const globalConfig = configNameToRawConfig[globalConfigName];
+    if (!globalConfig) {
+      throw new Error(`Error: Cannot find '${globalConfigName}', exiting.`);
+    }
+
+    const localeConfig = configNameToRawConfig[localizationConfigName];
+    if (!localeConfig) {
+      console.log(`Cannot find '${localizationConfigName}', writing pages without locale information.`);
+    }
+    const localizationConfig = new LocalizationConfig(localeConfig);
+
+    const pageConfigs = Object.keys(configNameToRawConfig)
+      .map((configName) => {
+        if (configName !== globalConfigName && configName !== localizationConfigName) {
+          return new PageConfig({
+            pageName: getPageName(configName),
+            locale: ConfigurationRegistry._parseLocale(configName),
+            rawConfig: configNameToRawConfig[configName]
+          });
+        }
+      })
+      .filter(value => value);
+
+    return new ConfigurationRegistry({
+      globalConfig: globalConfig,
+      localizationConfig: localizationConfig,
+      pageConfigs: pageConfigs,
+    });
+  }
+
+  /**
+   * Parses the locale from a given configName
    *
    * @param {String} configName the file name of the config, without the extension
    * @returns {String}
    */
-  _parseLocale (configName) {
+  static _parseLocale (configName) {
     const configNameParts = configName.split('.');
     return configNameParts.length > 1 && configNameParts[1];
   }
