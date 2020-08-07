@@ -5,18 +5,24 @@ const path = require('path');
 const PageSet = require('../../models/pageset');
 
 /**
- * Writes output files for the specified pages.
+ * PageWriter is responsible for writing output files for the given @type {PageSet} to
+ * the given output directory.
  */
 module.exports = class PageWriter {
   constructor(config) {
-    this.env = config.env;
+    /**
+     * @type {Object}
+     */
+    this._env = config.env;
 
-    this.partialsDirectory = config.partialsDirectory;
-    this.outputDirectory = config.outputDirectory;
+    /**
+     * @type {String}
+     */
+    this._outputDirectory = config.outputDirectory;
   }
 
   /**
-   * Writes a file to the output directory per page in the given pageSet
+   * Writes a file to the output directory per page in the given PageSet.
    *
    * @param {PageSet} pageSet the collection of pages to generate
    */
@@ -32,7 +38,7 @@ module.exports = class PageWriter {
       console.log(`Writing output file for the '${page.getPageName()}' page`);
       const templateArguments = this._buildArgsForTemplate({
         pageConfig: page.getConfig(),
-        path: page.getOutputPath(),
+        path: this._calculateRelativePath(page.getOutputPath()),
         params: pageSet.getParams(),
         globalConfig: pageSet.getGlobalConfig(),
         pageNameToConfig: pageSet.getPageNameToConfig(),
@@ -41,14 +47,14 @@ module.exports = class PageWriter {
       const outputHTML = template(templateArguments);
 
       fs.writeFileSync(
-        `${this.outputDirectory}/${page.getOutputPath()}`,
+        `${this._outputDirectory}/${page.getOutputPath()}`,
         outputHTML
       );
     }
   }
 
   /**
-   * Gets the page template for a given path
+   * Gets the Handlebars template for a given path
    *
    * @param {String} path the path to the page handlebars template
    * @returns {HandlebarsTemplateDelegate<T>}
@@ -58,29 +64,35 @@ module.exports = class PageWriter {
   }
 
   /**
-   * Merges the configuration to make the arguments for the templates
+   * Creates the Object that will be passed in as arguments to the templates
    *
    * @param {Object} pageConfig the configuration for the current page
-   * @param {String} path the path to the page handlebars template
+   * @param {String} relativePath
    * @param {String} params
    * @param {Object} globalConfig
    * @param {Object} pageNameToConfig
    * @returns {Object}
    */
-  _buildArgsForTemplate ({ pageConfig, path, params, globalConfig, pageNameToConfig }) {
+  _buildArgsForTemplate ({ pageConfig, relativePath, params, globalConfig, pageNameToConfig }) {
     return Object.assign(
       {},
       pageConfig,
       {
         verticalConfigs: pageNameToConfig,
         global_config: globalConfig,
-        relativePath: this._calculateRelativePath(path),
+        relativePath: relativePath,
         params: params,
-        env: this.env
+        env: this._env
      }
     );
   }
 
+  /**
+   * Calculates the path from the page output file to the root output directory.
+   *
+   * @param {String} path the path to the page output file
+   * @returns {String}
+   */
   _calculateRelativePath (filePath) {
     return path.relative(path.dirname(filePath), "");;
   }

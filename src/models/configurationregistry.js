@@ -1,9 +1,12 @@
 const { getPageName } = require('../utils/fileutils');
-const PageConfig = require('./pageconfig');
 const LocalizationConfig = require('./localizationconfig');
+const PageConfig = require('./pageconfig');
 
 /**
- * ConfigurationRegistry
+ * ConfigurationRegistry is a registry of the configuration files provided to Jambo.
+ *
+ * This class creates @type {LocalizationConfig} and @type {PageConfig} objects but does
+ * not mutate or localize the configuration in any way.
  */
 module.exports = class ConfigurationRegistry {
   constructor(configs, configDir) {
@@ -13,8 +16,8 @@ module.exports = class ConfigurationRegistry {
     /**
      * @type {Object}
      */
-    this.globalConfig = configs[globalConfigName];
-    if (!this.globalConfig) {
+    this._globalConfig = configs[globalConfigName];
+    if (!this._globalConfig) {
       throw new Error(`Error: Cannot find '${globalConfigName}' file in '${configDir}' directory, exiting.`);
     }
 
@@ -25,12 +28,12 @@ module.exports = class ConfigurationRegistry {
     /**
      * @type {LocalizationConfig}
      */
-    this.localizationConfig = new LocalizationConfig(configs[localizationConfigName]);
+    this._localizationConfig = new LocalizationConfig(configs[localizationConfigName]);
 
     /**
      * @type {Array<PageConfig>}
      */
-    this.pageConfigs = Object.keys(configs)
+    this._pageConfigs = Object.keys(configs)
       .map((configName) => {
         if (configName !== globalConfigName && configName !== localizationConfigName) {
           return new PageConfig({
@@ -49,7 +52,7 @@ module.exports = class ConfigurationRegistry {
    * @returns {Object} global config
    */
   getGlobalConfig () {
-    return this.globalConfig;
+    return this._globalConfig;
   }
 
   /**
@@ -58,7 +61,7 @@ module.exports = class ConfigurationRegistry {
    * @returns {LocalizationConfig} localization config
    */
   getLocalizationConfig () {
-    return this.localizationConfig;
+    return this._localizationConfig;
   }
 
   /**
@@ -67,7 +70,7 @@ module.exports = class ConfigurationRegistry {
    * @returns {Array<PageConfig>} page configs
    */
   getPageConfigs () {
-    return this.pageConfigs;
+    return this._pageConfigs;
   }
 
   /**

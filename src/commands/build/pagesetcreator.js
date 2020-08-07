@@ -14,18 +14,17 @@ module.exports = class PageSetCreator {
     /**
      * @type {String}
      */
-    this.locale = locale;
+    this._locale = locale;
 
     /**
      * @type {Object}
      */
-    this.params = params;
+    this._params = params;
 
     /**
      * @type {Object}
      */
-
-    this.globalConfig = globalConfig;
+    this._globalConfig = globalConfig;
   }
 
   /**
@@ -39,12 +38,12 @@ module.exports = class PageSetCreator {
    */
   create ({ pageConfigs, pageTemplates, urlFormatter }) {
     if (!pageConfigs) {
-      console.log(`Warning: Missing configs for locale '${this.locale}', can't build pages`);
+      console.log(`Warning: Missing configs for locale '${this._locale}', can't build pages`);
       return [];
     }
 
     if (!pageTemplates) {
-      console.log(`Warning: Missing page templates for locale '${this.locale}', can't build pages`);
+      console.log(`Warning: Missing page templates for locale '${this._locale}', can't build pages`);
       return [];
     }
 
@@ -55,7 +54,7 @@ module.exports = class PageSetCreator {
       });
 
       if (!pageTemplate) {
-        console.log(`Warning: No page '${config.getPageName()}' found for given locale '${this.locale}', not generating a '${config.getPageName()}' page for '${this.locale}'`);
+        console.log(`Warning: No page '${config.getPageName()}' found for given locale '${this._locale}', not generating a '${config.getPageName()}' page for '${this._locale}'`);
         continue;
       }
 
@@ -68,8 +67,8 @@ module.exports = class PageSetCreator {
 
     return new PageSet({
       pages: pages,
-      params: this.params,
-      globalConfig: this.globalConfig
+      params: this._params,
+      globalConfig: this._globalConfig
     });;
   }
 }

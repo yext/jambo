@@ -113,7 +113,6 @@ exports.SitesGenerator = class {
       console.log(`Writing files for '${locale}' locale`);
       const pageSet = GENERATED_DATA.buildPageSet(locale);
       new PageWriter({
-        partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
         env: env,
       }).writePages(pageSet);

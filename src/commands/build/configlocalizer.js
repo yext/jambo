@@ -1,25 +1,32 @@
 const LocalizationConfig = require("../../models/localizationconfig");
 const PageConfig = require("../../models/pageconfig");
 
-/**
- * Merges the relevant page configurations based on locale
+ /**
+ * ConfigLocalizer creates a set of localized @type {PageConfig}s.
+ *
+ * This class localizes @type {PageConfig}s by merging the relevant page
+ * configurations based on locale information and creating new, localized
+ * @type {PageConfig} objects.
  */
 module.exports = class ConfigLocalizer {
   constructor({ localizationConfig, defaultLocale }) {
     /**
      * @type {LocalizationConfig}
      */
-    this.localizationConfig = localizationConfig;
+    this._localizationConfig = localizationConfig;
 
     /**
      * @type {String}
      */
-    this.defaultLocale = defaultLocale;
+    this._defaultLocale = defaultLocale;
   }
 
   /**
    * Creates a localized PageConfig for every page and locale, merging the rawConfigs
-   * based on the fallbacks and locale configuration in this.localizationConfig.
+   * based on the fallbacks and locale configuration in this._localizationConfig.
+   *
+   * This function considers locale fallbacks, so more PageConfig may be returned than were
+   * originally provided. It returns one PageConfig per (config, locale) combination.
    *
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Array<PageConfig>}
@@ -28,7 +35,7 @@ module.exports = class ConfigLocalizer {
     const pageNameToConfigs = this._getPageNameToConfigs(pageConfigs);
 
     let localizedPageConfigs = [];
-    for (const locale of this.localizationConfig.getLocales()) {
+    for (const locale of this._localizationConfig.getLocales()) {
       for (const [pageName, configsForPage] of Object.entries(pageNameToConfigs)) {
         const mergedPageConfigForLocale = this._mergePageConfigs(pageName, locale, configsForPage);
 
@@ -41,7 +48,7 @@ module.exports = class ConfigLocalizer {
   }
 
   /**
-   * Builds a new PageConfig for the given pageName and locale with a merged config
+   * Creates a new PageConfig for the given pageName and locale with a merged config
    * based on the locale and fallbacks.
    *
    * @param {String} pageName
@@ -52,7 +59,7 @@ module.exports = class ConfigLocalizer {
   _mergePageConfigs(pageName, locale, configs) {
     const localeSpecificConfig = configs.find(config => this._isLocaleMatch(config.getLocale(), locale));
 
-    const localeFallbacks = this.localizationConfig.getFallbacks(locale);
+    const localeFallbacks = this._localizationConfig.getFallbacks(locale);
     const fallbackConfigs = [];
     for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
       const fallbackConfig = configs
@@ -85,7 +92,7 @@ module.exports = class ConfigLocalizer {
   }
 
   /**
-   * Builds an Object mapping page name to PageConfigs with for the corresponding page.
+   * Builds an Object mapping page name to PageConfigs with the corresponding page name
    *
    * @param {Array<PageConfig>} configs
    * @returns {Object}
@@ -107,7 +114,8 @@ module.exports = class ConfigLocalizer {
   }
 
   /**
-   * Merges raw configs. This is a shallow merge, the later arguments take precedent.
+   * Merges raw configs and returns a new, merged object. This is a shallow merge,
+   * the later arguments take precedent. Falsy configs are filtered out.
    *
    * @param {Array<Object>} objects
    * @returns {Object}
@@ -139,6 +147,6 @@ module.exports = class ConfigLocalizer {
    * @returns {boolean}
    */
   _isDefaultLocale(locale) {
-    return locale === this.defaultLocale || !locale;
+    return locale === this._defaultLocale || !locale;
   }
 }

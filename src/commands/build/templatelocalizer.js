@@ -2,24 +2,29 @@ const PageTemplate = require("../../models/pagetemplate");
 const LocalizationConfig = require("../../models/localizationconfig");
 
 /**
- * Merges the relevant page configurations based on locale
+ * TemplateLocalizer creates a set of localized @type {PageTemplate}s.
+ *
+ * This class localizes @type {PageTemplate}s by creating a new, localized
+ * @type {PageTemplate} object per (pageTemplate, locale) combination.
  */
 module.exports = class TemplateLocalizer {
   constructor({ localizationConfig, defaultLocale }) {
     /**
      * @type {LocalizationConfig}
      */
-    this.localizationConfig = localizationConfig;
+    this._localizationConfig = localizationConfig;
 
     /**
      * @type {String}
      */
-    this.defaultLocale = defaultLocale;
+    this._defaultLocale = defaultLocale;
   }
 
   /**
-   * Creates a localized PageConfig for every page and locale, merging the rawConfigs
-   * based on the fallbacks and locale configuration in this.localizationConfig.
+   * Creates a localized PageTemplate for every (page, locale) combination. Considers
+   * locale fallbacks, so more PageTemplates may be returned than were provided.
+   * It returns one PageTemplate per (page, locale) combination.
+   *
    *
    * @param {Array<PageTemplates>} pageTemplates
    * @returns {Array<PageTemplates>}
@@ -27,28 +32,26 @@ module.exports = class TemplateLocalizer {
   createLocalizedPageTemplates(pageTemplates) {
     const pageNameToTemplates = this._getPageNameToTemplates(pageTemplates);
 
-    let localizedPageConfigs = [];
-    for (const locale of this.localizationConfig.getLocales()) {
+    let localizedPageTemplates = [];
+    for (const locale of this._localizationConfig.getLocales()) {
       for (const [pageName, templates] of Object.entries(pageNameToTemplates)) {
         const pageTemplateForLocale = this._getPageTemplate(locale, templates);
 
         if (pageTemplateForLocale) {
-          localizedPageConfigs.push(pageTemplateForLocale);
+          localizedPageTemplates.push(pageTemplateForLocale);
         }
       }
     }
-    return localizedPageConfigs;
+    return localizedPageTemplates;
   }
 
 
   /**
-   * Builds a new PageConfig for the given pageName and locale with a merged config
-   * based on the locale and fallbacks.
+   * Builds a new PageTemplate for pageTemplate and locale based on the locale and fallbacks.
    *
-   * @param {String} pageName
    * @param {String} locale
-   * @param {Array<PageConfig>} configs
-   * @returns {PageConfig}
+   * @param {Array<PageTemplate>} templates
+   * @returns {PageTemplate}
    */
   _getPageTemplate(locale, templates) {
     let pageTemplate = templates.find(pageTemplate => this._isLocaleMatch(pageTemplate.getLocale(), locale));
@@ -57,7 +60,7 @@ module.exports = class TemplateLocalizer {
       return PageTemplate.from(pageTemplate, locale);
     }
 
-    for (const fallback of this.localizationConfig.getFallbacks(locale)) {
+    for (const fallback of this._localizationConfig.getFallbacks(locale)) {
       pageTemplate = templates.find(page => this._isLocaleMatch(page.getLocale(), fallback));
 
       if (pageTemplate) {
@@ -67,18 +70,18 @@ module.exports = class TemplateLocalizer {
   }
 
   /**
-   * Builds an Object mapping page name to PageConfigs with for the corresponding page.
+   * Builds an Object mapping page name to PageTemplates with for the corresponding page.
    *
-   * @param {Array<PageConfig>} configs
+   * @param {Array<PageTemplate>} templates
    * @returns {Object}
    */
-  _getPageNameToTemplates(pageTemplates) {
-    if (!pageTemplates || pageTemplates.length < 1) {
+  _getPageNameToTemplates(templates) {
+    if (!templates || templates.length < 1) {
       return {};
     }
 
     let pageNameToTemplates = {};
-    for (const pageTemplate of pageTemplates) {
+    for (const pageTemplate of templates) {
       const pageName = pageTemplate.getPageName();
       if (!pageNameToTemplates[pageName]) {
         pageNameToTemplates[pageName] = [];
@@ -91,12 +94,12 @@ module.exports = class TemplateLocalizer {
   /**
    * Returns a collection of the unique pageNames from the given pageTemplates
    *
-   * @param {Array<PageTemplates>} pageTemplates
+   * @param {Array<PageTemplates>} templates
    * @returns {Array<String>}
    */
-  _getUniquePageNames(pageTemplates) {
-    let pageNames = pageTemplates
-      ? pageTemplates.map((template) => template.getPageName())
+  _getUniquePageNames(templates) {
+    let pageNames = templates
+      ? templates.map((template) => template.getPageName())
       : [];
 
     let uniqueNames = [];
@@ -126,6 +129,6 @@ module.exports = class TemplateLocalizer {
    * @returns {boolean}
    */
   _isDefaultLocale(locale) {
-    return locale === this.defaultLocale || !locale;
+    return locale === this._defaultLocale || !locale;
   }
 }
