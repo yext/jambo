@@ -104,14 +104,14 @@ exports.SitesGenerator = class {
       config.dirs.translations ? await this._extractTranslations(locales) : {};
 
     for (const locale of locales) {
-      const localeFallbacks = GENERATED_DATA.getLocaleFallbacks(locale);
-      console.log(`Registering Jambo Handlebars translation helpers for '${locale}' and '${localeFallbacks}'`);
-      const translator = await Translator.create(locale, localeFallbacks, translations);
-      // Register needed Handlebars translation helpers.
-      this._registerTranslationHelpers(translator);
+      // const localeFallbacks = GENERATED_DATA.getLocaleFallbacks(locale);
+      // console.log(`Registering Jambo Handlebars translation helpers for '${locale}' and '${localeFallbacks}'`);
+      // const translator = await Translator.create(locale, localeFallbacks, translations);
+      // // Register needed Handlebars translation helpers.
+      // this._registerTranslationHelpers(translator);
 
       console.log(`Writing files for '${locale}' locale`);
-      const pageSet = GENERATED_DATA.buildPageSet(locale);
+      const pageSet = GENERATED_DATA.getPageSet(locale);
       new PageWriter({
         outputDirectory: config.dirs.output,
         env: env,

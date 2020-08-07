@@ -2,12 +2,12 @@ const PageTemplate = require("../../models/pagetemplate");
 const LocalizationConfig = require("../../models/localizationconfig");
 
 /**
- * TemplateLocalizer creates a set of localized @type {PageTemplate}s.
+ * TemplateMultiplier creates a set of localized @type {PageTemplate}s.
  *
  * This class localizes @type {PageTemplate}s by creating a new, localized
  * @type {PageTemplate} object per (pageTemplate, locale) combination.
  */
-module.exports = class TemplateLocalizer {
+module.exports = class TemplateMultiplier {
   constructor({ localizationConfig, defaultLocale }) {
     /**
      * @type {LocalizationConfig}
@@ -29,16 +29,17 @@ module.exports = class TemplateLocalizer {
    * @param {Array<PageTemplates>} pageTemplates
    * @returns {Array<PageTemplates>}
    */
-  createLocalizedPageTemplates(pageTemplates) {
+  multiply(pageTemplates) {
     const pageNameToTemplates = this._getPageNameToTemplates(pageTemplates);
 
-    let localizedPageTemplates = [];
+    let localizedPageTemplates = {};
     for (const locale of this._localizationConfig.getLocales()) {
+      localizedPageTemplates[locale] = [];
       for (const [pageName, templates] of Object.entries(pageNameToTemplates)) {
         const pageTemplateForLocale = this._getPageTemplate(locale, templates);
 
         if (pageTemplateForLocale) {
-          localizedPageTemplates.push(pageTemplateForLocale);
+          localizedPageTemplates[locale].push(pageTemplateForLocale);
         }
       }
     }

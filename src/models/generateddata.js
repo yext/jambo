@@ -2,7 +2,7 @@ const GlobalConfig = require('./globalconfig');
 const GlobalConfigLocalizer = require('../commands/build/globalconfiglocalizer');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
-const PageLocalizer = require('../commands/build/pagelocalizer');
+const PageSetBuilder = require('../commands/build/pagesetbuilder');
 const PageSet = require('./pageset');
 const PageTemplate = require('./pagetemplate');
 
@@ -12,17 +12,11 @@ const PageTemplate = require('./pagetemplate');
  */
 module.exports = class GeneratedData {
   /**
-   * @param {GlobalConfig} globalConfig
    * @param {LocalizationConfig} localizationConfig
-   * @param {Array<Page>} pages
    * @param {String} defaultLocale
+   * @param {Object<String, PageSet>} localeToPageSet
    */
-  constructor({ localizedGlobalConfigs, localizationConfig, pages, defaultLocale }) {
-    /**
-     * @type {Array<GlobalConfig>}
-     */
-    this._localizedGlobalConfigs = localizedGlobalConfigs;
-
+  constructor({ localizationConfig, defaultLocale, localeToPageSet }) {
     /**
      * @type {LocalizationConfig}
      */
@@ -36,7 +30,7 @@ module.exports = class GeneratedData {
     /**
      * @type {Array<Page>}
      */
-    this._pages = pages;
+    this._localeToPageSet = localeToPageSet;
   }
 
   /**
@@ -64,34 +58,10 @@ module.exports = class GeneratedData {
    * Gets pages for locale
    *
    * @param {String} locale
-   * @returns {Array<Page>}
-   */
-  getPages (locale) {
-    return this._pages.filter(page => page.getLocale() === locale);
-  }
-
-  /**
-   * Gets pages for locale
-   *
-   * @param {String} locale
-   * @returns {Array<Page>}
-   */
-  getGlobalConfig (locale) {
-    return this._localizedGlobalConfigs.find(globalConfig => globalConfig.getLocale() === locale);
-  }
-
-  /**
-   * Builds the PageSet for the given locale
-   *
-   * @param {String} locale
    * @returns {PageSet}
    */
-  buildPageSet (locale) {
-    return new PageSet({
-      pages: this.getPages(locale),
-      params: this._localizationConfig.getParams(locale),
-      globalConfig: this.getGlobalConfig(locale),
-    });
+  getPageSet (locale) {
+    return this._localeToPageSet[locale];
   }
 
   /**
@@ -103,17 +73,17 @@ module.exports = class GeneratedData {
   static from({ globalConfig, localizationConfig, pageConfigs, pageTemplates }) {
     const defaultLocale = localizationConfig.getDefaultLocale() || globalConfig.getLocale() || '';
 
-    const localizedGlobalConfigs = new GlobalConfigLocalizer(localizationConfig)
-      .generateLocalizedGlobalConfigs(globalConfig);
+    const localeToGlobalConfig = new GlobalConfigLocalizer(localizationConfig)
+      .generateLocaleToGlobalConfig(globalConfig);
 
-    const pages = new PageLocalizer({
+    const localeToPageSet = new PageSetBuilder({
       localizationConfig: localizationConfig,
-      defaultLocale: defaultLocale
-    }).generateLocalizedPages(pageConfigs, pageTemplates);
+      localeToGlobalConfig: localeToGlobalConfig,
+      defaultLocale: defaultLocale,
+    }).build(pageConfigs, pageTemplates);
 
     return new GeneratedData({
-      pages: pages,
-      localizedGlobalConfigs: localizedGlobalConfigs,
+      localeToPageSet: localeToPageSet,
       localizationConfig: localizationConfig,
       defaultLocale: defaultLocale
     })

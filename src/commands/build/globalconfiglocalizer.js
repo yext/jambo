@@ -19,25 +19,25 @@ module.exports = class GlobalConfigLocalizer {
    * @param {String} locale
    * @returns {Array<GlobalConfig>}
    */
-  generateLocalizedGlobalConfigs(globalConfig) {
+  generateLocaleToGlobalConfig(globalConfig) {
     const additionalLocales = this._localizationConfig.getLocales();
     if (!additionalLocales || additionalLocales.length < 1) {
       return [ GlobalConfig.from(globalConfig.getConfig()) ];
     }
 
-    let localizedGlobalConfigs = [];
+    let localizedGlobalConfigs = {};
     for (const locale of additionalLocales) {
       const experienceKey = this._localizationConfig.getExperienceKey(locale)
         || globalConfig.getExperienceKey();
       const apiKey = this._localizationConfig.getApiKey(locale)
         || globalConfig.getApiKey();
 
-      localizedGlobalConfigs.push(new GlobalConfig({
+      localizedGlobalConfigs[locale] = new GlobalConfig({
         ...globalConfig.getConfig(),
         experienceKey: experienceKey,
         apiKey: apiKey,
         locale: locale
-      }));
+      });
     }
 
     return localizedGlobalConfigs;

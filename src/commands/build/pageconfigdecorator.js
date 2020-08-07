@@ -2,13 +2,13 @@ const LocalizationConfig = require("../../models/localizationconfig");
 const PageConfig = require("../../models/pageconfig");
 
  /**
- * PageConfigLocalizer creates a set of localized @type {PageConfig}s.
+ * PageConfigDecorator creates a set of localized @type {PageConfig}s.
  *
  * This class localizes @type {PageConfig}s by merging the relevant page
  * configurations based on locale information and creating new, localized
  * @type {PageConfig} objects.
  */
-module.exports = class PageConfigLocalizer {
+module.exports = class PageConfigDecorator {
   constructor({ localizationConfig, defaultLocale }) {
     /**
      * @type {LocalizationConfig}
@@ -31,16 +31,18 @@ module.exports = class PageConfigLocalizer {
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Array<PageConfig>}
    */
-  createLocalizedPageConfigs(pageConfigs) {
+  decorate(pageConfigs) {
     const pageNameToConfigs = this._getPageNameToConfigs(pageConfigs);
 
-    let localizedPageConfigs = [];
+    let localizedPageConfigs = {};
     for (const locale of this._localizationConfig.getLocales()) {
+      localizedPageConfigs[locale] = [];
+
       for (const [pageName, configsForPage] of Object.entries(pageNameToConfigs)) {
         const mergedPageConfigForLocale = this._mergePageConfigs(pageName, locale, configsForPage);
 
         if (mergedPageConfigForLocale) {
-          localizedPageConfigs.push(mergedPageConfigForLocale);
+          localizedPageConfigs[locale].push(mergedPageConfigForLocale);
         }
       }
     }
@@ -58,6 +60,9 @@ module.exports = class PageConfigLocalizer {
    */
   _mergePageConfigs(pageName, locale, configs) {
     const localeSpecificConfig = configs.find(config => this._isLocaleMatch(config.getLocale(), locale));
+    if (!localeSpecificConfig) {
+      return;
+    }
 
     const localeFallbacks = this._localizationConfig.getFallbacks(locale);
     const fallbackConfigs = [];
@@ -71,12 +76,6 @@ module.exports = class PageConfigLocalizer {
     }
     const defaultConfig = configs
       .find(config => this._isDefaultLocale(config.getLocale()));
-
-    const hasLocalizedConfig = localeSpecificConfig || fallbackConfigs.length > 0;
-
-    if (!hasLocalizedConfig) {
-      return;
-    }
 
     const mergedConfig = this._merge([
       defaultConfig && defaultConfig.getConfig(),

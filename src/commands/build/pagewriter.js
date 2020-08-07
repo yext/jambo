@@ -27,6 +27,10 @@ module.exports = class PageWriter {
    * @param {PageSet} pageSet the collection of pages to generate
    */
   writePages (pageSet) {
+    if (!pageSet || pageSet.getPages().length < 1) {
+      return;
+    }
+
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
         throw new Error(`Error: No config found for page: ${page.getPageName()}`);
