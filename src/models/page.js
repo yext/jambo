@@ -1,8 +1,8 @@
+const PageConfig = require('./pageconfig');
+const PageTemplate = require('./pagetemplate');
 const { stripExtension } = require('../utils/fileutils');
-const { PageConfig } = require('./pageconfig');
-const { PageTemplate } = require('./pagetemplate');
 
-exports.Page = class {
+module.exports = class Page {
   constructor({ config, pageTemplate, urlFormatter }) {
     /**
      * @type {PageConfig}

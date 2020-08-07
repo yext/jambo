@@ -1,6 +1,6 @@
-const { Page } = require("./page");
+const Page = require("./page");
 
-exports.PageSet = class {
+module.exports = class PageSet {
   constructor({ pages, globalConfig, params }) {
     /**
      * @type {Array<Page>}

@@ -1,6 +1,6 @@
 const { getPageName } = require('../utils/fileutils');
 
-exports.PageTemplate = class PageTemplate {
+module.exports = class PageTemplate {
   constructor({ filename, path }) {
     if (!filename) {
       throw new Error('Error: no filename provided for page template');

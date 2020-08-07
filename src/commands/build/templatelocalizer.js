@@ -1,10 +1,10 @@
-const { PageTemplate } = require("../../models/pagetemplate");
-const { LocalizationConfig } = require("../../models/localizationconfig");
+const PageTemplate = require("../../models/pagetemplate");
+const LocalizationConfig = require("../../models/localizationconfig");
 
 /**
  * Merges the relevant page configurations based on locale
  */
-exports.TemplateLocalizer = class {
+module.exports = class TemplateLocalizer {
   constructor({ localizationConfig, defaultLocale }) {
     /**
      * @type {LocalizationConfig}

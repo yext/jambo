@@ -1,12 +1,13 @@
 const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
-const { PageSet } = require('../../models/pageset');
+
+const PageSet = require('../../models/pageset');
 
 /**
  * Writes output files for the specified pages.
  */
-exports.PageWriter = class {
+module.exports = class PageWriter {
   constructor(config) {
     this.env = config.env;
 

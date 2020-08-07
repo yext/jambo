@@ -1,7 +1,7 @@
-const { Page } = require("../../models/page");
-const { PageTemplate } = require("../../models/pagetemplate");
-const { PageConfig } = require("../../models/pageconfig");
-const { PageSet } = require("../../models/pageset");
+const Page = require("../../models/page");
+const PageConfig = require("../../models/pageconfig");
+const PageSet = require("../../models/pageset");
+const PageTemplate = require("../../models/pagetemplate");
 
 /**
  * PageSetCreator is responsible for creating a PageSet from the given information.
@@ -9,7 +9,7 @@ const { PageSet } = require("../../models/pageset");
  * This class assumes all data has already been localized, its responsibility is putting
  * the data into a @type {PageSet} object.
  */
-exports.PageSetCreator = class {
+module.exports = class PageSetCreator {
   constructor({ locale, params, globalConfig }) {
     /**
      * @type {String}

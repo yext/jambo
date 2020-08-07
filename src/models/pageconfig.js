@@ -1,7 +1,7 @@
 /**
  * PageConfig
  */
-exports.PageConfig = class {
+module.exports = class PageConfig {
   constructor({ pageName, locale, rawConfig }) {
     this.rawConfig = rawConfig;
     this.pageName = pageName;

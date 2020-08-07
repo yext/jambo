@@ -3,7 +3,7 @@
  */
 
 // TODO assumes language and suffix of locale are separated by a "-" (e.g. en-US)
-exports.LocalizationConfig = class {
+module.exports = class LocalizationConfig {
   constructor(localizationConfig) {
     const config = localizationConfig || {};
     this._defaultLocale = config.default || ''; // TODO do we want this to be the default

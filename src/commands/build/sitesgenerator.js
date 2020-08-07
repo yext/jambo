@@ -6,12 +6,12 @@ const babel = require("@babel/core");
 const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
+const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
-const { PageWriter } = require('./pagewriter');
-const { GeneratedData } = require('../../models/generateddata');
+const GeneratedData = require('../../models/generateddata');
+const PageTemplate = require('../../models/pagetemplate');
+const PageWriter = require('./pagewriter');
 const { stripExtension } = require('../../utils/fileutils');
-const { PageTemplate } = require('../../models/pagetemplate');
-const { ConfigurationRegistry } = require('../../models/configurationregistry');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
