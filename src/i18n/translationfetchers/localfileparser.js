@@ -1,5 +1,5 @@
 const path = require('path');
-const { readFileSync } = require('fs');
+const { readFileSync, existsSync } = require('fs');
 const { gettextToI18next } = require('i18next-conv');
 
 /**
@@ -20,7 +20,8 @@ class LocalFileParser {
   }
 
   /**
-   * Parses a locale's translations in the local filesystem.
+   * Extracts a locale's translations from the local filesystem. If no such
+   * translations exist, an empty object is returned.
    * 
    * @param {string} locale The desired locale.
    * @returns {Promise<Object>} A Promise containing the parsed translations in
@@ -28,9 +29,14 @@ class LocalFileParser {
   */
   async fetch(locale) {
     const translationFile = path.join(this._translationsDir, `${locale}.po`);
-    const localeTranslations =
-      gettextToI18next(locale, readFileSync(translationFile), this._options);
-    return localeTranslations.then(data => JSON.parse(data));
+
+    if (existsSync(translationFile)) {
+      const localeTranslations =
+        gettextToI18next(locale, readFileSync(translationFile), this._options);
+      return localeTranslations.then(data => JSON.parse(data));
+    }
+
+    return {};
   }
 }
 module.exports = LocalFileParser;

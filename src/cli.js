@@ -118,7 +118,7 @@ const options = yargs
     },
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
-      sitesGenerator.generate(argv.jsonEnvVars);
+      sitesGenerator.generate(argv.jsonEnvVars).catch(console.log);
     })
   .command(
     'extract-i18n',
