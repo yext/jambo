@@ -68,3 +68,31 @@ describe('Translations with pluralization and no context', () => {
     expect(translation).toEqual('Missing 2 translations Tom');
   });
 });
+
+describe('Translations with context and no pluralization', () => {
+  it('context works as expected with context = male', () => {
+    const translation = translator.translateWithContext('Child', 'male');
+    expect(translation).toEqual('fils');
+  });
+
+  it('context works as expected with context = female', () => {
+    const translation = translator.translateWithContext('Child', 'female');
+    expect(translation).toEqual('fille');
+  });
+
+  it('context and interpolation works as expected with context = male', () => {
+    const translation = translator.translateWithContext(
+      'I am looking for my child named {{name}}', 
+      'male', 
+      { name: 'Sam' });
+    expect(translation).toEqual('Je cherche mon fils nommé Sam')
+  });
+
+  it('context and interpolation works as expected with context = female', () => {
+    const translation = translator.translateWithContext(
+      'I am looking for my child named {{name}}', 
+      'female', 
+      { name: 'Sam' });
+    expect(translation).toEqual('Je cherche mon fille nommé Sam')
+  });
+});
