@@ -6,7 +6,7 @@ const { PageSet } = require("../../models/pageset");
 /**
  * PageSetCreator is responsible for creating a PageSet from the given information.
  *
- * This class assumes all data has already been localized, its responsiblity is putting
+ * This class assumes all data has already been localized, its responsibility is putting
  * the data into a @type {PageSet} object.
  */
 exports.PageSetCreator = class {
