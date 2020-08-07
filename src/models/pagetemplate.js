@@ -1,6 +1,6 @@
 const { getPageName } = require('../utils/fileutils');
 
-exports.PageTemplate = class {
+exports.PageTemplate = class PageTemplate {
   constructor({ filename, path }) {
     if (!filename) {
       throw new Error('Error: no filename provided for page template');
@@ -47,5 +47,16 @@ exports.PageTemplate = class {
   _parseLocale (filename) {
     const pageParts = stripExtension(stripExtension(filename)).split('.');
     return pageParts.length > 1 && pageParts[1];
+  }
+
+  static from (pageTemplate, locale) {
+    const page = new PageTemplate({
+      filename: 'test',
+    });
+
+    page.path = pageTemplate.path;
+    page.pageName = pageTemplate.pageName;
+    page.locale = locale;
+    return page;
   }
 }

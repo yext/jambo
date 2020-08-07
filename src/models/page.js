@@ -3,12 +3,7 @@ const { PageConfig } = require('./pageconfig');
 const { PageTemplate } = require('./pagetemplate');
 
 exports.Page = class {
-  constructor({ locale, config, pageTemplate, urlFormatter }) {
-    /**
-     * @type {String}
-     */
-    this.locale = locale;
-
+  constructor({ config, pageTemplate, urlFormatter }) {
     /**
      * @type {PageConfig}
      */
@@ -23,15 +18,6 @@ exports.Page = class {
      * @type {String}
      */
     this.outputPath = this._buildUrl(config.getPageName(), pageTemplate.getTemplatePath(), urlFormatter);
-  }
-
-  /**
-   * Returns the locale
-   *
-   * @returns {String}
-   */
-  getLocale () {
-    return this.locale;
   }
 
   /**
