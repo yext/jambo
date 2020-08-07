@@ -291,6 +291,18 @@ exports.SitesGenerator = class {
         return translator.translatePlural(singularPhrase, pluralPhrase, count, interpValues);
       }
     );
+
+    /**
+     * Translates the provided phrase depending on the context.
+     * Supports interpolation.
+     */
+    hbs.registerHelper(
+      'translateWithContext',
+      function (phrase, context, options) {
+        const interpValues = options.hash;
+        return translator.translateWithContext(phrase, context, interpValues);
+      }
+    )
   }
 
   _registerHelpers() {
