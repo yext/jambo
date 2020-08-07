@@ -300,7 +300,7 @@ exports.SitesGenerator = class {
       'translateWithContext',
       function (phrase, context, options) {
         const interpValues = options.hash;
-        return translator.transalteWithContext(phrase, context, interpValues);
+        return translator.translateWithContext(phrase, context, interpValues);
       }
     )
   }
