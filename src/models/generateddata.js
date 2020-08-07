@@ -98,7 +98,7 @@ exports.GeneratedData = class {
    * @returns {PageSet}
    */
   buildPageSet (locale) {
-    return PageSetCreator({
+    return new PageSetCreator({
       locale: locale,
       params: this.localizationConfig.getParams(locale),
       globalConfig: this.getGlobalConfig(locale),
