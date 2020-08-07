@@ -23,8 +23,6 @@ exports.GeneratedData = class {
 
     this.defaultLocale = localizationConfig.getDefaultLocale() || globalConfig.locale || '';
 
-    const pageTemplatesOG = pageTemplates.map(template => template.getPageName());
-    console.log(`pageTemplatesOG: ${pageTemplatesOG}`);
     /**
      * @type {Array<PageTemplates>}
      */
@@ -32,8 +30,6 @@ exports.GeneratedData = class {
       localizationConfig: localizationConfig,
       defaultLocale: this.defaultLocale
     }).createLocalizedPageTemplates(pageTemplates);
-    const localizedPageTemplates = this.localizedPageTemplates.map(template => template.getPageName());
-    console.log(`localizedPageTemplates: ${localizedPageTemplates}`);
 
     /**
      * @type {Array<PageConfig>}
@@ -99,8 +95,6 @@ exports.GeneratedData = class {
    * @returns {PageSet}
    */
   buildPageSet (locale) {
-    const pageTemplatesForLocale = this.getPageTemplates(locale).map(template => template.getPageName());
-    console.log(`pageTemplates for locale: ${pageTemplatesForLocale}`);
     const pages = new PagesBuilder({
       pageTemplates: this.getPageTemplates(locale),
       pageConfigs: this.getPageConfigs(locale),
