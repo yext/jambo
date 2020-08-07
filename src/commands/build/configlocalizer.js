@@ -24,7 +24,7 @@ exports.ConfigLocalizer = class {
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Array<PageConfig>}
    */
-  localize(pageConfigs) {
+  createLocalizedPageConfigs(pageConfigs) {
     const pageNameToConfigs = this._getPageNameToConfigs(pageConfigs);
 
     let localizedPageConfigs = [];
@@ -50,16 +50,14 @@ exports.ConfigLocalizer = class {
    * @returns {PageConfig}
    */
   _mergePageConfigs(pageName, locale, configs) {
-    const localeSpecificConfig = configs.find(config => config.getLocale() === locale);
+    const localeSpecificConfig = configs.find(config => this._isLocaleMatch(config.getLocale(), locale));
 
     const localeFallbacks = this.localizationConfig.getFallbacks(locale);
     const fallbackConfigs = [];
     for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
+      const fallbackConfig = configs
+        .find(config => this._isLocaleMatch(config.getLocale(), localeFallbacks[i]));
 
-      const fallbackConfig = configs.find(config => {
-        return config.getLocale() === localeFallbacks[i]
-          || this._isDefaultLocale(config.getLocale() && this._isDefaultLocale(localeFallbacks[i]));
-      });
       if (fallbackConfig) {
         fallbackConfigs.push(fallbackConfig);
       }
@@ -67,9 +65,7 @@ exports.ConfigLocalizer = class {
     const defaultConfig = configs
       .find(config => this._isDefaultLocale(config.getLocale()));
 
-    const hasLocalizedConfig = localeSpecificConfig
-      || fallbackConfigs.length > 0
-      || this._isDefaultLocale(locale);
+    const hasLocalizedConfig = localeSpecificConfig || fallbackConfigs.length > 0;
 
     if (!hasLocalizedConfig) {
       return;
@@ -111,16 +107,6 @@ exports.ConfigLocalizer = class {
   }
 
   /**
-   * Determines whether the given locale is the default locale
-   *
-   * @param {String} locale
-   * @returns {boolean}
-   */
-  _isDefaultLocale(locale) {
-    return (locale === this.defaultLocale) || !locale;
-  }
-
-  /**
    * Merges raw configs. This is a shallow merge, the later arguments take precedent.
    *
    * @param {Array<Object>} objects
@@ -133,5 +119,26 @@ exports.ConfigLocalizer = class {
     }
 
     return Object.assign({}, ...truthyObjects);
+  }
+
+  /**
+   * Determines whether the given locales match
+   *
+   * @param {String} locale
+   * @returns {boolean}
+   */
+  _isLocaleMatch(locale1, locale2) {
+    return locale1 === locale2 ||
+      (this._isDefaultLocale(locale1) && (this._isDefaultLocale(locale2)));
+  }
+
+  /**
+   * Determines whether the given locale is the default locale
+   *
+   * @param {String} locale
+   * @returns {boolean}
+   */
+  _isDefaultLocale(locale) {
+    return locale === this.defaultLocale || !locale;
   }
 }

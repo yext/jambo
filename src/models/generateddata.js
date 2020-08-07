@@ -33,7 +33,7 @@ exports.GeneratedData = class {
     this.localizedPageConfigs = new ConfigLocalizer({
       localizationConfig: localizationConfig,
       defaultLocale: this.defaultLocale
-    }).localize(pageConfigs);
+    }).createLocalizedPageConfigs(pageConfigs);
   }
 
   /**
@@ -71,8 +71,7 @@ exports.GeneratedData = class {
    * @returns {Object}
    */
   getPageConfigs (locale) {
-    // TODO default locale + other complications?
-    return this.localizedPageConfigs.filter((pageConfig) => pageConfig.getLocale() === locale);
+    return this.localizedPageConfigs.filter(pageConfig => pageConfig.getLocale() === locale);
   }
 
   /**
@@ -85,9 +84,10 @@ exports.GeneratedData = class {
     const pages = new PageBuilder({
       locale: locale,
       pageTemplates: this.pageTemplates,
-      pageNameToConfig: this.getPageConfigs(locale),
+      pageConfigs: this.getPageConfigs(locale),
       localeFallbacks: this.localizationConfig.getFallbacks(locale),
       urlFormatter: this.localizationConfig.getUrlFormatter(locale),
+      defaultLocale: this.defaultLocale,
     }).build();
 
     return new PageSet({

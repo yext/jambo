@@ -3,7 +3,7 @@ const { PageTemplate } = require("../../models/pagetemplate");
 const { PageConfig } = require("../../models/pageconfig");
 
 exports.PageBuilder = class {
-  constructor({ pageConfigs, pageTemplates, locale, localeFallbacks, urlFormatter }) {
+  constructor({ pageConfigs, pageTemplates, locale, localeFallbacks, urlFormatter, defaultLocale }) {
     /**
      * @type {Array<PageConfig>}
      */
@@ -29,6 +29,9 @@ exports.PageBuilder = class {
      * @type {Function}
      */
     this.urlFormatter = urlFormatter;
+
+    this.uniquePageNames = this._getUniquePageNames(pageTemplates);
+    this.defaultLocale = defaultLocale;
   }
 
   /**
@@ -38,14 +41,15 @@ exports.PageBuilder = class {
    */
   build () {
     if (!this.pageConfigs) {
-      console.warn(`Warning: Missing configs for locale '${this.locale}', can't build pageset`);
+      console.log(`Warning: Missing configs for locale '${this.locale}', can't build pageset`);
       return [];
     }
 
     let pageTemplatesForLocale = this._filterPageTemplatesForLocale(
       this.pageTemplates,
       this.locale,
-      this.localeFallbacks
+      this.localeFallbacks,
+      this.uniquePageNames
     );
     return this._buildPages(pageTemplatesForLocale, this.pageConfigs);
   }
@@ -58,12 +62,12 @@ exports.PageBuilder = class {
    * @param {Array} localeFallbacks the fallbacks for the locale
    * @returns {Array<PageTemplate>}
    */
-  _filterPageTemplatesForLocale (pageTemplates, locale, localeFallbacks = []) {
+  _filterPageTemplatesForLocale (pageTemplates, locale, localeFallbacks = [], uniquePageNames) {
     let pageTemplatesForLocale = [];
 
-    for (const pageName of this._getUniquePageNames(pageTemplates)) {
+    for (const pageName of uniquePageNames) {
       const pagesWithPageName = pageTemplates.filter(page => page.getPageName() === pageName);
-      let pageForLocale = pagesWithPageName.find((page) => page.getLocale() === locale);
+      let pageForLocale = pagesWithPageName.find((page) => this._getLocaleOrDefault(page) === locale);
 
       if (pageForLocale) {
         pageTemplatesForLocale.push(pageForLocale);
@@ -71,7 +75,9 @@ exports.PageBuilder = class {
       }
 
       for (const fallback of localeFallbacks) {
-        pageForLocale = pagesWithPageName.find((page) => page.getLocale() === fallback);
+        pageForLocale = pagesWithPageName.find((page) => {
+          return this._getLocaleOrDefault(page) === fallback;
+        });
         if (pageForLocale) {
           pageTemplatesForLocale.push(pageForLocale);
           break;
@@ -110,24 +116,32 @@ exports.PageBuilder = class {
    */
   _buildPages(pageTemplates, pageConfigs) {
     let pages = [];
-    for (const pageConfig of Object.entries(pageConfigs)) {
+    for (const pageConfig of pageConfigs) {
       const pageTemplate = pageTemplates
         .find(template => template.getPageName() === pageConfig.getPageName());
 
       if (!pageTemplate) {
-        console.warn(`
-          Warning: No page '${pageConfig.getPageName()}' found for given locale '${this.locale}',
-          not generating a '${pageConfig.getPageName()}' page for '${this.locale}'`
-        );
+        console.log(`Warning: No page '${pageConfig.getPageName()}' found for given locale '${this.locale}', not generating a '${pageConfig.getPageName()}' page for '${this.locale}'`);
         continue;
       }
 
       pages.push(new Page({
+        locale: this.locale,
         config: pageConfig,
         pageTemplate: pageTemplate,
         urlFormatter: this.urlFormatter,
       }));
     }
     return pages;
+  }
+
+  /**
+   * Returns a collection of the unique pageNames from the given pageTemplates
+   *
+   * @param {Page} pageTemplates
+   * @returns {Array<String>}
+   */
+  _getLocaleOrDefault(page) {
+    return page.getLocale() || this.defaultLocale;
   }
 }

@@ -3,16 +3,11 @@ const { PageConfig } = require('./pageconfig');
 const { PageTemplate } = require('./pagetemplate');
 
 exports.Page = class {
-  constructor({ config, pageTemplate, urlFormatter }) {
-    if (config.getPageName() != pageTemplate.getPageName()) {
-      throw new Error(`Mismatch in pageName between config and pageTemplate for page,
-        '${config.getPageName()}' and '${pageTemplate.getPageName()}'`);
-    }
-
-    if (config.getLocale() != pageTemplate.getLocale()) {
-      throw new Error(`Mismatch in locale between config and pageTemplate for page '${config.getPageName()}',
-        '${config.getLocale()}' and '${pageTemplate.getLocale()}'`);
-    }
+  constructor({ locale, config, pageTemplate, urlFormatter }) {
+    /**
+     * @type {String}
+     */
+    this.locale = locale;
 
     /**
      * @type {PageConfig}
@@ -28,6 +23,15 @@ exports.Page = class {
      * @type {String}
      */
     this.outputPath = this._buildUrl(config.getPageName(), pageTemplate.getTemplatePath(), urlFormatter);
+  }
+
+  /**
+   * Returns the locale
+   *
+   * @returns {String}
+   */
+  getLocale () {
+    return this.locale;
   }
 
   /**
