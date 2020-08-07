@@ -1,6 +1,16 @@
 const Page = require("./page");
 
+/**
+ * PageSet represents a unit that Jambo uses to generate a set of pages.
+ * The pages in a PageSet go together and have shared data - such as
+ * the globalConfig, pageNameToConfig, and params.
+ */
 module.exports = class PageSet {
+  /**
+   * @param {Array<Page>} pages
+   * @param {Object} globalConfig
+   * @param {Object} params
+   */
   constructor({ pages, globalConfig, params }) {
     /**
      * @type {Array<Page>}

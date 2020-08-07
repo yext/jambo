@@ -2,7 +2,16 @@ const PageConfig = require('./pageconfig');
 const PageTemplate = require('./pagetemplate');
 const { stripExtension } = require('../utils/fileutils');
 
+/**
+ * Page is a representation of the a Page that Jambo will generate. It contains all of the
+ * page-specific information necessary to write an output HTML file for a given page.
+ */
 module.exports = class Page {
+  /**
+   * @param {PageConfig} configs
+   * @param {PageTemplate} pageTemplate
+   * @param {Function} urlFormatter
+   */
   constructor({ config, pageTemplate, urlFormatter }) {
     /**
      * @type {PageConfig}
@@ -59,10 +68,10 @@ module.exports = class Page {
   /**
    * Returns the URL for a given pageName, path and formatting function
    *
-   * @param {string} pageName
-   * @param {string} path
-   * @param {string} urlFormatter
-   * @returns {string}
+   * @param {String} pageName
+   * @param {String} path
+   * @param {String} urlFormatter
+   * @returns {String}
    */
   _buildUrl (pageName, path, urlFormatter) {
     const pathWithoutHbsExtension = stripExtension(path);

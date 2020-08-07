@@ -1,11 +1,28 @@
 /**
- * PageConfig
+ * PageConfig is a representation of the a PageConfig for a given Page.
+ * It contains the configuration for the Page for the given locale.
  */
 module.exports = class PageConfig {
+  /**
+   * @param {String} pageName
+   * @param {String} locale
+   * @param {Object} rawConfig
+   */
   constructor({ pageName, locale, rawConfig }) {
-    this.rawConfig = rawConfig;
+    /**
+     * @type {String}
+     */
     this.pageName = pageName;
-    this.locale = locale || ''; // TODO do we want this fallback
+
+    /**
+     * @type {String}
+     */
+    this.locale = locale || '';
+
+    /**
+     * @type {Object}
+     */
+    this.rawConfig = rawConfig;
   }
 
   /**

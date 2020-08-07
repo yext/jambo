@@ -15,6 +15,12 @@ const TemplateLocalizer = require('../commands/build/templatelocalizer');
  * localized data.
  */
 module.exports = class GeneratedData {
+  /**
+   * @param {Object} globalConfig
+   * @param {LocalizationConfig} localizationConfig
+   * @param {Array<PageConfig>} pageConfigs
+   * @param {Array<PageTemplate>} pageTemplates
+   */
   constructor({ globalConfig, localizationConfig, pageConfigs, pageTemplates }) {
     /**
      * @type {Object}

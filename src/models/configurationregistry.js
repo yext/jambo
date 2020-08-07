@@ -9,37 +9,40 @@ const PageConfig = require('./pageconfig');
  * not mutate or localize the configuration in any way.
  */
 module.exports = class ConfigurationRegistry {
-  constructor(configs, configDir) {
+  /**
+   * @param {Object} configNameToRawConfig
+   */
+  constructor(configNameToRawConfig) {
     const globalConfigName = 'global_config';
     const localizationConfigName = 'locale_config';
 
     /**
      * @type {Object}
      */
-    this._globalConfig = configs[globalConfigName];
+    this._globalConfig = configNameToRawConfig[globalConfigName];
     if (!this._globalConfig) {
-      throw new Error(`Error: Cannot find '${globalConfigName}' file in '${configDir}' directory, exiting.`);
+      throw new Error(`Error: Cannot find '${globalConfigName}', exiting.`);
     }
 
-    const localizationConfig = configs[localizationConfigName];
+    const localizationConfig = configNameToRawConfig[localizationConfigName];
     if (!localizationConfig) {
-      console.log(`Cannot find '${localizationConfigName}' file in ${configDir} directory, writing pages without locale information.`);
+      console.log(`Cannot find '${localizationConfigName}', writing pages without locale information.`);
     }
     /**
      * @type {LocalizationConfig}
      */
-    this._localizationConfig = new LocalizationConfig(configs[localizationConfigName]);
+    this._localizationConfig = new LocalizationConfig(configNameToRawConfig[localizationConfigName]);
 
     /**
      * @type {Array<PageConfig>}
      */
-    this._pageConfigs = Object.keys(configs)
+    this._pageConfigs = Object.keys(configNameToRawConfig)
       .map((configName) => {
         if (configName !== globalConfigName && configName !== localizationConfigName) {
           return new PageConfig({
             pageName: getPageName(configName),
             locale: this._parseLocale(configName),
-            rawConfig: configs[configName]
+            rawConfig: configNameToRawConfig[configName]
           });
         }
       })
