@@ -1,24 +1,21 @@
-const LocalizationConfig = require("../../models/localizationconfig");
 const PageConfig = require("../../models/pageconfig");
 
 /**
  * PageConfigDecorator decorates @type {PageConfig}s, adding additional
  * localized config information to the given page configs based on the
- * information provided by the @type {LocalizationConfig}.
+ * information provided.
  */
 module.exports = class PageConfigDecorator {
-  constructor({ localizationConfig, defaultLocale }) {
-    /**
-     * @type {LocalizationConfig}
-     */
-    this._localizationConfig = localizationConfig;
-
+  constructor({ locales, localeToFallbacks, defaultLocale }) {
     /**
      * @type {Array<String>}
      */
-    this._locales = localizationConfig.getLocales().length > 0
-      ? localizationConfig.getLocales()
-      : [ defaultLocale ];
+    this._locales = locales;
+
+    /**
+     * @type {Object<String, Array<String>>}
+     */
+    this._localeToFallbacks = localeToFallbacks;
 
     /**
      * @type {String}
@@ -28,7 +25,7 @@ module.exports = class PageConfigDecorator {
 
   /**
    * Creates a localized PageConfig for every page and locale, merging the rawConfigs
-   * based on the fallbacks and locale configuration in this._localizationConfig.
+   * based on the fallbacks and locale configuration provided.
    *
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Array<PageConfig>}
@@ -66,7 +63,7 @@ module.exports = class PageConfigDecorator {
       return;
     }
 
-    const localeFallbacks = this._localizationConfig.getFallbacks(locale);
+    const localeFallbacks = this._localeToFallbacks[locale] || [];
     const fallbackConfigs = [];
     for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
       const fallbackConfig = configs

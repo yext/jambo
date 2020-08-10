@@ -38,13 +38,24 @@ module.exports = class PageSetsBuilder {
    * @returns {Array<PageSet>}
    */
   build(pageConfigs, pageTemplates) {
+    let locales = this._localizationConfig.getLocales().length > 0
+      ? this._localizationConfig.getLocales()
+      : [ this._defaultLocale ];
+
+    const localeToFallbacks = {};
+    for (const locale of locales) {
+      localeToFallbacks[locale] = this._localizationConfig.getFallbacks(locale);
+    }
+
     const localeToPageConfigs = new PageConfigDecorator({
-      localizationConfig: this._localizationConfig,
+      locales: locales,
+      localeToFallbacks: localeToFallbacks,
       defaultLocale: this._defaultLocale
     }).decorate(pageConfigs);
 
     const localeToPageTemplates = new TemplateMultiplier({
-      localizationConfig: this._localizationConfig,
+      locales: locales,
+      localeToFallbacks: localeToFallbacks,
       defaultLocale: this._defaultLocale
     }).multiply(pageTemplates);
 

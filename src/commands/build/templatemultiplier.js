@@ -1,23 +1,20 @@
 const PageTemplate = require("../../models/pagetemplate");
-const LocalizationConfig = require("../../models/localizationconfig");
 
 /**
  * TemplateMultiplier creates a new, localized @type {PageTemplate}
  * per (pageTemplate, locale) combination.
  */
 module.exports = class TemplateMultiplier {
-  constructor({ localizationConfig, defaultLocale }) {
-    /**
-     * @type {LocalizationConfig}
-     */
-    this._localizationConfig = localizationConfig;
-
+  constructor({ locales, localeToFallbacks, defaultLocale }) {
     /**
      * @type {Array<String>}
      */
-    this._locales = localizationConfig.getLocales().length > 0
-      ? localizationConfig.getLocales()
-      : [ defaultLocale ];
+    this._locales = locales;
+
+    /**
+     * @type {Object<String, Array<String>>}
+     */
+    this._localeToFallbacks = localeToFallbacks;
 
     /**
      * @type {String}
@@ -69,7 +66,7 @@ module.exports = class TemplateMultiplier {
       });
     }
 
-    for (const fallback of this._localizationConfig.getFallbacks(locale)) {
+    for (const fallback of this._localeToFallbacks[locale]) {
       pageTemplate = templates.find(page => this._isLocaleMatch(page.getLocale(), fallback));
 
       if (pageTemplate) {
