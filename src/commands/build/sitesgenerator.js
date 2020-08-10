@@ -6,15 +6,13 @@ const babel = require('@babel/core');
 const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
+const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
-const UserError = require('../../errors/usererror');
-const SystemError = require('../../errors/systemerror');
-const { PageWriter } = require('./pagewriter');
-const { PageSetCreator } = require('./pagesetcreator');
-const { GeneratedData } = require('../../models/generateddata');
-const { stripExtension } = require('../../utils/fileutils');
-const { PageTemplate } = require('../../models/pagetemplate');
+const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
+const PageTemplate = require('../../models/pagetemplate');
+const PageWriter = require('./pagewriter');
+const { stripExtension } = require('../../utils/fileutils');
 const Translator = require('../../i18n/translator/translator');
 
 exports.SitesGenerator = class {
@@ -42,29 +40,37 @@ exports.SitesGenerator = class {
     console.log('Jambo Injected Data:', env['JAMBO_INJECTED_DATA']);
 
     console.log('Reading config files');
-    const pagesConfig = {};
+    const configNameToRawConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        let pageId = stripExtension(relative);
+        let configName = stripExtension(relative);
         try {
-          pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
-        } catch (err) {
-          throw new UserError(
-            'JSON SyntaxError: could not parse file ' + path, err.stack);
+          configNameToRawConfig[configName] = parse(fs.readFileSync(path, 'utf8'), null, true);
+        } catch (e) {
+          if (e instanceof SyntaxError) {
+            throw new UserError(
+              `JSON SyntaxError: could not parse file ${path}`, e.stack);
+          } else {
+            throw e;
+          }
         }
       }
     });
-    const GENERATED_DATA = new GeneratedData(pagesConfig, config.dirs.config);
+    const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
 
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        pageTemplates.push(new PageTemplate({
-          path: path,
-          filename: filename,
-          defaultLocale: GENERATED_DATA.getDefaultLocale()
-        }));
+        pageTemplates.push(PageTemplate.from(filename, path));
       }
+    });
+
+    // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
+    const GENERATED_DATA = GeneratedData.from({
+      globalConfig: configRegistry.getGlobalConfig(),
+      localizationConfig: configRegistry.getLocalizationConfig(),
+      pageConfigs: configRegistry.getPageConfigs(),
+      pageTemplates: pageTemplates
     });
 
     // Register needed Handlebars helpers.
@@ -108,34 +114,21 @@ exports.SitesGenerator = class {
     this._createStaticOutput(staticDirs, config.dirs.output);
 
     const locales = GENERATED_DATA.getLocales();
-    const translations = 
+    const translations =
       config.dirs.translations ? await this._extractTranslations(locales) : {};
 
     for (const locale of locales) {
-      console.log(`Writing files for '${locale}' locale`);
-
       const localeFallbacks = GENERATED_DATA.getLocaleFallbacks(locale);
-      const pageSet = new PageSetCreator({
-        pageTemplates: pageTemplates,
-        pageIds: GENERATED_DATA.getPageIdsForLocale(locale),
-        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
-        locale: locale,
-        localeFallbacks,
-        urlFormatter: GENERATED_DATA.getUrlFormatter(locale),
-      }).build();
-
+      console.log(`Registering Jambo Handlebars translation helpers for '${locale}' and '${localeFallbacks}'`);
       const translator = await Translator.create(locale, localeFallbacks, translations);
-      console.log('Registering Jambo Handlebars translation helpers');
       // Register needed Handlebars translation helpers.
       this._registerTranslationHelpers(translator);
+    }
 
+    const pageSets = GENERATED_DATA.getPageSets();
+    for (const pageSet of pageSets) {
       new PageWriter({
-        pagesDirectory: config.dirs.pages,
-        partialsDirectory: config.dirs.partials,
         outputDirectory: config.dirs.output,
-        globalConfig: GENERATED_DATA.getGlobalConfig(locale),
-        pageIdToConfig: GENERATED_DATA.getPageIdToConfig(locale),
-        params: GENERATED_DATA.getParams(locale),
         env: env,
       }).writePages(pageSet);
     }
@@ -281,9 +274,9 @@ exports.SitesGenerator = class {
 
   /**
    * Registers the various translation helpers with the Handlebars instance.
-   * 
+   *
    * @param {Translator} translator The {@link Translator} that will be used
-   *                                to supply translations. 
+   *                                to supply translations.
    */
   _registerTranslationHelpers(translator) {
     /**
@@ -300,7 +293,7 @@ exports.SitesGenerator = class {
      * on the count. Interpolation is supported for both singular and plural forms.
      */
     hbs.registerHelper(
-      'translatePlural', 
+      'translatePlural',
       function (singularPhrase, pluralPhrase, count, options) {
         const interpValues = options.hash;
         return translator.translatePlural(singularPhrase, pluralPhrase, count, interpValues);
@@ -382,11 +375,11 @@ exports.SitesGenerator = class {
       return _.merge({}, ...args.slice(0, args.length - 1));
     });
   }
-  
+
   /**
    * Parses the local translation files for the provided locales. The translations
    * are returned in i18next format.
-   * 
+   *
    * @param {Array<string>} locales The list of locales.
    * @returns {Object<string, Object} A map of locale to formatted translations.
    */
