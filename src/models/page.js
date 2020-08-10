@@ -8,15 +8,15 @@ const { stripExtension } = require('../utils/fileutils');
  */
 module.exports = class Page {
   /**
-   * @param {PageConfig} configs
+   * @param {PageConfig} pageConfig
    * @param {PageTemplate} pageTemplate
-   * @param {Function} urlFormatter
+   * @param {String} outputPath
    */
-  constructor({ config, pageTemplate, urlFormatter }) {
+  constructor({ pageConfig, pageTemplate, outputPath }) {
     /**
      * @type {PageConfig}
      */
-    this.pageConfig = config;
+    this.pageConfig = pageConfig;
 
     /**
      * @type {PageTemplate}
@@ -26,7 +26,7 @@ module.exports = class Page {
     /**
      * @type {String}
      */
-    this.outputPath = this._buildUrl(config.getPageName(), pageTemplate.getTemplatePath(), urlFormatter);
+    this.outputPath = outputPath;
   }
 
   /**
@@ -75,6 +75,25 @@ module.exports = class Page {
   }
 
   /**
+   * @param {PageConfig} pageConfig
+   * @param {PageTemplate} pageTemplate
+   * @param {Function} urlFormatter
+   */
+  static from({ pageConfig, pageTemplate, urlFormatter }) {
+    const outputPath = Page.buildUrl(
+      pageConfig.getPageName(),
+      pageTemplate.getTemplatePath(),
+      urlFormatter
+    );
+
+    return new Page({
+      pageConfig: pageConfig,
+      pageTemplate: pageTemplate,
+      outputPath: outputPath
+    });
+  }
+
+  /**
    * Returns the URL for a given pageName, path and formatting function
    *
    * @param {String} pageName
@@ -82,7 +101,7 @@ module.exports = class Page {
    * @param {String} urlFormatter
    * @returns {String}
    */
-  _buildUrl (pageName, path, urlFormatter) {
+  static buildUrl (pageName, path, urlFormatter) {
     const pathWithoutHbsExtension = stripExtension(path);
     const pageExt = pathWithoutHbsExtension
       .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);

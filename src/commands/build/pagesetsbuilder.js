@@ -91,8 +91,8 @@ module.exports = class PageSetsBuilder {
           continue;
         }
 
-        localeToPages[locale].push(new Page({
-          config: config,
+        localeToPages[locale].push(Page.from({
+          pageConfig: config,
           pageTemplate: pageTemplate,
           urlFormatter: this._localizationConfig.getUrlFormatter(locale),
         }));
