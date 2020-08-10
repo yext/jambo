@@ -1,6 +1,6 @@
-const GlobalConfig = require("./globalconfig");
-const Page = require("./page");
-const PageConfig = require("./pageconfig");
+const GlobalConfig = require('./globalconfig');
+const Page = require('./page');
+const PageConfig = require('./pageconfig');
 
 /**
  * PageSet represents a unit that Jambo uses to generate a set of pages.

@@ -1,15 +1,15 @@
-const LocalizationConfig = require("../../models/localizationconfig");
-const Page = require("../../models/page");
-const PageConfig = require("../../models/pageconfig");
-const PageConfigDecorator = require("./pageconfigdecorator");
-const PageSet = require("../../models/pageset");
-const PageTemplate = require("../../models/pagetemplate");
-const TemplateMultiplier = require("./templatemultiplier");
+const LocalizationConfig = require('../../models/localizationconfig');
+const Page = require('../../models/page');
+const PageConfig = require('../../models/pageconfig');
+const PageConfigDecorator = require('./pageconfigdecorator');
+const PageSet = require('../../models/pageset');
+const PageTemplate = require('../../models/pagetemplate');
+const TemplateDirector = require('./templatedirector');
 
 /**
- * PageSetsBuilder is responsible for matching @type {PageConfigs} and
- * @type {PageTemplates} for each given locale and returning a group
- * of @type {PageSet}s.
+ * PageSetsBuilder is responsible for matching @link {PageConfigs} and
+ * @link {PageTemplates} for each given locale and returning a group
+ * of @link {PageSet}s.
  */
 module.exports = class PageSetsBuilder {
   constructor({ defaultLocale, localeToGlobalConfig, localizationConfig }) {
@@ -30,7 +30,7 @@ module.exports = class PageSetsBuilder {
   }
 
   /**
-   * Returns a group of PageSet (@type {PageSet}) for the given
+   * Returns a group of PageSet (@link {PageSet}) for the given
    * pageConfigs and pageTemplates, one PageSet per locale.
    *
    * @param {Array<PageConfig>} pageConfigs
@@ -53,11 +53,11 @@ module.exports = class PageSetsBuilder {
       defaultLocale: this._defaultLocale
     }).decorate(pageConfigs);
 
-    const localeToPageTemplates = new TemplateMultiplier({
+    const localeToPageTemplates = new TemplateDirector({
       locales: locales,
       localeToFallbacks: localeToFallbacks,
       defaultLocale: this._defaultLocale
-    }).multiply(pageTemplates);
+    }).direct(pageTemplates);
 
     const localeToPages = this._buildLocaleToPages({
       localeToPageConfigs: localeToPageConfigs,
@@ -85,7 +85,6 @@ module.exports = class PageSetsBuilder {
    * @returns {Object<String, Array<Page>>}
    */
   _buildLocaleToPages ({ localeToPageConfigs, localeToPageTemplates }) {
-
     let localeToPages = {};
     for (const [locale, configs] of Object.entries(localeToPageConfigs)) {
       if (!localeToPageTemplates[locale] || !configs) {

@@ -1,6 +1,6 @@
 /**
- * PageConfig is a representation of the a PageConfig for a given Page.
- * It contains the configuration for the Page for the given locale.
+ * PageConfig is a representation of the configuration for the Page for
+ * the given locale.
  */
 module.exports = class PageConfig {
   /**

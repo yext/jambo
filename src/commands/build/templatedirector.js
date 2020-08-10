@@ -1,10 +1,10 @@
-const PageTemplate = require("../../models/pagetemplate");
+const PageTemplate = require('../../models/pagetemplate');
 
 /**
- * TemplateMultiplier creates a new, localized @type {PageTemplate}
+ * TemplateDirector creates a new, localized @link {PageTemplate}
  * per (pageTemplate, locale) combination.
  */
-module.exports = class TemplateMultiplier {
+module.exports = class TemplateDirector {
   constructor({ locales, localeToFallbacks, defaultLocale }) {
     /**
      * @type {Array<String>}
@@ -30,7 +30,7 @@ module.exports = class TemplateMultiplier {
    * @param {Array<PageTemplates>} pageTemplates
    * @returns {Array<PageTemplates>}
    */
-  multiply(pageTemplates) {
+  direct(pageTemplates) {
     const pageNameToTemplates = this._getPageNameToTemplates(pageTemplates);
 
     let localizedPageTemplates = {};
@@ -66,7 +66,8 @@ module.exports = class TemplateMultiplier {
       });
     }
 
-    for (const fallback of this._localeToFallbacks[locale]) {
+    const localeFallbacks = this._localeToFallbacks[locale] || [];
+    for (const fallback of localeFallbacks) {
       pageTemplate = templates.find(page => this._isLocaleMatch(page.getLocale(), fallback));
 
       if (pageTemplate) {
