@@ -67,6 +67,7 @@ exports.SitesGenerator = class {
       }
     });
 
+    // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
     const GENERATED_DATA = GeneratedData.from({
       globalConfig: configRegistry.getGlobalConfig(),
       localizationConfig: configRegistry.getLocalizationConfig(),
