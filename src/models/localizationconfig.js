@@ -1,8 +1,7 @@
 /**
- * Data model for the locale_config file.
+ * LocalizationConfig represents the configuration required to localize pages. It contains
+ * configuration and URL formatting for each locale.
  */
-
-// TODO assumes language and suffix of locale are separated by a "-" (e.g. en-US)
 module.exports = class LocalizationConfig {
   /**
    * @param {Object} rawLocalizationConfig
@@ -66,6 +65,7 @@ module.exports = class LocalizationConfig {
    * @returns {function}
    */
   getUrlFormatter (locale) {
+    // TODO (agrow) this assumes language and suffix of locale are separated by a "-" (e.g. en-US)
     const language = locale
       ? locale.substring(0, locale.lastIndexOf("-")) || locale
       : '';
