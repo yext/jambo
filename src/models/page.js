@@ -1,41 +1,110 @@
+const PageConfig = require('./pageconfig');
+const PageTemplate = require('./pagetemplate');
 const { stripExtension } = require('../utils/fileutils');
 
-exports.Page = class {
-  constructor({ pageId, config, templatePath, urlFormatter }) {
-    this.pageId = pageId;
-    this.config = config;
-    this.templatePath = templatePath;
-    this.outputPath = this._buildUrl(pageId, templatePath, urlFormatter);
+/**
+ * Page is a representation of the a Page that Jambo will generate. It contains all of the
+ * page-specific information necessary to write an output HTML file for a given page.
+ */
+module.exports = class Page {
+  /**
+   * @param {PageConfig} pageConfig
+   * @param {PageTemplate} pageTemplate
+   * @param {String} outputPath
+   */
+  constructor({ pageConfig, pageTemplate, outputPath }) {
+    /**
+     * @type {PageConfig}
+     */
+    this.pageConfig = pageConfig;
+
+    /**
+     * @type {PageTemplate}
+     */
+    this.pageTemplate = pageTemplate;
+
+    /**
+     * @type {String}
+     */
+    this.outputPath = outputPath;
   }
 
-  getPageId () {
-    return this.pageId;
+  /**
+   * Returns the locale
+   *
+   * @returns {String}
+   */
+  getLocale () {
+    return this.pageConfig.getLocale();
   }
 
+  /**
+   * Returns the page name
+   *
+   * @returns {String}
+   */
+  getPageName () {
+    return this.pageConfig.getPageName();
+  }
+
+  /**
+   * Returns the page's raw config
+   *
+   * @returns {Object}
+   */
   getConfig () {
-    return this.config;
+    return this.pageConfig.getConfig();
   }
 
+  /**
+   * Returns the page's template path
+   *
+   * @returns {String}
+   */
   getTemplatePath () {
-    return this.templatePath;
+    return this.pageTemplate.getTemplatePath();
   }
 
+  /**
+   * Returns the page's output path
+   *
+   * @returns {String}
+   */
   getOutputPath () {
     return this.outputPath;
   }
 
   /**
-   * Returns the URL for a given pageId, path and formatting function
-   *
-   * @param {string} pageId
-   * @param {string} path
-   * @param {string} urlFormatter
-   * @returns {string}
+   * @param {PageConfig} pageConfig
+   * @param {PageTemplate} pageTemplate
+   * @param {Function} urlFormatter
    */
-  _buildUrl (pageId, path, urlFormatter) {
+  static from({ pageConfig, pageTemplate, urlFormatter }) {
+    const outputPath = Page.buildUrl(
+      pageConfig.getPageName(),
+      pageTemplate.getTemplatePath(),
+      urlFormatter
+    );
+
+    return new Page({
+      pageConfig: pageConfig,
+      pageTemplate: pageTemplate,
+      outputPath: outputPath
+    });
+  }
+
+  /**
+   * Returns the URL for a given pageName, path and formatting function
+   *
+   * @param {String} pageName
+   * @param {String} path
+   * @param {String} urlFormatter
+   * @returns {String}
+   */
+  static buildUrl (pageName, path, urlFormatter) {
     const pathWithoutHbsExtension = stripExtension(path);
     const pageExt = pathWithoutHbsExtension
       .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);
-    return urlFormatter(pageId, pageExt);
+    return urlFormatter(pageName, pageExt);
   }
 }

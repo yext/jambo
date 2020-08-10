@@ -1,35 +1,80 @@
-const { getPageId } = require('../utils/fileutils');
+const { getPageName } = require('../utils/fileutils');
 
-exports.PageTemplate = class {
-  constructor({filename, path, defaultLocale}) {
-    if (!filename) {
-      throw new Error('Error: no filename provided for page template');
-    }
-
+/**
+ * PageTemplate represents a Handlebars template file that is
+ * used to generate a page.
+ */
+module.exports = class PageTemplate {
+  constructor({ pageName, path, locale }) {
+    /**
+     * @type {String}
+     */
     this.path = path;
-    this.pageId = getPageId(filename);
-    this.locale = this._getLocale(filename) || defaultLocale || '';
+
+    /**
+     * @type {String}
+     */
+    this.pageName = pageName;
+
+    /**
+     * @type {String}
+     */
+    this.locale = locale || '';
   }
 
-  getPageId() {
-    return this.pageId;
+  /**s
+   * Returns the pageName
+   *
+   * @returns {String} pageName
+   */
+  getPageName() {
+    return this.pageName;
   }
 
+  /**
+   * Returns the template path
+   *
+   * @returns {String} template path
+   */
   getTemplatePath() {
     return this.path;
   }
 
+  /**
+   * Returns the locale
+   *
+   * @returns {String} locale
+   */
   getLocale() {
     return this.locale;
   }
 
   /**
+   * Creates a @type {PageTemplate} from a given filename and path
+   *
+   * @param {String} filename
+   * @param {String} path
+   * @returns {PageTemplate}
+   */
+  static from (filename, path) {
+    if (!filename) {
+      throw new Error('Error: no filename provided for page template');
+    }
+
+    return new PageTemplate({
+      path: path,
+      pageName: getPageName(filename),
+      locale: PageTemplate.parseLocale(filename)
+    });
+  }
+
+  /**
    * Extracts the locale from a given file name
    *
-   * @param {string} filename the file name of the page handlebars template
-   * @returns {string}
+   * @param {String} filename the file name of the page handlebars template
+   * @returns {String}
    */
-  _getLocale (filename) {
+  static parseLocale (filename) {
     const pageParts = stripExtension(stripExtension(filename)).split('.');
     return pageParts.length > 1 && pageParts[1];
   }
