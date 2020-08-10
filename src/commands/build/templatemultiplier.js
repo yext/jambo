@@ -61,16 +61,23 @@ module.exports = class TemplateMultiplier {
    */
   _getPageTemplate(locale, templates) {
     let pageTemplate = templates.find(pageTemplate => this._isLocaleMatch(pageTemplate.getLocale(), locale));
-
     if (pageTemplate) {
-      return PageTemplate.from(pageTemplate, locale);
+      return new PageTemplate({
+        pageName: pageTemplate.getPageName(),
+        path: pageTemplate.getTemplatePath(),
+        locale: locale,
+      });
     }
 
     for (const fallback of this._localizationConfig.getFallbacks(locale)) {
       pageTemplate = templates.find(page => this._isLocaleMatch(page.getLocale(), fallback));
 
       if (pageTemplate) {
-        return PageTemplate.from(pageTemplate, locale);
+        return new PageTemplate({
+          pageName: pageTemplate.getPageName(),
+          path: pageTemplate.getTemplatePath(),
+          locale: locale,
+        });
       }
     }
   }

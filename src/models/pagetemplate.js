@@ -5,15 +5,7 @@ const { getPageName } = require('../utils/fileutils');
  * used to generate a page.
  */
 module.exports = class PageTemplate {
-  /**
-   * @param {String} filename
-   * @param {String} path
-   */
-  constructor({ filename, path }) {
-    if (!filename) {
-      throw new Error('Error: no filename provided for page template');
-    }
-
+  constructor({ pageName, path, locale }) {
     /**
      * @type {String}
      */
@@ -22,15 +14,15 @@ module.exports = class PageTemplate {
     /**
      * @type {String}
      */
-    this.pageName = getPageName(filename);
+    this.pageName = pageName;
 
     /**
      * @type {String}
      */
-    this.locale = this._parseLocale(filename) || '';
+    this.locale = locale || '';
   }
 
-  /**
+  /**s
    * Returns the pageName
    *
    * @returns {String} pageName
@@ -58,31 +50,32 @@ module.exports = class PageTemplate {
   }
 
   /**
+   * Creates a @type {PageTemplate} from a given filename and path
+   *
+   * @param {String} filename
+   * @param {String} path
+   * @returns {PageTemplate}
+   */
+  static from (filename, path) {
+    if (!filename) {
+      throw new Error('Error: no filename provided for page template');
+    }
+
+    return new PageTemplate({
+      path: path,
+      pageName: getPageName(filename),
+      locale: PageTemplate.parseLocale(filename)
+    });
+  }
+
+  /**
    * Extracts the locale from a given file name
    *
    * @param {String} filename the file name of the page handlebars template
    * @returns {String}
    */
-  _parseLocale (filename) {
+  static parseLocale (filename) {
     const pageParts = stripExtension(stripExtension(filename)).split('.');
     return pageParts.length > 1 && pageParts[1];
-  }
-
-  /**
-   * Creates a new PageTemplate object from a given PageTemplate and locale
-   *
-   * @param {PageTemplate} pageTemplate
-   * @param {String} locale
-   * @returns {PageTemplate}
-   */
-  static from (pageTemplate, locale) {
-    const page = new PageTemplate({
-      filename: 'placeholder',
-    });
-
-    page.path = pageTemplate.path;
-    page.pageName = pageTemplate.pageName;
-    page.locale = locale;
-    return page;
   }
 }
