@@ -1,5 +1,6 @@
 const GlobalConfig = require("./globalconfig");
 const Page = require("./page");
+const PageConfig = require("./pageconfig");
 
 /**
  * PageSet represents a unit that Jambo uses to generate a set of pages.
@@ -30,9 +31,14 @@ module.exports = class PageSet {
     this.globalConfig = globalConfig;
 
     /**
-     * @type {Object}
+     * @type {Object<String, PageConfig>}
      */
-    this.pageNameToConfig = this._buildPageNameToConfig(pages) || {};
+    this.pageNameToConfig = pages && pages.length > 0
+      ? this.pages.reduce((obj, page) => {
+          obj[page.getPageName()] = page.getConfig();
+          return obj;
+        })
+      : {};
 
     /**
      * @type {Object}
@@ -79,23 +85,9 @@ module.exports = class PageSet {
   /**
    * Returns the pageNameToConfig
    *
-   * @returns {Object} pageNameToConfig
+   * @returns {Object<String, PageConfig>}
    */
   getPageNameToConfig () {
     return this.pageNameToConfig;
-  }
-
-  /**
-   * Returns the pageNameToConfig from the given pages
-   *
-   * @param {Array<Page>} pages
-   * @returns {Object} pageNameToConfig
-   */
-  _buildPageNameToConfig(pages) {
-    const pageNameToConfig = {};
-    for (const page of pages) {
-      pageNameToConfig[page.getPageName()] = page.getConfig();
-    }
-    return pageNameToConfig;
   }
 }

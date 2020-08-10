@@ -111,7 +111,6 @@ exports.SitesGenerator = class {
 
     const pageSets = GENERATED_DATA.getPageSets();
     for (const pageSet of pageSets) {
-      console.log(`Writing files for '${pageSet.getLocale()}' locale`);
       new PageWriter({
         outputDirectory: config.dirs.output,
         env: env,

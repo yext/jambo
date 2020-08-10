@@ -30,6 +30,7 @@ module.exports = class PageWriter {
     if (!pageSet || pageSet.getPages().length < 1) {
       return;
     }
+    console.log(`Writing files for '${pageSet.getLocale()}' locale`);
 
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
