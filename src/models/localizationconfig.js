@@ -1,16 +1,14 @@
 /**
- * Data model for the locale_config file.
+ * LocalizationConfig represents the configuration required to localize pages. It contains
+ * configuration and URL formatting for each locale.
  */
-
-// TODO assumes language and suffix of locale are separated by a "-" (e.g. en-US)
-exports.LocaleConfig = class {
-  constructor({ localeConfig, localeConfigName, directoryConfigName}) {
-    if (!localeConfig) {
-      console.warn(`Cannot find ${localeConfigName} file in ${directoryConfigName} directory, writing pages without locale information.`);
-    }
-
-    const config = localeConfig || {};
-    this._defaultLocale = config.default || '';
+module.exports = class LocalizationConfig {
+  /**
+   * @param {Object} rawLocalizationConfig
+   */
+  constructor(rawLocalizationConfig) {
+    const config = rawLocalizationConfig || {};
+    this._defaultLocale = config.default || ''; // TODO do we want this to be the default
 
     /**
      * localeToConfig is an Object mapping locale to configuration
@@ -67,6 +65,7 @@ exports.LocaleConfig = class {
    * @returns {function}
    */
   getUrlFormatter (locale) {
+    // TODO (agrow) this assumes language and suffix of locale are separated by a "-" (e.g. en-US)
     const language = locale
       ? locale.substring(0, locale.lastIndexOf("-")) || locale
       : '';
