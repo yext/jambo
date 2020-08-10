@@ -47,15 +47,4 @@ module.exports = class GlobalConfig {
   getConfig() {
     return this.rawConfig;
   }
-
-	/**
-	 * Creates a new {GlobalConfig} object from the given
-	 * globalConfig
-	 *
-	 * @param {GlobalConfig}
-	 * @returns {GlobalConfig}
-	 */
-  static from(globalConfig) {
-    return new GlobalConfig(globalConfig.getConfig());
-  }
 }

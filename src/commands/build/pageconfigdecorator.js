@@ -14,6 +14,13 @@ module.exports = class PageConfigDecorator {
     this._localizationConfig = localizationConfig;
 
     /**
+     * @type {Array<String>}
+     */
+    this._locales = localizationConfig.getLocales().length > 0
+      ? localizationConfig.getLocales()
+      : [ defaultLocale ];
+
+    /**
      * @type {String}
      */
     this._defaultLocale = defaultLocale;
@@ -30,7 +37,7 @@ module.exports = class PageConfigDecorator {
     const pageNameToConfigs = this._getPageNameToConfigs(pageConfigs);
 
     let localizedPageConfigs = {};
-    for (const locale of this._localizationConfig.getLocales()) {
+    for (const locale of this._locales) {
       localizedPageConfigs[locale] = [];
 
       for (const [pageName, configsForPage] of Object.entries(pageNameToConfigs)) {

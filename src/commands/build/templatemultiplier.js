@@ -13,6 +13,13 @@ module.exports = class TemplateMultiplier {
     this._localizationConfig = localizationConfig;
 
     /**
+     * @type {Array<String>}
+     */
+    this._locales = localizationConfig.getLocales().length > 0
+      ? localizationConfig.getLocales()
+      : [ defaultLocale ];
+
+    /**
      * @type {String}
      */
     this._defaultLocale = defaultLocale;
@@ -30,7 +37,7 @@ module.exports = class TemplateMultiplier {
     const pageNameToTemplates = this._getPageNameToTemplates(pageTemplates);
 
     let localizedPageTemplates = {};
-    for (const locale of this._localizationConfig.getLocales()) {
+    for (const locale of this._locales) {
       localizedPageTemplates[locale] = [];
       for (const [pageName, templates] of Object.entries(pageNameToTemplates)) {
         const pageTemplateForLocale = this._getPageTemplate(locale, templates);
