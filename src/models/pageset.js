@@ -8,11 +8,17 @@ const Page = require("./page");
  */
 module.exports = class PageSet {
   /**
+   * @param {String} locale
    * @param {Array<Page>} pages
    * @param {GlobalConfig} globalConfig
    * @param {Object} params
    */
-  constructor({ pages, globalConfig, params }) {
+  constructor({ locale, pages, globalConfig, params }) {
+    /**
+     * @type {String}
+     */
+    this.locale = locale;
+
     /**
      * @type {Array<Page>}
      */
@@ -32,6 +38,15 @@ module.exports = class PageSet {
      * @type {Object}
      */
     this.params = params || {};
+  }
+
+  /**
+   * Returns the locale
+   *
+   * @returns {String} locale
+   */
+  getLocale () {
+    return this.locale;
   }
 
   /**

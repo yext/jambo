@@ -7,10 +7,10 @@ const PageTemplate = require("../../models/pagetemplate");
 const TemplateMultiplier = require("./templatemultiplier");
 
 /**
- * PageSetBuilder is responsible for matching PageConfigs and PageTemplates and returning
+ * PageSetsBuilder is responsible for matching PageConfigs and PageTemplates and returning
  * a group of Pages.
  */
-module.exports = class PageSetBuilder {
+module.exports = class PageSetsBuilder {
   constructor({ defaultLocale, localeToGlobalConfig, localizationConfig }) {
     /**
      * @type {String}
@@ -52,15 +52,16 @@ module.exports = class PageSetBuilder {
       localeToPageTemplates: localeToPageTemplates
     });
 
-    const localeToPageSet = {};
+    const pageSets = [];
     for (const [locale, pages] of Object.entries(localeToPages)) {
-      localeToPageSet[locale] = new PageSet({
+      pageSets.push(new PageSet({
+        locale: locale,
         pages: pages,
         globalConfig: this._localeToGlobalConfig[locale],
         params: this._localizationConfig.getParams(locale)
-      });
+      }));
     }
-    return localeToPageSet;
+    return pageSets;
   }
 
   /**
