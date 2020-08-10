@@ -12,13 +12,13 @@ stripExtension = function (filename) {
 exports.stripExtension = stripExtension;
 
 /**
- * Extracts the pageId from a given file name
+ * Extracts the pageName from a given file name
  *
  * @param {string} filename the file name of the page handlebars template
  * @returns {string}
  */
-getPageId = function (filename) {
+getPageName = function (filename) {
   return filename.split('.')[0];
 }
-exports.getPageId = getPageId;
+exports.getPageName = getPageName;
 
