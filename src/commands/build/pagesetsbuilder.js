@@ -7,8 +7,9 @@ const PageTemplate = require("../../models/pagetemplate");
 const TemplateMultiplier = require("./templatemultiplier");
 
 /**
- * PageSetsBuilder is responsible for matching PageConfigs and PageTemplates and returning
- * a group of Pages.
+ * PageSetsBuilder is responsible for matching @type {PageConfigs} and
+ * @type {PageTemplates} for each given locale and returning a group
+ * of @type {PageSet}s.
  */
 module.exports = class PageSetsBuilder {
   constructor({ defaultLocale, localeToGlobalConfig, localizationConfig }) {
@@ -18,7 +19,7 @@ module.exports = class PageSetsBuilder {
     this._defaultLocale = defaultLocale;
 
     /**
-     * @type {String}
+     * @type {Object<String, GlobalConfig>}
      */
     this._localeToGlobalConfig = localeToGlobalConfig;
 
@@ -29,12 +30,12 @@ module.exports = class PageSetsBuilder {
   }
 
   /**
-   * Builds an Object mapping locale (@type {String}) to PageSet (@type {PageSet})
-   * for the given pageConfigs and pageTemplates.
+   * Returns a group of PageSet (@type {PageSet}) for the given
+   * pageConfigs and pageTemplates, one PageSet per locale.
    *
    * @param {Array<PageConfig>} pageConfigs
    * @param {Array<PageTemplate>} pageTemplates
-   * @returns {Object<String, PageSet>} localeToPageTemplates
+   * @returns {Array<PageSet>}
    */
   build(pageConfigs, pageTemplates) {
     const localeToPageConfigs = new PageConfigDecorator({
@@ -65,12 +66,12 @@ module.exports = class PageSetsBuilder {
   }
 
   /**
-   * // TODO
+   * Matches PageConfigs and PageTemplates and returns a group of Pages, keyed
+   * by locale.
    *
    * @param {Object<String, Array<PageConfig>>} localeToPageConfigs
    * @param {Object<String, Array<PageTemplate>>} localeToPageTemplates
-   *
-   * @returns {Array<Page>}
+   * @returns {Object<String, Array<Page>>}
    */
   _buildLocaleToPages ({ localeToPageConfigs, localeToPageTemplates }) {
 

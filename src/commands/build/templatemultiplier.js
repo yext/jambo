@@ -2,10 +2,8 @@ const PageTemplate = require("../../models/pagetemplate");
 const LocalizationConfig = require("../../models/localizationconfig");
 
 /**
- * TemplateMultiplier creates a set of localized @type {PageTemplate}s.
- *
- * This class localizes @type {PageTemplate}s by creating a new, localized
- * @type {PageTemplate} object per (pageTemplate, locale) combination.
+ * TemplateMultiplier creates a new, localized @type {PageTemplate}
+ * per (pageTemplate, locale) combination.
  */
 module.exports = class TemplateMultiplier {
   constructor({ localizationConfig, defaultLocale }) {
@@ -24,7 +22,6 @@ module.exports = class TemplateMultiplier {
    * Creates a localized PageTemplate for every (page, locale) combination. Considers
    * locale fallbacks, so more PageTemplates may be returned than were provided.
    * It returns one PageTemplate per (page, locale) combination.
-   *
    *
    * @param {Array<PageTemplates>} pageTemplates
    * @returns {Array<PageTemplates>}
@@ -48,7 +45,8 @@ module.exports = class TemplateMultiplier {
 
 
   /**
-   * Builds a new PageTemplate for pageTemplate and locale based on the locale and fallbacks.
+   * Builds a new PageTemplate for a given pageTemplate and locale based on the given
+   * locale and the fallbacks for that locale.
    *
    * @param {String} locale
    * @param {Array<PageTemplate>} templates
@@ -71,10 +69,10 @@ module.exports = class TemplateMultiplier {
   }
 
   /**
-   * Builds an Object mapping page name to PageTemplates with for the corresponding page.
+   * Builds an Object mapping pageName to PageTemplates with for the corresponding page.
    *
    * @param {Array<PageTemplate>} templates
-   * @returns {Object}
+   * @returns {Object<String, Array<PageTemplate>>}
    */
   _getPageNameToTemplates(templates) {
     if (!templates || templates.length < 1) {

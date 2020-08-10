@@ -6,8 +6,7 @@ const PageConfig = require('./pageconfig');
 /**
  * ConfigurationRegistry is a registry of the configuration files provided to Jambo.
  *
- * This class creates @type {LocalizationConfig} and @type {PageConfig} objects but does
- * not mutate or localize the configuration in any way.
+ * This class does not mutate or localize the configuration in any way.
  */
 module.exports = class ConfigurationRegistry {
   /**
@@ -60,7 +59,13 @@ module.exports = class ConfigurationRegistry {
   }
 
   /**
-   * @param {Object} configNameToRawConfig
+   * Creates @type {ConfigurationRegistry} from the raw configuration objects.
+   * This method converts the raw configuration objects into domain models that the
+   * ConfigurationRegistry understands, but it does not mutate or localize the
+   * configuration in any way.
+   *
+   * @param {Object<String, Object>} configNameToRawConfig
+   * @returns {ConfigurationRegistry}
    */
   static from(configNameToRawConfig) {
     const globalConfigName = 'global_config';

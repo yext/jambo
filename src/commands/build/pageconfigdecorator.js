@@ -1,12 +1,10 @@
 const LocalizationConfig = require("../../models/localizationconfig");
 const PageConfig = require("../../models/pageconfig");
 
- /**
- * PageConfigDecorator creates a set of localized @type {PageConfig}s.
- *
- * This class localizes @type {PageConfig}s by merging the relevant page
- * configurations based on locale information and creating new, localized
- * @type {PageConfig} objects.
+/**
+ * PageConfigDecorator decorates @type {PageConfig}s, adding additional
+ * localized config information to the given page configs based on the
+ * information provided by the @type {LocalizationConfig}.
  */
 module.exports = class PageConfigDecorator {
   constructor({ localizationConfig, defaultLocale }) {
@@ -24,9 +22,6 @@ module.exports = class PageConfigDecorator {
   /**
    * Creates a localized PageConfig for every page and locale, merging the rawConfigs
    * based on the fallbacks and locale configuration in this._localizationConfig.
-   *
-   * This function considers locale fallbacks, so more PageConfig may be returned than were
-   * originally provided. It returns one PageConfig per (config, locale) combination.
    *
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Array<PageConfig>}
