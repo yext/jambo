@@ -7,9 +7,9 @@ const PageTemplate = require('../../models/pagetemplate');
 const TemplateDirector = require('./templatedirector');
 
 /**
- * PageSetsBuilder is responsible for matching @link {PageConfigs} and
- * @link {PageTemplates} for each given locale and returning a group
- * of @link {PageSet}s.
+ * PageSetsBuilder is responsible for matching {@link PageConfigs} and
+ * {@link PageTemplates} for each given locale and returning a group
+ * of {@link PageSet}s.
  */
 module.exports = class PageSetsBuilder {
   constructor({ defaultLocale, localeToGlobalConfig, localizationConfig }) {
@@ -30,7 +30,7 @@ module.exports = class PageSetsBuilder {
   }
 
   /**
-   * Returns a group of PageSet (@link {PageSet}) for the given
+   * Returns a group of PageSet ({@link PageSet}) for the given
    * pageConfigs and pageTemplates, one PageSet per locale.
    *
    * @param {Array<PageConfig>} pageConfigs

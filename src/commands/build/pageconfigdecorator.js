@@ -1,7 +1,7 @@
 const PageConfig = require('../../models/pageconfig');
 
 /**
- * PageConfigDecorator decorates @link {PageConfig}s, adding additional
+ * PageConfigDecorator decorates {@link PageConfig}s, adding additional
  * localized config information to the given page configs based on the
  * information provided.
  */

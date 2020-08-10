@@ -5,7 +5,7 @@ const path = require('path');
 const PageSet = require('../../models/pageset');
 
 /**
- * PageWriter is responsible for writing output files for the given @link {PageSet} to
+ * PageWriter is responsible for writing output files for the given {@link PageSet} to
  * the given output directory.
  */
 module.exports = class PageWriter {

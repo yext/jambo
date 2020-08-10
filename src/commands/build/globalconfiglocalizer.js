@@ -2,7 +2,7 @@ const GlobalConfig = require('../../models/globalconfig');
 
 /**
  * GlobalConfigLocalizer is responsible for generating a set of localized
- * @link {GlobalConfig}s.
+ * {@link GlobalConfig}s.
  */
 module.exports = class GlobalConfigLocalizer {
   constructor(localizationConfig) {
@@ -13,7 +13,7 @@ module.exports = class GlobalConfigLocalizer {
   }
 
   /**
-   * Generates a collection of localized @link {GlobalConfig}s
+   * Generates a collection of localized {@link GlobalConfig}s
    *
    * @param {GlobalConfig} globalConfig
    * @returns {Array<GlobalConfig>}

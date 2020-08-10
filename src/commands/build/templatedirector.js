@@ -1,7 +1,7 @@
 const PageTemplate = require('../../models/pagetemplate');
 
 /**
- * TemplateDirector creates a new, localized @link {PageTemplate}
+ * TemplateDirector creates a new, localized {@link PageTemplate}
  * per (pageTemplate, locale) combination.
  */
 module.exports = class TemplateDirector {
