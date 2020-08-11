@@ -3,6 +3,7 @@ const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
 const babel = require("@babel/core");
+const browserify = require('browserify');
 const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
@@ -288,7 +289,43 @@ exports.SitesGenerator = class {
     });
 
     hbs.registerHelper('babel', function(options) {
-      const srcCode = options.fn(this);
+      function streamToString (stream) {
+        const chunks = []
+        return new Promise((resolve, reject) => {
+          stream.on('data', chunk => chunks.push(chunk))
+          stream.on('error', reject)
+          stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
+        })
+      }
+
+      fs.appendFileSync('./hbs-bundle.js', options.fn(this), function (err) {
+        if (err) throw err;
+      });
+      //const srcCode = options.fn(this);
+      const opts = {
+        compact: true,
+        minified: true,
+        sourceType: 'script',
+        presets: [
+          '@babel/preset-env'
+        ],
+        plugins: [
+          '@babel/syntax-dynamic-import',
+          '@babel/plugin-transform-arrow-functions',
+          '@babel/plugin-proposal-object-rest-spread',
+          '@babel/plugin-transform-object-assign',
+        ]
+      }
+      const stream = browserify("./hbs-bundle.js")
+        .transform("babelify", opts)
+        .bundle()
+        .pipe(fs.createWriteStream('./hbs-bundle-done.js')):
+      // For some reason I can't find a synchronous pipe??????????
+
+      const x = fs.readFileSync('./hbs-bundle-done.js');
+      console.log(x);
+      return x;
+      /*
       return babel.transformSync(srcCode, {
         compact: true,
         minified: true,
@@ -303,6 +340,7 @@ exports.SitesGenerator = class {
           '@babel/plugin-transform-object-assign',
         ]
         }).code;
+        */
     })
 
     hbs.registerHelper('partialPattern', function (cardPath, opt) {
