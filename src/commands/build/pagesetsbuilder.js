@@ -1,3 +1,4 @@
+const GlobalConfigLocalizer = require('./globalconfiglocalizer');
 const LocalizationConfig = require('../../models/localizationconfig');
 const Page = require('../../models/page');
 const PageConfig = require('../../models/pageconfig');
@@ -12,16 +13,16 @@ const TemplateDirector = require('./templatedirector');
  * of {@link PageSet}s.
  */
 module.exports = class PageSetsBuilder {
-  constructor({ defaultLocale, localeToGlobalConfig, localizationConfig }) {
+  constructor({ defaultLocale, globalConfig, localizationConfig }) {
     /**
      * @type {String}
      */
     this._defaultLocale = defaultLocale;
 
     /**
-     * @type {Object<String, GlobalConfig>}
+     * @type {GlobalConfig}
      */
-    this._localeToGlobalConfig = localeToGlobalConfig;
+    this._globalConfig = globalConfig;
 
     /**
      * @type {LocalizationConfig}
@@ -38,38 +39,33 @@ module.exports = class PageSetsBuilder {
    * @returns {Array<PageSet>}
    */
   build(pageConfigs, pageTemplates) {
-    let locales = this._localizationConfig.getLocales().length > 0
-      ? this._localizationConfig.getLocales()
-      : [ this._defaultLocale ];
-
-    const localeToFallbacks = {};
-    for (const locale of locales) {
-      localeToFallbacks[locale] = this._localizationConfig.getFallbacks(locale);
-    }
+    const localeToFallbacks = this._localizationConfig
+      .getLocales()
+      .reduce((obj, locale) => {
+        obj[locale] = this._localizationConfig.getFallbacks(locale);
+        return obj;
+      }, {});
 
     const localeToPageConfigs = new PageConfigDecorator({
-      locales: locales,
       localeToFallbacks: localeToFallbacks,
       defaultLocale: this._defaultLocale
     }).decorate(pageConfigs);
 
     const localeToPageTemplates = new TemplateDirector({
-      locales: locales,
+      locales: this._localizationConfig.getLocales(),
       localeToFallbacks: localeToFallbacks,
       defaultLocale: this._defaultLocale
     }).direct(pageTemplates);
 
-    const localeToPages = this._buildLocaleToPages({
-      localeToPageConfigs: localeToPageConfigs,
-      localeToPageTemplates: localeToPageTemplates
-    });
-
     const pageSets = [];
-    for (const [locale, pages] of Object.entries(localeToPages)) {
+    for (const [locale, pageConfigs] of Object.entries(localeToPageConfigs)) {
+      const localizedGlobalConfig = new GlobalConfigLocalizer(this._localizationConfig)
+        .localize(this._globalConfig, locale);
+
       pageSets.push(new PageSet({
         locale: locale,
-        pages: pages,
-        globalConfig: this._localeToGlobalConfig[locale],
+        pages: this._buildPages(pageConfigs, localeToPageTemplates[locale]),
+        globalConfig: localizedGlobalConfig,
         params: this._localizationConfig.getParams(locale)
       }));
     }
@@ -77,38 +73,29 @@ module.exports = class PageSetsBuilder {
   }
 
   /**
-   * Matches PageConfigs and PageTemplates and returns a group of Pages, keyed
-   * by locale.
+   * Matches PageConfigs and PageTemplates and returns a group of Pages.
    *
-   * @param {Object<String, Array<PageConfig>>} localeToPageConfigs
-   * @param {Object<String, Array<PageTemplate>>} localeToPageTemplates
-   * @returns {Object<String, Array<Page>>}
+   * @param {Array<PageConfig>} pageConfigs
+   * @param {Array<PageTemplate>} pageTemplates
+   * @returns {Array<Page>}
    */
-  _buildLocaleToPages ({ localeToPageConfigs, localeToPageTemplates }) {
-    let localeToPages = {};
-    for (const [locale, configs] of Object.entries(localeToPageConfigs)) {
-      if (!localeToPageTemplates[locale] || !configs) {
-        throw new Error(`Warning: Missing pageTemplates for ${locale}, can't generate Pages for ${locale}`);
+  _buildPages (pageConfigs, pageTemplates) {
+    let pages = [];
+    for (const config of pageConfigs) {
+      const pageTemplate = pageTemplates
+        .find(template => template.getPageName() === config.getPageName());
+
+      if (!pageTemplate) {
+        console.log(`Warning: No page '${config.getPageName()}' found for given locale '${config.getLocale()}', not generating a '${config.getPageName()}' page for '${config.getLocale()}'`);
+        continue;
       }
 
-      localeToPages[locale] = [];
-      for (const config of configs) {
-        const pageTemplate = localeToPageTemplates[locale]
-          .find(template => template.getPageName() === config.getPageName());
-
-        if (!pageTemplate) {
-          console.log(`Warning: No page '${config.getPageName()}' found for given locale '${locale}', not generating a '${config.getPageName()}' page for '${locale}'`);
-          continue;
-        }
-
-        localeToPages[locale].push(Page.from({
-          pageConfig: config,
-          pageTemplate: pageTemplate,
-          urlFormatter: this._localizationConfig.getUrlFormatter(locale),
-        }));
-      }
+      pages.push(Page.from({
+        pageConfig: config,
+        pageTemplate: pageTemplate,
+        urlFormatter: this._localizationConfig.getUrlFormatter(config.getLocale()),
+      }));
     }
-
-    return localeToPages;
+    return pages;
   }
 }

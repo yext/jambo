@@ -6,12 +6,7 @@ const PageConfig = require('../../models/pageconfig');
  * information provided.
  */
 module.exports = class PageConfigDecorator {
-  constructor({ locales, localeToFallbacks, defaultLocale }) {
-    /**
-     * @type {Array<String>}
-     */
-    this._locales = locales;
-
+  constructor({ localeToFallbacks, defaultLocale }) {
     /**
      * @type {Object<String, Array<String>>}
      */
@@ -24,67 +19,65 @@ module.exports = class PageConfigDecorator {
   }
 
   /**
-   * Creates a localized PageConfig for every page and locale, merging the rawConfigs
-   * based on the fallbacks and locale configuration provided.
+   * Creates an object mapping locale to a collection of decorated PageConfigs
+   * ({@link PageConfig}). These decorated PageConfigs each have all of the
+   * configuration for a given (page, locale) combination, including config
+   * based on the locale fallbacks.
    *
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Array<PageConfig>}
    */
   decorate(pageConfigs) {
-    const pageNameToConfigs = this._getPageNameToConfigs(pageConfigs);
+    const pageNameToPageConfigs = this._getPageNameToConfigs(pageConfigs);
+    const decoratedPageConfigs = {};
 
-    let localizedPageConfigs = {};
-    for (const locale of this._locales) {
-      localizedPageConfigs[locale] = [];
+    for (const configsForPage of Object.values(pageNameToPageConfigs)) {
+      for (const config of configsForPage) {
+        const decoratedPageConfig = this._decoratePageConfig(config, configsForPage);
+        const locale = decoratedPageConfig.getLocale();
 
-      for (const [pageName, configsForPage] of Object.entries(pageNameToConfigs)) {
-        const mergedPageConfigForLocale = this._mergePageConfigs(pageName, locale, configsForPage);
-
-        if (mergedPageConfigForLocale) {
-          localizedPageConfigs[locale].push(mergedPageConfigForLocale);
+        if (!decoratedPageConfigs[locale]) {
+          decoratedPageConfigs[locale] = [];
         }
+        decoratedPageConfigs[locale].push(decoratedPageConfig);
       }
     }
-    return localizedPageConfigs;
+    return decoratedPageConfigs;
   }
 
   /**
-   * Creates a new PageConfig for the given pageName and locale with a merged config
-   * based on the locale and fallbacks.
+   * Creates a new PageConfig decorated with all of the configuration for a given
+   * locale, merging the internal configuration data based on the fallbacks and locale
+   * configuration provided.
    *
-   * @param {String} pageName
-   * @param {String} locale
-   * @param {Array<PageConfig>} configs
+   * @param {PageConfig} localeSpecificConfig
+   * @param {Array<PageConfig>} configsForPage
    * @returns {PageConfig}
    */
-  _mergePageConfigs(pageName, locale, configs) {
-    const localeSpecificConfig = configs.find(config => this._isLocaleMatch(config.getLocale(), locale));
-    if (!localeSpecificConfig) {
-      return;
-    }
-
-    const localeFallbacks = this._localeToFallbacks[locale] || [];
+  _decoratePageConfig(localeSpecificConfig, configsForPage) {
+    const currentLocale = localeSpecificConfig.getLocale() || this._defaultLocale;
+    const localeFallbacks = this._localeToFallbacks[currentLocale] || [];
     const fallbackConfigs = [];
     for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
-      const fallbackConfig = configs
+      const fallbackConfig = configsForPage
         .find(config => this._isLocaleMatch(config.getLocale(), localeFallbacks[i]));
 
       if (fallbackConfig) {
         fallbackConfigs.push(fallbackConfig);
       }
     }
-    const defaultConfig = configs
+    const defaultConfig = configsForPage
       .find(config => this._isDefaultLocale(config.getLocale()));
 
     const mergedConfig = this._merge([
       defaultConfig && defaultConfig.getConfig(),
       ...fallbackConfigs.map(config => config && config.getConfig()),
-      localeSpecificConfig && localeSpecificConfig.getConfig()
+      localeSpecificConfig.getConfig()
     ]);
 
     return new PageConfig({
-      pageName: pageName,
-      locale: locale,
+      pageName: localeSpecificConfig.getPageName(),
+      locale: currentLocale,
       rawConfig: mergedConfig,
     });
   }

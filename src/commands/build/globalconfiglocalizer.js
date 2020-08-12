@@ -1,7 +1,7 @@
 const GlobalConfig = require('../../models/globalconfig');
 
 /**
- * GlobalConfigLocalizer is responsible for generating a set of localized
+ * GlobalConfigLocalizer is responsible for generating a localized
  * {@link GlobalConfig}s.
  */
 module.exports = class GlobalConfigLocalizer {
@@ -13,31 +13,22 @@ module.exports = class GlobalConfigLocalizer {
   }
 
   /**
-   * Generates a collection of localized {@link GlobalConfig}s
+   * Generates a localized {@link GlobalConfig}
    *
    * @param {GlobalConfig} globalConfig
-   * @returns {Array<GlobalConfig>}
+   * @returns {GlobalConfig}
    */
-  generateLocaleToGlobalConfig(globalConfig) {
-    let localizedGlobalConfigs = {};
+  localize(globalConfig, locale) {
+    const experienceKey = this._localizationConfig.getExperienceKey(locale)
+      || globalConfig.getExperienceKey();
+    const apiKey = this._localizationConfig.getApiKey(locale)
+      || globalConfig.getApiKey();
 
-    // For cases where there is no configuration specified in this._localizationConfig
-    localizedGlobalConfigs[globalConfig.getLocale()] = globalConfig;
-
-    for (const locale of this._localizationConfig.getLocales()) {
-      const experienceKey = this._localizationConfig.getExperienceKey(locale)
-        || globalConfig.getExperienceKey();
-      const apiKey = this._localizationConfig.getApiKey(locale)
-        || globalConfig.getApiKey();
-
-      localizedGlobalConfigs[locale] = new GlobalConfig({
-        ...globalConfig.getConfig(),
-        experienceKey: experienceKey,
-        apiKey: apiKey,
-        locale: locale
-      });
-    }
-
-    return localizedGlobalConfigs;
+    return new GlobalConfig({
+      ...globalConfig.getConfig(),
+      experienceKey: experienceKey,
+      apiKey: apiKey,
+      locale: locale
+    });
   }
 }
