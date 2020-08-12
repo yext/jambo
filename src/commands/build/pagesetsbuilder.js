@@ -73,7 +73,7 @@ module.exports = class PageSetsBuilder {
   }
 
   /**
-   * Matches PageConfigs and PageTemplates and returns a group of Pages.
+   * Matches PageConfigs and PageTemplates and returns a collection of Pages.
    *
    * @param {Array<PageConfig>} pageConfigs
    * @param {Array<PageTemplate>} pageTemplates
