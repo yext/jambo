@@ -37,7 +37,7 @@ exports.SitesGenerator = class {
     // Pull all data from environment variables.
     const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
-    console.log('Jambo Injected Data:', env);
+    console.log('Jambo Injected Data:', env['JAMBO_INJECTED_DATA']);
 
     console.log('Reading config files');
     const configNameToRawConfig = {};
@@ -307,6 +307,10 @@ exports.SitesGenerator = class {
 
     hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
+    });
+
+    hbs.registerHelper('concat', function(prefix, id) {
+      return (prefix + id);
     });
 
     hbs.registerHelper('babel', function(options) {

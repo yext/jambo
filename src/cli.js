@@ -8,6 +8,7 @@ const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
 const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
 const { i18nExtractor } = require('./commands/extract-i18n/i18nExtractor')
+const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
@@ -26,11 +27,11 @@ const options = yargs
           'includeTranslations',
           { description: 'if i18n support will be needed', default: false, type: 'boolean' })
         .option(
-          'addThemeAsSubmodule', 
-          { 
-            description: 'if starter theme should be imported as submodule', 
+          'addThemeAsSubmodule',
+          {
+            description: 'if starter theme should be imported as submodule',
             default: true,
-            type: 'boolean' 
+            type: 'boolean'
           }
         );
     },
@@ -46,7 +47,7 @@ const options = yargs
       return yargs
         .option('theme', { description: 'theme to import', demandOption: true })
         .option(
-          'addAsSubmodule', 
+          'addAsSubmodule',
           { description: 'import the theme as a submodule', default: true, type: 'boolean' });
     },
     argv => {
@@ -61,7 +62,7 @@ const options = yargs
         .option('path', { description: 'path in the theme to override', demandOption: true })
     },
     argv => {
-      const shadowConfiguration = 
+      const shadowConfiguration =
         new overrideCommand.ShadowConfiguration(addThemeToArgs(argv));
       const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
       themeShadower.createShadow(shadowConfiguration);
@@ -76,7 +77,7 @@ const options = yargs
         .option('template', { description: 'template to use within theme' });
     },
     argv => {
-      const pageConfiguration = 
+      const pageConfiguration =
         new addPageCommand.PageConfiguration(addThemeToArgs(argv));
       const pageScaffolder = new addPageCommand.PageScaffolder(jamboConfig);
       pageScaffolder.create(pageConfiguration);
@@ -113,7 +114,7 @@ const options = yargs
     yargs => {
       return yargs
         .option(
-          'jsonEnvVars', 
+          'jsonEnvVars',
           { description: 'environment variables containing JSON', type: 'array' });
     },
     argv => {
@@ -134,12 +135,32 @@ const options = yargs
       const extractor = new i18nExtractor(jamboConfig);
       extractor.extract(argv.locale);
     })
+  .command(
+    'upgrade',
+    'upgrade the default theme to the latest version',
+    yargs => {
+      return yargs
+        .option('disableScript', {
+            description: 'disable automatic execution ./upgrade.js after the upgrade is done',
+            type: 'boolean'
+          })
+        .option('isLegacy', {
+          description: 'whether to pass the --isLegacy flag to ./upgrade.js',
+          type: 'boolean'
+        })
+    },
+    argv => {
+      const themeUpgrader = new ThemeUpgrader(jamboConfig);
+      themeUpgrader
+        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
+        .catch(console.error);
+    })
   .argv;
 
   /**
    * Augments command line options with the defaultTheme from
    * Jambo.
-   * 
+   *
    * @param {Object} argv An object containing the command line
    *                      options and the Jambo defaultTheme.
    */
