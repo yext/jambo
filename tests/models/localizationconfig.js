@@ -45,7 +45,7 @@ describe('Getting URL Formatting function works properly', () => {
     expect(urlFormatter('pageName', 'pageExt')).toEqual('pageName.pageExt');
   });
 
-  it('formats with default url formatting pattern', () => {
+  it('formats defaultLocale with correct url formatting pattern', () => {
     let locale = 'en';
     let localizationConfig = new LocalizationConfig({
       default: locale,

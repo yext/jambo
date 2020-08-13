@@ -2,7 +2,7 @@ const PageConfig = require('../../../src/models/pageconfig');
 const PageConfigDecorator = require('../../../src/commands/build/pageconfigdecorator');
 
 describe('PageConfigDecorator decorates PageConfigs and builds the expected object', () => {
-  it('builds locale to configs with decorated configs when no locales specified', () => {
+  it('builds locale to configs with decorated configs when only default locale is specified', () => {
     const defaultLocale = 'en';
     const decoratedConfigs = new PageConfigDecorator({
       localeToFallbacks: {},
@@ -34,7 +34,7 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     });
   });
 
-  it('builds locale to configs with decorated configs with given locales', () => {
+  it('builds decorated page configs for specified locales', () => {
     const defaultLocale = 'en';
     const decoratedConfigs = new PageConfigDecorator({
       localeToFallbacks: {},
@@ -69,7 +69,7 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     });
   });
 
-  it('decorated config props override regular config props', () => {
+  it('locale-specific config props override fallback and default config props', () => {
     const defaultLocale = 'en';
     const configs = [
       new PageConfig({

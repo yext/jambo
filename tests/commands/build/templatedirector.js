@@ -2,7 +2,7 @@ const TemplateDirector = require('../../../src/commands/build/templatedirector')
 const PageTemplate = require('../../../src/models/pagetemplate');
 
 describe('TemplateDirector directs PageTemplates and builds the expected object', () => {
-  it('creates localeToPageTemplates properly when locale data is absent', () => {
+  it('creates page templates correctly when only defaultLocale is present', () => {
     const defaultLocale = 'en';
     const pageTemplates = [
       new PageTemplate({

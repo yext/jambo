@@ -70,14 +70,3 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     expect(rawConfigs).toEqual(rawConfigsCopy);
   });
 });
-
-describe('ConfigurationRegistry parses locale from config name', () => {
-  it('parses locale when none exists', () => {
-    expect(ConfigurationRegistry._parseLocale('configWithNoLocale')).toEqual(false);
-  });
-
-  it('parses locale when present', () => {
-    const locale = 'en';
-    expect(ConfigurationRegistry._parseLocale(`test.${locale}`)).toEqual(locale);
-  });
-});

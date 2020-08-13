@@ -3,7 +3,7 @@ const GlobalConfigLocalizer = require('../../../src/commands/build/globalconfigl
 const LocalizationConfig = require('../../../src/models/localizationconfig');
 
 describe('GlobalConfigLocalizer works for sites without a localization config', () => {
-  it('creates localized global config when localization config is empty', () => {
+  it('does not alter global config when localization config is empty', () => {
     const globalConfig = new GlobalConfig({
       locale: 'es',
       apiKey: 'apiKey',
