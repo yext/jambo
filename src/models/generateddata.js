@@ -1,5 +1,4 @@
 const GlobalConfig = require('./globalconfig');
-const GlobalConfigLocalizer = require('../commands/build/globalconfiglocalizer');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
 const PageSet = require('./pageset');
@@ -75,12 +74,9 @@ module.exports = class GeneratedData {
   static from({ globalConfig, localizationConfig, pageConfigs, pageTemplates }) {
     const defaultLocale = localizationConfig.getDefaultLocale() || globalConfig.getLocale() || '';
 
-    const localeToGlobalConfig = new GlobalConfigLocalizer(localizationConfig)
-      .generateLocaleToGlobalConfig(globalConfig);
-
     const pageSets = new PageSetsBuilder({
       localizationConfig: localizationConfig,
-      localeToGlobalConfig: localeToGlobalConfig,
+      globalConfig: globalConfig,
       defaultLocale: defaultLocale,
     }).build(pageConfigs, pageTemplates);
 
