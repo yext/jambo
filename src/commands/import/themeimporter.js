@@ -7,6 +7,9 @@ const {
 } = require('comment-json');
 const { ShadowConfiguration, ThemeShadower } = require('../override/themeshadower');
 const { getRepoForTheme } = require('../../utils/gitutils');
+const SystemError = require('../../errors/systemerror');
+const UserError = require('../../errors/usererror');
+const { exitWithError } = require('../../utils/errorutils');
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
@@ -26,8 +29,7 @@ exports.ThemeImporter = class {
    */
   async import(themeName, addAsSubmodule) {
     if (!this.config) {
-      console.warn('No jambo.json found. Did you `jambo init` yet?')
-      return;
+      exitWithError(new UserError('No jambo.json found. Did you `jambo init` yet?'));
     }
     try {
       const themeRepo = getRepoForTheme(themeName);
@@ -47,8 +49,8 @@ exports.ThemeImporter = class {
       this._copyLayoutFiles(themeName);
 
       return localPath;
-    } catch (error) {
-      return Promise.reject(error.toString());
+    } catch (err) {
+      exitWithError(new SystemError(err.message, err.stack));
     }
   }
 

@@ -7,6 +7,8 @@ const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
+const UserError = require('../../errors/usererror')
+const { exitWithError } = require('../../utils/errorutils')
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -24,7 +26,7 @@ exports.SitesGenerator = class {
   generate(jsonEnvVars=[]) {
     const config = this.config;
     if (!config) {
-      throw new Error('Cannot find Jambo config in this directory, exiting.');
+      exitWithError(new UserError('Cannot find Jambo config in this directory, exiting.'));
     }
     
     // Pull all data from environment variables.
@@ -39,20 +41,15 @@ exports.SitesGenerator = class {
         let pageId = this._stripExtension(relative);
         try {
           pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
-        } catch (e) {
-          if (e instanceof SyntaxError) {
-            throw new Error('JSON SyntaxError: could not parse ' + path);
-          } else {
-            throw e;
-          }
+        } catch (err) {
+          exitWithError(new UserError(err.message, err.stack));
         }
       }
     })
 
     const globalConfigName = 'global_config';
     if (!pagesConfig[globalConfigName]) {
-      console.error(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory, exiting.');
-      return;
+      exitWithError(new UserError(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory.'));
     }
 
     console.log('Registering Jambo Handlebars helpers');
@@ -93,7 +90,7 @@ exports.SitesGenerator = class {
         const pageId = filename.split('.')[0];
 
         if (!pagesConfig[pageId]) {
-          throw new Error(`Error: No config found for page: ${pageId}`);
+          exitWithError(new UserError(`Error: No config found for page: ${pageId}`));
         }
 
         console.log(`Writing output file for the '${pageId}' page`);

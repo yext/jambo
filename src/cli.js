@@ -11,6 +11,8 @@ const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
+const SystemError = require('./errors/systemerror');
+const { exitWithError } = require('./utils/errorutils');
 
 const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
 
@@ -34,7 +36,7 @@ const options = yargs
     argv => {
       const repositorySettings = new initCommand.RepositorySettings(argv);
       const repositoryScaffolder = new initCommand.RepositoryScaffolder();
-      repositoryScaffolder.create(repositorySettings).catch(console.log);
+      repositoryScaffolder.create(repositorySettings)
     })
   .command(
     'import',
@@ -48,7 +50,7 @@ const options = yargs
     },
     argv => {
       const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
-      themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log).catch(console.log);
+      themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log);
     })
   .command(
     'override',
@@ -134,9 +136,11 @@ const options = yargs
     argv => {
       const themeUpgrader = new ThemeUpgrader(jamboConfig);
       themeUpgrader
-        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
-        .catch(console.error);
+        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy).catch((error) => {
+            exitWithError(new SystemError(error.message, error.stack));
+        });
     })
+  .strict()
   .argv;
 
   /**

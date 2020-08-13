@@ -1,6 +1,8 @@
 const fs = require('file-system');
 const path = require('path');
 const { addToPartials } = require('../../utils/jamboconfigutils');
+const UserError = require('../../errors/usererror');
+const { exitWithError } = require('../../utils/errorutils');
 
 /**
  * The ShadowConfiguration specifies what file(s) should be shadowed for a particular theme.
@@ -10,7 +12,7 @@ const { addToPartials } = require('../../utils/jamboconfigutils');
 exports.ShadowConfiguration = class {
   constructor({ theme, path }) {
     if (!theme || !path) {
-      throw new Error('Theme and path must be specified when shadowing');
+      exitWithError(new UserError('Theme and path must be specified when shadowing'));
     }
 
     this._theme = theme;

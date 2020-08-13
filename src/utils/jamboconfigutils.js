@@ -5,6 +5,8 @@ const {
   parse,
   stringify
 } = require('comment-json');
+const { exitWithError } = require('./errorutils');
+const UserError = require('../errors/usererror');
 
 /**
  * Parses the repository's Jambo config file. If certain attributes are not
@@ -13,19 +15,24 @@ const {
  * @returns {Object} The parsed Jambo configuration, as an {@link Object}. 
  */
 parseJamboConfig = function() {
-  let config = mergeOptions(
-    {
-      dirs: {
-        themes: 'themes',
-        config: 'config',
-        output: 'public',
-        pages: 'pages',
-        partials: ['partials'],
-      }
-    },
-    parse(fs.readFileSync('jambo.json', 'utf8'))
-  );
-  return config;
+  try{
+    let config = mergeOptions(
+      {
+        dirs: {
+          themes: 'themes',
+          config: 'config',
+          output: 'public',
+          pages: 'pages',
+          partials: ['partials'],
+        }
+      },
+      parse(fs.readFileSync('jambo.json', 'utf8'))
+    );
+    return config;
+  } catch (err) {
+    exitWithError(new UserError("Error parsing jambo.json", err.stack));
+  }
+  
 }
 exports.parseJamboConfig = parseJamboConfig;
 
