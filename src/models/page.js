@@ -53,7 +53,11 @@ module.exports = class Page {
    * @returns {Object}
    */
   getConfig () {
-    return this.pageConfig.getConfig();
+    return Object.assign({}, {
+        url: this.outputPath,
+      },
+      this.pageConfig.getConfig(),
+    );
   }
 
   /**
