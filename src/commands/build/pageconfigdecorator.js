@@ -25,7 +25,7 @@ module.exports = class PageConfigDecorator {
    * based on the locale fallbacks.
    *
    * @param {Array<PageConfig>} pageConfigs
-   * @returns {Array<PageConfig>}
+   * @returns {Object<String, Array<PageConfig>>}
    */
   decorate(pageConfigs) {
     const pageNameToPageConfigs = this._getPageNameToConfigs(pageConfigs);
