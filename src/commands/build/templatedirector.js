@@ -9,7 +9,9 @@ module.exports = class TemplateDirector {
     /**
      * @type {Array<String>}
      */
-    this._locales = locales;
+    this._locales = locales && locales.length > 0
+      ? locales
+      : [ defaultLocale ];
 
     /**
      * @type {Object<String, Array<String>>}
@@ -36,11 +38,15 @@ module.exports = class TemplateDirector {
     let localizedPageTemplates = {};
     for (const locale of this._locales) {
       localizedPageTemplates[locale] = [];
-      for (const [pageName, templates] of Object.entries(pageNameToTemplates)) {
-        const pageTemplateForLocale = this._getPageTemplate(locale, templates);
+      for (const templates of Object.values(pageNameToTemplates)) {
+        const pageTemplate = this._findPageTemplateForLocale(locale, templates);
 
-        if (pageTemplateForLocale) {
-          localizedPageTemplates[locale].push(pageTemplateForLocale);
+        if (pageTemplate) {
+          localizedPageTemplates[locale].push(new PageTemplate({
+            pageName: pageTemplate.getPageName(),
+            path: pageTemplate.getTemplatePath(),
+            locale: locale
+          }));
         }
       }
     }
@@ -49,33 +55,25 @@ module.exports = class TemplateDirector {
 
 
   /**
-   * Builds a new PageTemplate for a given pageTemplate and locale based on the given
-   * locale and the fallbacks for that locale.
+   * Finds the PageTemplate for the given locale in the provided collection of PageTemplates,
+   * the match is determined based the locale and the fallbacks.
    *
    * @param {String} locale
-   * @param {Array<PageTemplate>} templates
+   * @param {Array<PageTemplate>} templatesForPage
    * @returns {PageTemplate}
    */
-  _getPageTemplate(locale, templates) {
-    let pageTemplate = templates.find(pageTemplate => this._isLocaleMatch(pageTemplate.getLocale(), locale));
+  _findPageTemplateForLocale(locale, templatesForPage) {
+    let pageTemplate = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), locale));
     if (pageTemplate) {
-      return new PageTemplate({
-        pageName: pageTemplate.getPageName(),
-        path: pageTemplate.getTemplatePath(),
-        locale: locale,
-      });
+      return pageTemplate;
     }
 
     const localeFallbacks = this._localeToFallbacks[locale] || [];
     for (const fallback of localeFallbacks) {
-      pageTemplate = templates.find(page => this._isLocaleMatch(page.getLocale(), fallback));
+      pageTemplate = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), fallback));
 
       if (pageTemplate) {
-        return new PageTemplate({
-          pageName: pageTemplate.getPageName(),
-          path: pageTemplate.getTemplatePath(),
-          locale: locale,
-        });
+        return pageTemplate;
       }
     }
   }
@@ -100,26 +98,6 @@ module.exports = class TemplateDirector {
       pageNameToTemplates[pageName].push(pageTemplate);
     }
     return pageNameToTemplates;
-  }
-
-  /**
-   * Returns a collection of the unique pageNames from the given pageTemplates
-   *
-   * @param {Array<PageTemplates>} templates
-   * @returns {Array<String>}
-   */
-  _getUniquePageNames(templates) {
-    let pageNames = templates
-      ? templates.map((template) => template.getPageName())
-      : [];
-
-    let uniqueNames = [];
-    for (const pageName of pageNames) {
-      if (uniqueNames.indexOf(pageName) === -1) {
-        uniqueNames.push(pageName);
-      }
-    }
-    return uniqueNames;
   }
 
   /**
