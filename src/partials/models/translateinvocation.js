@@ -30,7 +30,7 @@ class TranslateInvocation {
 
   /**
    * If the translation requested by the invocation can be resolved at
-   * compile-time. This is true if no pluralizaiton or interpolation is
+   * compile-time. This is true if no pluralization or interpolation is
    * requested.
    * 
    * @returns {boolean}
@@ -81,7 +81,7 @@ class TranslateInvocation {
    */
   static from(invocationString) {
     const paramRegex =
-      /([a-zA-z]+=\'[a-zA-Z\s\{\}\.]+\')|([a-zA-z]+=\d+)/g;
+      /([a-zA-z0-9]+=\'[a-zA-Z\s\{\}\.]+\')|([a-zA-z0-9]+=\d+)/g;
 
     const parsedParams = (invocationString.match(paramRegex) || [])
       .reduce((params, paramString) => {

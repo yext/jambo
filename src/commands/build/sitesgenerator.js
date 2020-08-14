@@ -268,6 +268,7 @@ exports.SitesGenerator = class {
      */
     hbs.registerHelper('translate', function (phrase, options) {
       const interpValues = options.hash;
+      console.log(interpValues.stuff1);
       return translator.translate(phrase, interpValues);
     });
 

@@ -24,7 +24,7 @@ class standardCardComponent extends BaseCard['standard'] {
         showLessText: 'Show less' // Label when toggle will hide truncated text
       },
       CTA1: {
-        label: {{ translate phrase='Mail now {{name}}' context='Mail is a verb' name='profile.name' }}, // The CTA's label
+        label: {{translate phrase='Mail now {{id1}}' context='Mail is a verb' id1='profile.name'}}, // The CTA's label
         iconName: 'chevron', // The icon to use for the CTA
         url: Formatter.generateCTAFieldTypeLink(profile.c_primaryCTA), // The URL a user will be directed to when clicking
         target: '_top', // Where the new URL will be opened

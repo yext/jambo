@@ -21,7 +21,7 @@ class PartialPreprocessor {
   process(partial) {
     let processedPartial = partial;
     const translateHelperCalls =
-      processedPartial.match(/\{\{\stranslate\s.+\}\}/g) || [];
+      processedPartial.match(/\{\{\s?translate\s.+\}\}/g) || [];
 
     translateHelperCalls.forEach(call => {
       const translateInvocation = TranslateInvocation.from(call);
