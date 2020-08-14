@@ -41,6 +41,11 @@ exports.ThemeImporter = class {
         await git.clone(themeRepo, localPath);
       }
 
+      if (fs.existsSync(`${localPath}/locale_config.json`)) {
+        fs.copyFileSync(
+          `${localPath}/locale_config.json`,
+          `${this.config.dirs.config}/locale_config.json`);
+      }
       fs.copyFileSync(
         `${localPath}/global_config.json`,
         `${this.config.dirs.config}/global_config.json`);
