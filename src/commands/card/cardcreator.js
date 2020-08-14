@@ -12,7 +12,7 @@ exports.CardCreator = class {
    * Creates a new, custom card in the top-level 'Cards' directory. This card
    * will be based off either an existing custom card or one supplied by the
    * Theme.
-   * 
+   *
    * @param {string} cardName           The name of the new card. A folder with a
    *                                    lowercased version of this name will be
    *                                    created.
@@ -21,11 +21,11 @@ exports.CardCreator = class {
    */
   create(cardName, templateCardFolder) {
     const defaultTheme = this.config.defaultTheme;
-    const themeCardsDir = 
+    const themeCardsDir =
         `${this.config.dirs.themes}/${defaultTheme}/${this._customCardsDir}`;
 
     const cardFolderName = cardName.toLowerCase();
-    const isFolderInUse = 
+    const isFolderInUse =
         fs.existsSync(`${themeCardsDir}/${cardFolderName}`) ||
         fs.existsSync(`${this._customCardsDir}/${cardFolderName}`);
     if (isFolderInUse) {
@@ -61,6 +61,7 @@ exports.CardCreator = class {
   _getRenamedCardComponent (content, customCardName) {
     const cardNameSuffix = 'CardComponent';
     const registerComponentTypeRegex = /\([\w_]+CardComponent\)/g;
+    console.error(`content: ${content}, content.matchAll(/componentName\s*=\s*\'(.*)\'/g): ${content.matchAll(/componentName\s*=\s*'(.*)'/g)}`);
     const regexArray = [ ...content.matchAll(/componentName\s*=\s*'(.*)'/g) ];
     if (regexArray.length === 0 || regexArray[0].length < 2) {
       return content;
@@ -78,11 +79,11 @@ exports.CardCreator = class {
   }
 
   /**
-   * Creates the 'cards' directory in the Jambo repository and adds the newly 
+   * Creates the 'cards' directory in the Jambo repository and adds the newly
    * created directory to the list of partials in the Jambo config.
    */
   _createCustomCardsDir() {
     fs.mkdirSync(this._customCardsDir);
-    addToPartials(this._customCardsDir);  
+    addToPartials(this._customCardsDir);
   }
 }
