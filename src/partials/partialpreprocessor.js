@@ -99,6 +99,7 @@ class PartialPreprocessor {
       .reduce((params, [paramName, paramValue]) => {
         return params + `${paramName}=${paramValue} `;
       }, '');
+    
     return `{ runtimeTranslation phrase=${translatorResult} ${paramsString}}`;
   }
 }
