@@ -2,7 +2,7 @@ const PageConfig = require('../../../src/models/pageconfig');
 const PageConfigDecorator = require('../../../src/commands/build/pageconfigdecorator');
 
 describe('PageConfigDecorator decorates PageConfigs and builds the expected object', () => {
-  it('builds locale to configs with decorated configs when only default locale is specified', () => {
+  it('builds decorated pages configs correctly when there is only a default locale', () => {
     const defaultLocale = 'en';
     const decoratedConfigs = new PageConfigDecorator({
       localeToFallbacks: {},
