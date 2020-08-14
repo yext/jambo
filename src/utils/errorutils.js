@@ -1,11 +1,16 @@
+const fs = require('fs');
+
 /**
- * Print the error, and then end the 
- * process with the specified exit code
+ * Print the error, and then forcefully end the 
+ * process with the specified exit code. Pending
+ * async operations will be lost.
  * @param {Error} error
  */
 exports.exitWithError = (err) => {
-  console.error(err.message);
-  console.error(err.stack);
-  exitCode = err.exitCode || 1;
+  fs.writeSync(process.stderr.fd,
+    `${err.message}\n` +
+    `${err.stack}`
+  );
+  const exitCode = err.exitCode || 1;
   process.exit(exitCode);
 }

@@ -7,8 +7,9 @@ const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
-const UserError = require('../../errors/usererror')
-const { exitWithError } = require('../../utils/errorutils')
+const UserError = require('../../errors/usererror');
+const SystemError = require('../../errors/systemerror');
+const { exitWithError } = require('../../utils/errorutils');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -49,20 +50,32 @@ exports.SitesGenerator = class {
 
     const globalConfigName = 'global_config';
     if (!pagesConfig[globalConfigName]) {
-      exitWithError(new UserError(`Error: Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory.'));
+      exitWithError(new UserError(`Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory.'));
     }
 
-    console.log('Registering Jambo Handlebars helpers');
     // Register needed Handlebars helpers.
-    this._registerHelpers();
+    console.log('Registering Jambo Handlebars helpers');
+    try {
+      this._registerHelpers();
+    } catch (err) {
+      exitWithError(new SystemError("Failed to register jambo handlebars helpers", err.stack))
+    }
 
-    console.log('Registering all handlebars templates');
-    // Register Theme partials.
+    // Register theme partials.
+    console.log('Registering theme partials');
     const defaultTheme = config.defaultTheme;
-    defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
+    try {
+      defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
+    } catch (err) {
+      exitWithError(new SystemError("Failed to register theme partials", err.stack));
+    }
 
     // Register all custom partials.
-    this._registerCustomPartials(config.dirs.partials);
+    try {
+      this._registerCustomPartials(config.dirs.partials);
+    } catch (err) {
+      exitWithError(new UserError("Failed to register custom partials", err.stack));
+    }
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
       if (key !== globalConfigName) {
@@ -90,7 +103,7 @@ exports.SitesGenerator = class {
         const pageId = filename.split('.')[0];
 
         if (!pagesConfig[pageId]) {
-          exitWithError(new UserError(`Error: No config found for page: ${pageId}`));
+          exitWithError(new UserError(`No config found for page: ${pageId}`));
         }
 
         console.log(`Writing output file for the '${pageId}' page`);

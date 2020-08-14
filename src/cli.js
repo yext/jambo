@@ -12,6 +12,7 @@ const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
 const SystemError = require('./errors/systemerror');
+const UserError = require('./errors/usererror');
 const { exitWithError } = require('./utils/errorutils');
 
 const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
@@ -78,7 +79,11 @@ const options = yargs
       const pageConfiguration = 
         new addPageCommand.PageConfiguration(addThemeToArgs(argv));
       const pageScaffolder = new addPageCommand.PageScaffolder(jamboConfig);
-      pageScaffolder.create(pageConfiguration);
+      try{
+        pageScaffolder.create(pageConfiguration);
+      } catch (err) {
+        exitWithError(new UserError("Failed to add page", err.stack));
+      }
     })
   .command(
     'card',
@@ -117,7 +122,12 @@ const options = yargs
     },
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
-      sitesGenerator.generate(argv.jsonEnvVars);
+      try{
+        sitesGenerator.generate(argv.jsonEnvVars);
+      } catch (err) {
+        exitWithError(new UserError("Failed to generate the site", err.stack));
+      }
+      
     })
   .command(
     'upgrade',
