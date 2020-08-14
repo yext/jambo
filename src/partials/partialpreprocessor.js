@@ -63,7 +63,10 @@ class PartialPreprocessor {
     const interpParams = invocation.getInterpolationParams();
     
     return invocation.getInvokedHelper() === 'translateJS' ?
-        this._createRuntimeCallForJS(translatorResult, interpParams) :
+        this._createRuntimeCallForJS(
+          translatorResult, 
+          interpParams, 
+          invocation.isUsingPluralization()) :
         this._createRuntimeCallForHBS(translatorResult, interpParams);
   }
 
@@ -73,13 +76,19 @@ class PartialPreprocessor {
    * paramters.
    * 
    * @param {Object|string} translatorResult The translation(s) for the phrase.
+   * @param {boolean} needsPluralization If pluralization is required when translating.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
    *                                                (including 'count').
    * @returns {string} The string-ified call to ANSWERS.translateJS.
    */
-  _createRuntimeCallForJS(translatorResult, interpolationParams) {
+  _createRuntimeCallForJS(translatorResult, interpolationParams, needsPluralization) {
     let parsedParams = JSON.stringify(interpolationParams);
     parsedParams = parsedParams.replace(/[\'\"]/g, '');
+
+    if (needsPluralization) {
+      const count = interpolationParams.count;
+      return `ANSWERS.translateJS(${translatorResult}, ${parsedParams}, ${count})`;
+    }
 
     return `ANSWERS.translateJS(${translatorResult}, ${parsedParams})`;
   }
