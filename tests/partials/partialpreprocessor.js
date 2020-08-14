@@ -21,12 +21,21 @@ describe('PartialPreprocessor works correctly', () => {
   const translator = new Translator();
   const partialPreprocessor = new PartialPreprocessor(translator);
 
-  it('transpiles all "translate" invocations in a JS partial', () => {
+  it('transpiles all "translate" and "translateJS" invocations in a JS partial', () => {
     const rawJsPartial = readFileSync(
       path.join(__dirname, '../fixtures/partials/rawcomponent.js'), 'utf8');
     const processedJsPartial = readFileSync(
       path.join(__dirname, '../fixtures/partials/processedcomponent.js'), 'utf8');
 
     expect(partialPreprocessor.process(rawJsPartial)).toEqual(processedJsPartial);
+  });
+
+  it('transpiles all "translate" and "translateJS" invocations in a HBS partial', () => {
+    const rawHbsPartial = readFileSync(
+      path.join(__dirname, '../fixtures/partials/rawtemplate.hbs'), 'utf8');
+    const processedHbsPartial = readFileSync(
+      path.join(__dirname, '../fixtures/partials/processedtemplate.hbs'), 'utf8');
+
+    expect(partialPreprocessor.process(rawHbsPartial)).toEqual(processedHbsPartial);
   });
 });

@@ -1,0 +1,11 @@
+<div>
+    <button>{{ translate phrase='Hello' }}</button>
+    <div>
+        {{ translate phrase='Some item {{name}}' pluralForm='Some items {{name}}' name=myName count=myCount }}
+    </div>
+    <script>
+        const profile = { name: 'Tom' };
+        {{translateJS phrase='Mail now {{id1}}' context='Mail is a verb' id1=profile.name}}
+    </script>
+    <button>{{translate phrase='Mail now {{id1}}' context='Mail is a verb' id1=myName}}</button>
+</div>

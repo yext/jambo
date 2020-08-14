@@ -17,7 +17,7 @@ class standardCardComponent extends BaseCard['standard'] {
       url: profile.website || profile.landingPageUrl, // If the card title is a clickable link, set URL here
       target: '_top', // If the title's URL should open in a new tab, etc.
       titleEventOptions: this.addDefaultEventOptions(),
-      details: ANSWERS.translateJS({"1":"Un article {{name}}","many":"Les articles {{name}}"}, {name:profile.name,count:profile.count}), // The text in the body of the card
+      details: ANSWERS.translateJS('{"1":"Un article {{name}}","many":"Les articles {{name}}"}', {name:profile.name,count:profile.count}), // The text in the body of the card
       showMoreDetails: {
         showMoreLimit: 750, // Character count limit
         showMoreText: 'Show more', // Label when toggle will show truncated text
@@ -32,7 +32,7 @@ class standardCardComponent extends BaseCard['standard'] {
         eventOptions: this.addDefaultEventOptions()
       },
       CTA2: {
-        label: profile.c_secondaryCTA ? profile.c_secondaryCTA.label : null,
+        label: 'Bonjour',
         iconName: 'chevron',
         url: Formatter.generateCTAFieldTypeLink(profile.c_secondaryCTA),
         target: '_top',

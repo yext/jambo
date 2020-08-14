@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 // An enum representing the different parameter types that can appear when the
-// 'translate' helper is invoked.
+// 'translate' or 'translateJS' helpers are invoked.
 const ParamTypes = {
   PHRASE: 'phrase',
   PLURAL: 'pluralForm',
@@ -12,10 +12,12 @@ const ParamTypes = {
 Object.freeze(ParamTypes);
 
 /**
- * A data model representing an invocation of Jambo's 'translate' helper.
+ * A data model representing an invocation of Jambo's 'translate' or 'translateJS'
+ * helpers.
  */
 class TranslateInvocation {
-  constructor(providedParams) {
+  constructor(invokedHelper, providedParams) {
+    this._invokedHelper = invokedHelper;
     this._providedParams = providedParams;
   }
 
@@ -38,6 +40,16 @@ class TranslateInvocation {
   canBeTranslatedStatically() {
     return Object.keys(this._providedParams).every(
       param => param === ParamTypes.PHRASE || param === ParamTypes.CONTEXT);
+  }
+
+  /**
+   * Returns which Jambo helper is being invoked: 'translate' or
+   * 'translateJS'.
+   * 
+   * @returns {string} The invoked helper.
+   */
+  getInvokedHelper() {
+    return this._invokedHelper;
   }
 
   /**
@@ -80,9 +92,11 @@ class TranslateInvocation {
    * @returns {TranslateInvocation} The resulting {@link TranslateInvocation}.
    */
   static from(invocationString) {
-    const paramRegex =
-      /([a-zA-z0-9]+=\'[a-zA-Z\s\{\}\.]+\')|([a-zA-z0-9]+=\d+)/g;
+    const invokedHelper = 
+      invocationString.includes('translateJS') ? 'translateJS' : 'translate';
 
+    const paramRegex =
+      /[a-zA-z0-9]+=((\'[a-zA-Z\s\{\}\.]+\')|\d+|([a-zA-Z\.]+))/g;
     const parsedParams = (invocationString.match(paramRegex) || [])
       .reduce((params, paramString) => {
         const paramOperands = paramString.split('=');
@@ -92,7 +106,7 @@ class TranslateInvocation {
         return params;
       }, {});
 
-    return new TranslateInvocation(parsedParams);
+    return new TranslateInvocation(invokedHelper, parsedParams);
   }
 }
 
