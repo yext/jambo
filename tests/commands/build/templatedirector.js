@@ -46,123 +46,51 @@ describe('TemplateDirector directs PageTemplates and builds the expected object'
   });
 
   it('creates localeToPageTemplates with the correct locales and paths when locale data is provided', () => {
-    const locales = ['en', 'es', 'fr', 'de'];
+    const locales = ['en', 'es', 'fr', 'de', 'it'];
     const localeToFallbacks = {
-      'es': ['fr', 'en'],
+      'en': ['fr'],
+      'es': ['de', 'en'],
       'de': ['fr', 'es']
     };
-    const pageTemplates = [
-      new PageTemplate({
+    const pageTemplates = {
+      en: new PageTemplate({
         pageName: 'path',
-        locale: locales[0],
-        path: `pages/path.${locales[0]}.html.hbs`
+        locale: 'en',
+        path: `pages/path.en.html.hbs`
       }),
-      new PageTemplate({
+      fr: new PageTemplate({
         pageName: 'path',
-        locale: locales[1],
-        path: `pages/path.${locales[1]}.html.hbs`
+        locale: 'fr',
+        path: `pages/path.fr.html.hbs`
       }),
-      new PageTemplate({
-        pageName: 'path',
-        locale: locales[2],
-        path: `pages/path.${locales[2]}.html.hbs`
-      }),
-    ];
+    };
     const localeToPageTemplates = new TemplateDirector({
       locales: locales,
       localeToFallbacks: localeToFallbacks,
-    }).direct(pageTemplates);
+    }).direct(Object.values(pageTemplates));
 
     expect(localeToPageTemplates).toEqual({
-      'en': [
-        new PageTemplate({
-          pageName: 'path',
-          locale: 'en',
-          path: `pages/path.en.html.hbs`
-        }),
+      'en': [ // Directs to template with current locale even if fallbacks exist
+        pageTemplates['en'],
       ],
-      'es': [
+      'es': [ // Locale fallbacks are not recursive
         new PageTemplate({
-          pageName: 'path',
+          pageName: pageTemplates['en'].getPageName(),
           locale: 'es',
-          path: `pages/path.es.html.hbs`
+          path: pageTemplates['en'].getTemplatePath()
         }),
       ],
-      'de': [
+      'de': [ // Directs to template with correct fallback locale
         new PageTemplate({
-          pageName: 'path',
+          pageName: pageTemplates['fr'].getPageName(),
           locale: 'de',
-          path: `pages/path.fr.html.hbs` // Using fallbacks
+          path: pageTemplates['fr'].getTemplatePath()
         }),
       ],
-      'fr': [
-        new PageTemplate({
-          pageName: 'path',
-          locale: 'fr',
-          path: `pages/path.fr.html.hbs`
-        }),
+      'fr': [ // Directs to template with current locale if present
+        pageTemplates['fr'],
       ],
+      'it': [], // Empty if no templates found for locale or fallbacks
     });
-  });
-});
-
-describe('Finds the correct PageTemplate given locale information', () => {
-  const locales = ['en', 'es', 'fr', 'de'];
-  const localeToFallbacks = {
-    'es': ['fr', 'en'],
-    'de': ['fr', 'es']
-  };
-  const localeToPageTemplate = {
-    en: new PageTemplate({
-      locale: 'en',
-    }),
-    de: new PageTemplate({
-      locale: 'de',
-    }),
-    fr: new PageTemplate({
-      locale: 'fr',
-    }),
-  };
-  const pageTemplates = [
-    localeToPageTemplate['en'],
-    localeToPageTemplate['fr'],
-    localeToPageTemplate['de']
-  ];
-
-  it('finds template with current locale even if fallbacks exist', () => {
-    const locale = 'de';
-
-    const template = new TemplateDirector({
-      locales: locales,
-      localeToFallbacks: localeToFallbacks
-    })._findPageTemplateForLocale(locale, pageTemplates);
-
-    expect(template).toEqual(localeToPageTemplate[locale]);
-  });
-
-  it('finds template correct fallback locale', () => {
-    const currentLocale = 'es';
-
-    const template = new TemplateDirector({
-      locales: locales,
-      localeToFallbacks: localeToFallbacks
-    })._findPageTemplateForLocale(currentLocale, pageTemplates);
-
-    expect(template).toEqual(
-      new PageTemplate({
-        locale: localeToFallbacks[currentLocale][0],
-      })
-    );
-  });
-
-  it('returns undefined when there is no template for given locale', () => {
-    const locale = 'fake locale';
-
-    const template = new TemplateDirector({
-      locales: locales,
-      localeToFallbacks: localeToFallbacks
-    })._findPageTemplateForLocale(locale, pageTemplates);
-
-    expect(template).toEqual(undefined);
   });
 });

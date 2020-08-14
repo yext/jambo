@@ -135,89 +135,64 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
 });
 
 describe('Decorating a single PageConfig works properly', () => {
-  const defaultConfig = 'es';
-  const pageConfigDecorator = new PageConfigDecorator({
-    localeToFallbacks: {
-      fr: [ 'en', 'de' ],
-      de: [ 'it' ],
-    },
-    defaultLocale: defaultConfig
-  });
-  const frenchPageConfig = new PageConfig({
-    pageName: 'example',
-    locale: 'fr',
-    rawConfig: {
-      verticalKey: 'verticalKey'
-    },
-  });
-  const germanPageConfig = new PageConfig({
-    pageName: 'example',
-    locale: 'de',
-    rawConfig: {
-      componentSettings: 'componentSettings'
-    },
-  });
-  let configs = [
-    frenchPageConfig,
-    germanPageConfig,
-    new PageConfig({
-      pageName: 'example',
-      locale: defaultConfig,
-      rawConfig: {
-        defaultConfigExample: {
-          test: 'test1'
-        },
-      }
-    }),
-    new PageConfig({
-      pageName: 'example',
-      locale: 'it',
-      rawConfig: {
-        pageTitle: 'pageTitle'
-      },
-    }),
-    new PageConfig({
-      pageName: 'example',
-      locale: 'en',
-      rawConfig: {
-        example: 'ex'
-      },
-    }),
-  ];
-
   it('decorating config with fallback and default config works', () => {
-    const mergedConfig = pageConfigDecorator._decoratePageConfig(frenchPageConfig, configs);
-    expect(mergedConfig).toEqual(
+    const defaultLocale = 'es';
+    const configs = [
       new PageConfig({
         pageName: 'example',
         locale: 'fr',
         rawConfig: {
-          example: 'ex',
-          defaultConfigExample: {
-            test: 'test1'
-          },
-          verticalKey: 'verticalKey',
-          componentSettings: 'componentSettings',
+          verticalKey: 'verticalKey'
         },
       }),
-    );
-  });
-
-  it('fallbacks of fallbacks are not included in decorated config', () => {
-    let mergedConfig = pageConfigDecorator._decoratePageConfig(germanPageConfig, configs);
-    expect(mergedConfig).toEqual(
       new PageConfig({
         pageName: 'example',
         locale: 'de',
         rawConfig: {
-          componentSettings: 'componentSettings',
-          pageTitle: 'pageTitle',
-          defaultConfigExample: {
-            test: 'test1'
-          }
+          componentSettings: 'componentSettings'
         },
       }),
-    );
+      new PageConfig({
+        pageName: 'example',
+        locale: defaultLocale,
+        rawConfig: {
+          defaultConfigExample: {
+            test: 'test1'
+          },
+        }
+      }),
+      new PageConfig({
+        pageName: 'example',
+        locale: 'it',
+        rawConfig: {
+          pageTitle: 'pageTitle'
+        },
+      }),
+      new PageConfig({
+        pageName: 'example',
+        locale: 'en',
+        rawConfig: {
+          example: 'ex'
+        },
+      }),
+    ];
+    const pageConfigDecorator = new PageConfigDecorator({
+      localeToFallbacks: {
+        fr: [ 'en', 'de' ],
+        de: [ 'it' ],
+      },
+      defaultLocale: defaultLocale
+    });
+
+    const mergedConfig = pageConfigDecorator._decoratePageConfig(configs[0], configs);
+    expect(mergedConfig.getConfig()).toEqual({
+      example: 'ex',
+      defaultConfigExample: {
+        test: 'test1'
+      },
+      verticalKey: 'verticalKey',
+      componentSettings: 'componentSettings',
+    });
   });
 });
 
