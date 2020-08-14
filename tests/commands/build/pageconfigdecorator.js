@@ -34,133 +34,116 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     });
   });
 
-  it('locale-specific config props override fallback and default config props', () => {
-    const defaultLocale = 'en';
-    const configs = [
-      new PageConfig({
-        pageName: 'example',
-        rawConfig: {
-          nestedObject: {
-            verticalKey: ['default'],
-            verticalKey1: 'default'
-          },
-          verticalKey1: {
-            verticalKey: 'default'
-          },
-        }
-      }),
-      new PageConfig({
-        pageName: 'example',
-        locale: 'fr',
-        rawConfig: {
-          nestedObject: {
-            verticalKey: 'example',
-          }
-        }
-      }),
-    ];
-
-    let decoratedConfig = new PageConfigDecorator({
-      localeToFallbacks: {},
-      defaultLocale: defaultLocale
-    }).decorate(configs);
-
-    expect(decoratedConfig).toEqual({
-      [defaultLocale] : [
-        new PageConfig({
-          pageName: 'example',
-          locale: defaultLocale,
-          rawConfig: {
-            nestedObject: {
-              verticalKey: ['default'],
-              verticalKey1: 'default'
-            },
-            verticalKey1: {
-              verticalKey: 'default'
-            },
-          },
-        }),
-      ],
-      fr : [
-        new PageConfig({
-          pageName: 'example',
-          locale: 'fr',
-          rawConfig: {
-            nestedObject: {
-              verticalKey: 'example',
-            },
-            verticalKey1: {
-              verticalKey: 'default'
-            },
-          },
-        }),
-      ],
-    });
-  });
-});
-
-describe('Decorating a single PageConfig works properly', () => {
-  it('decorating config with fallback and default config works', () => {
+  it('builds decorated pages configs correctly when there are multiple locales and fallbacks', () => {
     const defaultLocale = 'es';
-    const configs = [
-      new PageConfig({
-        pageName: 'example',
-        locale: 'fr',
-        rawConfig: {
-          verticalKey: 'verticalKey'
-        },
-      }),
-      new PageConfig({
-        pageName: 'example',
-        locale: 'de',
-        rawConfig: {
-          componentSettings: 'componentSettings'
-        },
-      }),
-      new PageConfig({
-        pageName: 'example',
-        locale: defaultLocale,
-        rawConfig: {
-          defaultConfigExample: {
-            test: 'test1'
-          },
-        }
-      }),
-      new PageConfig({
-        pageName: 'example',
-        locale: 'it',
-        rawConfig: {
-          pageTitle: 'pageTitle'
-        },
-      }),
-      new PageConfig({
-        pageName: 'example',
-        locale: 'en',
-        rawConfig: {
-          example: 'ex'
-        },
-      }),
-    ];
-    const pageConfigDecorator = new PageConfigDecorator({
+    const configForDefaultLocale = new PageConfig({
+      pageName: 'pageName',
+      rawConfig: {
+        defaultConfigOption: 'ex',
+      }
+    });
+    const frConfig = new PageConfig({
+      pageName: 'pageName',
+      locale: 'fr',
+      rawConfig: {
+        frConfigOption: 'ex',
+        test: 'fr_test'
+      }
+    });
+    const itConfig1 = new PageConfig({
+      pageName: 'pageName',
+      locale: 'it',
+      rawConfig: {
+        itConfigOption: 'ex',
+        test: 'it_test'
+      },
+    });
+    const itConfig2 = new PageConfig({
+      pageName: 'pageName2',
+      locale: 'it',
+      rawConfig: {
+        itConfigOption: 'ex',
+        test: 'it_test'
+      },
+    });
+    const decoratedConfig = new PageConfigDecorator({
       localeToFallbacks: {
-        fr: [ 'en', 'de' ],
+        fr: [ 'it', 'de' ],
         de: [ 'it' ],
       },
       defaultLocale: defaultLocale
-    });
+    }).decorate([
+      configForDefaultLocale,
+      frConfig,
+      itConfig1,
+      itConfig2,
+      new PageConfig({
+        pageName: 'pageName',
+        locale: 'de',
+        rawConfig: {
+          deConfigOption: 'ex',
+          test: 'de_test'
+        },
+      }),
+    ]);
 
-    const mergedConfig = pageConfigDecorator._decoratePageConfig(configs[0], configs);
-    expect(mergedConfig.getConfig()).toEqual({
-      example: 'ex',
-      defaultConfigExample: {
-        test: 'test1'
-      },
-      verticalKey: 'verticalKey',
-      componentSettings: 'componentSettings',
+    expect(decoratedConfig).toEqual({
+      [defaultLocale]: [
+        new PageConfig({ // Default config remains undecorated
+          pageName: configForDefaultLocale.getPageName(),
+          locale: defaultLocale,
+          rawConfig: {
+            defaultConfigOption: 'ex',
+          },
+        }),
+      ],
+      [frConfig.getLocale()]: [
+        new PageConfig({ // Multiple fallbacks, add default config
+          pageName: frConfig.getPageName(),
+          locale: frConfig.getLocale(),
+          rawConfig: {
+            frConfigOption: 'ex',
+            test: 'fr_test',
+            itConfigOption: 'ex',
+            deConfigOption: 'ex',
+            defaultConfigOption: 'ex',
+          },
+        }),
+      ],
+      de: [
+        new PageConfig({ // One fallbacks, add default config
+          pageName: 'pageName',
+          locale: 'de',
+          rawConfig: {
+            deConfigOption: 'ex',
+            test: 'de_test',
+            itConfigOption: 'ex',
+            defaultConfigOption: 'ex',
+          },
+        }),
+      ],
+      it: [
+        new PageConfig({ // No fallbacks, add default config
+          pageName: itConfig1.getPageName(),
+          locale: itConfig1.getLocale(),
+          rawConfig: {
+            itConfigOption: 'ex',
+            test: 'it_test',
+            defaultConfigOption: 'ex',
+          },
+        }),
+        new PageConfig({ // No fallbacks, no default config
+          pageName: itConfig2.getPageName(),
+          locale: itConfig2.getLocale(),
+          rawConfig: {
+            itConfigOption: 'ex',
+            test: 'it_test',
+          },
+        }),
+      ],
     });
   });
 });
-
 
 describe('Merges the internals of multiple PageConfigs', () => {
   it('merging order is respected, objects later have preference', () => {
