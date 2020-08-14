@@ -34,41 +34,6 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     });
   });
 
-  it('builds decorated page configs for specified locales', () => {
-    const defaultLocale = 'en';
-    const decoratedConfigs = new PageConfigDecorator({
-      localeToFallbacks: {},
-      defaultLocale: defaultLocale
-    }).decorate([
-      new PageConfig({
-        pageName: 'example',
-        rawConfig: { verticalKey: 'default' },
-      }),
-      new PageConfig({
-        pageName: 'example',
-        locale: 'fr',
-        rawConfig: { verticalKey: 'FR' },
-      }),
-    ]);
-
-    expect(decoratedConfigs).toEqual({
-      [defaultLocale]: [
-        new PageConfig({
-          pageName: 'example',
-          locale: defaultLocale,
-          rawConfig: { verticalKey: 'default' },
-        }),
-      ],
-      fr: [
-        new PageConfig({
-          pageName: 'example',
-          locale: 'fr',
-          rawConfig: { verticalKey: 'FR' },
-        }),
-      ],
-    });
-  });
-
   it('locale-specific config props override fallback and default config props', () => {
     const defaultLocale = 'en';
     const configs = [
