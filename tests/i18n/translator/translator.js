@@ -26,8 +26,8 @@ describe('Translations without pluralization or context', () => {
 
   it('simple translation with interpolation works as expected', () => {
     const translation = 
-      translator.translate('Hello {{name}}', { name: 'Tom' });
-    expect(translation).toEqual('Bonjour Tom');
+      translator.translate('Hello {{name}}');
+    expect(translation).toEqual('Bonjour {{name}}');
   });
 
   it('translation fallback works as expected', () => {
@@ -38,34 +38,36 @@ describe('Translations without pluralization or context', () => {
 
 describe('Translations with pluralization and no context', () => {
   it('simple pluralization works as expected', () => {
-    const translation = translator.translatePlural('Item', 'Items', 2);
-    expect(translation).toEqual('Articles');
+    const translation = translator.translatePlural('Item', 'Items');
+    const expectedResult = {
+      1: 'Article',
+      plural: 'Articles'
+    };
+
+    expect(translation).toEqual(expectedResult);
   });
 
-  it('pluralization and interpolation works as expected', () => {
+  it('pluralization with interpolation works as expected', () => {
     const translation = translator.translatePlural(
-      'There is {{count}} item {{name}}', 
-      'There are {{count}} items {{name}}', 
-      2, 
-      { name: 'Tom' });
-    expect(translation).toEqual('Il y a 2 articles Tom')
+      'There is {{count}} item {{name}}', 'There are {{count}} items {{name}}');
+    const expectedResult = {
+      1: 'Il y a {{count}} article {{name}}',
+      plural: 'Il y a {{count}} articles {{name}}'
+    };
+
+    expect(translation).toEqual(expectedResult);
   });
 
-  it('falls back correctly when count is unity', () => {
-    const translation = translator.translatePlural(
-      'Missing {{count}} translation', 
-      'Missing {{count}} translations', 
-      1);
-    expect(translation).toEqual('Missing 1 translation');
-  });
-
-  it('falls back correctly when count is not unity', () => {
+  it('falls back correctly when no translations present', () => {
     const translation = translator.translatePlural(
       'Missing {{count}} translation {{name}}', 
-      'Missing {{count}} translations {{name}}', 
-      2,
-      { name: 'Tom' });
-    expect(translation).toEqual('Missing 2 translations Tom');
+      'Missing {{count}} translations {{name}}');
+    const expectedResult = {
+      1: 'Missing {{count}} translation {{name}}',
+      plural: 'Missing {{count}} translations {{name}}'
+    };
+
+    expect(translation).toEqual(expectedResult);
   });
 });
 
@@ -82,17 +84,13 @@ describe('Translations with context and no pluralization', () => {
 
   it('context and interpolation works as expected with context = male', () => {
     const translation = translator.translateWithContext(
-      'I am looking for my child named {{name}}', 
-      'male', 
-      { name: 'Sam' });
-    expect(translation).toEqual('Je cherche mon fils nommé Sam')
+      'I am looking for my child named {{name}}', 'male');
+    expect(translation).toEqual('Je cherche mon fils nommé {{name}}')
   });
 
   it('context and interpolation works as expected with context = female', () => {
     const translation = translator.translateWithContext(
-      'I am looking for my child named {{name}}', 
-      'female', 
-      { name: 'Sam' });
-    expect(translation).toEqual('Je cherche mon fille nommé Sam')
+      'I am looking for my child named {{name}}', 'female');
+    expect(translation).toEqual('Je cherche mon fille nommé {{name}}')
   });
 });
