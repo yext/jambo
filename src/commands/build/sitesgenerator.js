@@ -101,14 +101,6 @@ exports.SitesGenerator = class {
     const translations =
       config.dirs.translations ? await this._extractTranslations(locales) : {};
 
-    for (const locale of locales) {
-      const localeFallbacks = GENERATED_DATA.getLocaleFallbacks(locale);
-      console.log(`Registering Jambo Handlebars translation helpers for '${locale}' and '${localeFallbacks}'`);
-      const translator = await Translator.create(locale, localeFallbacks, translations);
-      // Register needed Handlebars translation helpers.
-      this._registerTranslationHelpers(translator);
-    }
-
     const pageSets = GENERATED_DATA.getPageSets();
     for (const pageSet of pageSets) {
       new PageWriter({
@@ -253,47 +245,6 @@ exports.SitesGenerator = class {
         stripExtension(partialsPath),
         fs.readFileSync(partialsPath).toString());
     }
-  }
-
-  /**
-   * Registers the various translation helpers with the Handlebars instance.
-   *
-   * @param {Translator} translator The {@link Translator} that will be used
-   *                                to supply translations.
-   */
-  _registerTranslationHelpers(translator) {
-    /**
-     * Performs a simple translation of the provided phrase. Interpolation is
-     * supported as well.
-     */
-    hbs.registerHelper('translate', function (phrase, options) {
-      const interpValues = options.hash;
-      return translator.translate(phrase, interpValues);
-    });
-
-    /**
-     * Translates the provided phrase. The translation will be pluralized depending
-     * on the count. Interpolation is supported for both singular and plural forms.
-     */
-    hbs.registerHelper(
-      'translatePlural',
-      function (singularPhrase, pluralPhrase, count, options) {
-        const interpValues = options.hash;
-        return translator.translatePlural(singularPhrase, pluralPhrase, count, interpValues);
-      }
-    );
-
-    /**
-     * Translates the provided phrase depending on the context.
-     * Supports interpolation.
-     */
-    hbs.registerHelper(
-      'translateWithContext',
-      function (phrase, context, options) {
-        const interpValues = options.hash;
-        return translator.translateWithContext(phrase, context, interpValues);
-      }
-    )
   }
 
   _registerHelpers() {
