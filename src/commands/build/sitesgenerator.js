@@ -13,7 +13,6 @@ const LocalFileParser = require('../../i18n/translationfetchers/localfileparser'
 const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const { stripExtension } = require('../../utils/fileutils');
-const Translator = require('../../i18n/translator/translator');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
