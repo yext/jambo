@@ -78,7 +78,7 @@ module.exports = class ConfigurationRegistry {
 
     const rawLocaleConfig = configNameToRawConfig[localizationConfigName];
     if (!rawLocaleConfig) {
-      console.log(`Cannot find '${localizationConfigName}', writing pages without locale information.`);
+      console.log(`Cannot find '${localizationConfigName}', using locale information from ${globalConfigName}.`);
     }
 
     const pageConfigs = Object.keys(configNameToRawConfig)

@@ -27,7 +27,7 @@ module.exports = class GlobalConfigLocalizer {
       ...globalConfig.getConfig(),
       experienceKey: experienceKey,
       apiKey: apiKey,
-      locale: locale
+      ...locale && { locale: locale }
     });
   }
 }
