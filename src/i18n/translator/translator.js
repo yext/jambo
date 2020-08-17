@@ -1,8 +1,8 @@
 const i18next = require('i18next');
 
 /**
- * This class is a wrapper around the i18next library. It provides translation
- * methods for a given locale. These methods allow for interpolation, pluralization,
+ * This class wraps an instance of the i18next library and provides methods supporting
+ * run-time and compile-time translation. These methods allow for interpolation, pluralization,
  * and added context.
  */
 class Translator {
@@ -16,51 +16,119 @@ class Translator {
   }
 
   /**
-   * Performs a simple translation of the given phrase. The translated phrase can be
-   * interpolated.
+   * Performs a simple translation of the given phrase. If the phrase includes
+   * interpolation, a translated format string, with the relevant placeholders,
+   * is returned.
    * 
    * @param {string} phrase The phrase to translate.
-   * @param {Object<string,?>} interpValues Optional, any values needed for interpolation.
+   * @returns {string} The translated phrase or format string.
    */
-  translate(phrase, interpValues) {
-    return this._i18next.t(phrase, interpValues);
+  translate(phrase) {
+    const interpPlaceholders = this._getInterpolationPlaceholders(phrase);
+
+    return this._i18next.t(phrase, interpPlaceholders);
   }
 
   /**
-   * Translates the provided phrase. Depending on the count, either the singular or
-   * plural form of the translation will be supplied. The translated phrase can be
-   * interpolated.
+   * Provides all the translated singular and plural forms of the given phrase. 
+   * The forms will include any of the needed interpolation placeholders.
    * 
    * @param {string} phrase The phrase to translate.
    * @param {string} pluralForm The untranslated, plural form of the phrase.
-   * @param {number} count A count used to switch between singular and plural forms.
-   * @param {Object<string, ?>} interpValues Optional, any values needed to interpolate
-   *                                         the translated string.
+   * @returns {Object<string|number, string>} A map containing the various forms.
+   *                                          A form is keyed by the
+   *                                          corresponding count or 'plural'.
    */
-  translatePlural(phrase, pluralForm, count, interpValues) {
-    const parsedInterpValues = { ...interpValues, count };
+  translatePlural(phrase, pluralForm) {
+    const pluralKeyRegex = new RegExp(`${phrase}_([0-9]+|plural)`);
 
-    // If i18next has no translations for the phrase and the count is not
-    // unity, we should fallback to the pluralForm. We use i18next.t to allow
-    // the pluralForm to be interpolated.
-    return this._i18next.exists(phrase) || count === 1 ?
-      this._i18next.t(phrase, parsedInterpValues) :
-      this._i18next.t(pluralForm, parsedInterpValues);
+    const i18nextOptions = this._i18next.options;
+
+    // We first look for the translations in the given locale. If none can be
+    // found there, we iterate through the fallbacks, in order.
+    const localeWithPluralTranslations = this._findLocaleWithTranslationKey(
+      [i18nextOptions.lng, ...i18nextOptions.fallbackLng], pluralKeyRegex);
+
+    if (localeWithPluralTranslations) {
+      const localeTranslations = 
+        i18nextOptions.resources[localeWithPluralTranslations].translation;
+      
+      // Create a map of count (or 'plural') to the correct translated form.
+      return Object.keys(localeTranslations)
+        .filter(translationKey => pluralKeyRegex.test(translationKey))
+        .reduce(
+          (pluralForms, translationKey) => {
+            const pluralFormIndex = translationKey.split('_')[1];
+            pluralForms[pluralFormIndex] = localeTranslations[translationKey];
+            return pluralForms;
+          }, 
+          { 1: localeTranslations[phrase] });
+    } 
+    
+    // If no translations can be found, we return a map containing the provided
+    // singular and plural forms.
+    return {
+      1: phrase,
+      plural: pluralForm
+    };
   }
 
   /**
-   * Translates the provided phrase depending on the context.
-   * Supports interpolation.
+   * Translates the provided phrase depending on the context. If the phrase includes
+   * interpolation, a translated format string, with the relevant placeholders,
+   * is returned.
    * 
    * @param {string} phrase The phrase to translate.
-   * @param {string} context The context of the translation
-   * @param {Object<string, ?>} interpValues Optional, any values needed to interpolate
-   *                                         the translated string.
+   * @param {string} context The context of the translation.
+   * @returns {string} The translated phrase or format string.
    */
-  translateWithContext(phrase, context, interpValues) {
-    const parsedInterpValues = { ...interpValues, 'context': context};
+  translateWithContext(phrase, context) {
+    const interpPlaceholders = this._getInterpolationPlaceholders(phrase);
 
-    return this._i18next.t(phrase, parsedInterpValues);
+    return this._i18next.t(phrase, { context, ...interpPlaceholders});
+  }
+
+  /**
+   * Creates an object containing the interpolation placeholders for the given 
+   * phrase. Such an object must be passed to i18next to ensure interpolation can 
+   * be performed on the translated phrase.
+   * 
+   * @param {string} phrase The phrase. 
+   * @returns {Object<string, string>} A map of interpolation parameter to placeholder.
+   *                                   As an example, if the phrase was: 'My {{name}} is', 
+   *                                   the object would contains { name: '{{name}}' }.
+   */
+  _getInterpolationPlaceholders(phrase) {
+    const placeholders = {};
+    let placeholderMatch;
+
+    const placeholderRegex = new RegExp(/\{\{([a-zA-Z0-9]+)\}\}/, 'g');
+    while ((placeholderMatch = placeholderRegex.exec(phrase)) != null) {
+      if (placeholderMatch.length >= 2) {
+        placeholders[placeholderMatch[1]] = placeholderMatch[0];
+      }
+    }
+
+    return placeholders;
+  }
+
+  /**
+   * Finds the first of the provided locales with a translation whose key matches
+   * the regex.
+   * 
+   * @param {Array<string>} locales The list of locales.
+   * @param {RegExp} keyRegex The pattern to match translation keys against.
+   * @returns {string} The first matching locale. 
+   */
+  _findLocaleWithTranslationKey(locales, keyRegex) {
+    const i18nextOptions = this._i18next.options;
+
+    return locales.find(locale => {
+      const localeTranslations = i18nextOptions.resources[locale].translation;
+      const hasMatchingTranslationKey = Object.keys(localeTranslations)
+        .some(translationKey => keyRegex.test(translationKey));
+      return hasMatchingTranslationKey;
+    });
   }
 
   /**
