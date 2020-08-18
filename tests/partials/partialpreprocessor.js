@@ -9,11 +9,11 @@ describe('PartialPreprocessor works correctly', () => {
   Translator.mockImplementation(() => {
     return {
       translate: () => 'Bonjour',
-      translateWithContext: () => 'Mail maintenant {{id1}}',
+      translateWithContext: () => 'Mail maintenant [[id1]]',
       translatePlural: () => {
         return {
-          1: 'Un article {{name}}',
-          plural: 'Les articles {{name}}'
+          1: 'Un article [[name]]',
+          plural: 'Les articles [[name]]'
         };
       }
     };

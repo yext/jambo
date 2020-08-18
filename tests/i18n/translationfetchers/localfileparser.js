@@ -9,13 +9,13 @@ describe('LocalFileParser works correctly', () => {
     const expectedTranslations = {
       Item: 'Article',
       Item_plural: 'Articles',
-      'Hello {{name}}': 'Bonjour {{name}}',
+      'Hello [[name]]': 'Bonjour [[name]]',
       Child_male: 'fils',
       Child_female: 'fille',
-      'There is {{count}} item {{name}}': 'Il y a {{count}} article {{name}}',
-      'There is {{count}} item {{name}}_plural': 'Il y a {{count}} articles {{name}}',
-      'I am looking for my child named {{name}}_male': 'Je cherche mon fils nommé {{name}}',
-      'I am looking for my child named {{name}}_female': 'Je cherche mon fille nommé {{name}}',
+      'There is [[count]] item [[name]]': 'Il y a [[count]] article [[name]]',
+      'There is [[count]] item [[name]]_plural': 'Il y a [[count]] articles [[name]]',
+      'I am looking for my child named [[name]]_male': 'Je cherche mon fils nommé [[name]]',
+      'I am looking for my child named [[name]]_female': 'Je cherche mon fille nommé [[name]]',
     };
 
     return localFileParser.fetch('fr-FR').then(translations => {
