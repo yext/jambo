@@ -22,3 +22,13 @@ getPageName = function (filename) {
 }
 exports.getPageName = getPageName;
 
+/**
+ * Determines whether a filename is valid
+ *
+ * @param {string} filename the file name
+ * @returns {string}
+ */
+isValidFile = function(fileName) {
+  return fileName && !fileName.startsWith('.');
+}
+exports.isValidFile = isValidFile;

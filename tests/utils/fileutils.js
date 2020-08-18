@@ -1,4 +1,4 @@
-const { stripExtension, getPageName } = require('../../src/utils/fileutils');
+const { stripExtension, getPageName, isValidFile } = require('../../src/utils/fileutils');
 
 describe('stripExtension correctly strips extension from filename', () => {
   it('strips extension when present', () => {
@@ -32,5 +32,19 @@ describe('Gets page name', () => {
 
     let configNameWithLocale = `${configName}.fr`;
     expect(getPageName(configNameWithLocale)).toEqual(configName);
+  });
+});
+
+describe('isValidFile properly determines if files are valid', () => {
+  it('returns false for a .gitkeep file', () => {
+    let filename = '.gitkeep';
+    let isValid = isValidFile(filename);
+    expect(isValid).toEqual(false);
+  });
+
+  it('returns true for an .html.hbs file', () => {
+    let filename = 'example.html.hbs';
+    let isValid = isValidFile(filename);
+    expect(isValid).toEqual(true);
   });
 });

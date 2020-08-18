@@ -41,7 +41,7 @@ exports.SitesGenerator = class {
     console.log('Reading config files');
     const configNameToRawConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
-      if (this._isValidFile(filename)) {
+      if (isValidFile(filename)) {
         let configName = stripExtension(relative);
         try {
           configNameToRawConfig[configName] = parse(fs.readFileSync(path, 'utf8'), null, true);
@@ -58,7 +58,7 @@ exports.SitesGenerator = class {
 
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
-      if (this._isValidFile(filename)) {
+      if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
         pageTemplates.push(PageTemplate.from(filename, path, fileContents));
       }
@@ -233,7 +233,7 @@ exports.SitesGenerator = class {
     const pathExists = fs.existsSync(partialsPath);
     if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
       fs.recurseSync(partialsPath, (path, relative, filename) => {
-        if (this._isValidFile(filename)) {
+        if (isValidFile(filename)) {
           const partialName = useFullyQualifiedName
             ? stripExtension(path)
             : stripExtension(relative);
@@ -309,9 +309,5 @@ exports.SitesGenerator = class {
     }
 
     return translations;
-  }
-
-  _isValidFile(fileName) {
-    return fileName && !fileName.startsWith('.');
   }
 }
