@@ -35,11 +35,12 @@ class Translator {
    * 
    * @param {string} phrase The phrase to translate.
    * @param {string} pluralForm The untranslated, plural form of the phrase.
+   * @param {string} originalLocale The original locale of the passed in phrase.
    * @returns {Object<string|number, string>} A map containing the various forms.
    *                                          A form is keyed by the
    *                                          corresponding count or 'plural'.
    */
-  translatePlural(phrase, pluralForm) {
+  translatePlural(phrase, pluralForm, originalLocale = 'en') {
     const escapedPhrase = phrase
       .replace(/\[\[/g, '\\[\\[')
       .replace(/\]\]/g, '\\]\\]');
@@ -55,7 +56,7 @@ class Translator {
     if (localeWithPluralTranslations) {
       const localeTranslations = 
         i18nextOptions.resources[localeWithPluralTranslations].translation;
-      
+
       // Create a map of count (or 'plural') to the correct translated form.
       return Object.keys(localeTranslations)
         .filter(translationKey => pluralKeyRegex.test(translationKey))
@@ -65,14 +66,15 @@ class Translator {
             pluralForms[pluralFormIndex] = localeTranslations[translationKey];
             return pluralForms;
           }, 
-          { 1: localeTranslations[phrase] });
+          { 0: localeTranslations[phrase], locale: localeWithPluralTranslations });
     } 
     
     // If no translations can be found, we return a map containing the provided
     // singular and plural forms.
     return {
-      1: phrase,
-      plural: pluralForm
+      0: phrase,
+      plural: pluralForm,
+      locale: originalLocale
     };
   }
 
