@@ -1,4 +1,6 @@
 const fs = require('fs');
+const UserError = require('../errors/usererror');
+const SystemError = require('../errors/systemerror');
 
 /**
  * Print the error, and then forcefully end the 
@@ -13,4 +15,13 @@ exports.exitWithError = (err) => {
   );
   const exitCode = err.exitCode || 1;
   process.exit(exitCode);
+}
+
+/**
+ * Returns true if the error is a custom error
+ * (Either UserError or SystemError)
+ * @param {Error} err The error to evaluate
+ */
+exports.isCustomError = (err) => {
+  return (err instanceof UserError || err instanceof SystemError);
 }

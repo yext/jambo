@@ -6,7 +6,7 @@ const { getRepoForTheme } = require('../../utils/gitutils');
 const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
 const SystemError = require('../../errors/systemerror');
-const { exitWithError } = require('../../utils/errorutils');
+const UserError = require('../../errors/systemerror');
 
 const git = simpleGit();
 
@@ -31,7 +31,7 @@ exports.ThemeUpgrader = class {
   async upgrade(themeName, disableScript, isLegacy) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
-      exitWithError(new SystemError(`Theme "${themeName}" not found within the "${this._themesDir}" folder`));
+      throw new UserError(`Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
     await this._isGitSubmodule(themePath)
       ? await this._upgradeSubmodule(themePath)
@@ -67,7 +67,9 @@ exports.ThemeUpgrader = class {
     const stdoutString = stdout.toString().trim();
     const stderrString = stderr.toString().trim();
     stdoutString && console.log(stdoutString);
-    stderrString && exitWithError(new SystemError("Error executing theme post upgrade script", stderrString));
+    if(stderrString){
+      throw new SystemError("Error executing theme post upgrade script", stderrString);
+    }
   } 
 
   /**

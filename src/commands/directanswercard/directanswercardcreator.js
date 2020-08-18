@@ -2,7 +2,6 @@ const fs = require('fs-extra');
 const { addToPartials } = require('../../utils/jamboconfigutils');
 const path = require('path');
 const UserError = require('../../errors/usererror')
-const { exitWithError } = require('../../utils/errorutils');
 
 exports.DirectAnswerCardCreator = class {
   constructor(jamboConfig) {
@@ -30,7 +29,7 @@ exports.DirectAnswerCardCreator = class {
         fs.existsSync(`${themeCardsDir}/${cardFolderName}`) ||
         fs.existsSync(`${this._customCardsDir}/${cardFolderName}`);
     if (isFolderInUse) {
-        exitWithError(new UserError(`A folder with name ${cardFolderName} already exists`));
+        throw new UserError(`A folder with name ${cardFolderName} already exists`);
     }
 
     const cardFolder = `${this._customCardsDir}/${cardFolderName}`;
@@ -39,7 +38,7 @@ exports.DirectAnswerCardCreator = class {
         fs.copySync(templateCardFolder, cardFolder);
         this._renameCardComponent(cardFolderName, cardFolder);
     } else {
-        exitWithError(new UserError(`The folder ${templateCardFolder} does not exist`));
+        throw new UserError(`The folder ${templateCardFolder} does not exist`);
     }
   }
 

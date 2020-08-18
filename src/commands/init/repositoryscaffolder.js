@@ -4,7 +4,6 @@ const fs = require('file-system');
 const simpleGit = require('simple-git/promise');
 const SystemError = require('../../errors/systemerror');
 const git = simpleGit();
-const { exitWithError } = require('../../utils/errorutils')
 
 /**
  * RepositorySettings contains the information needed by Jambo to scaffold a new site repository.
@@ -50,7 +49,7 @@ exports.RepositoryScaffolder = class {
           repositorySettings.shouldAddThemeAsSubmodule());
       }
     } catch (err) {
-      exitWithError(new SystemError(err.message, err.stack));
+      throw new SystemError(err.message, err.stack);
     }
   }
 

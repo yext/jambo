@@ -5,7 +5,6 @@ const {
   parse,
   stringify
 } = require('comment-json');
-const { exitWithError } = require('./errorutils');
 const UserError = require('../errors/usererror');
 
 /**
@@ -30,7 +29,7 @@ parseJamboConfig = function() {
     );
     return config;
   } catch (err) {
-    exitWithError(new UserError("Error parsing jambo.json", err.stack));
+    throw new UserError("Error parsing jambo.json", err.stack);
   }
   
 }

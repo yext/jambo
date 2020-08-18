@@ -13,9 +13,16 @@ const yargs = require('yargs');
 const fs = require('file-system');
 const SystemError = require('./errors/systemerror');
 const UserError = require('./errors/usererror');
-const { exitWithError } = require('./utils/errorutils');
+const { exitWithError, isCustomError } = require('./utils/errorutils');
 
-const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
+let jamboConfig;
+
+try{
+  jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
+} catch (e) {
+  exitWithError(e);
+}
+
 
 const options = yargs
 	.usage('Usage: $0 <cmd> <operation> [options]')
@@ -37,7 +44,7 @@ const options = yargs
     argv => {
       const repositorySettings = new initCommand.RepositorySettings(argv);
       const repositoryScaffolder = new initCommand.RepositoryScaffolder();
-      repositoryScaffolder.create(repositorySettings)
+      repositoryScaffolder.create(repositorySettings).catch((e) => {exitWithError(e)});
     })
   .command(
     'import',
@@ -50,8 +57,12 @@ const options = yargs
           { description: 'import the theme as a submodule', default: true, type: 'boolean' });
     },
     argv => {
-      const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
-      themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log);
+      try{
+        const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
+        themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log).catch((e) => {exitWithError(e)});
+      } catch (e) {
+        exitWithError(e);
+      }
     })
   .command(
     'override',
@@ -61,10 +72,14 @@ const options = yargs
         .option('path', { description: 'path in the theme to override', demandOption: true })
     },
     argv => {
-      const shadowConfiguration = 
-        new overrideCommand.ShadowConfiguration(addThemeToArgs(argv));
-      const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
-      themeShadower.createShadow(shadowConfiguration);
+      try{
+        const shadowConfiguration = 
+          new overrideCommand.ShadowConfiguration(addThemeToArgs(argv));
+        const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
+        themeShadower.createShadow(shadowConfiguration);
+      } catch (e) {
+        exitWithError(e);
+      }
     })
   .command(
     'page',
@@ -94,8 +109,12 @@ const options = yargs
         .option('templateCardFolder', { description: 'folder of card to fork', demandOption: true });
     },
     argv => {
-      const cardCreator = new addCardCommand.CardCreator(jamboConfig);
-      cardCreator.create(argv.name, argv.templateCardFolder);
+      try{
+        const cardCreator = new addCardCommand.CardCreator(jamboConfig);
+        cardCreator.create(argv.name, argv.templateCardFolder);
+      } catch (e) {
+        exitWithError(e);
+      }
     })
   .command(
     'directanswercard',
@@ -108,8 +127,12 @@ const options = yargs
           { description: 'folder of direct answer card to fork', demandOption: true });
     },
     argv => {
-      const cardCreator = new DirectAnswerCardCreator(jamboConfig);
-      cardCreator.create(argv.name, argv.templateCardFolder);
+      try{
+        const cardCreator = new DirectAnswerCardCreator(jamboConfig);
+        cardCreator.create(argv.name, argv.templateCardFolder);
+      } catch (e) {
+        exitWithError(e);
+      }
     })
 	.command(
     'build',
@@ -125,6 +148,9 @@ const options = yargs
       try{
         sitesGenerator.generate(argv.jsonEnvVars);
       } catch (err) {
+        if(isCustomError(err)){
+          exitWithError(err);
+        }
         exitWithError(new UserError("Failed to generate the site", err.stack));
       }
       
@@ -146,8 +172,11 @@ const options = yargs
     argv => {
       const themeUpgrader = new ThemeUpgrader(jamboConfig);
       themeUpgrader
-        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy).catch((error) => {
-            exitWithError(new SystemError(error.message, error.stack));
+        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy).catch((e) => {
+          if(isCustomError(err)){
+            exitWithError(err);
+          }
+          exitWithError(new SystemError(error.message, error.stack));
         });
     })
   .strict()

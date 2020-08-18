@@ -9,7 +9,7 @@ const { ShadowConfiguration, ThemeShadower } = require('../override/themeshadowe
 const { getRepoForTheme } = require('../../utils/gitutils');
 const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/usererror');
-const { exitWithError } = require('../../utils/errorutils');
+const { isCustomError } = require('../../utils/errorutils');
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
@@ -29,7 +29,7 @@ exports.ThemeImporter = class {
    */
   async import(themeName, addAsSubmodule) {
     if (!this.config) {
-      exitWithError(new UserError('No jambo.json found. Did you `jambo init` yet?'));
+      throw new UserError('No jambo.json found. Did you `jambo init` yet?');
     }
     try {
       const themeRepo = getRepoForTheme(themeName);
@@ -50,7 +50,10 @@ exports.ThemeImporter = class {
 
       return localPath;
     } catch (err) {
-      exitWithError(new SystemError(err.message, err.stack));
+      if(isCustomError(err)){
+        throw err;
+      }
+      throw new SystemError(err.message, err.stack);
     }
   }
 

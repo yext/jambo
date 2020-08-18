@@ -9,7 +9,6 @@ const _ = require('lodash');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const UserError = require('../../errors/usererror');
 const SystemError = require('../../errors/systemerror');
-const { exitWithError } = require('../../utils/errorutils');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -27,7 +26,7 @@ exports.SitesGenerator = class {
   generate(jsonEnvVars=[]) {
     const config = this.config;
     if (!config) {
-      exitWithError(new UserError('Cannot find Jambo config in this directory, exiting.'));
+      throw new UserError('Cannot find Jambo config in this directory, exiting.');
     }
     
     // Pull all data from environment variables.
@@ -43,14 +42,14 @@ exports.SitesGenerator = class {
         try {
           pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (err) {
-          exitWithError(new UserError(err.message, err.stack));
+          throw new UserError(err.message, err.stack);
         }
       }
     })
 
     const globalConfigName = 'global_config';
     if (!pagesConfig[globalConfigName]) {
-      exitWithError(new UserError(`Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory.'));
+      throw new UserError(`Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory.');
     }
 
     // Register needed Handlebars helpers.
@@ -58,7 +57,7 @@ exports.SitesGenerator = class {
     try {
       this._registerHelpers();
     } catch (err) {
-      exitWithError(new SystemError("Failed to register jambo handlebars helpers", err.stack))
+      throw new SystemError("Failed to register jambo handlebars helpers", err.stack);
     }
 
     // Register theme partials.
@@ -67,14 +66,14 @@ exports.SitesGenerator = class {
     try {
       defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
     } catch (err) {
-      exitWithError(new SystemError("Failed to register theme partials", err.stack));
+      throw new SystemError("Failed to register theme partials", err.stack);
     }
 
     // Register all custom partials.
     try {
       this._registerCustomPartials(config.dirs.partials);
     } catch (err) {
-      exitWithError(new UserError("Failed to register custom partials", err.stack));
+      throw new UserError("Failed to register custom partials", err.stack);
     }
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
@@ -103,7 +102,7 @@ exports.SitesGenerator = class {
         const pageId = filename.split('.')[0];
 
         if (!pagesConfig[pageId]) {
-          exitWithError(new UserError(`No config found for page: ${pageId}`));
+          throw new UserError(`No config found for page: ${pageId}`);
         }
 
         console.log(`Writing output file for the '${pageId}' page`);
