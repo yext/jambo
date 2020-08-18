@@ -8,6 +8,7 @@ class SystemError extends Error {
 
     if(stack){
       this.stack = stack;
+      this.message = message;
     }else{
       Error.captureStackTrace(this, this.constructor);
     }

@@ -172,11 +172,11 @@ const options = yargs
     argv => {
       const themeUpgrader = new ThemeUpgrader(jamboConfig);
       themeUpgrader
-        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy).catch((e) => {
+        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy).catch((err) => {
           if(isCustomError(err)){
             exitWithError(err);
           }
-          exitWithError(new SystemError(error.message, error.stack));
+          exitWithError(new SystemError(err.message, err.stack));
         });
     })
   .strict()
