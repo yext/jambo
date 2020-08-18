@@ -87,16 +87,16 @@ class TranslateInvocation {
   /**
    * Creates a {@link TranslateInvocation} from a partial's call to Jambo's
    * 'translate' helper.
-   * 
+   *
    * @param {string} invocationString The string in the partial calling 'translate'.
    * @returns {TranslateInvocation} The resulting {@link TranslateInvocation}.
    */
   static from(invocationString) {
-    const invokedHelper = 
+    const invokedHelper =
       invocationString.includes('translateJS') ? 'translateJS' : 'translate';
 
     const paramRegex =
-      /[a-zA-z0-9]+=((\'[a-zA-Z\s\{\}\.]+\')|\d+|([a-zA-Z\.]+))/g;
+      /[a-zA-z0-9]+=((\'[a-zA-Z\s\d\[\]\.]+\')|\d+|([a-zA-Z\.]+))/g;
     const parsedParams = (invocationString.match(paramRegex) || [])
       .reduce((params, paramString) => {
         const paramOperands = paramString.split('=');
