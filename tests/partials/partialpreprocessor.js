@@ -12,8 +12,9 @@ describe('PartialPreprocessor works correctly', () => {
       translateWithContext: () => 'Mail maintenant [[id1]]',
       translatePlural: () => {
         return {
-          1: 'Un article [[name]]',
-          plural: 'Les articles [[name]]'
+          0: 'Un article [[name]]',
+          plural: 'Les articles [[name]]',
+          locale: 'fr-FR'
         };
       }
     };
