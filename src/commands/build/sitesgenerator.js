@@ -12,7 +12,10 @@ const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
 const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
-const { stripExtension } = require('../../utils/fileutils');
+const PartialsRegistry = require('../../models/partialsregistry');
+const PartialPreprocessor = require('../../partials/partialpreprocessor');
+const { stripExtension, isValidFile } = require('../../utils/fileutils');
+const Translator = require('../../i18n/translator/translator');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -56,12 +59,19 @@ exports.SitesGenerator = class {
     });
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
 
+    console.log('Reading page files');
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
         pageTemplates.push(PageTemplate.from(filename, path, fileContents));
       }
+    });
+
+    console.log('Reading partial files');
+    const partialRegistry = PartialsRegistry.build({
+      fullyQualifiedPaths: config.dirs.partials,
+      relativePaths: [`${config.dirs.themes}/${config.defaultTheme}`]
     });
 
     // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
@@ -71,18 +81,6 @@ exports.SitesGenerator = class {
       pageConfigs: configRegistry.getPageConfigs(),
       pageTemplates: pageTemplates
     });
-
-    console.log('Registering Jambo Handlebars helpers');
-    // Register needed Handlebars helpers.
-    this._registerHelpers();
-
-    console.log('Registering all handlebars templates');
-    // Register Theme partials.
-    const defaultTheme = config.defaultTheme;
-    defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
-
-    // Register all custom partials.
-    this._registerCustomPartials(config.dirs.partials);
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
@@ -97,12 +95,35 @@ exports.SitesGenerator = class {
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
+    console.log('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
     const translations =
       config.dirs.translations ? await this._extractTranslations(locales) : {};
 
+    console.log('Registering Handlebars helpers');
+    this._registerHelpers();
+
     const pageSets = GENERATED_DATA.getPageSets();
     for (const pageSet of pageSets) {
+      // Pre-process partials and register them with the Handlebars instance
+      const locale = pageSet.getLocale();
+      const translator = await Translator
+        .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
+      const partialPreprocessor = new PartialPreprocessor(translator)
+
+      console.log(`Registering Handlebars partials for locale ${locale}`);
+      for (const partial of partialRegistry.getPartials()) {
+        hbs.registerPartial(partial.getName(), partialPreprocessor.process(partial.getContents()));
+      }
+
+      // Pre-process page template contents - these are not registered with the Handlebars instance,
+      // the PageWriter compiles them with their args
+      for (const page of pageSet.getPages()) {
+        const processedPartial = partialPreprocessor.process(page.getTemplateContents());
+        page.setTemplateContents(processedPartial);
+      }
+
+      // Write pages
       new PageWriter({
         outputDirectory: config.dirs.output,
         env: env,
@@ -197,53 +218,6 @@ exports.SitesGenerator = class {
           fs.copyFileSync(path, `${outputDir}/static/${relative}`);
         }
       });
-    }
-  }
-
-  /**
-   * Registers all custom Handlebars partials in the provided paths.
-   *
-   * @param {Array} partialPaths The set of paths to traverse for partials.
-   */
-  _registerCustomPartials(partialPaths) {
-    partialPaths.forEach(partialPath => this._registerPartials(partialPath, true));
-  }
-
-  /**
-   * Registers all of the partials in the default Theme.
-   *
-   * @param {string} defaultTheme The default Theme in the Jambo config.
-   * @param {string} themesDir The Jambo Themes directory.
-   */
-  _registerThemePartials(defaultTheme, themesDir) {
-    const themeDir = path.resolve(themesDir, defaultTheme);
-    this._registerPartials(themeDir, false);
-  }
-
-  /**
-   * Registers all partials in the provided path. If the path is a directory,
-   * the useFullyQualifiedName parameter dictates if the path's root will be
-   * included in the partial naming scheme.
-   *
-   * @param {string} partialsPath The set of partials to register.
-   * @param {boolean} useFullyQualifiedName Whether or not to include the path's root
-   *                                        in the name of the newly registered partials.
-   */
-  _registerPartials(partialsPath, useFullyQualifiedName) {
-    const pathExists = fs.existsSync(partialsPath);
-    if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
-      fs.recurseSync(partialsPath, (path, relative, filename) => {
-        if (isValidFile(filename)) {
-          const partialName = useFullyQualifiedName
-            ? stripExtension(path)
-            : stripExtension(relative);
-          hbs.registerPartial(partialName, fs.readFileSync(path).toString());
-        }
-      });
-    } else if (pathExists) {
-      hbs.registerPartial(
-        stripExtension(partialsPath),
-        fs.readFileSync(partialsPath).toString());
     }
   }
 
