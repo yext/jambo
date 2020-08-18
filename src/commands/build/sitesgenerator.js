@@ -113,7 +113,7 @@ exports.SitesGenerator = class {
 
       console.log(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
-        hbs.registerPartial(partial.getName(), partialPreprocessor.process(partial.getContents()));
+        hbs.registerPartial(partial.getName(), partialPreprocessor.process(partial.getFileContents()));
       }
 
       // Pre-process page template contents - these are not registered with the Handlebars instance,

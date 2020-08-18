@@ -1,7 +1,7 @@
 const fs = require('file-system');
 
-const { isValidFile } = require('../../utils/fileutils');
-const Partial = require('../../models/partial');
+const { isValidFile } = require('../utils/fileutils');
+const Partial = require('./partial');
 
 /**
  * PartialsRegistry is a registry of the partials provided to Jambo.
