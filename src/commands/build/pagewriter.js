@@ -46,7 +46,7 @@ module.exports = class PageWriter {
         pageNameToConfig: pageSet.getPageNameToConfig(),
       });
 
-      const template = this._compileHandlebarsTemplate(page.getTemplateContents());
+      const template = hbs.compile(page.getTemplateContents());
       const outputHTML = template(templateArguments);
 
       fs.writeFileSync(
@@ -54,16 +54,6 @@ module.exports = class PageWriter {
         outputHTML
       );
     }
-  }
-
-  /**
-   * Gets the Handlebars template for a given path
-   *
-   * @param {String} templateContents the contents of the page handlebars template file
-   * @returns {HandlebarsTemplateDelegate<T>}
-   */
-  _compileHandlebarsTemplate (templateContents) {
-    return hbs.compile(templateContents);
   }
 
   /**
