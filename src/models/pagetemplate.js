@@ -50,6 +50,29 @@ module.exports = class PageTemplate {
   }
 
   /**
+   * Updates the locale
+   *
+   * @param {String} locale
+   */
+  setLocale(locale) {
+    this.locale = locale;
+    return this;
+  }
+
+  /**
+   * Creates a a copy of this PageTemplate
+   *
+   * @returns {PageTemplate}
+   */
+  clone () {
+    return new PageTemplate({
+      locale: this.locale,
+      path: this.path,
+      pageName: this.pageName
+    });
+  }
+
+  /**
    * Creates a @type {PageTemplate} from a given filename and path
    *
    * @param {String} filename

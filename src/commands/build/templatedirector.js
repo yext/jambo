@@ -42,11 +42,9 @@ module.exports = class TemplateDirector {
         const pageTemplate = this._findPageTemplateForLocale(locale, templates);
 
         if (pageTemplate) {
-          localizedPageTemplates[locale].push(new PageTemplate({
-            pageName: pageTemplate.getPageName(),
-            path: pageTemplate.getTemplatePath(),
-            locale: locale
-          }));
+          const localizedTemplate = pageTemplate.clone()
+            .setLocale(locale);
+          localizedPageTemplates[locale].push(localizedTemplate);
         }
       }
     }
