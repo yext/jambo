@@ -1,11 +1,11 @@
 <div>
     <button>'Bonjour'</button>
     <div>
-        { runtimeTranslation phrase='{"1":"Un article [[name]]","plural":"Les articles [[name]]"}' name=myName count=myCount }
+        {{ runtimeTranslation phrase='{"1":"Un article [[name]]","plural":"Les articles [[name]]"}' name=myName count=myCount }}
     </div>
     <script>
         const profile = { name: 'Tom' };
         ANSWERS.translateJS('Mail maintenant [[id1]]', {id1:profile.name})
     </script>
-    <button>{ runtimeTranslation phrase='Mail maintenant [[id1]]' id1=myName }</button>
+    <button>{{ runtimeTranslation phrase='Mail maintenant [[id1]]' id1=myName }}</button>
 </div>
