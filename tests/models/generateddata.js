@@ -103,7 +103,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
             pageTemplate: new PageTemplate({
               locale: locale,
               pageName: pageTemplate1.getPageName(),
-              path: pageTemplate1.getTemplatePath(),
+              path: pageTemplate1.getPath(),
             }),
             outputPath: `${pageConfig1.getPageName()}.html`
           }),
@@ -116,7 +116,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
             pageTemplate: new PageTemplate({
               locale: locale,
               pageName: pageTemplate2.getPageName(),
-              path: pageTemplate2.getTemplatePath(),
+              path: pageTemplate2.getPath(),
             }),
             outputPath: `${pageConfig2.getPageName()}.html`
           }),

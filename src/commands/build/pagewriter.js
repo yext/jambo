@@ -36,9 +36,6 @@ module.exports = class PageWriter {
       if (!page.getConfig()) {
         throw new Error(`Error: No config found for page: ${page.getPageName()}`);
       }
-      if (!page.getTemplatePath()) {
-        throw new Error(`Error: No template found for page: ${page.getPageName()}`);
-      }
 
       console.log(`Writing output file for the '${page.getPageName()}' page`);
       const templateArguments = this._buildArgsForTemplate({
@@ -48,7 +45,8 @@ module.exports = class PageWriter {
         globalConfig: pageSet.getGlobalConfig().getConfig(),
         pageNameToConfig: pageSet.getPageNameToConfig(),
       });
-      const template = this._getHandlebarsTemplate(page.getTemplatePath());
+
+      const template = this._compileHandlebarsTemplate(page.getTemplateContents());
       const outputHTML = template(templateArguments);
 
       fs.writeFileSync(
@@ -61,11 +59,11 @@ module.exports = class PageWriter {
   /**
    * Gets the Handlebars template for a given path
    *
-   * @param {String} path the path to the page handlebars template
+   * @param {String} templateContents the contents of the page handlebars template file
    * @returns {HandlebarsTemplateDelegate<T>}
    */
-  _getHandlebarsTemplate (path) {
-    return hbs.compile(fs.readFileSync(path).toString());
+  _compileHandlebarsTemplate (templateContents) {
+    return hbs.compile(templateContents);
   }
 
   /**

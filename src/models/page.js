@@ -9,19 +9,19 @@ const { stripExtension } = require('../utils/fileutils');
 module.exports = class Page {
   /**
    * @param {PageConfig} pageConfig
-   * @param {PageTemplate} pageTemplate
+   * @param {String} templateContents
    * @param {String} outputPath
    */
-  constructor({ pageConfig, pageTemplate, outputPath }) {
+  constructor({ pageConfig, templateContents, outputPath }) {
     /**
      * @type {PageConfig}
      */
     this.pageConfig = pageConfig;
 
     /**
-     * @type {PageTemplate}
+     * @type {String}
      */
-    this.pageTemplate = pageTemplate;
+    this.templateContents = templateContents;
 
     /**
      * @type {String}
@@ -61,12 +61,12 @@ module.exports = class Page {
   }
 
   /**
-   * Returns the page's template path
+   * Returns the file contents of the page's template
    *
    * @returns {String}
    */
-  getTemplatePath () {
-    return this.pageTemplate.getTemplatePath();
+  getTemplateContents() {
+    return this.templateContents;
   }
 
   /**
@@ -86,13 +86,13 @@ module.exports = class Page {
   static from({ pageConfig, pageTemplate, urlFormatter }) {
     const outputPath = Page.buildUrl(
       pageConfig.getPageName(),
-      pageTemplate.getTemplatePath(),
+      pageTemplate.getPath(),
       urlFormatter
     );
 
     return new Page({
       pageConfig: pageConfig,
-      pageTemplate: pageTemplate,
+      templateContents: pageTemplate.getFileContents(),
       outputPath: outputPath
     });
   }
