@@ -17,14 +17,14 @@ class standardCardComponent extends BaseCard['standard'] {
       url: profile.website || profile.landingPageUrl, // If the card title is a clickable link, set URL here
       target: '_top', // If the title's URL should open in a new tab, etc.
       titleEventOptions: this.addDefaultEventOptions(),
-      details: {{ translateJS phrase='Some item {{name}}' pluralForm='Some items {{name}}' name=profile.name count=profile.count }}, // The text in the body of the card
+      details: {{ translateJS phrase='Some item [[name]]' pluralForm='Some items [[name]]' name=profile.name count=profile.count }}, // The text in the body of the card
       showMoreDetails: {
         showMoreLimit: 750, // Character count limit
         showMoreText: 'Show more', // Label when toggle will show truncated text
         showLessText: 'Show less' // Label when toggle will hide truncated text
       },
       CTA1: {
-        label: {{translateJS phrase='Mail now {{id1}}' context='Mail is a verb' id1=profile.name}}, // The CTA's label
+        label: {{translateJS phrase='Mail now [[id1]]' context='Mail is a verb' id1=profile.name}}, // The CTA's label
         iconName: 'chevron', // The icon to use for the CTA
         url: Formatter.generateCTAFieldTypeLink(profile.c_primaryCTA), // The URL a user will be directed to when clicking
         target: '_top', // Where the new URL will be opened

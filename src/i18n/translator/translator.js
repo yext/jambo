@@ -40,7 +40,10 @@ class Translator {
    *                                          corresponding count or 'plural'.
    */
   translatePlural(phrase, pluralForm) {
-    const pluralKeyRegex = new RegExp(`${phrase}_([0-9]+|plural)`);
+    const escapedPhrase = phrase
+      .replace(/\[\[/g, '\\[\\[')
+      .replace(/\]\]/g, '\\]\\]');
+    const pluralKeyRegex = new RegExp(`${escapedPhrase}_([0-9]+|plural)`);
 
     const i18nextOptions = this._i18next.options;
 
@@ -89,20 +92,20 @@ class Translator {
   }
 
   /**
-   * Creates an object containing the interpolation placeholders for the given 
-   * phrase. Such an object must be passed to i18next to ensure interpolation can 
+   * Creates an object containing the interpolation placeholders for the given
+   * phrase. Such an object must be passed to i18next to ensure interpolation can
    * be performed on the translated phrase.
-   * 
-   * @param {string} phrase The phrase. 
+   *
+   * @param {string} phrase The phrase.
    * @returns {Object<string, string>} A map of interpolation parameter to placeholder.
-   *                                   As an example, if the phrase was: 'My {{name}} is', 
-   *                                   the object would contains { name: '{{name}}' }.
+   *                                   As an example, if the phrase was: 'My [[name]] is',
+   *                                   the object would contains { name: '[[name]]' }.
    */
   _getInterpolationPlaceholders(phrase) {
     const placeholders = {};
     let placeholderMatch;
 
-    const placeholderRegex = new RegExp(/\{\{([a-zA-Z0-9]+)\}\}/, 'g');
+    const placeholderRegex = new RegExp(/\[\[([a-zA-Z0-9]+)\]\]/, 'g');
     while ((placeholderMatch = placeholderRegex.exec(phrase)) != null) {
       if (placeholderMatch.length >= 2) {
         placeholders[placeholderMatch[1]] = placeholderMatch[0];

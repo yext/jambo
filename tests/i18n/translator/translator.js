@@ -25,9 +25,10 @@ describe('Translations without pluralization or context', () => {
   });
 
   it('simple translation with interpolation works as expected', () => {
-    const translation = 
-      translator.translate('Hello {{name}}');
-    expect(translation).toEqual('Bonjour {{name}}');
+    const translation =
+      translator.translate('Hello [[name]]');
+
+    expect(translation).toEqual('Bonjour [[name]]');
   });
 
   it('translation fallback works as expected', () => {
@@ -49,10 +50,10 @@ describe('Translations with pluralization and no context', () => {
 
   it('pluralization with interpolation works as expected', () => {
     const translation = translator.translatePlural(
-      'There is {{count}} item {{name}}', 'There are {{count}} items {{name}}');
+      'There is [[count]] item [[name]]', 'There are [[count]] items [[name]]');
     const expectedResult = {
-      1: 'Il y a {{count}} article {{name}}',
-      plural: 'Il y a {{count}} articles {{name}}'
+      1: 'Il y a [[count]] article [[name]]',
+      plural: 'Il y a [[count]] articles [[name]]'
     };
 
     expect(translation).toEqual(expectedResult);
@@ -60,11 +61,11 @@ describe('Translations with pluralization and no context', () => {
 
   it('falls back correctly when no translations present', () => {
     const translation = translator.translatePlural(
-      'Missing {{count}} translation {{name}}', 
-      'Missing {{count}} translations {{name}}');
+      'Missing [[count]] translation [[name]]',
+      'Missing [[count]] translations [[name]]');
     const expectedResult = {
-      1: 'Missing {{count}} translation {{name}}',
-      plural: 'Missing {{count}} translations {{name}}'
+      1: 'Missing [[count]] translation [[name]]',
+      plural: 'Missing [[count]] translations [[name]]'
     };
 
     expect(translation).toEqual(expectedResult);
@@ -84,13 +85,13 @@ describe('Translations with context and no pluralization', () => {
 
   it('context and interpolation works as expected with context = male', () => {
     const translation = translator.translateWithContext(
-      'I am looking for my child named {{name}}', 'male');
-    expect(translation).toEqual('Je cherche mon fils nommé {{name}}')
+      'I am looking for my child named [[name]]', 'male');
+    expect(translation).toEqual('Je cherche mon fils nommé [[name]]')
   });
 
   it('context and interpolation works as expected with context = female', () => {
     const translation = translator.translateWithContext(
-      'I am looking for my child named {{name}}', 'female');
-    expect(translation).toEqual('Je cherche mon fille nommé {{name}}')
+      'I am looking for my child named [[name]]', 'female');
+    expect(translation).toEqual('Je cherche mon fille nommé [[name]]')
   });
 });
