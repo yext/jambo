@@ -11,8 +11,18 @@ const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
 const fs = require('file-system');
+const SystemError = require('./errors/systemerror');
+const UserError = require('./errors/usererror');
+const { exitWithError, isCustomError } = require('./utils/errorutils');
 
-const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
+let jamboConfig;
+
+try {
+  jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
+} catch (e) {
+  exitWithError(e);
+}
+
 
 const options = yargs
 	.usage('Usage: $0 <cmd> <operation> [options]')
@@ -34,7 +44,7 @@ const options = yargs
     argv => {
       const repositorySettings = new initCommand.RepositorySettings(argv);
       const repositoryScaffolder = new initCommand.RepositoryScaffolder();
-      repositoryScaffolder.create(repositorySettings).catch(console.log);
+      repositoryScaffolder.create(repositorySettings).catch(e => exitWithError(e));
     })
   .command(
     'import',
@@ -47,8 +57,14 @@ const options = yargs
           { description: 'import the theme as a submodule', default: true, type: 'boolean' });
     },
     argv => {
-      const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
-      themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log).catch(console.log);
+      try {
+        const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
+        themeImporter.import(argv.theme, argv.addAsSubmodule)
+          .then(console.log)
+          .catch(e => exitWithError(e));
+      } catch (e) {
+        exitWithError(e);
+      }
     })
   .command(
     'override',
@@ -58,10 +74,14 @@ const options = yargs
         .option('path', { description: 'path in the theme to override', demandOption: true })
     },
     argv => {
-      const shadowConfiguration = 
-        new overrideCommand.ShadowConfiguration(addThemeToArgs(argv));
-      const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
-      themeShadower.createShadow(shadowConfiguration);
+      try {
+        const shadowConfiguration = 
+          new overrideCommand.ShadowConfiguration(addThemeToArgs(argv));
+        const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
+        themeShadower.createShadow(shadowConfiguration);
+      } catch (e) {
+        exitWithError(e);
+      }
     })
   .command(
     'page',
@@ -76,7 +96,11 @@ const options = yargs
       const pageConfiguration = 
         new addPageCommand.PageConfiguration(addThemeToArgs(argv));
       const pageScaffolder = new addPageCommand.PageScaffolder(jamboConfig);
-      pageScaffolder.create(pageConfiguration);
+      try {
+        pageScaffolder.create(pageConfiguration);
+      } catch (err) {
+        exitWithError(new UserError("Failed to add page", err.stack));
+      }
     })
   .command(
     'card',
@@ -87,8 +111,12 @@ const options = yargs
         .option('templateCardFolder', { description: 'folder of card to fork', demandOption: true });
     },
     argv => {
-      const cardCreator = new addCardCommand.CardCreator(jamboConfig);
-      cardCreator.create(argv.name, argv.templateCardFolder);
+      try {
+        const cardCreator = new addCardCommand.CardCreator(jamboConfig);
+        cardCreator.create(argv.name, argv.templateCardFolder);
+      } catch (e) {
+        exitWithError(e);
+      }
     })
   .command(
     'directanswercard',
@@ -101,8 +129,12 @@ const options = yargs
           { description: 'folder of direct answer card to fork', demandOption: true });
     },
     argv => {
-      const cardCreator = new DirectAnswerCardCreator(jamboConfig);
-      cardCreator.create(argv.name, argv.templateCardFolder);
+      try {
+        const cardCreator = new DirectAnswerCardCreator(jamboConfig);
+        cardCreator.create(argv.name, argv.templateCardFolder);
+      } catch (e) {
+        exitWithError(e);
+      }
     })
 	.command(
     'build',
@@ -115,7 +147,15 @@ const options = yargs
     },
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
-      sitesGenerator.generate(argv.jsonEnvVars);
+      try {
+        sitesGenerator.generate(argv.jsonEnvVars);
+      } catch (err) {
+        if (isCustomError(err)) {
+          exitWithError(err);
+        }
+        exitWithError(new UserError("Failed to generate the site", err.stack));
+      }
+      
     })
   .command(
     'upgrade',
@@ -135,8 +175,14 @@ const options = yargs
       const themeUpgrader = new ThemeUpgrader(jamboConfig);
       themeUpgrader
         .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
-        .catch(console.error);
+        .catch(err => {
+          if (isCustomError(err)) {
+            exitWithError(err);
+          }
+          exitWithError(new SystemError(err.message, err.stack));
+        });
     })
+  .strict()
   .argv;
 
   /**
