@@ -9,10 +9,10 @@ const { stripExtension } = require('../utils/fileutils');
 module.exports = class Page {
   /**
    * @param {PageConfig} pageConfig
-   * @param {String} templateContents
+   * @param {String} partialContents
    * @param {String} outputPath
    */
-  constructor({ pageConfig, templateContents, outputPath }) {
+  constructor({ pageConfig, partialContents, outputPath }) {
     /**
      * @type {PageConfig}
      */
@@ -21,7 +21,7 @@ module.exports = class Page {
     /**
      * @type {String}
      */
-    this.templateContents = templateContents;
+    this.partialContents = partialContents;
 
     /**
      * @type {String}
@@ -61,12 +61,12 @@ module.exports = class Page {
   }
 
   /**
-   * Returns the file contents of the page's template
+   * Returns the file contents of the page's partial
    *
    * @returns {String}
    */
   getPartialContents() {
-    return this.templateContents;
+    return this.partialContents;
   }
 
   /**
@@ -92,7 +92,7 @@ module.exports = class Page {
 
     return new Page({
       pageConfig: pageConfig,
-      templateContents: pagePartial.getFileContents(),
+      partialContents: pagePartial.getFileContents(),
       outputPath: outputPath
     });
   }

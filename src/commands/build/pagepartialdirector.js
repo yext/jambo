@@ -38,8 +38,8 @@ module.exports = class PagePartialDirector {
     let localizedPagePartials = {};
     for (const locale of this._locales) {
       localizedPagePartials[locale] = [];
-      for (const templates of Object.values(pageNameToPartials)) {
-        const pagePartial = this._findPagePartialForLocale(locale, templates);
+      for (const partials of Object.values(pageNameToPartials)) {
+        const pagePartial = this._findPagePartialForLocale(locale, partials);
 
         if (pagePartial) {
           const localizedPartial = pagePartial.clone()
@@ -57,18 +57,18 @@ module.exports = class PagePartialDirector {
    * the match is determined based the locale and the fallbacks.
    *
    * @param {String} locale
-   * @param {Array<PagePartial>} templatesForPage
+   * @param {Array<PagePartial>} partialsForPage
    * @returns {PagePartial}
    */
-  _findPagePartialForLocale(locale, templatesForPage) {
-    let pagePartial = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), locale));
+  _findPagePartialForLocale(locale, partialsForPage) {
+    let pagePartial = partialsForPage.find(partial => this._isLocaleMatch(partial.getLocale(), locale));
     if (pagePartial) {
       return pagePartial;
     }
 
     const localeFallbacks = this._localeToFallbacks[locale] || [];
     for (const fallback of localeFallbacks) {
-      pagePartial = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), fallback));
+      pagePartial = partialsForPage.find(partial => this._isLocaleMatch(partial.getLocale(), fallback));
 
       if (pagePartial) {
         return pagePartial;
@@ -79,16 +79,16 @@ module.exports = class PagePartialDirector {
   /**
    * Builds an Object mapping pageName to PagePartials with for the corresponding page.
    *
-   * @param {Array<PagePartial>} templates
+   * @param {Array<PagePartial>} partials
    * @returns {Object<String, Array<PagePartial>>}
    */
-  _getPageNameToPartials(templates) {
-    if (!templates || templates.length < 1) {
+  _getPageNameToPartials(partials) {
+    if (!partials || partials.length < 1) {
       return {};
     }
 
     let pageNameToPartials = {};
-    for (const pagePartial of templates) {
+    for (const pagePartial of partials) {
       const pageName = pagePartial.getPageName();
       if (!pageNameToPartials[pageName]) {
         pageNameToPartials[pageName] = [];

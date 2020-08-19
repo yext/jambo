@@ -83,7 +83,7 @@ module.exports = class PageSetsBuilder {
     let pages = [];
     for (const config of pageConfigs) {
       const pagePartial = pagePartials
-        .find(template => template.getPageName() === config.getPageName());
+        .find(partial => partial.getPageName() === config.getPageName());
 
       if (!pagePartial) {
         console.log(`Warning: No page '${config.getPageName()}' found for given locale '${config.getLocale()}', not generating a '${config.getPageName()}' page for '${config.getLocale()}'`);
