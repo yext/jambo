@@ -4,12 +4,12 @@ const Page = require('../../models/page');
 const PageConfig = require('../../models/pageconfig');
 const PageConfigDecorator = require('./pageconfigdecorator');
 const PageSet = require('../../models/pageset');
-const PageTemplate = require('../../models/pagetemplate');
-const TemplateDirector = require('./templatedirector');
+const PagePartial = require('../../models/pagetemplate');
+const PagePartialDirector = require('./templatedirector');
 
 /**
  * PageSetsBuilder is responsible for matching {@link PageConfigs} and
- * {@link PageTemplates} for each given locale and returning a group
+ * {@link PagePartials} for each given locale and returning a group
  * of {@link PageSet}s.
  */
 module.exports = class PageSetsBuilder {
@@ -32,13 +32,13 @@ module.exports = class PageSetsBuilder {
 
   /**
    * Returns a group of PageSet ({@link PageSet}) for the given
-   * pageConfigs and pageTemplates, one PageSet per locale.
+   * pageConfigs and pagePartials, one PageSet per locale.
    *
    * @param {Array<PageConfig>} pageConfigs
-   * @param {Array<PageTemplate>} pageTemplates
+   * @param {Array<PagePartial>} pagePartials
    * @returns {Array<PageSet>}
    */
-  build(pageConfigs, pageTemplates) {
+  build(pageConfigs, pagePartials) {
     const localeToFallbacks = this._localizationConfig
       .getLocales()
       .reduce((obj, locale) => {
@@ -51,11 +51,11 @@ module.exports = class PageSetsBuilder {
       defaultLocale: this._defaultLocale
     }).decorate(pageConfigs);
 
-    const localeToPageTemplates = new TemplateDirector({
+    const localeToPagePartials = new PagePartialDirector({
       locales: this._localizationConfig.getLocales(),
       localeToFallbacks: localeToFallbacks,
       defaultLocale: this._defaultLocale
-    }).direct(pageTemplates);
+    }).direct(pagePartials);
 
     const pageSets = [];
     for (const [locale, pageConfigs] of Object.entries(localeToPageConfigs)) {
@@ -64,7 +64,7 @@ module.exports = class PageSetsBuilder {
 
       pageSets.push(new PageSet({
         locale: locale,
-        pages: this._buildPages(pageConfigs, localeToPageTemplates[locale]),
+        pages: this._buildPages(pageConfigs, localeToPagePartials[locale]),
         globalConfig: localizedGlobalConfig,
         params: this._localizationConfig.getParams(locale)
       }));
@@ -73,26 +73,26 @@ module.exports = class PageSetsBuilder {
   }
 
   /**
-   * Matches PageConfigs and PageTemplates and returns a collection of Pages.
+   * Matches PageConfigs and PagePartials and returns a collection of Pages.
    *
    * @param {Array<PageConfig>} pageConfigs
-   * @param {Array<PageTemplate>} pageTemplates
+   * @param {Array<PagePartial>} pagePartials
    * @returns {Array<Page>}
    */
-  _buildPages (pageConfigs, pageTemplates) {
+  _buildPages (pageConfigs, pagePartials) {
     let pages = [];
     for (const config of pageConfigs) {
-      const pageTemplate = pageTemplates
+      const pagePartial = pagePartials
         .find(template => template.getPageName() === config.getPageName());
 
-      if (!pageTemplate) {
+      if (!pagePartial) {
         console.log(`Warning: No page '${config.getPageName()}' found for given locale '${config.getLocale()}', not generating a '${config.getPageName()}' page for '${config.getLocale()}'`);
         continue;
       }
 
       pages.push(Page.from({
         pageConfig: config,
-        pageTemplate: pageTemplate,
+        pagePartial: pagePartial,
         urlFormatter: this._localizationConfig.getUrlFormatter(config.getLocale()),
       }));
     }

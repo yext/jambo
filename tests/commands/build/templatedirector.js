@@ -1,42 +1,42 @@
-const TemplateDirector = require('../../../src/commands/build/templatedirector');
-const PageTemplate = require('../../../src/models/pagetemplate');
+const PagePartialDirector = require('../../../src/commands/build/templatedirector');
+const PagePartial = require('../../../src/models/pagetemplate');
 
-describe('TemplateDirector directs PageTemplates and builds the expected object', () => {
+describe('PagePartialDirector directs PagePartials and builds the expected object', () => {
   it('creates page templates correctly when only defaultLocale is present', () => {
     const defaultLocale = 'en';
-    const pageTemplates = [
-      new PageTemplate({
+    const pagePartials = [
+      new PagePartial({
         pageName: 'path',
         path: `pages/path.html.hbs`
       }),
-      new PageTemplate({
+      new PagePartial({
         pageName: 'path2',
         path: `pages/path2.html.hbs`
       }),
-      new PageTemplate({
+      new PagePartial({
         pageName: 'path3',
         path: `pages/path3.html.hbs`
       }),
     ];
-    const localeToPageTemplates = new TemplateDirector({
+    const localeToPagePartials = new PagePartialDirector({
       locales: [],
       localeToFallbacks: {},
       defaultLocale: defaultLocale
-    }).direct(pageTemplates);
+    }).direct(pagePartials);
 
-    expect(localeToPageTemplates).toEqual({
+    expect(localeToPagePartials).toEqual({
       [defaultLocale]: [
-        new PageTemplate({
+        new PagePartial({
           pageName: 'path',
           locale: defaultLocale,
           path: `pages/path.html.hbs`
         }),
-        new PageTemplate({
+        new PagePartial({
           pageName: 'path2',
           locale: defaultLocale,
           path: `pages/path2.html.hbs`
         }),
-        new PageTemplate({
+        new PagePartial({
           pageName: 'path3',
           locale: defaultLocale,
           path: `pages/path3.html.hbs`
@@ -45,50 +45,50 @@ describe('TemplateDirector directs PageTemplates and builds the expected object'
     });
   });
 
-  it('creates localeToPageTemplates with the correct locales and paths when locale data is provided', () => {
+  it('creates localeToPagePartials with the correct locales and paths when locale data is provided', () => {
     const locales = ['en', 'es', 'fr', 'de', 'it'];
     const localeToFallbacks = {
       'en': ['fr'],
       'es': ['de', 'en'],
       'de': ['fr', 'es']
     };
-    const pageTemplates = {
-      en: new PageTemplate({
+    const pagePartials = {
+      en: new PagePartial({
         pageName: 'path',
         locale: 'en',
         path: `pages/path.en.html.hbs`
       }),
-      fr: new PageTemplate({
+      fr: new PagePartial({
         pageName: 'path',
         locale: 'fr',
         path: `pages/path.fr.html.hbs`
       }),
     };
-    const localeToPageTemplates = new TemplateDirector({
+    const localeToPagePartials = new PagePartialDirector({
       locales: locales,
       localeToFallbacks: localeToFallbacks,
-    }).direct(Object.values(pageTemplates));
+    }).direct(Object.values(pagePartials));
 
-    expect(localeToPageTemplates).toEqual({
+    expect(localeToPagePartials).toEqual({
       'en': [ // Directs to template with current locale even if fallbacks exist
-        pageTemplates['en'],
+        pagePartials['en'],
       ],
       'es': [ // Locale fallbacks are not recursive
-        new PageTemplate({
-          pageName: pageTemplates['en'].getPageName(),
+        new PagePartial({
+          pageName: pagePartials['en'].getPageName(),
           locale: 'es',
-          path: pageTemplates['en'].getPath()
+          path: pagePartials['en'].getPath()
         }),
       ],
       'de': [ // Directs to template with correct fallback locale
-        new PageTemplate({
-          pageName: pageTemplates['fr'].getPageName(),
+        new PagePartial({
+          pageName: pagePartials['fr'].getPageName(),
           locale: 'de',
-          path: pageTemplates['fr'].getPath()
+          path: pagePartials['fr'].getPath()
         }),
       ],
       'fr': [ // Directs to template with current locale if present
-        pageTemplates['fr'],
+        pagePartials['fr'],
       ],
       'it': [], // Empty if no templates found for locale or fallbacks
     });

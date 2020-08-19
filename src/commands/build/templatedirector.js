@@ -1,10 +1,10 @@
-const PageTemplate = require('../../models/pagetemplate');
+const PagePartial = require('../../models/pagetemplate');
 
 /**
- * TemplateDirector creates a new, localized {@link PageTemplate}
- * per (pageTemplate, locale) combination.
+ * PagePartialDirector creates a new, localized {@link PagePartial}
+ * per (pagePartial, locale) combination.
  */
-module.exports = class TemplateDirector {
+module.exports = class PagePartialDirector {
   constructor({ locales, localeToFallbacks, defaultLocale }) {
     /**
      * @type {Array<String>}
@@ -25,62 +25,62 @@ module.exports = class TemplateDirector {
   }
 
   /**
-   * Creates a localized PageTemplate for every (page, locale) combination. Considers
-   * locale fallbacks, so more PageTemplates may be returned than were provided.
-   * It returns one PageTemplate per (page, locale) combination.
+   * Creates a localized PagePartial for every (page, locale) combination. Considers
+   * locale fallbacks, so more PagePartials may be returned than were provided.
+   * It returns one PagePartial per (page, locale) combination.
    *
-   * @param {Array<PageTemplates>} pageTemplates
-   * @returns {Array<PageTemplates>}
+   * @param {Array<PagePartials>} pagePartials
+   * @returns {Array<PagePartials>}
    */
-  direct(pageTemplates) {
-    const pageNameToTemplates = this._getPageNameToTemplates(pageTemplates);
+  direct(pagePartials) {
+    const pageNameToTemplates = this._getPageNameToTemplates(pagePartials);
 
-    let localizedPageTemplates = {};
+    let localizedPagePartials = {};
     for (const locale of this._locales) {
-      localizedPageTemplates[locale] = [];
+      localizedPagePartials[locale] = [];
       for (const templates of Object.values(pageNameToTemplates)) {
-        const pageTemplate = this._findPageTemplateForLocale(locale, templates);
+        const pagePartial = this._findPagePartialForLocale(locale, templates);
 
-        if (pageTemplate) {
-          const localizedTemplate = pageTemplate.clone()
+        if (pagePartial) {
+          const localizedTemplate = pagePartial.clone()
             .setLocale(locale);
-          localizedPageTemplates[locale].push(localizedTemplate);
+          localizedPagePartials[locale].push(localizedTemplate);
         }
       }
     }
-    return localizedPageTemplates;
+    return localizedPagePartials;
   }
 
 
   /**
-   * Finds the PageTemplate for the given locale in the provided collection of PageTemplates,
+   * Finds the PagePartial for the given locale in the provided collection of PagePartials,
    * the match is determined based the locale and the fallbacks.
    *
    * @param {String} locale
-   * @param {Array<PageTemplate>} templatesForPage
-   * @returns {PageTemplate}
+   * @param {Array<PagePartial>} templatesForPage
+   * @returns {PagePartial}
    */
-  _findPageTemplateForLocale(locale, templatesForPage) {
-    let pageTemplate = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), locale));
-    if (pageTemplate) {
-      return pageTemplate;
+  _findPagePartialForLocale(locale, templatesForPage) {
+    let pagePartial = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), locale));
+    if (pagePartial) {
+      return pagePartial;
     }
 
     const localeFallbacks = this._localeToFallbacks[locale] || [];
     for (const fallback of localeFallbacks) {
-      pageTemplate = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), fallback));
+      pagePartial = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), fallback));
 
-      if (pageTemplate) {
-        return pageTemplate;
+      if (pagePartial) {
+        return pagePartial;
       }
     }
   }
 
   /**
-   * Builds an Object mapping pageName to PageTemplates with for the corresponding page.
+   * Builds an Object mapping pageName to PagePartials with for the corresponding page.
    *
-   * @param {Array<PageTemplate>} templates
-   * @returns {Object<String, Array<PageTemplate>>}
+   * @param {Array<PagePartial>} templates
+   * @returns {Object<String, Array<PagePartial>>}
    */
   _getPageNameToTemplates(templates) {
     if (!templates || templates.length < 1) {
@@ -88,12 +88,12 @@ module.exports = class TemplateDirector {
     }
 
     let pageNameToTemplates = {};
-    for (const pageTemplate of templates) {
-      const pageName = pageTemplate.getPageName();
+    for (const pagePartial of templates) {
+      const pageName = pagePartial.getPageName();
       if (!pageNameToTemplates[pageName]) {
         pageNameToTemplates[pageName] = [];
       }
-      pageNameToTemplates[pageName].push(pageTemplate);
+      pageNameToTemplates[pageName].push(pagePartial);
     }
     return pageNameToTemplates;
   }

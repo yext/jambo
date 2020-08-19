@@ -1,6 +1,6 @@
 const Page = require('../../src/models/page');
 const PageConfig = require('../../src/models/pageconfig');
-const PageTemplate = require('../../src/models/pagetemplate');
+const PagePartial = require('../../src/models/pagetemplate');
 
 describe('Correctly forms Page object using static from', () => {
   const pageName = 'test';
@@ -17,7 +17,7 @@ describe('Correctly forms Page object using static from', () => {
       locale: locale,
       rawConfig: rawConfig
     }),
-    pageTemplate: new PageTemplate({
+    pagePartial: new PagePartial({
       pageName: pageName,
       locale: locale,
       path: templatePath,
