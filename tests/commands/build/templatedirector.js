@@ -77,14 +77,14 @@ describe('TemplateDirector directs PageTemplates and builds the expected object'
         new PageTemplate({
           pageName: pageTemplates['en'].getPageName(),
           locale: 'es',
-          path: pageTemplates['en'].getTemplatePath()
+          path: pageTemplates['en'].getPath()
         }),
       ],
       'de': [ // Directs to template with correct fallback locale
         new PageTemplate({
           pageName: pageTemplates['fr'].getPageName(),
           locale: 'de',
-          path: pageTemplates['fr'].getTemplatePath()
+          path: pageTemplates['fr'].getPath()
         }),
       ],
       'fr': [ // Directs to template with current locale if present
