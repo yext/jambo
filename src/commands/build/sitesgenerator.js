@@ -60,7 +60,8 @@ exports.SitesGenerator = class {
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
-        pageTemplates.push(PageTemplate.from(filename, path));
+        const fileContents = fs.readFileSync(path).toString();
+        pageTemplates.push(PageTemplate.from(filename, path, fileContents));
       }
     });
 
