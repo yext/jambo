@@ -2,6 +2,7 @@ const themeCommand = require('../import/themeimporter');
 
 const fs = require('file-system');
 const simpleGit = require('simple-git/promise');
+const SystemError = require('../../errors/systemerror');
 const git = simpleGit();
 
 /**
@@ -54,8 +55,8 @@ exports.RepositoryScaffolder = class {
           theme, 
           repositorySettings.shouldAddThemeAsSubmodule());
       }
-    } catch (error) {
-      return Promise.reject(error.toString());
+    } catch (err) {
+      throw new SystemError(err.message, err.stack);
     }
   }
 
