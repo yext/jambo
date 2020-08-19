@@ -65,7 +65,7 @@ module.exports = class Page {
    *
    * @returns {String}
    */
-  getTemplateContents() {
+  getPartialContents() {
     return this.templateContents;
   }
 

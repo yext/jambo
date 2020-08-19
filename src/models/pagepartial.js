@@ -2,8 +2,8 @@ const { getPageName } = require('../utils/fileutils');
 const Partial = require('./partial');
 
 /**
- * PagePartial represents a Handlebars template partial that is
- * used to generate a page.
+ * PagePartial represents a Handlebars partial that is used to
+ * generate a page.
  */
 module.exports = class PagePartial extends Partial {
   constructor({ path, fileContents, pageName, locale }) {
@@ -72,7 +72,7 @@ module.exports = class PagePartial extends Partial {
    */
   static from (filename, path, fileContents) {
     if (!filename) {
-      throw new Error('Error: no filename provided for page template');
+      throw new Error('Error: no filename provided for page partial');
     }
 
     return new PagePartial({
@@ -86,7 +86,7 @@ module.exports = class PagePartial extends Partial {
   /**
    * Extracts the locale from a given file name
    *
-   * @param {String} filename the file name of the page handlebars template
+   * @param {String} filename the file name of the page handlebars partial
    * @returns {String}
    */
   static parseLocale (filename) {

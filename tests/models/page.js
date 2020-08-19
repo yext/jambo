@@ -9,7 +9,7 @@ describe('Correctly forms Page object using static from', () => {
   const rawConfig = {
     config: 'some config'
   };
-  const templatePath = `pages/${pageName}.${locale}.${pageExt}.hbs`;
+  const partialPath = `pages/${pageName}.${locale}.${pageExt}.hbs`;
   const pageContents = '<html></html>';
   let page = Page.from({
     pageConfig: new PageConfig({
@@ -20,7 +20,7 @@ describe('Correctly forms Page object using static from', () => {
     pagePartial: new PagePartial({
       pageName: pageName,
       locale: locale,
-      path: templatePath,
+      path: partialPath,
       fileContents: pageContents
     }),
     urlFormatter: ((pageName, pageExt) => `${pageName}.${pageExt}.${pageExt}.aspx`),
@@ -33,7 +33,7 @@ describe('Correctly forms Page object using static from', () => {
       ...rawConfig,
       url: page.getOutputPath()
     });
-    expect(page.getTemplateContents()).toEqual(pageContents);
+    expect(page.getPartialContents()).toEqual(pageContents);
     expect(page.getOutputPath()).toEqual(`${pageName}.${pageExt}.${pageExt}.aspx`);
   });
 });

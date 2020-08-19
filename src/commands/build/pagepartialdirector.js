@@ -33,18 +33,18 @@ module.exports = class PagePartialDirector {
    * @returns {Array<PagePartials>}
    */
   direct(pagePartials) {
-    const pageNameToTemplates = this._getPageNameToTemplates(pagePartials);
+    const pageNameToPartials = this._getPageNameToPartials(pagePartials);
 
     let localizedPagePartials = {};
     for (const locale of this._locales) {
       localizedPagePartials[locale] = [];
-      for (const templates of Object.values(pageNameToTemplates)) {
+      for (const templates of Object.values(pageNameToPartials)) {
         const pagePartial = this._findPagePartialForLocale(locale, templates);
 
         if (pagePartial) {
-          const localizedTemplate = pagePartial.clone()
+          const localizedPartial = pagePartial.clone()
             .setLocale(locale);
-          localizedPagePartials[locale].push(localizedTemplate);
+          localizedPagePartials[locale].push(localizedPartial);
         }
       }
     }
@@ -82,20 +82,20 @@ module.exports = class PagePartialDirector {
    * @param {Array<PagePartial>} templates
    * @returns {Object<String, Array<PagePartial>>}
    */
-  _getPageNameToTemplates(templates) {
+  _getPageNameToPartials(templates) {
     if (!templates || templates.length < 1) {
       return {};
     }
 
-    let pageNameToTemplates = {};
+    let pageNameToPartials = {};
     for (const pagePartial of templates) {
       const pageName = pagePartial.getPageName();
-      if (!pageNameToTemplates[pageName]) {
-        pageNameToTemplates[pageName] = [];
+      if (!pageNameToPartials[pageName]) {
+        pageNameToPartials[pageName] = [];
       }
-      pageNameToTemplates[pageName].push(pagePartial);
+      pageNameToPartials[pageName].push(pagePartial);
     }
-    return pageNameToTemplates;
+    return pageNameToPartials;
   }
 
   /**

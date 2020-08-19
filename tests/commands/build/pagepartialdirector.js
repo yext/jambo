@@ -2,7 +2,7 @@ const PagePartialDirector = require('../../../src/commands/build/pagepartialdire
 const PagePartial = require('../../../src/models/pagepartial');
 
 describe('PagePartialDirector directs PagePartials and builds the expected object', () => {
-  it('creates page templates correctly when only defaultLocale is present', () => {
+  it('creates page partials correctly when only defaultLocale is present', () => {
     const defaultLocale = 'en';
     const pagePartials = [
       new PagePartial({
@@ -70,7 +70,7 @@ describe('PagePartialDirector directs PagePartials and builds the expected objec
     }).direct(Object.values(pagePartials));
 
     expect(localeToPagePartials).toEqual({
-      'en': [ // Directs to template with current locale even if fallbacks exist
+      'en': [ // Directs to partial with current locale even if fallbacks exist
         pagePartials['en'],
       ],
       'es': [ // Locale fallbacks are not recursive
@@ -80,17 +80,17 @@ describe('PagePartialDirector directs PagePartials and builds the expected objec
           path: pagePartials['en'].getPath()
         }),
       ],
-      'de': [ // Directs to template with correct fallback locale
+      'de': [ // Directs to partial with correct fallback locale
         new PagePartial({
           pageName: pagePartials['fr'].getPageName(),
           locale: 'de',
           path: pagePartials['fr'].getPath()
         }),
       ],
-      'fr': [ // Directs to template with current locale if present
+      'fr': [ // Directs to partial with current locale if present
         pagePartials['fr'],
       ],
-      'it': [], // Empty if no templates found for locale or fallbacks
+      'it': [], // Empty if no partials found for locale or fallbacks
     });
   });
 });
