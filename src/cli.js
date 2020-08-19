@@ -151,14 +151,13 @@ const options = yargs
     },
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
-      try {
-        sitesGenerator.generate(argv.jsonEnvVars);
-      } catch (err) {
-        if (isCustomError(err)) {
-          exitWithError(err);
-        }
-        exitWithError(new UserError("Failed to generate the site", err.stack));
-      }
+      sitesGenerator.generate(argv.jsonEnvVars)
+        .catch(err => {
+          if (isCustomError(err)) {
+            exitWithError(err);
+          }
+          exitWithError(new UserError("Failed to generate the site", err.stack));
+        });
     })
   .command(
     'extract-i18n',

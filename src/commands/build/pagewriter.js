@@ -3,6 +3,7 @@ const hbs = require('handlebars');
 const path = require('path');
 
 const PageSet = require('../../models/pageset');
+const UserError = require('../../errors/usererror');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
@@ -34,7 +35,7 @@ module.exports = class PageWriter {
 
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
-        throw new Error(`Error: No config found for page: ${page.getPageName()}`);
+        throw new UserError(`Error: No config found for page: ${page.getPageName()}`);
       }
 
       console.log(`Writing output file for the '${page.getPageName()}' page`);
