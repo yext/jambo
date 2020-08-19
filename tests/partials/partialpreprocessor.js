@@ -13,7 +13,7 @@ describe('PartialPreprocessor works correctly', () => {
       translatePlural: () => {
         return {
           0: 'Un article [[name]]',
-          plural: 'Les articles [[name]]',
+          1: 'Les articles [[name]]',
           locale: 'fr-FR'
         };
       }

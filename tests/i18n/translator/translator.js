@@ -42,7 +42,7 @@ describe('translations with one plural form (French)', () => {
       const translation = translator.translatePlural('Item', 'Items');
       const expectedResult = {
         0: 'Article',
-        plural: 'Articles',
+        1: 'Articles',
         locale: 'fr-FR'
       };
 
@@ -54,7 +54,7 @@ describe('translations with one plural form (French)', () => {
         'There is [[count]] item [[name]]', 'There are [[count]] items [[name]]');
       const expectedResult = {
         0: 'Il y a [[count]] article [[name]]',
-        plural: 'Il y a [[count]] articles [[name]]',
+        1: 'Il y a [[count]] articles [[name]]',
         locale: 'fr-FR'
       };
 
@@ -67,7 +67,7 @@ describe('translations with one plural form (French)', () => {
         'Missing [[count]] translations [[name]]');
       const expectedResult = {
         0: 'Missing [[count]] translation [[name]]',
-        plural: 'Missing [[count]] translations [[name]]',
+        1: 'Missing [[count]] translations [[name]]',
         locale: 'en'
       };
 

@@ -36,9 +36,9 @@ class Translator {
    * @param {string} phrase The phrase to translate.
    * @param {string} pluralForm The untranslated, plural form of the phrase.
    * @param {string} originalLocale The original locale of the passed in phrase.
-   * @returns {Object<string|number, string>} A map containing the various forms.
-   *                                          A form is keyed by the
-   *                                          corresponding count or 'plural'.
+   * @returns {Object<string|number, string>} A map containing the various forms as well as the locale.
+   *                                          A form is keyed by its gettext plural form count
+   *                                          see https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
   translatePlural(phrase, pluralForm, originalLocale = 'en') {
     const escapedPhrase = phrase
@@ -62,7 +62,8 @@ class Translator {
         .filter(translationKey => pluralKeyRegex.test(translationKey))
         .reduce(
           (pluralForms, translationKey) => {
-            const pluralFormIndex = translationKey.split('_')[1];
+            const keySuffix = translationKey.split('_')[1];
+            const pluralFormIndex = keySuffix === 'plural' ? '1' : keySuffix;
             pluralForms[pluralFormIndex] = localeTranslations[translationKey];
             return pluralForms;
           }, 
@@ -73,7 +74,7 @@ class Translator {
     // singular and plural forms.
     return {
       0: phrase,
-      plural: pluralForm,
+      1: pluralForm,
       locale: originalLocale
     };
   }
