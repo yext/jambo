@@ -57,7 +57,7 @@ const options = yargs
           { description: 'import the theme as a submodule', default: true, type: 'boolean' });
     },
     argv => {
-      try{
+      try {
         const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
         themeImporter.import(argv.theme, argv.addAsSubmodule)
           .then(console.log)
@@ -74,7 +74,7 @@ const options = yargs
         .option('path', { description: 'path in the theme to override', demandOption: true })
     },
     argv => {
-      try{
+      try {
         const shadowConfiguration = 
           new overrideCommand.ShadowConfiguration(addThemeToArgs(argv));
         const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
@@ -96,7 +96,7 @@ const options = yargs
       const pageConfiguration = 
         new addPageCommand.PageConfiguration(addThemeToArgs(argv));
       const pageScaffolder = new addPageCommand.PageScaffolder(jamboConfig);
-      try{
+      try {
         pageScaffolder.create(pageConfiguration);
       } catch (err) {
         exitWithError(new UserError("Failed to add page", err.stack));
@@ -111,7 +111,7 @@ const options = yargs
         .option('templateCardFolder', { description: 'folder of card to fork', demandOption: true });
     },
     argv => {
-      try{
+      try {
         const cardCreator = new addCardCommand.CardCreator(jamboConfig);
         cardCreator.create(argv.name, argv.templateCardFolder);
       } catch (e) {
@@ -129,7 +129,7 @@ const options = yargs
           { description: 'folder of direct answer card to fork', demandOption: true });
     },
     argv => {
-      try{
+      try {
         const cardCreator = new DirectAnswerCardCreator(jamboConfig);
         cardCreator.create(argv.name, argv.templateCardFolder);
       } catch (e) {
@@ -147,10 +147,10 @@ const options = yargs
     },
     argv => {
       const sitesGenerator = new buildCommand.SitesGenerator(jamboConfig);
-      try{
+      try {
         sitesGenerator.generate(argv.jsonEnvVars);
       } catch (err) {
-        if(isCustomError(err)){
+        if (isCustomError(err)) {
           exitWithError(err);
         }
         exitWithError(new UserError("Failed to generate the site", err.stack));
@@ -176,7 +176,7 @@ const options = yargs
       themeUpgrader
         .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
           .catch(err => {
-            if(isCustomError(err)){
+            if (isCustomError(err)) {
               exitWithError(err);
             }
             exitWithError(new SystemError(err.message, err.stack));

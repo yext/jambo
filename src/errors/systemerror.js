@@ -6,10 +6,10 @@ class SystemError extends Error {
   constructor (message, stack) {
     super(message);
 
-    if(stack){
+    if (stack) {
       this.stack = stack;
       this.message = message;
-    }else{
+    } else {
       Error.captureStackTrace(this, this.constructor);
     }
 

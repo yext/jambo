@@ -44,9 +44,9 @@ exports.ThemeShadower = class {
     const pathToTheme = `${this.config.dirs.themes}/${theme}`;
     const fullPathInThemes = `${pathToTheme}/${path}`;
 
-    try{
+    try {
       this._createShadowDir(fullPathInThemes, path);
-    } catch (err){
+    } catch (err) {
       throw new UserError('Override failed', err.stack);
     }
     

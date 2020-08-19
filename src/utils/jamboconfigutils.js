@@ -14,7 +14,7 @@ const UserError = require('../errors/usererror');
  * @returns {Object} The parsed Jambo configuration, as an {@link Object}. 
  */
 parseJamboConfig = function() {
-  try{
+  try {
     let config = mergeOptions(
       {
         dirs: {

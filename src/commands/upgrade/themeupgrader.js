@@ -67,7 +67,7 @@ exports.ThemeUpgrader = class {
     const stdoutString = stdout.toString().trim();
     const stderrString = stderr.toString().trim();
     stdoutString && console.log(stdoutString);
-    if(stderrString){
+    if (stderrString) {
       throw new SystemError("Error executing theme post upgrade script", stderrString);
     }
   } 

@@ -50,7 +50,7 @@ exports.ThemeImporter = class {
 
       return localPath;
     } catch (err) {
-      if(isCustomError(err)){
+      if (isCustomError(err)) {
         throw err;
       }
       throw new SystemError(err.message, err.stack);
