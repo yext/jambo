@@ -2,7 +2,7 @@ const GeneratedData = require('../../src/models/generateddata');
 const GlobalConfig = require('../../src/models/globalconfig');
 const LocalizationConfig = require('../../src/models/localizationconfig');
 const PageConfig = require('../../src/models/pageconfig');
-const PageTemplate = require('../../src/models/pagetemplate');
+const PagePartial = require('../../src/models/pagepartial');
 const PageSet = require('../../src/models/pageset');
 const Page = require('../../src/models/page');
 
@@ -44,7 +44,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
       }),
       localizationConfig: new LocalizationConfig(),
       pageConfigs: [],
-      pageTemplates: []
+      pagePartials: []
     });
 
     expect(generatedData.getLocales()).toEqual(['en']);
@@ -62,11 +62,11 @@ describe('GeneratedData is correctly formed using with static from', () => {
       pageName: 'page2',
       rawConfig: { config: 'test' }
     });
-    const pageTemplate1 = new PageTemplate({
+    const pagePartial1 = new PagePartial({
       pageName: 'page1',
       path: 'fakepath.html.hbs'
     });
-    const pageTemplate2 = new PageTemplate({
+    const pagePartial2 = new PagePartial({
       pageName: 'page2',
       path: 'fakepath2.html.hbs'
     });
@@ -83,9 +83,9 @@ describe('GeneratedData is correctly formed using with static from', () => {
         pageConfig1,
         pageConfig2
       ],
-      pageTemplates: [
-        pageTemplate1,
-        pageTemplate2
+      pagePartials: [
+        pagePartial1,
+        pagePartial2
       ]
     });
 
@@ -100,10 +100,10 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: pageConfig1.getPageName(),
               rawConfig: pageConfig1.getConfig(),
             }),
-            pageTemplate: new PageTemplate({
+            pagePartial: new PagePartial({
               locale: locale,
-              pageName: pageTemplate1.getPageName(),
-              path: pageTemplate1.getPath(),
+              pageName: pagePartial1.getPageName(),
+              path: pagePartial1.getPath(),
             }),
             outputPath: `${pageConfig1.getPageName()}.html`
           }),
@@ -113,10 +113,10 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: pageConfig2.getPageName(),
               rawConfig: pageConfig2.getConfig(),
             }),
-            pageTemplate: new PageTemplate({
+            pagePartial: new PagePartial({
               locale: locale,
-              pageName: pageTemplate2.getPageName(),
-              path: pageTemplate2.getPath(),
+              pageName: pagePartial2.getPageName(),
+              path: pagePartial2.getPath(),
             }),
             outputPath: `${pageConfig2.getPageName()}.html`
           }),
@@ -192,22 +192,22 @@ describe('GeneratedData is correctly formed using with static from', () => {
         }
       })
     ];
-    const pageTemplates = [
-      new PageTemplate({
+    const pagePartials = [
+      new PagePartial({
         pageName: 'home',
         path: 'pages/home.html.hbs',
       }),
-      new PageTemplate({
+      new PagePartial({
         pageName: 'faqs',
         locale: 'fr',
         path: 'pages/faqs.fr.html.hbs',
       }),
-      new PageTemplate({
+      new PagePartial({
         pageName: 'links',
         locale: 'es',
         path: 'pages/links.es.html.hbs',
       }),
-      new PageTemplate({
+      new PagePartial({
         pageName: 'locations',
         locale: 'es',
         path: 'pages/locations.es.html.hbs',
@@ -217,7 +217,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
       globalConfig: globalConfig,
       localizationConfig: localizationConfig,
       pageConfigs: pageConfigs,
-      pageTemplates: pageTemplates
+      pagePartials: pagePartials
     });
     expect(generatedData.getLocales()).toEqual(localizationConfig.getLocales());
     expect(generatedData.getPageSets()).toEqual([
@@ -230,7 +230,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'home',
               rawConfig: { test: 'config' },
             }),
-            pageTemplate: new PageTemplate({
+            pagePartial: new PagePartial({
               locale: 'en',
               pageName: 'home',
               path: 'pages/home.html.hbs',
@@ -253,7 +253,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'home',
               rawConfig: { test: 'config' },
             }),
-            pageTemplate: new PageTemplate({
+            pagePartial: new PagePartial({
               locale: 'es',
               pageName: 'home',
               path: 'pages/home.html.hbs',
@@ -266,7 +266,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'links',
               rawConfig: { test: 'config' },
             }),
-            pageTemplate: new PageTemplate({
+            pagePartial: new PagePartial({
               locale: 'es',
               pageName: 'links',
               path: 'pages/links.es.html.hbs',
@@ -279,7 +279,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'locations',
               rawConfig: { test: 'config' },
             }),
-            pageTemplate: new PageTemplate({
+            pagePartial: new PagePartial({
               locale: 'es',
               pageName: 'locations',
               path: 'pages/locations.es.html.hbs',
@@ -302,7 +302,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'faqs',
               rawConfig: { test: 'config' },
             }),
-            pageTemplate: new PageTemplate({
+            pagePartial: new PagePartial({
               locale: 'fr',
               pageName: 'faqs',
               path: 'pages/faqs.fr.html.hbs',

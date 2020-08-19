@@ -10,7 +10,7 @@ const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
-const PageTemplate = require('../../models/pagetemplate');
+const PagePartial = require('../../models/pagepartial');
 const PageWriter = require('./pagewriter');
 const { stripExtension } = require('../../utils/fileutils');
 
@@ -57,11 +57,11 @@ exports.SitesGenerator = class {
     });
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
 
-    let pageTemplates = [];
+    let pagePartials = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (this._isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
-        pageTemplates.push(PageTemplate.from(filename, path, fileContents));
+        pagePartials.push(PagePartial.from(filename, path, fileContents));
       }
     });
 
@@ -70,7 +70,7 @@ exports.SitesGenerator = class {
       globalConfig: configRegistry.getGlobalConfig(),
       localizationConfig: configRegistry.getLocalizationConfig(),
       pageConfigs: configRegistry.getPageConfigs(),
-      pageTemplates: pageTemplates
+      pagePartials: pagePartials
     });
 
     // Register needed Handlebars helpers.
