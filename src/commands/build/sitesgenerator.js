@@ -12,7 +12,10 @@ const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
 const PagePartial = require('../../models/pagepartial');
 const PageWriter = require('./pagewriter');
-const { stripExtension } = require('../../utils/fileutils');
+const PartialsRegistry = require('../../models/partialsregistry');
+const PartialPreprocessor = require('../../partials/partialpreprocessor');
+const { stripExtension, isValidFile } = require('../../utils/fileutils');
+const Translator = require('../../i18n/translator/translator');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -41,7 +44,7 @@ exports.SitesGenerator = class {
     console.log('Reading config files');
     const configNameToRawConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
-      if (this._isValidFile(filename)) {
+      if (isValidFile(filename)) {
         let configName = stripExtension(relative);
         try {
           configNameToRawConfig[configName] = parse(fs.readFileSync(path, 'utf8'), null, true);
@@ -59,10 +62,16 @@ exports.SitesGenerator = class {
 
     let pagePartials = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
-      if (this._isValidFile(filename)) {
+      if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
         pagePartials.push(PagePartial.from(filename, path, fileContents));
       }
+    });
+
+    console.log('Reading partial files');
+    const partialRegistry = PartialsRegistry.build({
+      customPartialPaths: config.dirs.partials,
+      themePath: `${config.dirs.themes}/${config.defaultTheme}`
     });
 
     // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
@@ -72,30 +81,6 @@ exports.SitesGenerator = class {
       pageConfigs: configRegistry.getPageConfigs(),
       pagePartials: pagePartials
     });
-
-    // Register needed Handlebars helpers.
-    console.log('Registering Jambo Handlebars helpers');
-    try {
-      this._registerHelpers();
-    } catch (err) {
-      throw new SystemError('Failed to register jambo handlebars helpers', err.stack);
-    }
-
-    // Register theme partials.
-    console.log('Registering theme partials');
-    const defaultTheme = config.defaultTheme;
-    try {
-      defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
-    } catch (err) {
-      throw new SystemError('Failed to register theme partials', err.stack);
-    }
-
-    // Register all custom partials.
-    try {
-      this._registerCustomPartials(config.dirs.partials);
-    } catch (err) {
-      throw new UserError('Failed to register custom partials', err.stack);
-    }
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
@@ -113,12 +98,42 @@ exports.SitesGenerator = class {
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
+    console.log('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
     const translations =
       config.dirs.translations ? await this._extractTranslations(locales) : {};
 
+    const localeToTranslator = {};
+    for (const locale of locales) {
+      localeToTranslator[locale] = await Translator
+        .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
+    }
+
+    console.log('Registering Handlebars helpers');
+    this._registerHelpers();
+
     const pageSets = GENERATED_DATA.getPageSets();
     for (const pageSet of pageSets) {
+      // Pre-process partials and register them with the Handlebars instance
+      const locale = pageSet.getLocale();
+      const partialPreprocessor = new PartialPreprocessor(localeToTranslator[locale]);
+
+      console.log(`Registering Handlebars partials for locale ${locale}`);
+      for (const partial of partialRegistry.getPartials()) {
+        hbs.registerPartial(
+          partial.getName(),
+          partialPreprocessor.process(partial.getFileContents())
+        );
+      }
+
+      // Pre-process page template contents - these are not registered with the Handlebars instance,
+      // the PageWriter compiles them with their args
+      for (const page of pageSet.getPages()) {
+        const processedPartial = partialPreprocessor.process(page.getPartialContents());
+        page.setPartialContents(processedPartial);
+      }
+
+      // Write pages
       new PageWriter({
         outputDirectory: config.dirs.output,
         env: env,
@@ -217,53 +232,6 @@ exports.SitesGenerator = class {
     }
   }
 
-  /**
-   * Registers all custom Handlebars partials in the provided paths.
-   *
-   * @param {Array} partialPaths The set of paths to traverse for partials.
-   */
-  _registerCustomPartials(partialPaths) {
-    partialPaths.forEach(partialPath => this._registerPartials(partialPath, true));
-  }
-
-  /**
-   * Registers all of the partials in the default Theme.
-   *
-   * @param {string} defaultTheme The default Theme in the Jambo config.
-   * @param {string} themesDir The Jambo Themes directory.
-   */
-  _registerThemePartials(defaultTheme, themesDir) {
-    const themeDir = path.resolve(themesDir, defaultTheme);
-    this._registerPartials(themeDir, false);
-  }
-
-  /**
-   * Registers all partials in the provided path. If the path is a directory,
-   * the useFullyQualifiedName parameter dictates if the path's root will be
-   * included in the partial naming scheme.
-   *
-   * @param {string} partialsPath The set of partials to register.
-   * @param {boolean} useFullyQualifiedName Whether or not to include the path's root
-   *                                        in the name of the newly registered partials.
-   */
-  _registerPartials(partialsPath, useFullyQualifiedName) {
-    const pathExists = fs.existsSync(partialsPath);
-    if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
-      fs.recurseSync(partialsPath, (path, relative, filename) => {
-        if (this._isValidFile(filename)) {
-          const partialName = useFullyQualifiedName
-            ? stripExtension(path)
-            : stripExtension(relative);
-          hbs.registerPartial(partialName, fs.readFileSync(path).toString());
-        }
-      });
-    } else if (pathExists) {
-      hbs.registerPartial(
-        stripExtension(partialsPath),
-        fs.readFileSync(partialsPath).toString());
-    }
-  }
-
   _registerHelpers() {
     hbs.registerHelper('json', function(context) {
       return JSON.stringify(context || {});
@@ -344,9 +312,5 @@ exports.SitesGenerator = class {
     }
 
     return translations;
-  }
-
-  _isValidFile(fileName) {
-    return fileName && !fileName.startsWith('.');
   }
 }

@@ -101,7 +101,9 @@ class TranslateInvocation {
       .reduce((params, paramString) => {
         const paramOperands = paramString.split('=');
         const paramName = paramOperands[0];
-        const paramValue = paramOperands[1];
+
+        // Strip the wrapper '' for string params
+        const paramValue = paramOperands[1] && paramOperands[1].replace(/(^')|('$)/g, '');
         params[paramName] = paramValue;
         return params;
       }, {});
