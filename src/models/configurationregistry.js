@@ -73,7 +73,7 @@ module.exports = class ConfigurationRegistry {
 
     const rawGlobalConfig = configNameToRawConfig[globalConfigName];
     if (!rawGlobalConfig) {
-      throw new Error(`Error: Cannot find '${globalConfigName}', exiting.`);
+      throw new UserError(`Cannot find '${globalConfigName}', exiting.`);
     }
 
     const rawLocaleConfig = configNameToRawConfig[localizationConfigName];

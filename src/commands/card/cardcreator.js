@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const { addToPartials } = require('../../utils/jamboconfigutils');
 const path = require('path');
+const UserError = require('../../errors/usererror')
 
 exports.CardCreator = class {
   constructor(jamboConfig) {
@@ -29,8 +30,7 @@ exports.CardCreator = class {
         fs.existsSync(`${themeCardsDir}/${cardFolderName}`) ||
         fs.existsSync(`${this._customCardsDir}/${cardFolderName}`);
     if (isFolderInUse) {
-        console.error(`A folder with name ${cardFolderName} already exists`);
-        return;
+        throw new UserError(`A folder with name ${cardFolderName} already exists`);
     }
 
     const cardFolder = `${this._customCardsDir}/${cardFolderName}`;
@@ -39,8 +39,7 @@ exports.CardCreator = class {
         fs.copySync(templateCardFolder, cardFolder);
         this._renameCardComponent(cardFolderName, cardFolder);
     } else {
-        console.error(`The folder ${templateCardFolder} does not exist`);
-        return;
+        throw new UserError(`The folder ${templateCardFolder} does not exist`);
     }
   }
 
