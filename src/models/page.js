@@ -1,5 +1,5 @@
 const PageConfig = require('./pageconfig');
-const PageTemplate = require('./pagetemplate');
+const PagePartial = require('./pagepartial');
 const { stripExtension } = require('../utils/fileutils');
 
 /**
@@ -9,10 +9,10 @@ const { stripExtension } = require('../utils/fileutils');
 module.exports = class Page {
   /**
    * @param {PageConfig} pageConfig
-   * @param {String} templateContents
+   * @param {String} partialContents
    * @param {String} outputPath
    */
-  constructor({ pageConfig, templateContents, outputPath }) {
+  constructor({ pageConfig, partialContents, outputPath }) {
     /**
      * @type {PageConfig}
      */
@@ -21,7 +21,7 @@ module.exports = class Page {
     /**
      * @type {String}
      */
-    this.templateContents = templateContents;
+    this.partialContents = partialContents;
 
     /**
      * @type {String}
@@ -61,12 +61,12 @@ module.exports = class Page {
   }
 
   /**
-   * Returns the file contents of the page's template
+   * Returns the file contents of the page's partial
    *
    * @returns {String}
    */
-  getTemplateContents() {
-    return this.templateContents;
+  getPartialContents() {
+    return this.partialContents;
   }
 
   /**
@@ -80,19 +80,19 @@ module.exports = class Page {
 
   /**
    * @param {PageConfig} pageConfig
-   * @param {PageTemplate} pageTemplate
+   * @param {PagePartial} pagePartial
    * @param {Function} urlFormatter
    */
-  static from({ pageConfig, pageTemplate, urlFormatter }) {
+  static from({ pageConfig, pagePartial, urlFormatter }) {
     const outputPath = Page.buildUrl(
       pageConfig.getPageName(),
-      pageTemplate.getPath(),
+      pagePartial.getPath(),
       urlFormatter
     );
 
     return new Page({
       pageConfig: pageConfig,
-      templateContents: pageTemplate.getFileContents(),
+      partialContents: pagePartial.getFileContents(),
       outputPath: outputPath
     });
   }

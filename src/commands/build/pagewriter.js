@@ -46,7 +46,7 @@ module.exports = class PageWriter {
         pageNameToConfig: pageSet.getPageNameToConfig(),
       });
 
-      const template = hbs.compile(page.getTemplateContents());
+      const template = hbs.compile(page.getPartialContents());
       const outputHTML = template(templateArguments);
 
       fs.writeFileSync(
