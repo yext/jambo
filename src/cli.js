@@ -17,7 +17,7 @@ const { exitWithError, isCustomError } = require('./utils/errorutils');
 
 let jamboConfig;
 
-try{
+try {
   jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
 } catch (e) {
   exitWithError(e);
@@ -44,7 +44,7 @@ const options = yargs
     argv => {
       const repositorySettings = new initCommand.RepositorySettings(argv);
       const repositoryScaffolder = new initCommand.RepositoryScaffolder();
-      repositoryScaffolder.create(repositorySettings).catch((e) => {exitWithError(e)});
+      repositoryScaffolder.create(repositorySettings).catch(e => exitWithError(e));
     })
   .command(
     'import',
@@ -59,7 +59,9 @@ const options = yargs
     argv => {
       try{
         const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
-        themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log).catch((e) => {exitWithError(e)});
+        themeImporter.import(argv.theme, argv.addAsSubmodule)
+          .then(console.log)
+          .catch(e => exitWithError(e));
       } catch (e) {
         exitWithError(e);
       }
@@ -172,12 +174,13 @@ const options = yargs
     argv => {
       const themeUpgrader = new ThemeUpgrader(jamboConfig);
       themeUpgrader
-        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy).catch((err) => {
-          if(isCustomError(err)){
-            exitWithError(err);
-          }
-          exitWithError(new SystemError(err.message, err.stack));
-        });
+        .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
+          .catch(err => {
+            if(isCustomError(err)){
+              exitWithError(err);
+            }
+            exitWithError(new SystemError(err.message, err.stack));
+          });
     })
   .strict()
   .argv;

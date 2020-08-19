@@ -42,7 +42,7 @@ exports.SitesGenerator = class {
         try {
           pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (err) {
-          throw new UserError(err.message, err.stack);
+          throw new UserError('JSON SyntaxError: could not parse file ' + path, err.stack);
         }
       }
     })
