@@ -130,6 +130,9 @@ class Translator {
     const i18nextOptions = this._i18next.options;
 
     return locales.find(locale => {
+      if (!i18nextOptions.resources[locale]) {
+        return false;
+      }
       const localeTranslations = i18nextOptions.resources[locale].translation;
       const hasMatchingTranslationKey = Object.keys(localeTranslations)
         .some(translationKey => keyRegex.test(translationKey));

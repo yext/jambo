@@ -53,7 +53,7 @@ class PartialPreprocessor {
       translatorResult = translationContext ?
         this._translator.translateWithContext(
           invocation.getPhrase(), translationContext) :
-        this._translator.translate(invocation.getPhrase);
+        this._translator.translate(invocation.getPhrase());
     }
     translatorResult = `'${translatorResult}'`;
 
