@@ -10,6 +10,7 @@ describe('Correctly forms Page object using static from', () => {
     config: 'some config'
   };
   const templatePath = `pages/${pageName}.${locale}.${pageExt}.hbs`;
+  const pageContents = '<html></html>';
   let page = Page.from({
     pageConfig: new PageConfig({
       pageName: pageName,
@@ -19,7 +20,8 @@ describe('Correctly forms Page object using static from', () => {
     pageTemplate: new PageTemplate({
       pageName: pageName,
       locale: locale,
-      path: templatePath
+      path: templatePath,
+      fileContents: pageContents
     }),
     urlFormatter: ((pageName, pageExt) => `${pageName}.${pageExt}.${pageExt}.aspx`),
   });
@@ -31,7 +33,7 @@ describe('Correctly forms Page object using static from', () => {
       ...rawConfig,
       url: page.getOutputPath()
     });
-    expect(page.getTemplatePath()).toEqual(templatePath);
+    expect(page.getTemplateContents()).toEqual(pageContents);
     expect(page.getOutputPath()).toEqual(`${pageName}.${pageExt}.${pageExt}.aspx`);
   });
 });

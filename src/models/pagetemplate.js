@@ -1,15 +1,13 @@
 const { getPageName } = require('../utils/fileutils');
+const Partial = require('./partial');
 
 /**
- * PageTemplate represents a Handlebars template file that is
+ * PageTemplate represents a Handlebars template partial that is
  * used to generate a page.
  */
-module.exports = class PageTemplate {
-  constructor({ pageName, path, locale }) {
-    /**
-     * @type {String}
-     */
-    this.path = path;
+module.exports = class PageTemplate extends Partial {
+  constructor({ path, fileContents, pageName, locale }) {
+    super(path, fileContents);
 
     /**
      * @type {String}
@@ -32,15 +30,6 @@ module.exports = class PageTemplate {
   }
 
   /**
-   * Returns the template path
-   *
-   * @returns {String} template path
-   */
-  getTemplatePath() {
-    return this.path;
-  }
-
-  /**
    * Returns the locale
    *
    * @returns {String} locale
@@ -50,19 +39,45 @@ module.exports = class PageTemplate {
   }
 
   /**
+   * Updates the locale
+   *
+   * @param {String} locale
+   */
+  setLocale(locale) {
+    this.locale = locale;
+    return this;
+  }
+
+  /**
+   * Creates a a copy of this PageTemplate
+   *
+   * @returns {PageTemplate}
+   */
+  clone () {
+    return new PageTemplate({
+      locale: this.locale,
+      path: this.path,
+      fileContents: this.fileContents,
+      pageName: this.pageName
+    });
+  }
+
+  /**
    * Creates a @type {PageTemplate} from a given filename and path
    *
    * @param {String} filename
    * @param {String} path
+   * @param {String} fileContents
    * @returns {PageTemplate}
    */
-  static from (filename, path) {
+  static from (filename, path, fileContents) {
     if (!filename) {
       throw new Error('Error: no filename provided for page template');
     }
 
     return new PageTemplate({
       path: path,
+      fileContents: fileContents,
       pageName: getPageName(filename),
       locale: PageTemplate.parseLocale(filename)
     });
