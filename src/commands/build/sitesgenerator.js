@@ -10,7 +10,7 @@ const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
-const PageTemplate = require('../../models/pagetemplate');
+const PagePartial = require('../../models/pagepartial');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const PartialPreprocessor = require('../../partials/partialpreprocessor');
@@ -59,12 +59,11 @@ exports.SitesGenerator = class {
     });
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
 
-    console.log('Reading page files');
-    let pageTemplates = [];
+    let pagePartials = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
-        pageTemplates.push(PageTemplate.from(filename, path, fileContents));
+        pagePartials.push(PagePartial.from(filename, path, fileContents));
       }
     });
 
@@ -79,7 +78,7 @@ exports.SitesGenerator = class {
       globalConfig: configRegistry.getGlobalConfig(),
       localizationConfig: configRegistry.getLocalizationConfig(),
       pageConfigs: configRegistry.getPageConfigs(),
-      pageTemplates: pageTemplates
+      pagePartials: pagePartials
     });
 
     // Clear the output directory but keep preserved files before writing new files
@@ -100,14 +99,14 @@ exports.SitesGenerator = class {
     const translations =
       config.dirs.translations ? await this._extractTranslations(locales) : {};
 
-    console.log('Registering Handlebars helpers');
-    this._registerHelpers();
-
     const localeToTranslator = {};
     for (const locale of locales) {
       localeToTranslator[locale] = await Translator
         .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
     }
+
+    console.log('Registering Handlebars helpers');
+    this._registerHelpers();
 
     const pageSets = GENERATED_DATA.getPageSets();
     for (const pageSet of pageSets) {
@@ -126,8 +125,8 @@ exports.SitesGenerator = class {
       // Pre-process page template contents - these are not registered with the Handlebars instance,
       // the PageWriter compiles them with their args
       for (const page of pageSet.getPages()) {
-        const processedPartial = partialPreprocessor.process(page.getTemplateContents());
-        page.setTemplateContents(processedPartial);
+        const processedPartial = partialPreprocessor.process(page.getPartialContents());
+        page.setPartialContents(processedPartial);
       }
 
       // Write pages

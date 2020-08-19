@@ -109,7 +109,7 @@ class PartialPreprocessor {
         return params + `${paramName}=${paramValue} `;
       }, '');
     
-    return `{ runtimeTranslation phrase=${translatorResult} ${paramsString}}`;
+    return `{{ runtimeTranslation phrase=${translatorResult} ${paramsString}}}`;
   }
 }
 module.exports = PartialPreprocessor;
