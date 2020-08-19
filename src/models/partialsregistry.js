@@ -24,21 +24,19 @@ module.exports = class PartialsRegistry {
    * the path's root is included in the partial naming scheme; the relativePaths
    * are considered relative to the given path rather than root.
    *
-   * @param {Array<String>} fullyQualifiedPaths The set of partials to register
-   *                                      using full path for the naming scheme.
-   * @param {Array<String>} relativePaths The set of partials to register using
-   *                                      the relative path for the naming scheme.
+   * @param {Array<String>} customPartialPaths The set of custom partials to
+   *                                           register with Jambo.
+   * @param {String} themePath The path to the default theme directory
    * @returns {PartialsRegistry}
    */
-  static build({ fullyQualifiedPaths, relativePaths }) {
+  static build({ customPartialPaths, themePath }) {
     const partials = [];
-    // Register partials using relative paths as partial names
-    for (const path of relativePaths) {
-      partials.push(...PartialsRegistry.buildPartials(path, false));
-    }
 
-    // Register partials using fully qualified paths as partial names
-    for (const path of fullyQualifiedPaths) {
+    // Build partials from the theme
+    partials.push(...PartialsRegistry.buildPartials(themePath, false));
+
+    // Build custom partials
+    for (const path of customPartialPaths) {
       partials.push(...PartialsRegistry.buildPartials(path, true));
     }
 

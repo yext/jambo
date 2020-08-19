@@ -70,8 +70,8 @@ exports.SitesGenerator = class {
 
     console.log('Reading partial files');
     const partialRegistry = PartialsRegistry.build({
-      fullyQualifiedPaths: config.dirs.partials,
-      relativePaths: [`${config.dirs.themes}/${config.defaultTheme}`]
+      customPartialPaths: config.dirs.partials,
+      themePath: `${config.dirs.themes}/${config.defaultTheme}`
     });
 
     // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
@@ -103,17 +103,24 @@ exports.SitesGenerator = class {
     console.log('Registering Handlebars helpers');
     this._registerHelpers();
 
+    const localeToTranslator = {};
+    for (const locale of locales) {
+      localeToTranslator[locale] = await Translator
+        .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
+    }
+
     const pageSets = GENERATED_DATA.getPageSets();
     for (const pageSet of pageSets) {
       // Pre-process partials and register them with the Handlebars instance
       const locale = pageSet.getLocale();
-      const translator = await Translator
-        .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
-      const partialPreprocessor = new PartialPreprocessor(translator)
+      const partialPreprocessor = new PartialPreprocessor(localeToTranslator[locale]);
 
       console.log(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
-        hbs.registerPartial(partial.getName(), partialPreprocessor.process(partial.getFileContents()));
+        hbs.registerPartial(
+          partial.getName(),
+          partialPreprocessor.process(partial.getFileContents())
+        );
       }
 
       // Pre-process page template contents - these are not registered with the Handlebars instance,
