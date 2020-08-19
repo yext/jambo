@@ -30,6 +30,15 @@ module.exports = class Page {
   }
 
   /**
+   * Sets the page template contents
+   *
+   * @returns {String}
+   */
+  setPartialContents (partialContents) {
+    this.partialContents = partialContents;
+  }
+
+  /**
    * Returns the locale
    *
    * @returns {String}
