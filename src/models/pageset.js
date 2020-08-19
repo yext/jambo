@@ -76,7 +76,7 @@ module.exports = class PageSet {
   /**
    * Returns the globalConfig
    *
-   * @returns {GlobalConfig} globalConfig
+   * @returns {GlobalConfig} globalConfigs
    */
   getGlobalConfig () {
     return this.globalConfig;
