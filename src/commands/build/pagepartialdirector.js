@@ -1,4 +1,4 @@
-const PagePartial = require('../../models/pagetemplate');
+const PagePartial = require('../../models/pagepartial');
 
 /**
  * PagePartialDirector creates a new, localized {@link PagePartial}

@@ -1,5 +1,5 @@
 const PageConfig = require('./pageconfig');
-const PagePartial = require('./pagetemplate');
+const PagePartial = require('./pagepartial');
 const { stripExtension } = require('../utils/fileutils');
 
 /**

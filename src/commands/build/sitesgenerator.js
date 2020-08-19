@@ -10,7 +10,7 @@ const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
-const PagePartial = require('../../models/pagetemplate');
+const PagePartial = require('../../models/pagepartial');
 const PageWriter = require('./pagewriter');
 const { stripExtension } = require('../../utils/fileutils');
 

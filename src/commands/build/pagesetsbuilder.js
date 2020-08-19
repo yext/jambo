@@ -4,8 +4,8 @@ const Page = require('../../models/page');
 const PageConfig = require('../../models/pageconfig');
 const PageConfigDecorator = require('./pageconfigdecorator');
 const PageSet = require('../../models/pageset');
-const PagePartial = require('../../models/pagetemplate');
-const PagePartialDirector = require('./templatedirector');
+const PagePartial = require('../../models/pagepartial');
+const PagePartialDirector = require('./pagepartialdirector');
 
 /**
  * PageSetsBuilder is responsible for matching {@link PageConfigs} and

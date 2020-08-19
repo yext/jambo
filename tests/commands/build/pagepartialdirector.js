@@ -1,5 +1,5 @@
-const PagePartialDirector = require('../../../src/commands/build/templatedirector');
-const PagePartial = require('../../../src/models/pagetemplate');
+const PagePartialDirector = require('../../../src/commands/build/pagepartialdirector');
+const PagePartial = require('../../../src/models/pagepartial');
 
 describe('PagePartialDirector directs PagePartials and builds the expected object', () => {
   it('creates page templates correctly when only defaultLocale is present', () => {
