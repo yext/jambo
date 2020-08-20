@@ -2,7 +2,7 @@ const GeneratedData = require('../../src/models/generateddata');
 const GlobalConfig = require('../../src/models/globalconfig');
 const LocalizationConfig = require('../../src/models/localizationconfig');
 const PageConfig = require('../../src/models/pageconfig');
-const PagePartial = require('../../src/models/pagepartial');
+const PagePartial = require('../../src/models/pagetemplate');
 const PageSet = require('../../src/models/pageset');
 const Page = require('../../src/models/page');
 

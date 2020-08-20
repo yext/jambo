@@ -1,4 +1,4 @@
-const PagePartial = require('../../src/models/pagepartial');
+const PagePartial = require('../../src/models/pagetemplate');
 
 describe('Correctly forms PagePartial object using static from', () => {
   it('PagePartial is built properly when locale is present', () => {
