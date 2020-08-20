@@ -3,6 +3,7 @@ const hbs = require('handlebars');
 const path = require('path');
 
 const PageSet = require('../../models/pageset');
+const UserError = require('../../errors/usererror');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to

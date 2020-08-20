@@ -1,4 +1,5 @@
 const { getPageName } = require('../utils/fileutils');
+const SystemError = require('../errors/systemerror');
 
 /**
  * PageTemplate represents a Handlebars template that is used to
@@ -97,7 +98,7 @@ module.exports = class PageTemplate {
    */
   static from (filename, path, fileContents) {
     if (!filename) {
-      throw new Error('Error: no filename provided for page template');
+      throw new SystemError('Error: no filename provided for page template');
     }
 
     return new PageTemplate({

@@ -1,6 +1,7 @@
 const fs = require('file-system');
 const path = require('path');
 const { addToPartials } = require('../../utils/jamboconfigutils');
+const UserError = require('../../errors/usererror');
 
 /**
  * The ShadowConfiguration specifies what file(s) should be shadowed for a particular theme.
@@ -10,7 +11,7 @@ const { addToPartials } = require('../../utils/jamboconfigutils');
 exports.ShadowConfiguration = class {
   constructor({ theme, path }) {
     if (!theme || !path) {
-      throw new Error('Theme and path must be specified when shadowing');
+      throw new UserError('Theme and path must be specified when shadowing');
     }
 
     this._theme = theme;
@@ -43,7 +44,12 @@ exports.ThemeShadower = class {
     const pathToTheme = `${this.config.dirs.themes}/${theme}`;
     const fullPathInThemes = `${pathToTheme}/${path}`;
 
-    this._createShadowDir(fullPathInThemes, path);
+    try {
+      this._createShadowDir(fullPathInThemes, path);
+    } catch (err) {
+      throw new UserError('Override failed', err.stack);
+    }
+    
     addToPartials(path);
   }
 
@@ -51,7 +57,7 @@ exports.ThemeShadower = class {
    * Creates the necessary local directories for the provided shadow. If the
    * shadow corresponds to a top-level file, no new directories will be created.
    *
-   * @param {boolean} isFile If the shadow corresponds to a single file.
+   * @param {string} fullPathInThemes The path inside the theme
    * @param {string} localShadowPath The path of the new, local shadow.
    */
   _createShadowDir(fullPathInThemes, localShadowPath) {
