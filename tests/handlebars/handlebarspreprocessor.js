@@ -2,7 +2,7 @@ const path = require('path');
 const { readFileSync } = require('file-system');
 
 const Translator = require('../../src/i18n/translator/translator');
-const TemplatePreprocessor = require('../../src/templates/templatepreprocessor');
+const TemplatePreprocessor = require('../../src/handlebars/handlebarspreprocessor');
 jest.mock('../../src/i18n/translator/translator')
 
 describe('TemplatePreprocessor works correctly', () => {
@@ -24,18 +24,18 @@ describe('TemplatePreprocessor works correctly', () => {
 
   it('transpiles all "translate" and "translateJS" invocations in a JS template', () => {
     const rawJsTemplate = readFileSync(
-      path.join(__dirname, '../fixtures/templates/rawcomponent.js'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/rawcomponent.js'), 'utf8');
     const processedJsTemplate = readFileSync(
-      path.join(__dirname, '../fixtures/templates/processedcomponent.js'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/processedcomponent.js'), 'utf8');
 
     expect(templatePreprocessor.process(rawJsTemplate)).toEqual(processedJsTemplate);
   });
 
   it('transpiles all "translate" and "translateJS" invocations in a HBS template', () => {
     const rawHbsTemplate = readFileSync(
-      path.join(__dirname, '../fixtures/templates/rawtemplate.hbs'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/rawtemplate.hbs'), 'utf8');
     const processedHbsTemplate = readFileSync(
-      path.join(__dirname, '../fixtures/templates/processedtemplate.hbs'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/processedtemplate.hbs'), 'utf8');
 
     expect(templatePreprocessor.process(rawHbsTemplate)).toEqual(processedHbsTemplate);
   });
