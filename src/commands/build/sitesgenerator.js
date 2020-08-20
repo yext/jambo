@@ -124,20 +124,20 @@ exports.SitesGenerator = class {
     for (const pageSet of pageSets) {
       // Pre-process partials and register them with the Handlebars instance
       const locale = pageSet.getLocale();
-      const templatePreprocessor = new HandlebarsPreprocessor(localeToTranslator[locale]);
+      const handlebarsPreprocessor = new HandlebarsPreprocessor(localeToTranslator[locale]);
 
       console.log(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
         hbs.registerPartial(
           partial.getName(),
-          templatePreprocessor.process(partial.getFileContents())
+          handlebarsPreprocessor.process(partial.getFileContents())
         );
       }
 
       // Pre-process page template contents - these are not registered with the Handlebars instance,
       // the PageWriter compiles them with their args
       for (const page of pageSet.getPages()) {
-        const processedTemplate = templatePreprocessor.process(page.getTemplateContents());
+        const processedTemplate = handlebarsPreprocessor.process(page.getTemplateContents());
         page.setTemplateContents(processedTemplate);
       }
 

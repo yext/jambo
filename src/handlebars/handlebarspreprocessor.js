@@ -1,8 +1,8 @@
 const TranslateInvocation = require('./models/translateinvocation');
 
 /**
- * This class performs preprocessing on templates before they are registered
- * with Handlebars. The preprocessing is applicable to any type of template
+ * This class performs preprocessing on Handlebars content before it is registered
+ * with Handlebars. The preprocessing is applicable to any type of Handlebars content
  * used with Jambo.
  */
 class HandlebarsPreprocessor {
@@ -11,26 +11,26 @@ class HandlebarsPreprocessor {
   }
 
   /**
-   * Processes the provided template, looking for usages of the 'translate' or
+   * Processes the provided Handlebars content, looking for usages of the 'translate' or
    * 'translateJS' helpers. These usages are transpiled into either a translated
    * string or a call to the SDK's run-time translation methods.
    *
-   * @param {string} template The template to process.
-   * @returns {string} The transpiled template.
+   * @param {string} handlebarsContent The Handlebars content to process.
+   * @returns {string} The transpiled Handlebars content.
    */
-  process(template) {
-    let processedTemplate = template;
+  process(handlebarsContent) {
+    let processedHandlebarsContent = handlebarsContent;
     const translateHelperCalls =
-      processedTemplate.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
+      processedHandlebarsContent.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
 
     translateHelperCalls.forEach(call => {
       const translateInvocation = TranslateInvocation.from(call);
       const transpiledCall =
         this._handleTranslateInvocation(translateInvocation);
-      processedTemplate = processedTemplate.replace(call, transpiledCall);
+      processedHandlebarsContent = processedHandlebarsContent.replace(call, transpiledCall);
     });
 
-    return processedTemplate;
+    return processedHandlebarsContent;
   }
 
   /**

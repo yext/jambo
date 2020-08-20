@@ -20,23 +20,23 @@ describe('HandlebarsPreprocessor works correctly', () => {
     };
   });
   const translator = new Translator();
-  const templatePreprocessor = new HandlebarsPreprocessor(translator);
+  const handlebarsPreprocessor = new HandlebarsPreprocessor(translator);
 
   it('transpiles all "translate" and "translateJS" invocations in a JS template', () => {
-    const rawJsTemplate = readFileSync(
+    const rawJsHandlebarsContent = readFileSync(
       path.join(__dirname, '../fixtures/handlebars/rawcomponent.js'), 'utf8');
-    const processedJsTemplate = readFileSync(
+    const processedJsHandlebarsContent = readFileSync(
       path.join(__dirname, '../fixtures/handlebars/processedcomponent.js'), 'utf8');
 
-    expect(templatePreprocessor.process(rawJsTemplate)).toEqual(processedJsTemplate);
+    expect(handlebarsPreprocessor.process(rawJsHandlebarsContent)).toEqual(processedJsHandlebarsContent);
   });
 
   it('transpiles all "translate" and "translateJS" invocations in a HBS template', () => {
-    const rawHbsTemplate = readFileSync(
+    const rawHbsHandlebarsContent = readFileSync(
       path.join(__dirname, '../fixtures/handlebars/rawtemplate.hbs'), 'utf8');
-    const processedHbsTemplate = readFileSync(
+    const processedHbsHandlebarsContent = readFileSync(
       path.join(__dirname, '../fixtures/handlebars/processedtemplate.hbs'), 'utf8');
 
-    expect(templatePreprocessor.process(rawHbsTemplate)).toEqual(processedHbsTemplate);
+    expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent)).toEqual(processedHbsHandlebarsContent);
   });
 });
