@@ -1,5 +1,6 @@
 const { getPageName } = require('../utils/fileutils');
 const Partial = require('./partial');
+const SystemError = require('../errors/systemerror');
 
 /**
  * PagePartial represents a Handlebars partial that is used to
@@ -72,7 +73,7 @@ module.exports = class PagePartial extends Partial {
    */
   static from (filename, path, fileContents) {
     if (!filename) {
-      throw new Error('Error: no filename provided for page partial');
+      throw new SystemError('Error: no filename provided for page partial');
     }
 
     return new PagePartial({

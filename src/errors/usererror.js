@@ -1,7 +1,7 @@
 /**
  * Represents errors that we may reasonably expect a user to make
  */
-class UserError extends Error {  
+class UserError extends Error {
   constructor(message, stack) {
     super(message);
 

@@ -15,7 +15,9 @@ const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const PartialPreprocessor = require('../../partials/partialpreprocessor');
 const { stripExtension, isValidFile } = require('../../utils/fileutils');
+const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
+const UserError = require('../../errors/usererror');
 
 exports.SitesGenerator = class {
   constructor(jamboConfig) {
@@ -69,10 +71,15 @@ exports.SitesGenerator = class {
     });
 
     console.log('Reading partial files');
-    const partialRegistry = PartialsRegistry.build({
-      customPartialPaths: config.dirs.partials,
-      themePath: `${config.dirs.themes}/${config.defaultTheme}`
-    });
+    let partialRegistry;
+    try {
+      partialRegistry = PartialsRegistry.build({
+        customPartialPaths: config.dirs.partials,
+        themePath: `${config.dirs.themes}/${config.defaultTheme}`
+      });
+    } catch (err) {
+      throw new UserError("Failed to build partials", err.stack);
+    }
 
     // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
     const GENERATED_DATA = GeneratedData.from({
@@ -109,8 +116,13 @@ exports.SitesGenerator = class {
         .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
     }
 
-    console.log('Registering Handlebars helpers');
-    this._registerHelpers();
+    // Register needed Handlebars helpers.
+    console.log('Registering Jambo Handlebars helpers');
+    try {
+      this._registerHelpers();
+    } catch (err) {
+      throw new SystemError("Failed to register jambo handlebars helpers", err.stack);
+    }
 
     const pageSets = GENERATED_DATA.getPageSets();
     for (const pageSet of pageSets) {

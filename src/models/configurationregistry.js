@@ -2,6 +2,7 @@ const { getPageName } = require('../utils/fileutils');
 const GlobalConfig = require('./globalconfig');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
+const UserError = require('../errors/usererror');
 
 /**
  * ConfigurationRegistry is a registry of the configuration files provided to Jambo.
@@ -73,7 +74,7 @@ module.exports = class ConfigurationRegistry {
 
     const rawGlobalConfig = configNameToRawConfig[globalConfigName];
     if (!rawGlobalConfig) {
-      throw new Error(`Error: Cannot find '${globalConfigName}', exiting.`);
+      throw new UserError(`Error: Cannot find '${globalConfigName}', exiting.`);
     }
 
     const rawLocaleConfig = configNameToRawConfig[localizationConfigName];
