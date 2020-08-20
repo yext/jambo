@@ -1,4 +1,5 @@
 const PageConfig = require('../../src/models/pageconfig');
+const { NO_LOCALE } = require('../../src/constants');
 
 describe('Properly builds PageConfig object', () => {
   const pageName = 'test';
@@ -23,7 +24,7 @@ describe('Properly builds PageConfig object', () => {
       rawConfig: rawConfig,
     })
     expect(pageConfig.getPageName()).toEqual(pageName);
-    expect(pageConfig.getLocale()).toEqual('');
+    expect(pageConfig.getLocale()).toEqual(NO_LOCALE);
     expect(pageConfig.getConfig()).toEqual(rawConfig);
   });
 });

@@ -4,6 +4,7 @@ const path = require('path');
 
 const PageSet = require('../../models/pageset');
 const UserError = require('../../errors/usererror');
+const { NO_LOCALE } = require('../../constants');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
@@ -31,7 +32,7 @@ module.exports = class PageWriter {
     if (!pageSet || pageSet.getPages().length < 1) {
       return;
     }
-    const localeMessage = pageSet.getLocale()
+    const localeMessage = pageSet.getLocale() !== NO_LOCALE
       ? ` for '${pageSet.getLocale()}' locale`
       : '';
     console.log(`Writing files${localeMessage}`);

@@ -1,6 +1,7 @@
 const PageTemplateDirector = require('../../../src/commands/build/pagetemplatedirector');
 const PageTemplate = require('../../../src/models/pagetemplate');
 const LocalizationConfig = require('../../../src/models/localizationconfig');
+const { NO_LOCALE } = require('../../../src/constants');
 
 describe('PageTemplateDirector directs PageTemplates and builds the expected object', () => {
   it('creates page templates correctly with no locale config', () => {
@@ -22,20 +23,20 @@ describe('PageTemplateDirector directs PageTemplates and builds the expected obj
       .direct(pageTemplates);
 
     expect(localeToPageTemplates).toEqual({
-      '': [
+      [NO_LOCALE]: [
         new PageTemplate({
           pageName: 'path',
-          locale: '',
+          locale: NO_LOCALE,
           path: `pages/path.html.hbs`
         }),
         new PageTemplate({
           pageName: 'path2',
-          locale: '',
+          locale: NO_LOCALE,
           path: `pages/path2.html.hbs`
         }),
         new PageTemplate({
           pageName: 'path3',
-          locale: '',
+          locale: NO_LOCALE,
           path: `pages/path3.html.hbs`
         }),
       ]

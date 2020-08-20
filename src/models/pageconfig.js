@@ -1,3 +1,5 @@
+const { NO_LOCALE } = require("../constants");
+
 /**
  * PageConfig is a representation of the configuration for the Page for
  * the given locale.
@@ -17,7 +19,7 @@ module.exports = class PageConfig {
     /**
      * @type {String}
      */
-    this.locale = locale || '';
+    this.locale = locale || NO_LOCALE;
 
     /**
      * @type {Object}

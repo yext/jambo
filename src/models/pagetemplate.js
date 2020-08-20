@@ -1,4 +1,5 @@
 const { stripExtension } = require("../utils/fileutils");
+const { NO_LOCALE } = require("../constants");
 
 /**
  * PageTemplate represents a Handlebars template that is used to
@@ -24,7 +25,7 @@ module.exports = class PageTemplate {
     /**
      * @type {String}
      */
-    this.locale = locale || '';
+    this.locale = locale || NO_LOCALE;
   }
 
   /**

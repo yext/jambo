@@ -1,3 +1,5 @@
+const { NO_LOCALE } = require("../constants");
+
 /**
  * LocalizationConfig represents the configuration required to localize pages. It contains
  * configuration and URL formatting for each locale.
@@ -8,7 +10,7 @@ module.exports = class LocalizationConfig {
    */
   constructor(rawLocalizationConfig) {
     const config = rawLocalizationConfig || {};
-    this._defaultLocale = config.default || '';
+    this._defaultLocale = config.default || NO_LOCALE;
 
     /**
      * localeToConfig is an Object mapping locale to configuration

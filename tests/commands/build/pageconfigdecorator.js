@@ -1,6 +1,7 @@
 const PageConfig = require('../../../src/models/pageconfig');
 const PageConfigDecorator = require('../../../src/commands/build/pageconfigdecorator');
 const LocalizationConfig = require('../../../src/models/localizationconfig');
+const { NO_LOCALE } = require('../../../src/constants');
 
 describe('PageConfigDecorator decorates PageConfigs and builds the expected object', () => {
   it('builds decorated pages configs correctly when there is no locale config', () => {
@@ -17,14 +18,14 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     ]);
 
     expect(decoratedConfigs).toEqual({
-      '': [
+      [NO_LOCALE]: [
         new PageConfig({
-          locale: '',
+          locale: NO_LOCALE,
           pageName: 'pageName1',
           rawConfig: { verticalKey: 'verticalKey' },
         }),
         new PageConfig({
-          locale: '',
+          locale: NO_LOCALE,
           pageName: 'pageName2',
           rawConfig: { pageTitle: 'pageTitle' },
         })

@@ -1,4 +1,5 @@
 const PageTemplate = require('../../src/models/pagetemplate');
+const { NO_LOCALE } = require('../../src/constants');
 
 describe('Correctly forms PageTemplate object from constructor', () => {
   it('PageTemplate is built properly when locale is present', () => {
@@ -14,7 +15,7 @@ describe('Correctly forms PageTemplate object from constructor', () => {
     const template = new PageTemplate({
       pageName: 'test',
     });
-    expect(template.getLocale()).toEqual('');
+    expect(template.getLocale()).toEqual(NO_LOCALE);
     expect(template.getPageName()).toEqual('test');
   });
 });

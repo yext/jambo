@@ -5,6 +5,7 @@ const PageConfig = require('../../src/models/pageconfig');
 const PageTemplate = require('../../src/models/pagetemplate');
 const PageSet = require('../../src/models/pageset');
 const Page = require('../../src/models/page');
+const { NO_LOCALE } = require('../../src/constants');
 
 describe('GeneratedData is correctly formed using with static from', () => {
   it('works if no LocalizationConfig provided and no pages - initial repo state', () => {
@@ -63,16 +64,16 @@ describe('GeneratedData is correctly formed using with static from', () => {
     expect(generatedData.getLocales()).toEqual([]);
     expect(generatedData.getPageSets()).toEqual([
       new PageSet({
-        locale: '',
+        locale: NO_LOCALE,
         pages: [
           new Page({
             pageConfig: new PageConfig({
-              locale: '',
+              locale: NO_LOCALE,
               pageName: pageConfig1.getPageName(),
               rawConfig: pageConfig1.getConfig(),
             }),
             pageTemplate: new PageTemplate({
-              locale: '',
+              locale: NO_LOCALE,
               pageName: pageTemplate1.getPageName(),
               path: pageTemplate1.getPath(),
             }),
@@ -80,12 +81,12 @@ describe('GeneratedData is correctly formed using with static from', () => {
           }),
           new Page({
             pageConfig: new PageConfig({
-              locale: '',
+              locale: NO_LOCALE,
               pageName: pageConfig2.getPageName(),
               rawConfig: pageConfig2.getConfig(),
             }),
             pageTemplate: new PageTemplate({
-              locale: '',
+              locale: NO_LOCALE,
               pageName: pageTemplate2.getPageName(),
               path: pageTemplate2.getPath(),
             }),
