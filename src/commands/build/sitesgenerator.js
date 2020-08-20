@@ -10,10 +10,10 @@ const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
-const PagePartial = require('../../models/pagepartial');
+const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
-const PartialPreprocessor = require('../../partials/partialpreprocessor');
+const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
 const { stripExtension, isValidFile } = require('../../utils/fileutils');
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
@@ -62,11 +62,11 @@ exports.SitesGenerator = class {
     });
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
 
-    let pagePartials = [];
+    let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
-        pagePartials.push(PagePartial.from(filename, path, fileContents));
+        pageTemplates.push(PageTemplate.from(filename, path, fileContents));
       }
     });
 
@@ -86,7 +86,7 @@ exports.SitesGenerator = class {
       globalConfig: configRegistry.getGlobalConfig(),
       localizationConfig: configRegistry.getLocalizationConfig(),
       pageConfigs: configRegistry.getPageConfigs(),
-      pagePartials: pagePartials
+      pageTemplates: pageTemplates
     });
 
     // Clear the output directory but keep preserved files before writing new files
@@ -128,21 +128,21 @@ exports.SitesGenerator = class {
     for (const pageSet of pageSets) {
       // Pre-process partials and register them with the Handlebars instance
       const locale = pageSet.getLocale();
-      const partialPreprocessor = new PartialPreprocessor(localeToTranslator[locale]);
+      const handlebarsPreprocessor = new HandlebarsPreprocessor(localeToTranslator[locale]);
 
       console.log(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
         hbs.registerPartial(
           partial.getName(),
-          partialPreprocessor.process(partial.getFileContents())
+          handlebarsPreprocessor.process(partial.getFileContents())
         );
       }
 
       // Pre-process page template contents - these are not registered with the Handlebars instance,
       // the PageWriter compiles them with their args
       for (const page of pageSet.getPages()) {
-        const processedPartial = partialPreprocessor.process(page.getPartialContents());
-        page.setPartialContents(processedPartial);
+        const processedTemplate = handlebarsPreprocessor.process(page.getTemplateContents());
+        page.setTemplateContents(processedTemplate);
       }
 
       // Write pages

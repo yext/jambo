@@ -1,14 +1,21 @@
 const { getPageName } = require('../utils/fileutils');
-const Partial = require('./partial');
 const SystemError = require('../errors/systemerror');
 
 /**
- * PagePartial represents a Handlebars partial that is used to
+ * PageTemplate represents a Handlebars template that is used to
  * generate a page.
  */
-module.exports = class PagePartial extends Partial {
+module.exports = class PageTemplate {
   constructor({ path, fileContents, pageName, locale }) {
-    super(path, fileContents);
+    /**
+     * @type {String}
+     */
+    this.path = path;
+
+    /**
+     * @type {String}
+     */
+    this.fileContents = fileContents;
 
     /**
      * @type {String}
@@ -21,13 +28,31 @@ module.exports = class PagePartial extends Partial {
     this.locale = locale || '';
   }
 
-  /**s
+  /**
    * Returns the pageName
    *
    * @returns {String} pageName
    */
   getPageName() {
     return this.pageName;
+  }
+
+  /**
+   * Returns the fileContents
+   *
+   * @returns {String} fileContents
+   */
+  getContents() {
+    return this.fileContents;
+  }
+
+  /**
+   * Returns the path to the template
+   *
+   * @returns {String} path
+   */
+  getPath() {
+    return this.path;
   }
 
   /**
@@ -50,12 +75,12 @@ module.exports = class PagePartial extends Partial {
   }
 
   /**
-   * Creates a a copy of this PagePartial
+   * Creates a a copy of this PageTemplate
    *
-   * @returns {PagePartial}
+   * @returns {PageTemplate}
    */
   clone () {
-    return new PagePartial({
+    return new PageTemplate({
       locale: this.locale,
       path: this.path,
       fileContents: this.fileContents,
@@ -64,30 +89,30 @@ module.exports = class PagePartial extends Partial {
   }
 
   /**
-   * Creates a @type {PagePartial} from a given filename and path
+   * Creates a @type {PageTemplate} from a given filename and path
    *
    * @param {String} filename
    * @param {String} path
    * @param {String} fileContents
-   * @returns {PagePartial}
+   * @returns {PageTemplate}
    */
   static from (filename, path, fileContents) {
     if (!filename) {
-      throw new SystemError('Error: no filename provided for page partial');
+      throw new SystemError('Error: no filename provided for page template');
     }
 
-    return new PagePartial({
+    return new PageTemplate({
       path: path,
       fileContents: fileContents,
       pageName: getPageName(filename),
-      locale: PagePartial.parseLocale(filename)
+      locale: PageTemplate.parseLocale(filename)
     });
   }
 
   /**
    * Extracts the locale from a given file name
    *
-   * @param {String} filename the file name of the page handlebars partial
+   * @param {String} filename the file name of the page handlebars template
    * @returns {String}
    */
   static parseLocale (filename) {
