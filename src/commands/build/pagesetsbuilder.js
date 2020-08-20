@@ -75,7 +75,9 @@ module.exports = class PageSetsBuilder {
         .find(template => template.getPageName() === config.getPageName());
 
       if (!pageTemplate) {
-        const localeMessage = config.getLocale() ? ` found for '${config.getLocale()}' locale` : '';
+        const localeMessage = config.getLocale()
+          ? ` found for '${config.getLocale()}' locale`
+          : '';
         console.log(`Warning: No page template '${config.getPageName()}'${localeMessage}, not generating a '${config.getPageName()}' page${localeMessage}`);
         continue;
       }

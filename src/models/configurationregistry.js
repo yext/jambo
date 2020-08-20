@@ -81,14 +81,15 @@ module.exports = class ConfigurationRegistry {
     if (!rawLocaleConfig) {
       console.log(`Cannot find '${localizationConfigName}', using locale information from ${globalConfigName}.`);
     }
+    const localizationConfig = new LocalizationConfig(rawLocaleConfig);
 
     const pageConfigs = Object.keys(configNameToRawConfig)
       .map((configName) => {
         if (configName !== globalConfigName && configName !== localizationConfigName) {
-          const pageName = rawLocaleConfig
+          const pageName = localizationConfig.hasConfig()
             ? getPageName(configName)
             : configName;
-          const locale = rawLocaleConfig && ConfigurationRegistry._parseLocale(configName);
+          const locale = localizationConfig.hasConfig() && ConfigurationRegistry._parseLocale(configName);
           return new PageConfig({
             pageName: pageName,
             locale: locale,
@@ -100,7 +101,7 @@ module.exports = class ConfigurationRegistry {
 
     return new ConfigurationRegistry({
       globalConfig: new GlobalConfig(rawGlobalConfig),
-      localizationConfig: new LocalizationConfig(rawLocaleConfig),
+      localizationConfig: localizationConfig,
       pageConfigs: pageConfigs,
     });
   }
