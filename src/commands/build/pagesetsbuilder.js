@@ -59,12 +59,18 @@ module.exports = class PageSetsBuilder {
 
     const pageSets = [];
     for (const [locale, pageConfigs] of Object.entries(localeToPageConfigs)) {
+      const partials = localeToPagePartials[locale];
+      if (!partials) {
+        console.log(`Warning: No page partials found for given locale '${locale}', not generating a page set for '${locale}'`);
+        continue;
+      }
+
       const localizedGlobalConfig = new GlobalConfigLocalizer(this._localizationConfig)
         .localize(this._globalConfig, locale);
 
       pageSets.push(new PageSet({
         locale: locale,
-        pages: this._buildPages(pageConfigs, localeToPagePartials[locale]),
+        pages: this._buildPages(pageConfigs, partials),
         globalConfig: localizedGlobalConfig,
         params: this._localizationConfig.getParams(locale)
       }));
