@@ -13,7 +13,7 @@ const LocalFileParser = require('../../i18n/translationfetchers/localfileparser'
 const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
-const PartialPreprocessor = require('../../partials/partialpreprocessor');
+const PartialPreprocessor = require('../../templates/templatepreprocessor');
 const { stripExtension, isValidFile } = require('../../utils/fileutils');
 const Translator = require('../../i18n/translator/translator');
 
