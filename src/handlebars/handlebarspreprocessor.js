@@ -5,7 +5,7 @@ const TranslateInvocation = require('./models/translateinvocation');
  * with Handlebars. The preprocessing is applicable to any type of template
  * used with Jambo.
  */
-class TemplatePreprocessor {
+class HandlebarsPreprocessor {
   constructor(translator) {
     this._translator = translator;
   }
@@ -14,9 +14,9 @@ class TemplatePreprocessor {
    * Processes the provided template, looking for usages of the 'translate' or
    * 'translateJS' helpers. These usages are transpiled into either a translated
    * string or a call to the SDK's run-time translation methods.
-   * 
+   *
    * @param {string} template The template to process.
-   * @returns {string} The transpiled template. 
+   * @returns {string} The transpiled template.
    */
   process(template) {
     let processedTemplate = template;
@@ -34,12 +34,12 @@ class TemplatePreprocessor {
   }
 
   /**
-   * Transpiles a usage of the 'translate' or 'translateJS' helper. If the 
-   * translation can be resolved at compile-time (no pluralization or interpolation), 
+   * Transpiles a usage of the 'translate' or 'translateJS' helper. If the
+   * translation can be resolved at compile-time (no pluralization or interpolation),
    * the usage will be transpiled to it. Otherwise, it will be transpiled to the
    * appropriate call to the SDK's run-time translation method.
-   * 
-   * @param {TranslateInvocation} invocation The {@link TranslateInvocation} 
+   *
+   * @param {TranslateInvocation} invocation The {@link TranslateInvocation}
    *                                         representaiton of the usage.
    * @returns {string} The transpiled result.
    */
@@ -61,20 +61,20 @@ class TemplatePreprocessor {
       return translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
-    
+
     return invocation.getInvokedHelper() === 'translateJS' ?
         this._createRuntimeCallForJS(
-          translatorResult, 
-          interpParams, 
+          translatorResult,
+          interpParams,
           invocation.isUsingPluralization()) :
         this._createRuntimeCallForHBS(translatorResult, interpParams);
   }
 
   /**
-   * Constructs a call to the SDK's Javascript method for run-time translation. 
+   * Constructs a call to the SDK's Javascript method for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
-   * 
+   *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {boolean} needsPluralization If pluralization is required when translating.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
@@ -97,7 +97,7 @@ class TemplatePreprocessor {
    * Constructs a call to the SDK's Handlebars helper for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
-   * 
+   *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
    *                                                (including 'count').
@@ -108,8 +108,8 @@ class TemplatePreprocessor {
       .reduce((params, [paramName, paramValue]) => {
         return params + `${paramName}=${paramValue} `;
       }, '');
-    
+
     return `{{ runtimeTranslation phrase=${translatorResult} ${paramsString}}}`;
   }
 }
-module.exports = TemplatePreprocessor;
+module.exports = HandlebarsPreprocessor;

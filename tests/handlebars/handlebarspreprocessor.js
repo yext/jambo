@@ -2,10 +2,10 @@ const path = require('path');
 const { readFileSync } = require('file-system');
 
 const Translator = require('../../src/i18n/translator/translator');
-const TemplatePreprocessor = require('../../src/handlebars/handlebarspreprocessor');
+const HandlebarsPreprocessor = require('../../src/handlebars/handlebarspreprocessor');
 jest.mock('../../src/i18n/translator/translator')
 
-describe('TemplatePreprocessor works correctly', () => {
+describe('HandlebarsPreprocessor works correctly', () => {
   Translator.mockImplementation(() => {
     return {
       translate: () => 'Bonjour',
@@ -20,7 +20,7 @@ describe('TemplatePreprocessor works correctly', () => {
     };
   });
   const translator = new Translator();
-  const templatePreprocessor = new TemplatePreprocessor(translator);
+  const templatePreprocessor = new HandlebarsPreprocessor(translator);
 
   it('transpiles all "translate" and "translateJS" invocations in a JS template', () => {
     const rawJsTemplate = readFileSync(

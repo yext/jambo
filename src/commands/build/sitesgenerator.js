@@ -13,7 +13,7 @@ const LocalFileParser = require('../../i18n/translationfetchers/localfileparser'
 const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
-const TemplatePreprocessor = require('../../handlebars/handlebarspreprocessor');
+const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
 const { stripExtension, isValidFile } = require('../../utils/fileutils');
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
@@ -124,7 +124,7 @@ exports.SitesGenerator = class {
     for (const pageSet of pageSets) {
       // Pre-process partials and register them with the Handlebars instance
       const locale = pageSet.getLocale();
-      const templatePreprocessor = new TemplatePreprocessor(localeToTranslator[locale]);
+      const templatePreprocessor = new HandlebarsPreprocessor(localeToTranslator[locale]);
 
       console.log(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
