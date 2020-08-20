@@ -2,10 +2,10 @@ const path = require('path');
 const { readFileSync } = require('file-system');
 
 const Translator = require('../../src/i18n/translator/translator');
-const PartialPreprocessor = require('../../src/templates/templatepreprocessor');
+const TemplatePreprocessor = require('../../src/templates/templatepreprocessor');
 jest.mock('../../src/i18n/translator/translator')
 
-describe('PartialPreprocessor works correctly', () => {
+describe('TemplatePreprocessor works correctly', () => {
   Translator.mockImplementation(() => {
     return {
       translate: () => 'Bonjour',
@@ -20,7 +20,7 @@ describe('PartialPreprocessor works correctly', () => {
     };
   });
   const translator = new Translator();
-  const partialPreprocessor = new PartialPreprocessor(translator);
+  const templatePreprocessor = new TemplatePreprocessor(translator);
 
   it('transpiles all "translate" and "translateJS" invocations in a JS template', () => {
     const rawJsTemplate = readFileSync(
@@ -28,7 +28,7 @@ describe('PartialPreprocessor works correctly', () => {
     const processedJsTemplate = readFileSync(
       path.join(__dirname, '../fixtures/templates/processedcomponent.js'), 'utf8');
 
-    expect(partialPreprocessor.process(rawJsTemplate)).toEqual(processedJsTemplate);
+    expect(templatePreprocessor.process(rawJsTemplate)).toEqual(processedJsTemplate);
   });
 
   it('transpiles all "translate" and "translateJS" invocations in a HBS template', () => {
@@ -37,6 +37,6 @@ describe('PartialPreprocessor works correctly', () => {
     const processedHbsTemplate = readFileSync(
       path.join(__dirname, '../fixtures/templates/processedtemplate.hbs'), 'utf8');
 
-    expect(partialPreprocessor.process(rawHbsTemplate)).toEqual(processedHbsTemplate);
+    expect(templatePreprocessor.process(rawHbsTemplate)).toEqual(processedHbsTemplate);
   });
 });

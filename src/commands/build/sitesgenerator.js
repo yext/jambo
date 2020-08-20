@@ -13,7 +13,7 @@ const LocalFileParser = require('../../i18n/translationfetchers/localfileparser'
 const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
-const PartialPreprocessor = require('../../templates/templatepreprocessor');
+const TemplatePreprocessor = require('../../templates/templatepreprocessor');
 const { stripExtension, isValidFile } = require('../../utils/fileutils');
 const Translator = require('../../i18n/translator/translator');
 
@@ -112,20 +112,20 @@ exports.SitesGenerator = class {
     for (const pageSet of pageSets) {
       // Pre-process partials and register them with the Handlebars instance
       const locale = pageSet.getLocale();
-      const partialPreprocessor = new PartialPreprocessor(localeToTranslator[locale]);
+      const templatePreprocessor = new TemplatePreprocessor(localeToTranslator[locale]);
 
       console.log(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
         hbs.registerPartial(
           partial.getName(),
-          partialPreprocessor.process(partial.getFileContents())
+          templatePreprocessor.process(partial.getFileContents())
         );
       }
 
       // Pre-process page template contents - these are not registered with the Handlebars instance,
       // the PageWriter compiles them with their args
       for (const page of pageSet.getPages()) {
-        const processedTemplate = partialPreprocessor.process(page.getTemplateContents());
+        const processedTemplate = templatePreprocessor.process(page.getTemplateContents());
         page.setTemplateContents(processedTemplate);
       }
 

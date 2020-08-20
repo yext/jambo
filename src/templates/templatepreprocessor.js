@@ -1,36 +1,36 @@
 const TranslateInvocation = require('./models/translateinvocation');
 
 /**
- * This class performs preprocessing on partials before they are registered
- * with Handlebars. The preprocessing is applicable to any type of partial
+ * This class performs preprocessing on templates before they are registered
+ * with Handlebars. The preprocessing is applicable to any type of template
  * used with Jambo.
  */
-class PartialPreprocessor {
+class TemplatePreprocessor {
   constructor(translator) {
     this._translator = translator;
   }
 
   /**
-   * Processes the provided partial, looking for usages of the 'translate' or
+   * Processes the provided template, looking for usages of the 'translate' or
    * 'translateJS' helpers. These usages are transpiled into either a translated
    * string or a call to the SDK's run-time translation methods.
    * 
-   * @param {string} partial The partial to process.
-   * @returns {string} The transpiled partial.
+   * @param {string} template The template to process.
+   * @returns {string} The transpiled template. 
    */
-  process(partial) {
-    let processedPartial = partial;
+  process(template) {
+    let processedTemplate = template;
     const translateHelperCalls =
-      processedPartial.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
+      processedTemplate.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
 
     translateHelperCalls.forEach(call => {
       const translateInvocation = TranslateInvocation.from(call);
       const transpiledCall =
         this._handleTranslateInvocation(translateInvocation);
-      processedPartial = processedPartial.replace(call, transpiledCall);
+      processedTemplate = processedTemplate.replace(call, transpiledCall);
     });
 
-    return processedPartial;
+    return processedTemplate;
   }
 
   /**
@@ -112,4 +112,4 @@ class PartialPreprocessor {
     return `{{ runtimeTranslation phrase=${translatorResult} ${paramsString}}}`;
   }
 }
-module.exports = PartialPreprocessor;
+module.exports = TemplatePreprocessor;
