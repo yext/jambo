@@ -85,9 +85,13 @@ module.exports = class ConfigurationRegistry {
     const pageConfigs = Object.keys(configNameToRawConfig)
       .map((configName) => {
         if (configName !== globalConfigName && configName !== localizationConfigName) {
+          const pageName = rawLocaleConfig
+            ? getPageName(configName)
+            : configName;
+          const locale = rawLocaleConfig && ConfigurationRegistry._parseLocale(configName);
           return new PageConfig({
-            pageName: getPageName(configName),
-            locale: ConfigurationRegistry._parseLocale(configName),
+            pageName: pageName,
+            locale: locale,
             rawConfig: configNameToRawConfig[configName]
           });
         }

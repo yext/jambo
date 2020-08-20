@@ -1,13 +1,11 @@
 const PageConfig = require('../../../src/models/pageconfig');
 const PageConfigDecorator = require('../../../src/commands/build/pageconfigdecorator');
+const LocalizationConfig = require('../../../src/models/localizationconfig');
 
 describe('PageConfigDecorator decorates PageConfigs and builds the expected object', () => {
-  it('builds decorated pages configs correctly when there is only a default locale', () => {
-    const defaultLocale = 'en';
-    const decoratedConfigs = new PageConfigDecorator({
-      localeToFallbacks: {},
-      defaultLocale: defaultLocale
-    }).decorate([
+  it('builds decorated pages configs correctly when there is no locale config', () => {
+    const localeConfig = new LocalizationConfig();
+    const decoratedConfigs = new PageConfigDecorator(localeConfig).decorate([
       new PageConfig({
         pageName: 'pageName1',
         rawConfig: { verticalKey: 'verticalKey' },
@@ -19,14 +17,14 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     ]);
 
     expect(decoratedConfigs).toEqual({
-      [defaultLocale]: [
+      '': [
         new PageConfig({
-          locale: defaultLocale,
+          locale: '',
           pageName: 'pageName1',
           rawConfig: { verticalKey: 'verticalKey' },
         }),
         new PageConfig({
-          locale: defaultLocale,
+          locale: '',
           pageName: 'pageName2',
           rawConfig: { pageTitle: 'pageTitle' },
         })
@@ -66,13 +64,17 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
         test: 'it_test'
       },
     });
-    const decoratedConfig = new PageConfigDecorator({
-      localeToFallbacks: {
-        fr: [ 'it', 'de' ],
-        de: [ 'it' ],
-      },
-      defaultLocale: defaultLocale
-    }).decorate([
+    const decoratedConfig = new PageConfigDecorator(new LocalizationConfig({
+      default: defaultLocale,
+      localeConfig: {
+        fr: {
+          fallback: [ 'it', 'de' ]
+        },
+        de: {
+          fallback: [ 'it' ],
+        }
+      }
+    })).decorate([
       configForDefaultLocale,
       frConfig,
       itConfig1,
@@ -178,9 +180,11 @@ describe('Merges the internals of multiple PageConfigs', () => {
 
 describe('Matches locales properly', () => {
   const defaultLocale = 'fr';
-  const pageConfigDecorator = new PageConfigDecorator({
-    defaultLocale: defaultLocale
-  });
+  const pageConfigDecorator = new PageConfigDecorator(
+    new LocalizationConfig({
+      default: defaultLocale
+    })
+  );
 
   it('default config matches if locale is not specified', () => {
     expect(pageConfigDecorator._isLocaleMatch(defaultLocale, defaultLocale)).toEqual(true);

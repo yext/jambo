@@ -14,7 +14,7 @@ const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
-const { stripExtension, isValidFile } = require('../../utils/fileutils');
+const { stripExtension, isValidFile, getPageName } = require('../../utils/fileutils');
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
@@ -60,12 +60,20 @@ exports.SitesGenerator = class {
       }
     });
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
+    const hasLocalizationConfig = configRegistry.getLocalizationConfig().hasConfig();
 
     let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
-        pageTemplates.push(PageTemplate.from(filename, path, fileContents));
+        pageTemplates.push(new PageTemplate({
+          pageName: hasLocalizationConfig
+            ? getPageName(filename)
+            : stripExtension(stripExtension(filename)),
+          fileContents: fileContents,
+          path: path,
+          locale: hasLocalizationConfig && PageTemplate.parseLocale(filename)
+        }));
       }
     });
 

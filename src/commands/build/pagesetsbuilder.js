@@ -13,12 +13,7 @@ const PageTemplateDirector = require('./pagetemplatedirector');
  * of {@link PageSet}s.
  */
 module.exports = class PageSetsBuilder {
-  constructor({ defaultLocale, globalConfig, localizationConfig }) {
-    /**
-     * @type {String}
-     */
-    this._defaultLocale = defaultLocale;
-
+  constructor({ globalConfig, localizationConfig }) {
     /**
      * @type {GlobalConfig}
      */
@@ -39,28 +34,16 @@ module.exports = class PageSetsBuilder {
    * @returns {Array<PageSet>}
    */
   build(pageConfigs, pageTemplates) {
-    const localeToFallbacks = this._localizationConfig
-      .getLocales()
-      .reduce((obj, locale) => {
-        obj[locale] = this._localizationConfig.getFallbacks(locale);
-        return obj;
-      }, {});
+    const localeToPageConfigs = new PageConfigDecorator(this._localizationConfig)
+      .decorate(pageConfigs);
 
-    const localeToPageConfigs = new PageConfigDecorator({
-      localeToFallbacks: localeToFallbacks,
-      defaultLocale: this._defaultLocale
-    }).decorate(pageConfigs);
-
-    const localeToPageTemplates = new PageTemplateDirector({
-      locales: this._localizationConfig.getLocales(),
-      localeToFallbacks: localeToFallbacks,
-      defaultLocale: this._defaultLocale
-    }).direct(pageTemplates);
+    const localeToPageTemplates = new PageTemplateDirector(this._localizationConfig)
+      .direct(pageTemplates);
 
     const pageSets = [];
     for (const [locale, pageConfigs] of Object.entries(localeToPageConfigs)) {
       const templates = localeToPageTemplates[locale];
-      if (!templates) {
+      if (!templates || templates.length < 1) {
         console.log(`Warning: No page templates found for given locale '${locale}', not generating a page set for '${locale}'`);
         continue;
       }
@@ -92,7 +75,8 @@ module.exports = class PageSetsBuilder {
         .find(template => template.getPageName() === config.getPageName());
 
       if (!pageTemplate) {
-        console.log(`Warning: No page '${config.getPageName()}' found for given locale '${config.getLocale()}', not generating a '${config.getPageName()}' page for '${config.getLocale()}'`);
+        const localeMessage = config.getLocale() ? ` found for '${config.getLocale()}' locale` : '';
+        console.log(`Warning: No page template '${config.getPageName()}'${localeMessage}, not generating a '${config.getPageName()}' page${localeMessage}`);
         continue;
       }
 

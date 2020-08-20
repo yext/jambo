@@ -8,7 +8,7 @@ module.exports = class LocalizationConfig {
    */
   constructor(rawLocalizationConfig) {
     const config = rawLocalizationConfig || {};
-    this._defaultLocale = config.default || ''; // TODO do we want this to be the default
+    this._defaultLocale = config.default || '';
 
     /**
      * localeToConfig is an Object mapping locale to configuration
@@ -28,6 +28,17 @@ module.exports = class LocalizationConfig {
     const urlFormat = config.urlFormat || {};
     this._defaultUrlPattern = urlFormat.default || '';
     this._baseLocalePattern = urlFormat.baseLocale || '';
+  }
+
+  /**
+   * Returns a boolean indicating whether this LocalizationConfig has
+   * configuration. It returns false when there is no meaningful
+   * configuration for locales, and true when there is configuration.
+   *
+   * @returns {boolean}
+   */
+  hasConfig () {
+    return Object.keys(this._localeToConfig).length > 0;
   }
 
   getDefaultLocale () {
