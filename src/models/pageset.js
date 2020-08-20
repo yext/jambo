@@ -35,7 +35,7 @@ module.exports = class PageSet {
      */
     this.pageNameToConfig = pages && pages.length > 0
       ? this.pages.reduce((obj, page) => {
-          obj[page.getPageName()] = page.getConfig();
+          obj[page.getName()] = page.getConfig();
           return obj;
         }, {})
       : {};

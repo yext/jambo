@@ -1,5 +1,5 @@
 const PageConfig = require('./pageconfig');
-const PagePartial = require('./pagetemplate');
+const PageTemplate = require('./pagetemplate');
 const { stripExtension } = require('../utils/fileutils');
 
 /**
@@ -9,10 +9,10 @@ const { stripExtension } = require('../utils/fileutils');
 module.exports = class Page {
   /**
    * @param {PageConfig} pageConfig
-   * @param {String} partialContents
+   * @param {String} templateContents
    * @param {String} outputPath
    */
-  constructor({ pageConfig, partialContents, outputPath }) {
+  constructor({ pageConfig, templateContents, outputPath }) {
     /**
      * @type {PageConfig}
      */
@@ -21,7 +21,7 @@ module.exports = class Page {
     /**
      * @type {String}
      */
-    this.partialContents = partialContents;
+    this.templateContents = templateContents;
 
     /**
      * @type {String}
@@ -34,8 +34,8 @@ module.exports = class Page {
    *
    * @returns {String}
    */
-  setPartialContents (partialContents) {
-    this.partialContents = partialContents;
+  setTemplateContents (templateContents) {
+    this.templateContents = templateContents;
   }
 
   /**
@@ -52,7 +52,7 @@ module.exports = class Page {
    *
    * @returns {String}
    */
-  getPageName () {
+  getName () {
     return this.pageConfig.getPageName();
   }
 
@@ -70,12 +70,12 @@ module.exports = class Page {
   }
 
   /**
-   * Returns the file contents of the page's partial
+   * Returns the file contents of the page's template
    *
    * @returns {String}
    */
-  getPartialContents() {
-    return this.partialContents;
+  getTemplateContents() {
+    return this.templateContents;
   }
 
   /**
@@ -89,19 +89,19 @@ module.exports = class Page {
 
   /**
    * @param {PageConfig} pageConfig
-   * @param {PagePartial} pagePartial
+   * @param {PageTemplate} pageTemplate
    * @param {Function} urlFormatter
    */
-  static from({ pageConfig, pagePartial, urlFormatter }) {
+  static from({ pageConfig, pageTemplate, urlFormatter }) {
     const outputPath = Page.buildUrl(
       pageConfig.getPageName(),
-      pagePartial.getPath(),
+      pageTemplate.getPath(),
       urlFormatter
     );
 
     return new Page({
       pageConfig: pageConfig,
-      partialContents: pagePartial.getFileContents(),
+      templateContents: pageTemplate.getContents(),
       outputPath: outputPath
     });
   }

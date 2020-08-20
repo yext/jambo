@@ -10,7 +10,7 @@ const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
-const PagePartial = require('../../models/pagetemplate');
+const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const PartialPreprocessor = require('../../partials/partialpreprocessor');
@@ -59,11 +59,11 @@ exports.SitesGenerator = class {
     });
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
 
-    let pagePartials = [];
+    let pageTemplates = [];
     fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
       if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
-        pagePartials.push(PagePartial.from(filename, path, fileContents));
+        pageTemplates.push(PageTemplate.from(filename, path, fileContents));
       }
     });
 
@@ -78,7 +78,7 @@ exports.SitesGenerator = class {
       globalConfig: configRegistry.getGlobalConfig(),
       localizationConfig: configRegistry.getLocalizationConfig(),
       pageConfigs: configRegistry.getPageConfigs(),
-      pagePartials: pagePartials
+      pageTemplates: pageTemplates
     });
 
     // Clear the output directory but keep preserved files before writing new files
@@ -125,8 +125,8 @@ exports.SitesGenerator = class {
       // Pre-process page template contents - these are not registered with the Handlebars instance,
       // the PageWriter compiles them with their args
       for (const page of pageSet.getPages()) {
-        const processedPartial = partialPreprocessor.process(page.getPartialContents());
-        page.setPartialContents(processedPartial);
+        const processedTemplate = partialPreprocessor.process(page.getTemplateContents());
+        page.setTemplateContents(processedTemplate);
       }
 
       // Write pages

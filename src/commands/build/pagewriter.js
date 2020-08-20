@@ -25,6 +25,7 @@ module.exports = class PageWriter {
    * Writes a file to the output directory per page in the given PageSet.
    *
    * @param {PageSet} pageSet the collection of pages to generate
+   * @param {Object<String,String>} pageNameToTemplateContents
    */
   writePages (pageSet) {
     if (!pageSet || pageSet.getPages().length < 1) {
@@ -33,11 +34,7 @@ module.exports = class PageWriter {
     console.log(`Writing files for '${pageSet.getLocale()}' locale`);
 
     for (const page of pageSet.getPages()) {
-      if (!page.getConfig()) {
-        throw new Error(`Error: No config found for page: ${page.getPageName()}`);
-      }
-
-      console.log(`Writing output file for the '${page.getPageName()}' page`);
+      console.log(`Writing output file for the '${page.getName()}' page`);
       const templateArguments = this._buildArgsForTemplate({
         pageConfig: page.getConfig(),
         relativePath: this._calculateRelativePath(page.getOutputPath()),
@@ -46,7 +43,7 @@ module.exports = class PageWriter {
         pageNameToConfig: pageSet.getPageNameToConfig(),
       });
 
-      const template = hbs.compile(page.getPartialContents());
+      const template = hbs.compile(page.getTemplateContents());
       const outputHTML = template(templateArguments);
 
       fs.writeFileSync(

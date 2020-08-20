@@ -1,6 +1,6 @@
 const Page = require('../../src/models/page');
 const PageConfig = require('../../src/models/pageconfig');
-const PagePartial = require('../../src/models/pagetemplate');
+const PageTemplate = require('../../src/models/pagetemplate');
 
 describe('Correctly forms Page object using static from', () => {
   const pageName = 'test';
@@ -9,31 +9,31 @@ describe('Correctly forms Page object using static from', () => {
   const rawConfig = {
     config: 'some config'
   };
-  const partialPath = `pages/${pageName}.${locale}.${pageExt}.hbs`;
-  const pageContents = '<html></html>';
+  const templatePath = `pages/${pageName}.${locale}.${pageExt}.hbs`;
+  const templateContents = '<html></html>';
   let page = Page.from({
     pageConfig: new PageConfig({
       pageName: pageName,
       locale: locale,
       rawConfig: rawConfig
     }),
-    pagePartial: new PagePartial({
+    pageTemplate: new PageTemplate({
       pageName: pageName,
       locale: locale,
-      path: partialPath,
-      fileContents: pageContents
+      path: templatePath,
+      fileContents: templateContents
     }),
     urlFormatter: ((pageName, pageExt) => `${pageName}.${pageExt}.${pageExt}.aspx`),
   });
 
   it('page object is correct', () => {
-    expect(page.getPageName()).toEqual(pageName);
+    expect(page.getName()).toEqual(pageName);
     expect(page.getLocale()).toEqual(locale);
     expect(page.getConfig()).toEqual({
       ...rawConfig,
       url: page.getOutputPath()
     });
-    expect(page.getPartialContents()).toEqual(pageContents);
+    expect(page.getTemplateContents()).toEqual(templateContents);
     expect(page.getOutputPath()).toEqual(`${pageName}.${pageExt}.${pageExt}.aspx`);
   });
 });
