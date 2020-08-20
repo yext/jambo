@@ -12,7 +12,7 @@ module.exports = class Partial {
     /**
      * @type {String}
      */
-    this.path = path;
+    this.name = stripExtension(path);
 
     /**
      * @type {String}
@@ -26,16 +26,7 @@ module.exports = class Partial {
    * @returns {String}
    */
   getName() {
-    return stripExtension(this.path);
-  }
-
-  /**
-   * Returns the partial's path
-   *
-   * @returns {String}
-   */
-  getPath() {
-    return this.path;
+    return this.name;
   }
 
   /**

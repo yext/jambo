@@ -1,45 +1,45 @@
 const TranslateInvocation = require('./models/translateinvocation');
 
 /**
- * This class performs preprocessing on partials before they are registered
- * with Handlebars. The preprocessing is applicable to any type of partial
+ * This class performs preprocessing on Handlebars content before it is registered
+ * with Handlebars. The preprocessing is applicable to any type of Handlebars content
  * used with Jambo.
  */
-class PartialPreprocessor {
+class HandlebarsPreprocessor {
   constructor(translator) {
     this._translator = translator;
   }
 
   /**
-   * Processes the provided partial, looking for usages of the 'translate' or
+   * Processes the provided Handlebars content, looking for usages of the 'translate' or
    * 'translateJS' helpers. These usages are transpiled into either a translated
    * string or a call to the SDK's run-time translation methods.
-   * 
-   * @param {string} partial The partial to process.
-   * @returns {string} The transpiled partial.
+   *
+   * @param {string} handlebarsContent The Handlebars content to process.
+   * @returns {string} The transpiled Handlebars content.
    */
-  process(partial) {
-    let processedPartial = partial;
+  process(handlebarsContent) {
+    let processedHandlebarsContent = handlebarsContent;
     const translateHelperCalls =
-      processedPartial.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
+      processedHandlebarsContent.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
 
     translateHelperCalls.forEach(call => {
       const translateInvocation = TranslateInvocation.from(call);
       const transpiledCall =
         this._handleTranslateInvocation(translateInvocation);
-      processedPartial = processedPartial.replace(call, transpiledCall);
+      processedHandlebarsContent = processedHandlebarsContent.replace(call, transpiledCall);
     });
 
-    return processedPartial;
+    return processedHandlebarsContent;
   }
 
   /**
-   * Transpiles a usage of the 'translate' or 'translateJS' helper. If the 
-   * translation can be resolved at compile-time (no pluralization or interpolation), 
+   * Transpiles a usage of the 'translate' or 'translateJS' helper. If the
+   * translation can be resolved at compile-time (no pluralization or interpolation),
    * the usage will be transpiled to it. Otherwise, it will be transpiled to the
    * appropriate call to the SDK's run-time translation method.
-   * 
-   * @param {TranslateInvocation} invocation The {@link TranslateInvocation} 
+   *
+   * @param {TranslateInvocation} invocation The {@link TranslateInvocation}
    *                                         representaiton of the usage.
    * @returns {string} The transpiled result.
    */
@@ -61,20 +61,20 @@ class PartialPreprocessor {
       return translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
-    
+
     return invocation.getInvokedHelper() === 'translateJS' ?
         this._createRuntimeCallForJS(
-          translatorResult, 
-          interpParams, 
+          translatorResult,
+          interpParams,
           invocation.isUsingPluralization()) :
         this._createRuntimeCallForHBS(translatorResult, interpParams);
   }
 
   /**
-   * Constructs a call to the SDK's Javascript method for run-time translation. 
+   * Constructs a call to the SDK's Javascript method for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
-   * 
+   *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {boolean} needsPluralization If pluralization is required when translating.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
@@ -97,7 +97,7 @@ class PartialPreprocessor {
    * Constructs a call to the SDK's Handlebars helper for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
-   * 
+   *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
    *                                                (including 'count').
@@ -108,8 +108,8 @@ class PartialPreprocessor {
       .reduce((params, [paramName, paramValue]) => {
         return params + `${paramName}=${paramValue} `;
       }, '');
-    
+
     return `{{ runtimeTranslation phrase=${translatorResult} ${paramsString}}}`;
   }
 }
-module.exports = PartialPreprocessor;
+module.exports = HandlebarsPreprocessor;

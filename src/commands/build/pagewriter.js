@@ -35,10 +35,10 @@ module.exports = class PageWriter {
 
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
-        throw new UserError(`Error: No config found for page: ${page.getPageName()}`);
+        throw new UserError(`Error: No config found for page: ${page.getName()}`);
       }
 
-      console.log(`Writing output file for the '${page.getPageName()}' page`);
+      console.log(`Writing output file for the '${page.getName()}' page`);
       const templateArguments = this._buildArgsForTemplate({
         pageConfig: page.getConfig(),
         relativePath: this._calculateRelativePath(page.getOutputPath()),
@@ -47,7 +47,7 @@ module.exports = class PageWriter {
         pageNameToConfig: pageSet.getPageNameToConfig(),
       });
 
-      const template = hbs.compile(page.getPartialContents());
+      const template = hbs.compile(page.getTemplateContents());
       const outputHTML = template(templateArguments);
 
       fs.writeFileSync(
