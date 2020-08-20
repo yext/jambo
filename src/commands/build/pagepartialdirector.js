@@ -74,6 +74,8 @@ module.exports = class PagePartialDirector {
         return pagePartial;
       }
     }
+
+    return partialsForPage.find(partial => this._isDefaultLocale(partial.getLocale()));
   }
 
   /**
