@@ -40,7 +40,7 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
       .toEqual(new LocalizationConfig());
   });
 
-  it('creates PageConfigs properly when locale_config is present', () => {
+  it('creates PageConfigs properly when locale_config is absent', () => {
     const configName = 'configName';
     const configNameWithLocale = `${configName}.es`;
     const rawPageConfig = {

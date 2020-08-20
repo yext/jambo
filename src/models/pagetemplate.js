@@ -1,5 +1,5 @@
-const { stripExtension } = require("../utils/fileutils");
-const { NO_LOCALE } = require("../constants");
+const { stripExtension } = require('../utils/fileutils');
+const { NO_LOCALE } = require('../constants');
 
 /**
  * PageTemplate represents a Handlebars template that is used to
