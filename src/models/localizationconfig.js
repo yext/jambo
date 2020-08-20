@@ -70,8 +70,8 @@ module.exports = class LocalizationConfig {
       ? locale.substring(0, locale.lastIndexOf("-")) || locale
       : '';
     const basicUrlPattern = locale === this._defaultLocale
-      ? this._baseLocalePattern
-      : this._defaultUrlPattern;
+      ? this._defaultUrlPattern
+      : this._baseLocalePattern;
     let urlPattern = this._getUrlOverride(locale) || basicUrlPattern || '{pageName}.{pageExt}';
     return (pageName, pageExt) => {
       return urlPattern
