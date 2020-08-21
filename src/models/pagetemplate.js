@@ -1,5 +1,5 @@
-const { getPageName } = require('../utils/fileutils');
-const SystemError = require('../errors/systemerror');
+const { stripExtension } = require('../utils/fileutils');
+const { NO_LOCALE } = require('../constants');
 
 /**
  * PageTemplate represents a Handlebars template that is used to
@@ -25,7 +25,7 @@ module.exports = class PageTemplate {
     /**
      * @type {String}
      */
-    this.locale = locale || '';
+    this.locale = locale || NO_LOCALE;
   }
 
   /**
@@ -85,27 +85,6 @@ module.exports = class PageTemplate {
       path: this.path,
       fileContents: this.fileContents,
       pageName: this.pageName
-    });
-  }
-
-  /**
-   * Creates a @type {PageTemplate} from a given filename and path
-   *
-   * @param {String} filename
-   * @param {String} path
-   * @param {String} fileContents
-   * @returns {PageTemplate}
-   */
-  static from (filename, path, fileContents) {
-    if (!filename) {
-      throw new SystemError('Error: no filename provided for page template');
-    }
-
-    return new PageTemplate({
-      path: path,
-      fileContents: fileContents,
-      pageName: getPageName(filename),
-      locale: PageTemplate.parseLocale(filename)
     });
   }
 

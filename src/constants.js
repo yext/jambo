@@ -1,0 +1,1 @@
+exports.NO_LOCALE = '';

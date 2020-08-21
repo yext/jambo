@@ -5,34 +5,7 @@ const PageConfig = require('../../src/models/pageconfig');
 const PageTemplate = require('../../src/models/pagetemplate');
 const PageSet = require('../../src/models/pageset');
 const Page = require('../../src/models/page');
-
-describe('GeneratedData returns locales from LocalizationConfig or default', () => {
-  it('prefers locales from LocalizationConfig over default', () => {
-    const localizationConfig = new LocalizationConfig({
-      localeConfig: {
-        'en': {},
-        'es': {},
-        'de': {},
-      }
-    });
-
-    const locales = new GeneratedData({
-      defaultLocale: 'fr',
-      localizationConfig: localizationConfig
-    }).getLocales();
-
-    return expect(locales).toEqual(localizationConfig.getLocales());
-  });
-
-  it('falls back to defaultLocale if not present in LocalizationConfig', () => {
-    const locales = new GeneratedData({
-      defaultLocale: 'de',
-      localizationConfig: new LocalizationConfig()
-    }).getLocales();
-
-    return expect(locales).toEqual(['de']);
-  });
-});
+const { NO_LOCALE } = require('../../src/constants');
 
 describe('GeneratedData is correctly formed using with static from', () => {
   it('works if no LocalizationConfig provided and no pages - initial repo state', () => {
@@ -47,9 +20,8 @@ describe('GeneratedData is correctly formed using with static from', () => {
       pageTemplates: []
     });
 
-    expect(generatedData.getLocales()).toEqual(['en']);
+    expect(generatedData.getLocales()).toEqual([]);
     expect(generatedData.getPageSets()).toEqual([]);
-    expect(generatedData.getLocaleFallbacks('en')).toEqual([]);
   });
 
   it('builds object correctly if no LocalizationConfig provided', () => {
@@ -89,19 +61,19 @@ describe('GeneratedData is correctly formed using with static from', () => {
       ]
     });
 
-    expect(generatedData.getLocales()).toEqual([locale]);
+    expect(generatedData.getLocales()).toEqual([]);
     expect(generatedData.getPageSets()).toEqual([
       new PageSet({
-        locale: locale,
+        locale: NO_LOCALE,
         pages: [
           new Page({
             pageConfig: new PageConfig({
-              locale: locale,
+              locale: NO_LOCALE,
               pageName: pageConfig1.getPageName(),
               rawConfig: pageConfig1.getConfig(),
             }),
             pageTemplate: new PageTemplate({
-              locale: locale,
+              locale: NO_LOCALE,
               pageName: pageTemplate1.getPageName(),
               path: pageTemplate1.getPath(),
             }),
@@ -109,12 +81,12 @@ describe('GeneratedData is correctly formed using with static from', () => {
           }),
           new Page({
             pageConfig: new PageConfig({
-              locale: locale,
+              locale: NO_LOCALE,
               pageName: pageConfig2.getPageName(),
               rawConfig: pageConfig2.getConfig(),
             }),
             pageTemplate: new PageTemplate({
-              locale: locale,
+              locale: NO_LOCALE,
               pageName: pageTemplate2.getPageName(),
               path: pageTemplate2.getPath(),
             }),
