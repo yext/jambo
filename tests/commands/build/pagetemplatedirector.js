@@ -1,9 +1,10 @@
 const PageTemplateDirector = require('../../../src/commands/build/pagetemplatedirector');
 const PageTemplate = require('../../../src/models/pagetemplate');
+const LocalizationConfig = require('../../../src/models/localizationconfig');
+const { NO_LOCALE } = require('../../../src/constants');
 
 describe('PageTemplateDirector directs PageTemplates and builds the expected object', () => {
-  it('creates page templates correctly when only defaultLocale is present', () => {
-    const defaultLocale = 'en';
+  it('creates page templates correctly with no locale config', () => {
     const pageTemplates = [
       new PageTemplate({
         pageName: 'path',
@@ -18,27 +19,24 @@ describe('PageTemplateDirector directs PageTemplates and builds the expected obj
         path: `pages/path3.html.hbs`
       }),
     ];
-    const localeToPageTemplates = new PageTemplateDirector({
-      locales: [],
-      localeToFallbacks: {},
-      defaultLocale: defaultLocale
-    }).direct(pageTemplates);
+    const localeToPageTemplates = new PageTemplateDirector(new LocalizationConfig())
+      .direct(pageTemplates);
 
     expect(localeToPageTemplates).toEqual({
-      [defaultLocale]: [
+      [NO_LOCALE]: [
         new PageTemplate({
           pageName: 'path',
-          locale: defaultLocale,
+          locale: NO_LOCALE,
           path: `pages/path.html.hbs`
         }),
         new PageTemplate({
           pageName: 'path2',
-          locale: defaultLocale,
+          locale: NO_LOCALE,
           path: `pages/path2.html.hbs`
         }),
         new PageTemplate({
           pageName: 'path3',
-          locale: defaultLocale,
+          locale: NO_LOCALE,
           path: `pages/path3.html.hbs`
         }),
       ]
@@ -46,12 +44,6 @@ describe('PageTemplateDirector directs PageTemplates and builds the expected obj
   });
 
   it('creates localeToPageTemplates with the correct locales and paths when locale data is provided', () => {
-    const locales = ['en', 'es', 'fr', 'de', 'it'];
-    const localeToFallbacks = {
-      'en': ['fr'],
-      'es': ['de', 'en'],
-      'de': ['fr', 'es']
-    };
     const pageTemplates = {
       en: new PageTemplate({
         pageName: 'path',
@@ -64,10 +56,22 @@ describe('PageTemplateDirector directs PageTemplates and builds the expected obj
         path: `pages/path.fr.html.hbs`
       }),
     };
-    const localeToPageTemplates = new PageTemplateDirector({
-      locales: locales,
-      localeToFallbacks: localeToFallbacks,
-    }).direct(Object.values(pageTemplates));
+    const localeToPageTemplates = new PageTemplateDirector(new LocalizationConfig({
+      default: 'it',
+      localeConfig: {
+        'en': {
+          fallback: ['fr']
+        },
+        'es': {
+          fallback: ['de', 'en']
+        },
+        'de': {
+          fallback: ['fr', 'es']
+        },
+        'it': {},
+        'fr': {}
+      }
+    })).direct(Object.values(pageTemplates));
 
     expect(localeToPageTemplates).toEqual({
       'en': [ // Directs to template with current locale even if fallbacks exist
