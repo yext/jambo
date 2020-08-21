@@ -1,4 +1,5 @@
 const PageConfig = require('../../models/pageconfig');
+const LocalizationConfig = require('../../models/localizationconfig');
 
 /**
  * PageConfigDecorator decorates {@link PageConfig}s, adding additional
@@ -6,16 +7,11 @@ const PageConfig = require('../../models/pageconfig');
  * information provided.
  */
 module.exports = class PageConfigDecorator {
-  constructor({ localeToFallbacks, defaultLocale }) {
+  constructor(localizationConfig) {
     /**
-     * @type {Object<String, Array<String>>}
+     * @type {LocalizationConfig}
      */
-    this._localeToFallbacks = localeToFallbacks;
-
-    /**
-     * @type {String}
-     */
-    this._defaultLocale = defaultLocale;
+    this._localizationConfig = localizationConfig;
   }
 
   /**
@@ -55,8 +51,8 @@ module.exports = class PageConfigDecorator {
    * @returns {PageConfig}
    */
   _decoratePageConfig(localeSpecificConfig, configsForPage) {
-    const currentLocale = localeSpecificConfig.getLocale() || this._defaultLocale;
-    const localeFallbacks = this._localeToFallbacks[currentLocale] || [];
+    const currentLocale = localeSpecificConfig.getLocale() || this._localizationConfig.getDefaultLocale();
+    const localeFallbacks = this._localizationConfig.getFallbacks(currentLocale);
     const fallbackConfigs = [];
     for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {
       const fallbackConfig = configsForPage
@@ -138,6 +134,6 @@ module.exports = class PageConfigDecorator {
    * @returns {boolean}
    */
   _isDefaultLocale(locale) {
-    return locale === this._defaultLocale || !locale;
+    return locale === this._localizationConfig.getDefaultLocale() || !locale;
   }
 }

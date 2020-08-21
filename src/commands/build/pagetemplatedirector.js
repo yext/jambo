@@ -1,27 +1,16 @@
 const PageTemplate = require('../../models/pagetemplate');
+const LocalizationConfig = require('../../models/localizationconfig');
 
 /**
  * PageTemplateDirector creates a new, localized {@link PageTemplate}
  * per (pageTemplate, locale) combination.
  */
 module.exports = class PageTemplateDirector {
-  constructor({ locales, localeToFallbacks, defaultLocale }) {
+  constructor(localizationConfig) {
     /**
-     * @type {Array<String>}
+     * @type {LocalizationConfig}
      */
-    this._locales = locales && locales.length > 0
-      ? locales
-      : [ defaultLocale ];
-
-    /**
-     * @type {Object<String, Array<String>>}
-     */
-    this._localeToFallbacks = localeToFallbacks;
-
-    /**
-     * @type {String}
-     */
-    this._defaultLocale = defaultLocale;
+    this._localizationConfig = localizationConfig;
   }
 
   /**
@@ -33,10 +22,16 @@ module.exports = class PageTemplateDirector {
    * @returns {Array<PageTemplates>}
    */
   direct(pageTemplates) {
+    if (!this._localizationConfig.hasConfig()) {
+      return {
+        [this._localizationConfig.getDefaultLocale()] : pageTemplates
+      };
+    }
+
     const pageNameToTemplates = this._getPageNameToTemplates(pageTemplates);
 
     let localizedPageTemplates = {};
-    for (const locale of this._locales) {
+    for (const locale of this._localizationConfig.getLocales()) {
       localizedPageTemplates[locale] = [];
       for (const templates of Object.values(pageNameToTemplates)) {
         const pageTemplate = this._findPageTemplateForLocale(locale, templates);
@@ -66,7 +61,7 @@ module.exports = class PageTemplateDirector {
       return pageTemplate;
     }
 
-    const localeFallbacks = this._localeToFallbacks[locale] || [];
+    const localeFallbacks = this._localizationConfig.getFallbacks(locale);
     for (const fallback of localeFallbacks) {
       pageTemplate = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), fallback));
 
@@ -118,6 +113,6 @@ module.exports = class PageTemplateDirector {
    * @returns {boolean}
    */
   _isDefaultLocale(locale) {
-    return locale === this._defaultLocale || !locale;
+    return locale === this._localizationConfig.getDefaultLocale() || !locale;
   }
 }

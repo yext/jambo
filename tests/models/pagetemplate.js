@@ -1,27 +1,5 @@
 const PageTemplate = require('../../src/models/pagetemplate');
-
-describe('Correctly forms PageTemplate object using static from', () => {
-  it('PageTemplate is built properly when locale is present', () => {
-    const pageName = 'pageName';
-    const locale = 'en';
-    const templatePath = `pages/${pageName}.${locale}.html.hbs`;
-    const pageTemplate = PageTemplate.from(`${pageName}.${locale}.html.hbs`, templatePath);
-
-    expect(pageTemplate.getPageName()).toEqual(pageName);
-    expect(pageTemplate.getLocale()).toEqual(locale);
-    expect(templatePath).toEqual(templatePath);
-  });
-
-  it('PageTemplate is built properly with no locale', () => {
-    const pageName = 'pageName';
-    const templatePath = `pages/${pageName}.html.hbs`;
-    const pageTemplate = PageTemplate.from(`${pageName}.html.hbs`, templatePath);
-
-    expect(pageTemplate.getPageName()).toEqual(pageName);
-    expect(pageTemplate.getLocale()).toEqual('');
-    expect(templatePath).toEqual(templatePath);
-  });
-});
+const { NO_LOCALE } = require('../../src/constants');
 
 describe('Correctly forms PageTemplate object from constructor', () => {
   it('PageTemplate is built properly when locale is present', () => {
@@ -37,7 +15,7 @@ describe('Correctly forms PageTemplate object from constructor', () => {
     const template = new PageTemplate({
       pageName: 'test',
     });
-    expect(template.getLocale()).toEqual('');
+    expect(template.getLocale()).toEqual(NO_LOCALE);
     expect(template.getPageName()).toEqual('test');
   });
 });
