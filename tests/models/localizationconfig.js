@@ -94,6 +94,7 @@ describe('Getting URL Formatting function works properly', () => {
     config = new LocalizationConfig({
       default: 'en',
       localeConfig: {
+        'en': {},
         'en-US': {
           urlOverride: '{language}/{locale}/{pageName}.{pageExt}'
         }

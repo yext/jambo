@@ -68,6 +68,7 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     const decoratedConfig = new PageConfigDecorator(new LocalizationConfig({
       default: defaultLocale,
       localeConfig: {
+        [defaultLocale]: {},
         fr: {
           fallback: [ 'it', 'de' ]
         },
