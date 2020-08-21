@@ -12,19 +12,13 @@ const PageTemplate = require('./pagetemplate');
 module.exports = class GeneratedData {
   /**
    * @param {LocalizationConfig} localizationConfig
-   * @param {String} defaultLocale
    * @param {Array<PageSet>} pageSets
    */
-  constructor({ localizationConfig, defaultLocale, pageSets }) {
+  constructor(pageSets, localizationConfig) {
     /**
      * @type {LocalizationConfig}
      */
     this._localizationConfig = localizationConfig;
-
-    /**
-     * @type {String}
-     */
-    this._defaultLocale = defaultLocale;
 
     /**
      * @type {Array<PageSet>}
@@ -39,8 +33,7 @@ module.exports = class GeneratedData {
    * @returns {Array<String>}
    */
   getLocales () {
-    const locales = this._localizationConfig.getLocales();
-    return locales.length ? locales : [ this._defaultLocale ];
+    return this._localizationConfig.getLocales();
   }
 
   /**
@@ -72,18 +65,11 @@ module.exports = class GeneratedData {
    * @returns {GeneratedData}
    */
   static from({ globalConfig, localizationConfig, pageConfigs, pageTemplates }) {
-    const defaultLocale = localizationConfig.getDefaultLocale() || globalConfig.getLocale() || '';
-
     const pageSets = new PageSetsBuilder({
       localizationConfig: localizationConfig,
       globalConfig: globalConfig,
-      defaultLocale: defaultLocale,
     }).build(pageConfigs, pageTemplates);
 
-    return new GeneratedData({
-      pageSets: pageSets,
-      localizationConfig: localizationConfig,
-      defaultLocale: defaultLocale
-    })
+    return new GeneratedData(pageSets, localizationConfig);
   }
 }
