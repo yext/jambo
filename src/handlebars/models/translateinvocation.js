@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const Handlebars = require('handlebars');
+const UserError = require('../../errors/usererror');
 
 // An enum representing the different parameter types that can appear when the
 // 'translate' or 'translateJS' helpers are invoked.
@@ -86,29 +88,34 @@ class TranslateInvocation {
 
   /**
    * Creates a {@link TranslateInvocation} from a partial's call to Jambo's
-   * 'translate' helper.
+   * 'translate' helper, using the Handlebars parser. For more info see:
+   * https://github.com/handlebars-lang/handlebars.js/blob/master/docs/compiler-api.md
    *
    * @param {string} invocationString The string in the partial calling 'translate'.
    * @returns {TranslateInvocation} The resulting {@link TranslateInvocation}.
    */
   static from(invocationString) {
-    const invokedHelper =
-      invocationString.includes('translateJS') ? 'translateJS' : 'translate';
-
-    const paramRegex =
-      /[a-zA-z0-9]+=((\'[a-zA-Z\s\d\[\]\.]+\')|\d+|([a-zA-Z\.]+))/g;
-    const parsedParams = (invocationString.match(paramRegex) || [])
-      .reduce((params, paramString) => {
-        const paramOperands = paramString.split('=');
-        const paramName = paramOperands[0];
-
-        // Strip the wrapper '' for string params
-        const paramValue = paramOperands[1] && paramOperands[1].replace(/(^')|('$)/g, '');
-        params[paramName] = paramValue;
-        return params;
-      }, {});
-
+    const tree = Handlebars.parse(invocationString);
+    if (!tree.body || tree.body.length !== 1) {
+      throw new UserError(
+        `Error: Could not parse ${invocationString} as a valid translate helper.`, err.stack);
+    }
+    const invokedHelper = tree.body[0].path.original;
+    const hashPairs = tree.body[0].hash.pairs;
+    const parsedParams = this._convertHashPairsToParamsMap(hashPairs);
     return new TranslateInvocation(invokedHelper, parsedParams);
+  }
+
+  /**
+   * Converts an array of Handlebars HashPairs into a map of keys to values.
+   * @param {Array<HashPair>} hashPairs 
+   * @returns {Object}
+   */
+  static _convertHashPairsToParamsMap (hashPairs) {
+    return hashPairs.reduce((map, pair) => {
+      map[pair.key] = pair.value.original;
+      return map;
+    }, {});
   }
 }
 
