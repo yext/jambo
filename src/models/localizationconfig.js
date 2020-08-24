@@ -29,7 +29,7 @@ module.exports = class LocalizationConfig {
     this._localeToConfig = config.localeConfig || {};
 
     if (this.hasConfig() && !this._localeToConfig[this._defaultLocale]) {
-      throw new UserError('Default locale must have an entry in the locale config');
+      throw new UserError('A \'default\' locale with an entry in the locale config is required');
     }
 
     const urlFormat = config.urlFormat || {};
