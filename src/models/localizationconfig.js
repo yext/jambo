@@ -28,10 +28,7 @@ module.exports = class LocalizationConfig {
      */
     this._localeToConfig = config.localeConfig || {};
 
-    const shouldHaveConfigForDefault =
-      this._defaultLocale !== NO_LOCALE && Object.keys(this._localeToConfig).length > 0;
-
-    if (shouldHaveConfigForDefault && !this._localeToConfig[this._defaultLocale]) {
+    if (this.hasConfig() && !this._localeToConfig[this._defaultLocale]) {
       throw new UserError('Default locale must have an entry in the locale config');
     }
 
