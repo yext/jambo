@@ -12,6 +12,7 @@ const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
 const LocalizationConfig = require('../../models/localizationconfig');
 const PageTemplate = require('../../models/pagetemplate');
+const PageUniquenessValidator = require('./pageuniquenessvalidator');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
@@ -96,6 +97,11 @@ exports.SitesGenerator = class {
       pageConfigs: configRegistry.getPageConfigs(),
       pageTemplates: pageTemplates
     });
+
+    const allPages = GENERATED_DATA.getPageSets()
+      .flatMap(pageSet => pageSet.getPages());
+
+    new PageUniquenessValidator().validate(allPages);
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
