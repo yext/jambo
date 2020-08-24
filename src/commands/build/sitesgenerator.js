@@ -51,12 +51,11 @@ exports.SitesGenerator = class {
         let configName = stripExtension(relative);
         try {
           configNameToRawConfig[configName] = parse(fs.readFileSync(path, 'utf8'), null, true);
-        } catch (e) {
-          if (e instanceof SyntaxError) {
-            throw new UserError(
-              `JSON SyntaxError: could not parse file ${path}`, e.stack);
+        } catch (err) {
+          if (err instanceof SyntaxError) {
+            throw new UserError(`JSON SyntaxError: could not parse file ${path}`, err.stack);
           } else {
-            throw e;
+            throw err;
           }
         }
       }
