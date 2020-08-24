@@ -55,10 +55,9 @@ class HandlebarsPreprocessor {
           invocation.getPhrase(), translationContext) :
         this._translator.translate(invocation.getPhrase());
     }
-    translatorResult = `'${translatorResult}'`;
 
     if (invocation.canBeTranslatedStatically()) {
-      return translatorResult;
+      return invocation.getInvokedHelper() === 'translateJS' ? `'${translatorResult}'` : translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
 
@@ -74,6 +73,8 @@ class HandlebarsPreprocessor {
    * Constructs a call to the SDK's Javascript method for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
+   * TODO: after updating translate invocation to use the Handlebars parser, update this method
+   * to escape single quotes in translatorResult.
    *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {boolean} needsPluralization If pluralization is required when translating.
@@ -87,16 +88,18 @@ class HandlebarsPreprocessor {
 
     if (needsPluralization) {
       const count = interpolationParams.count;
-      return `ANSWERS.translateJS(${translatorResult}, ${parsedParams}, ${count})`;
+      return `ANSWERS.translateJS('${translatorResult}', ${parsedParams}, ${count})`;
     }
 
-    return `ANSWERS.translateJS(${translatorResult}, ${parsedParams})`;
+    return `ANSWERS.translateJS('${translatorResult}', ${parsedParams})`;
   }
 
   /**
    * Constructs a call to the SDK's Handlebars helper for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
+   * TODO: after updating translate invocation to use the Handlebars parser, update this method
+   * to escape single quotes in translatorResult.
    *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
@@ -109,7 +112,7 @@ class HandlebarsPreprocessor {
         return params + `${paramName}=${paramValue} `;
       }, '');
 
-    return `{{ runtimeTranslation phrase=${translatorResult} ${paramsString}}}`;
+    return `{{ runtimeTranslation phrase='${translatorResult}' ${paramsString}}}`;
   }
 }
 module.exports = HandlebarsPreprocessor;
