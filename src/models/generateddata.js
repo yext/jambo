@@ -72,8 +72,7 @@ module.exports = class GeneratedData {
     }).build(pageConfigs, pageTemplates);
 
     const allPages = pageSets
-      .map(pageSet => pageSet.getPages())
-      .flat();
+      .flatMap(pageSet => pageSet.getPages());
 
     new PageUniquenessValidator().validate(allPages);
 

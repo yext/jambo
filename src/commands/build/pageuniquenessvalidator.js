@@ -15,12 +15,9 @@ module.exports = class PageUniquenessValidator {
     if (!pages || pages.length < 1) {
       return;
     }
-    const brokenValidationRule = this._validatePageNameLocaleCombinations(pages)
-      || this._validateOutputPaths(pages);
 
-    if (brokenValidationRule) {
-      throw new UserError(brokenValidationRule);
-    }
+    this._validatePageNameLocaleCombinations(pages)
+    this._validateOutputPaths(pages);
   }
 
   /**
@@ -35,7 +32,7 @@ module.exports = class PageUniquenessValidator {
       pages.map(page => `[${page.getName()}, ${page.getLocale()}]`));
 
     if (duplicates && duplicates.length > 0) {
-      return `Found duplicate config for the [pageName, locale] combinations: ${duplicates.join(', ')}`;
+      throw new UserError(`Found duplicate config for the [pageName, locale] combinations: ${duplicates.join(', ')}`);
     }
   }
 
@@ -63,7 +60,7 @@ module.exports = class PageUniquenessValidator {
       brokenRuleDescription.push(`\tPages ${pageNameLocaleCombinations} are configured to use output path '${path}'`);
     };
 
-    return brokenRuleDescription.join('\n');
+    throw new UserError(brokenRuleDescription.join('\n'));
   }
 
   /**
