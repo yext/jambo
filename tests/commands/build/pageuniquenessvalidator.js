@@ -46,6 +46,7 @@ describe('PageUniquenessValidator validates a set of pages properly', () => {
 
     expect(() => new PageUniquenessValidator().validate(pages)).toThrow(UserError);
   });
+
   it('validation fails when there are output path collisions', () => {
     const pages = [
       new Page({
