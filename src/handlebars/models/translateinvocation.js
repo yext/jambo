@@ -95,25 +95,57 @@ class TranslateInvocation {
    * @returns {TranslateInvocation} The resulting {@link TranslateInvocation}.
    */
   static from(invocationString) {
-    const tree = Handlebars.parse(invocationString);
-    if (!tree.body || tree.body.length !== 1) {
+    let tree;
+    try {
+      tree = Handlebars.parse(invocationString);
+    } catch (err) {
       throw new UserError(
-        `Error: Could not parse ${invocationString} as a valid translate helper.`, err.stack);
+        `Error: Could not parse "${invocationString}" as a valid translate helper.`, err.stack);
     }
-    const invokedHelper = tree.body[0].path.original;
-    const hashPairs = tree.body[0].hash.pairs;
-    const parsedParams = this._convertHashPairsToParamsMap(hashPairs);
+    if (tree.body.length !== 1) {
+      throw new UserError(
+        `Error: "${invocationString}" has multiple handlebars nodes.`);
+    }
+    const node = tree.body[0];
+    if (node.type !== 'MustacheStatement') {
+      throw new UserError(
+        `Error: "${invocationString}" must be a MustacheStatement.`);
+    }
+    return this._fromMustacheStatementNode(node, invocationString);
+  }
+
+  /**
+   * Creates a {@link TranslateInvocation} from a Handlebars MustacheStatement.
+   * @param {MustacheStatement} mustacheStatement
+   * @param {string} invocationString
+   */
+  static _fromMustacheStatementNode(mustacheStatement, invocationString) {
+    const invokedHelper = mustacheStatement.path.original;
+    const hashPairs = mustacheStatement.hash.pairs;
+    const parsedParams = this._convertHashPairsToParamsMap(hashPairs, invocationString);
     return new TranslateInvocation(invokedHelper, parsedParams);
   }
 
   /**
-   * Converts an array of Handlebars HashPairs into a map of keys to values.
+   * Converts an array of Handlebars HashPair parameters into a map of keys to values.
+   * Errors out when given a parameter that is a SubExpression.
    * @param {Array<HashPair>} hashPairs 
+   * @param {string} invocationString
    * @returns {Object}
    */
-  static _convertHashPairsToParamsMap (hashPairs) {
+  static _convertHashPairsToParamsMap (hashPairs, invocationString) {
     return hashPairs.reduce((map, pair) => {
-      map[pair.key] = pair.value.original;
+      const expression = pair.value;
+      if (expression.type === 'NullLiteral') {
+        map[pair.key] = 'null';
+      } else if (expression.type === 'UndefinedLiteral') {
+        map[pair.key] = 'undefined';
+      } else if (expression.type === 'SubExpression') {
+        throw new UserError(
+          `Error: parameter "${pair.key}" in "${invocationString}" is a SubExpression.`)
+      } else {
+        map[pair.key] = expression.original.toString();
+      }
       return map;
     }, {});
   }
