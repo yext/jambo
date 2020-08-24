@@ -82,10 +82,6 @@ The name this page will be registered as.
 
 ###### - Optional Arguments
 
---theme _theme_name_
-
-A theme to use with your page. Required if specifying a template.
-
 --template  _template_name_
 
 The template to generate the page with.
