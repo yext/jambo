@@ -24,6 +24,7 @@ describe('GlobalConfigLocalizer generates expected localized global configs', ()
     experienceKey: 'experienceKeyFromGlobalConfig'
   });
   const localizationConfig = new LocalizationConfig({
+    default: 'en',
     localeConfig: {
       en: {
         apiKey: 'en_apiKeyFromLocalizationConfig',
