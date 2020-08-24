@@ -102,9 +102,11 @@ class TranslateInvocation {
       throw new UserError(
         `Error: Could not parse "${invocationString}" as a valid translate helper.`, err.stack);
     }
-    if (tree.body.length !== 1) {
-      throw new UserError(
-        `Error: "${invocationString}" has multiple handlebars nodes.`);
+    if (tree.body.length === 0) {
+      throw new UserError(`Error: "${invocationString}" does not have any handlebars nodes.`);
+    }
+    if (tree.body.length > 1) {
+      throw new UserError(`Error: "${invocationString}" has multiple handlebars nodes.`);
     }
     const node = tree.body[0];
     if (node.type !== 'MustacheStatement') {

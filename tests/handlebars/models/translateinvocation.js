@@ -134,4 +134,9 @@ describe('TranslationInvocation throws correct errors when given an invalid invo
     expect(createInvocation).toThrow(
       `Error: parameter "subExpression" in "${invocation}" is a SubExpression.`);
   });
+
+  it('errors when given a blank string', () => {
+    const createInvocation = () => TranslateInvocation.from("");
+    expect(createInvocation).toThrow(`Error: "" does not have any handlebars nodes.`);
+  });
 });
