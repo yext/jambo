@@ -32,7 +32,7 @@ class standardCardComponent extends BaseCard['standard'] {
         eventOptions: this.addDefaultEventOptions()
       },
       CTA2: {
-        label: {{ translate phrase='Hello' }},
+        label: '{{ translate phrase='Hello' }}',
         iconName: 'chevron',
         url: Formatter.generateCTAFieldTypeLink(profile.c_secondaryCTA),
         target: '_top',
