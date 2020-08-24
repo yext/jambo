@@ -125,6 +125,9 @@ describe('GeneratedData is correctly formed using with static from', () => {
             'en'
           ]
         }
+      },
+      urlFormat: {
+        default: '/en/{pageName}.{pageExt}'
       }
     });
     const pageConfigs = [
@@ -207,7 +210,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'home',
               path: 'pages/home.html.hbs',
             }),
-            outputPath: `home.html`
+            outputPath: `/en/home.html`
           }),
         ],
         globalConfig: new GlobalConfig({
