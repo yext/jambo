@@ -10,6 +10,7 @@ const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
 const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
+const LocalizationConfig = require('../../models/localizationconfig');
 const PageTemplate = require('../../models/pagetemplate');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
@@ -111,8 +112,9 @@ exports.SitesGenerator = class {
 
     console.log('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
-    const translations =
-      config.dirs.translations ? await this._extractTranslations(locales) : {};
+    const translations = config.dirs.translations
+      ? await this._extractTranslations(locales, configRegistry.getLocalizationConfig())
+      : {};
 
     const localeToTranslator = {};
     for (const locale of locales) {
@@ -297,14 +299,16 @@ exports.SitesGenerator = class {
    * are returned in i18next format.
    *
    * @param {Array<string>} locales The list of locales.
+   * @param {LocalizationConfig} localizationConfig
    * @returns {Object<string, Object} A map of locale to formatted translations.
    */
-  async _extractTranslations(locales) {
+  async _extractTranslations(locales, localizationConfig) {
     const localFileParser = new LocalFileParser(this.config.dirs.translations);
     const translations = {};
 
     for (const locale of locales) {
-      const localeTranslations = await localFileParser.fetch(locale);
+      const localeTranslations = await localFileParser
+        .fetch(locale, localizationConfig.getTranslationFile(locale));
       translations[locale] = { translation: localeTranslations };
     }
 
