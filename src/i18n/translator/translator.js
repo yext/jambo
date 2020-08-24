@@ -148,7 +148,7 @@ class Translator {
    * @param {Array<string>} fallbacks A prioritized list of translation fallbacks
    *                                  for the locale.
    * @param {string} translations The translations for the locale and associated fallbacks.
-   * @param {Object<string, Object} A map of locale to translations
+   * @param {Object<string, Object>} A map of locales to translations
    */
   static async create(locale, fallbacks, translations) {
     const i18nextInstance = i18next.createInstance();
