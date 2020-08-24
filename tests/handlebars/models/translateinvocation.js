@@ -100,15 +100,29 @@ describe('TranslationInvocation can parse all Hash parameter types (but SubExpre
 });
 
 describe('TranslationInvocation throws correct errors when given an invalid invocation', () => {
-  it('errors when given a block helper', () => {
-    const invocation = 'errors when given just a ContentStatement';
-    expect(() => TranslateInvocation.from(invocation)).toThrow(/must be a MustacheStatement/)
+  it('errors when given just a ContentStatement', () => {
+    const invocation = 'this is a ContentStatement';
+    expect(() => TranslateInvocation.from(invocation)).toThrow(
+      `Error: "${invocation}" must be a MustacheStatement. Found type ContentStatement`);
+  });
+
+  it('errors when given invalid hbs', () => {
+    const invocation = '{{#if}}{{#if}}';
+    expect(() => TranslateInvocation.from(invocation)).toThrow(
+      `Error: Could not parse "${invocation}" as a valid translate helper.`);
+  });
+
+  it('errors when given just a block helper', () => {
+    const invocation = '{{#if true}}blah{{/if}}';
+    expect(() => TranslateInvocation.from(invocation)).toThrow(
+      `Error: "${invocation}" must be a MustacheStatement. Found type BlockStatement`);
   });
 
   it('errors when given a template with multiple AST nodes', () => {
     const helper = `{{translate phrase='a phrase'}}`
     const invocation = `${helper} ${helper}`;
-    expect(() => TranslateInvocation.from(invocation)).toThrow(/has multiple handlebars nodes/)
+    expect(() => TranslateInvocation.from(invocation)).toThrow(
+      `Error: "${invocation}" has multiple handlebars nodes.`);
   });
 
   it('errors when given a SubExpression parameter', () => {
@@ -118,6 +132,6 @@ describe('TranslationInvocation throws correct errors when given an invalid invo
     }}`;
     const createInvocation = () => TranslateInvocation.from(invocation);
     expect(createInvocation).toThrow(
-      `Error: parameter "subExpression" in "${invocation}" is a SubExpression.`)
+      `Error: parameter "subExpression" in "${invocation}" is a SubExpression.`);
   });
 });

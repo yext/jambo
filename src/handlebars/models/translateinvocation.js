@@ -109,7 +109,7 @@ class TranslateInvocation {
     const node = tree.body[0];
     if (node.type !== 'MustacheStatement') {
       throw new UserError(
-        `Error: "${invocationString}" must be a MustacheStatement.`);
+        `Error: "${invocationString}" must be a MustacheStatement. Found type ${node.type}.`);
     }
     return this._fromMustacheStatementNode(node, invocationString);
   }
