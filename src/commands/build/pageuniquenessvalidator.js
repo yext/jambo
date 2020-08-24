@@ -21,11 +21,10 @@ module.exports = class PageUniquenessValidator {
   }
 
   /**
-   * Validates the [pageName, locale] combinations in the given pages. Returns a description of the
-   * broken validation rule if present.
+   * Validates the [pageName, locale] combinations in the given pages. Throws an error with a
+   * description of the broken validation rule if present.
    *
    * @param {Array<Page>} pages
-   * @returns {String}
    */
   _validatePageNameLocaleCombinations(pages) {
     const duplicates = this._findDuplicates(
@@ -37,11 +36,10 @@ module.exports = class PageUniquenessValidator {
   }
 
   /**
-   * Validates that there are no conflicting output paths in the given pages. Returns a description
-   * of the broken validation rule if present.
+   * Validates that there are no conflicting output paths in the given pages. Throws an error with a
+   * description of the broken validation rule if present.
    *
    * @param {Array<Page>} pages
-   * @returns {String}
    */
   _validateOutputPaths(pages) {
     const duplicateOutputPaths = this._findDuplicates(pages.map(page => page.getOutputPath()));
