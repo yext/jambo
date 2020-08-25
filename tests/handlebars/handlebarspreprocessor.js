@@ -40,7 +40,7 @@ describe('HandlebarsPreprocessor works correctly', () => {
     expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent)).toEqual(processedHbsHandlebarsContent);
   });
 
-  it('passes correct arguments to translatePlural', () => {
+  describe('when translating simple plural english', () => {
     const translatePlural = jest.fn(() => ({
       0: 'singular',
       1: 'plural',
@@ -49,9 +49,17 @@ describe('HandlebarsPreprocessor works correctly', () => {
     Translator.mockImplementation(() => ({ translatePlural }));
     const handlebarsPreprocessor = new HandlebarsPreprocessor(new Translator());
 
-    const raw = `{{ translate phrase='singular' pluralForm='plural' }}`;
-    const processed = `{{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }}`;
-    expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
-    expect(translatePlural.mock.calls).toEqual([['singular', 'plural']]);
+    it('passes correct arguments to translatePlural', () => {
+      const raw = `{{ translate phrase='singular' pluralForm='plural' }}`;
+      const processed = `{{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }}`;
+      expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
+      expect(translatePlural.mock.calls).toEqual([['singular', 'plural']]);
+    });
+
+    it('transpiles commented out "translate" invocations correctly', () => {
+      const raw = `{{!-- {{ translate phrase='singular' pluralForm='plural' }} --}}`;
+      const processed = `{{!-- {{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }} --}}`;
+      expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
+    });
   });
 });

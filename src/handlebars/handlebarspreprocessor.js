@@ -21,12 +21,11 @@ class HandlebarsPreprocessor {
   process(handlebarsContent) {
     let processedHandlebarsContent = handlebarsContent;
     const translateHelperCalls =
-      processedHandlebarsContent.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
+      processedHandlebarsContent.match(/\{\{\s?translate(JS)?\s(.+?)\}\}/g) || [];
 
     translateHelperCalls.forEach(call => {
       const translateInvocation = TranslateInvocation.from(call);
-      const transpiledCall =
-        this._handleTranslateInvocation(translateInvocation);
+      const transpiledCall = this._handleTranslateInvocation(translateInvocation);
       processedHandlebarsContent = processedHandlebarsContent.replace(call, transpiledCall);
     });
 
