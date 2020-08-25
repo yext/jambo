@@ -7,7 +7,7 @@ const overrideCommand = require('./commands/override/themeshadower');
 const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
 const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
-const { i18nExtractor } = require('./commands/extract-i18n/i18nExtractor')
+const JamboTranslationExtractor = require('./commands/extract-translations/jambotranslationextractor')
 const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const yargs = require('yargs');
@@ -23,7 +23,6 @@ try {
 } catch (e) {
   exitWithError(e);
 }
-
 
 const options = yargs
 	.usage('Usage: $0 <cmd> <operation> [options]')
@@ -160,18 +159,18 @@ const options = yargs
         });
     })
   .command(
-    'extract-i18n',
-    'extract i18n strings from .hbs and .js files for the given locale',
+    'extract-translations',
+    'extract translated strings from .hbs and .js files',
     yargs => {
       return yargs
-        .option('locale', {
-          description: 'the locale to extract a .pot file for',
-          demandOption: true
-      });
+        .option('output', {
+          description: 'the output path to extract the .pot file to',
+          default: 'messages.pot'
+        });
     },
     argv => {
-      const extractor = new i18nExtractor(jamboConfig);
-      extractor.extract(argv.locale);
+      const extractor = new JamboTranslationExtractor(jamboConfig);
+      extractor.extract(argv.output);
     })
   .command(
     'upgrade',
