@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const Handlebars = require('handlebars');
+const UserError = require('../../errors/usererror');
 
 // An enum representing the different parameter types that can appear when the
 // 'translate' or 'translateJS' helpers are invoked.
@@ -86,29 +88,57 @@ class TranslateInvocation {
 
   /**
    * Creates a {@link TranslateInvocation} from a partial's call to Jambo's
-   * 'translate' helper.
+   * 'translate' helper, using the Handlebars parser. For more info see:
+   * https://github.com/handlebars-lang/handlebars.js/blob/master/docs/compiler-api.md
    *
    * @param {string} invocationString The string in the partial calling 'translate'.
    * @returns {TranslateInvocation} The resulting {@link TranslateInvocation}.
    */
   static from(invocationString) {
-    const invokedHelper =
-      invocationString.includes('translateJS') ? 'translateJS' : 'translate';
+    try {
+      const tree = Handlebars.parse(invocationString);
+      if (tree.body.length !== 1) {
+        throw new Error();
+      }
+      const node = tree.body[0];
+      return this._fromMustacheStatementNode(node);
+    } catch (err) {
+      throw new UserError(
+        `Error: Could not parse "${invocationString}" as a valid translate helper.`, err.stack);
+    }
+  }
 
-    const paramRegex =
-      /[a-zA-z0-9]+=((\'[a-zA-Z\s\d\[\]\.]+\')|\d+|([a-zA-Z\.]+))/g;
-    const parsedParams = (invocationString.match(paramRegex) || [])
-      .reduce((params, paramString) => {
-        const paramOperands = paramString.split('=');
-        const paramName = paramOperands[0];
-
-        // Strip the wrapper '' for string params
-        const paramValue = paramOperands[1] && paramOperands[1].replace(/(^')|('$)/g, '');
-        params[paramName] = paramValue;
-        return params;
-      }, {});
-
+  /**
+   * Creates a {@link TranslateInvocation} from a Handlebars MustacheStatement.
+   * @param {MustacheStatement} mustacheStatement
+   */
+  static _fromMustacheStatementNode(mustacheStatement) {
+    const invokedHelper = mustacheStatement.path.original;
+    const hashPairs = mustacheStatement.hash.pairs;
+    const parsedParams = this._convertHashPairsToParamsMap(hashPairs);
     return new TranslateInvocation(invokedHelper, parsedParams);
+  }
+
+  /**
+   * Converts an array of Handlebars HashPair parameters into a map of keys to values.
+   * Errors out when given a parameter that is a SubExpression.
+   * @param {Array<HashPair>} hashPairs 
+   * @returns {Object}
+   */
+  static _convertHashPairsToParamsMap (hashPairs) {
+    return hashPairs.reduce((map, pair) => {
+      const expression = pair.value;
+      if (expression.type === 'NullLiteral') {
+        map[pair.key] = 'null';
+      } else if (expression.type === 'UndefinedLiteral') {
+        map[pair.key] = 'undefined';
+      } else if (expression.type === 'SubExpression') {
+        throw new Error();
+      } else {
+        map[pair.key] = expression.original.toString();
+      }
+      return map;
+    }, {});
   }
 }
 
