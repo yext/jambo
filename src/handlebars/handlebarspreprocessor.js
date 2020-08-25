@@ -47,7 +47,7 @@ class HandlebarsPreprocessor {
     let translatorResult;
     if (invocation.isUsingPluralization()) {
       translatorResult = JSON.stringify(
-        this._translator.translatePlural(invocation.getPhrase()));
+        this._translator.translatePlural(invocation.getPhrase(), invocation.getPluralForm()));
     } else {
       const translationContext = invocation.getContext();
       translatorResult = translationContext ?
