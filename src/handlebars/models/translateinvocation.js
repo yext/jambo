@@ -133,8 +133,7 @@ class TranslateInvocation {
       } else if (expression.type === 'UndefinedLiteral') {
         map[pair.key] = 'undefined';
       } else if (expression.type === 'SubExpression') {
-        throw new UserError(
-          `Error: parameter "${pair.key}" is a SubExpression.`)
+        throw new Error();
       } else {
         map[pair.key] = expression.original.toString();
       }
