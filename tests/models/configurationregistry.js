@@ -77,6 +77,7 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     const configRegistry = ConfigurationRegistry.from({
       global_config: {},
       locale_config: {
+        default: 'es',
         localeConfig: {
           'es': {}
         }
