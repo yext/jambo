@@ -1,4 +1,5 @@
 const { NO_LOCALE } = require("../constants");
+const UserError = require("../errors/usererror");
 
 /**
  * LocalizationConfig represents the configuration required to localize pages. It contains
@@ -26,6 +27,10 @@ module.exports = class LocalizationConfig {
      * }
      */
     this._localeToConfig = config.localeConfig || {};
+
+    if (this.hasConfig() && !this._localeToConfig[this._defaultLocale]) {
+      throw new UserError('A \'default\' locale with an entry in the locale config is required');
+    }
 
     const urlFormat = config.urlFormat || {};
     this._defaultUrlPattern = urlFormat.default || '';
