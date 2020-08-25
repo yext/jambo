@@ -40,7 +40,7 @@ describe('HandlebarsPreprocessor works correctly', () => {
     expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent)).toEqual(processedHbsHandlebarsContent);
   });
 
-  describe('when translating simple plural english', () => {
+  describe('when translating a language with a single plural form', () => {
     const translatePlural = jest.fn(() => ({
       0: 'singular',
       1: 'plural',
@@ -58,7 +58,8 @@ describe('HandlebarsPreprocessor works correctly', () => {
 
     it('transpiles commented out "translate" invocations correctly', () => {
       const raw = `{{!-- {{ translate phrase='singular' pluralForm='plural' }} --}}`;
-      const processed = `{{!-- {{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }} --}}`;
+      const processed = 
+        `{{!-- {{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }} --}}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
     });
   });
