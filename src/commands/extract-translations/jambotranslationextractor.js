@@ -13,6 +13,7 @@ class JamboTranslationExtractor {
 
   /**
    * Extracts i18n strings from a jambo repo to a designed output file.
+   * @param {string} outputPath
    */
   async extract(outputPath) {
     const { files, directories } = this._getFilesAndDirsFromJamboConfig();

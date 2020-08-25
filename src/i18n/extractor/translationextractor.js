@@ -52,7 +52,7 @@ class TranslationExtractor {
    * Creates any parent directories as necessary.
    * @param {string} outputPath
    */
-  savePotFile (outputPath = 'messages.pot') {
+  savePotFile (outputPath) {
     const parentDirectory = outputPath.substring(0, outputPath.lastIndexOf('/'));
     parentDirectory && fsExtra.mkdirpSync(parentDirectory);
     this._extractor.savePotFile(outputPath);
