@@ -98,6 +98,23 @@ describe('translations with one plural form (French)', () => {
       expect(translation).toEqual('Je cherche mon fille nommé [[name]]')
     });
   });
+
+  describe('supports text intermixed with HTML', () => {
+    it('text with html link', () => {
+      const translation = translator.translate('Alternatively, you can<a class="yxt-AlternativeVerticals-universalLink" href=universalUrl>view results across all search categories</a>');
+      expect(translation).toEqual('Sinon vous pouvez<a class="yxt-AlternativeVerticals-universalLink" href=universalUrl>afficher les résultats dans toutes les catégories de recherche</a>');
+    });
+
+    it('apostrophe inside text and html class with double quotes', () => {
+      const translation = translator.translate('<span class="yext">The dog\'s bone<span>');
+      expect(translation).toEqual('<span class="yext">L\'os du chien<span>');
+    });
+
+    it('apostrophe inside text and html class with double quotes (all inside double quoted string)', () => {
+      const translation = translator.translate("<span class=\"yext\">The dog's bone<span>");
+      expect(translation).toEqual("<span class=\"yext\">L'os du chien<span>");
+    });
+  });
 });
 
 describe('translations with multiple plural forms (Lithuanian)', () => {
