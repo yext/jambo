@@ -3,6 +3,7 @@ const LocalizationConfig = require('../../src/models/localizationconfig');
 describe('LocalizationConfig is properly built from raw object', () => {
   it('Localization Object is built properly', () => {
     const rawLocalizationConfig = {
+      default: 'es',
       localeConfig: {
         en: {
           experienceKey: 'experienceKey',
@@ -94,6 +95,7 @@ describe('Getting URL Formatting function works properly', () => {
     config = new LocalizationConfig({
       default: 'en',
       localeConfig: {
+        'en': {},
         'en-US': {
           urlOverride: '{language}/{locale}/{pageName}.{pageExt}'
         }
