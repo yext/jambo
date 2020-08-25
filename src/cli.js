@@ -44,12 +44,11 @@ const options = yargs
         .option('theme', { description: 'theme to import', demandOption: true })
         .option(
           'addAsSubmodule', 
-          { description: 'import the theme as a submodule', default: true, type: 'boolean' })
-        .option('skipClone', { description: 'skip git clone', default: false, type: 'boolean' });
+          { description: 'import the theme as a submodule', default: true, type: 'boolean' });
     },
     argv => {
       const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
-      themeImporter.import(argv.theme, argv.addAsSubmodule, argv.skipClone).then(console.log).catch(console.log);
+      themeImporter.import(argv.theme, argv.addAsSubmodule).then(console.log).catch(console.log);
     })
   .command(
     'override',

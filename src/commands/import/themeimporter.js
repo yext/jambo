@@ -24,7 +24,7 @@ exports.ThemeImporter = class {
    *                            containing the new submodule's local path. If the addition failed,
    *                            a Promise containing the error.
    */
-  async import(themeName, addAsSubmodule, skipClone = false) {
+  async import(themeName, addAsSubmodule) {
     if (!this.config) {
       console.warn('No jambo.json found. Did you `jambo init` yet?')
       return;
@@ -33,12 +33,10 @@ exports.ThemeImporter = class {
       const themeRepo = getRepoForTheme(themeName);
       const localPath = `${this.config.dirs.themes}/${themeName}`;
 
-      if (!skipClone) {
-        if (addAsSubmodule) {
-          await git.submoduleAdd(themeRepo, localPath);
-        } else {
-          await git.clone(themeRepo, localPath);
-        }
+      if (addAsSubmodule) {
+        await git.submoduleAdd(themeRepo, localPath);
+      } else {
+        await git.clone(themeRepo, localPath);
       }
 
       fs.copyFileSync(
