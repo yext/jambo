@@ -11,3 +11,9 @@ msgstr ""
 
 msgid "Breakfast"
 msgstr "Petit Déjeuner"
+
+msgid "Alternatively, you can<a class=\"yxt-AlternativeVerticals-universalLink\" href=universalUrl>view results across all search categories</a>"
+msgstr "Sinon vous pouvez<a class=\"yxt-AlternativeVerticals-universalLink\" href=universalUrl>afficher les résultats dans toutes les catégories de recherche</a>"
+
+msgid "<span class=\"yext\">The dog's bone<span>"
+msgstr "<span class=\"yext\">L'os du chien<span>"
