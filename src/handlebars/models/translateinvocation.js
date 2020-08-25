@@ -18,9 +18,10 @@ Object.freeze(ParamTypes);
  * helpers.
  */
 class TranslateInvocation {
-  constructor(invokedHelper, providedParams) {
+  constructor(invokedHelper, providedParams, lineNumber) {
     this._invokedHelper = invokedHelper;
     this._providedParams = providedParams;
+    this._lineNumber = lineNumber;
   }
 
   /**
@@ -64,12 +65,30 @@ class TranslateInvocation {
   }
 
   /**
+   * Returns the plural form if one exists, otherwise returns undefined.
+   * 
+   * @returns {string|undefined}
+   */
+  getPluralForm() {
+    return this._providedParams[ParamTypes.PLURAL];
+  }
+
+  /**
    * Returns any included translation context.
    * 
    * @returns {string} The translation context.
    */
   getContext() {
     return this._providedParams[ParamTypes.CONTEXT];
+  }
+
+  /**
+   * Returns the line number of the invocation.
+   * 
+   * @returns {number}
+   */
+  getLineNumber() {
+    return this._lineNumber;
   }
 
   /**
@@ -101,7 +120,7 @@ class TranslateInvocation {
         throw new Error();
       }
       const node = tree.body[0];
-      return this._fromMustacheStatementNode(node);
+      return this.fromMustacheStatementNode(node);
     } catch (err) {
       throw new UserError(
         `Error: Could not parse "${invocationString}" as a valid translate helper.`, err.stack);
@@ -112,11 +131,12 @@ class TranslateInvocation {
    * Creates a {@link TranslateInvocation} from a Handlebars MustacheStatement.
    * @param {MustacheStatement} mustacheStatement
    */
-  static _fromMustacheStatementNode(mustacheStatement) {
+  static fromMustacheStatementNode(mustacheStatement) {
     const invokedHelper = mustacheStatement.path.original;
     const hashPairs = mustacheStatement.hash.pairs;
     const parsedParams = this._convertHashPairsToParamsMap(hashPairs);
-    return new TranslateInvocation(invokedHelper, parsedParams);
+    const lineNumber = mustacheStatement.loc.start.line;
+    return new TranslateInvocation(invokedHelper, parsedParams, lineNumber);
   }
 
   /**
