@@ -1,32 +1,30 @@
-const extractTranslations = require('../../i18n/extract/extracttranslations');
+const TranslationExtractor = require('../../i18n/extractor/translationextractor');
 const fsExtra = require('fs-extra');
 const fs = require('fs');
 
 /**
- * i18nExtractor extracts i18n messages from a jambo repo.
+ * JamboTranslationExtractor extracts translations from a jambo repo.
  */
-exports.i18nExtractor = class {
+class JamboTranslationExtractor {
   constructor(jamboConfig) {
     this.config = jamboConfig;
-    const { files, directories } = this._getFilesAndDirsFromJamboConfig();
-    this.files = files;
-    this.directories = directories;
-    this.gitignorePaths = this._parseGitignorePaths();
+    this.extractor = new TranslationExtractor();
   }
 
   /**
-   * Extracts i18n strings from a jambo repo for a given locale.
+   * Extracts i18n strings from a jambo repo to a designed output file.
+   * @param {string} outputPath
    */
-  async extract(locale) {
-    const outputFile = `${locale}.pot`;
-    const options = {
-      files: this.files,
-      directories: this.directories,
-      output: outputFile,
-      ignore: this.gitignorePaths
-    };
-    await extractTranslations(options);
-    console.log(`Extracted translations to ${outputFile}`);
+  async extract(outputPath) {
+    const { files, directories } = this._getFilesAndDirsFromJamboConfig();
+    const gitignorePaths = this._parseGitignorePaths();
+    console.log(`Extracting translations to ${outputPath}`);
+    this.extractor.extract({
+      specificFiles: files,
+      directories: directories,
+      ignoredPaths: gitignorePaths
+    });
+    this.extractor.savePotFile(outputPath);
   }
 
   /**
@@ -56,3 +54,5 @@ exports.i18nExtractor = class {
     return { files: files, directories: directories };
   }
 }
+
+module.exports = JamboTranslationExtractor;
