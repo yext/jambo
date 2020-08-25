@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: tests/fixtures/extractions/rawcomponent.js:16
+#: tests/fixtures/extractions/rawcomponent.js:35
+msgid "Hello"
+msgstr ""
+
+#: tests/fixtures/extractions/rawcomponent.js:20
+msgid "Some item [[name]]"
+msgid_plural "Some items [[name]]"
+msgstr[0] ""
+msgstr[1] ""
+
+#: tests/fixtures/extractions/rawcomponent.js:17
+msgid "this is a raw component"
+msgstr ""
+
+#: tests/fixtures/extractions/rawcomponent.js:27
+msgctxt "Mail is a verb"
+msgid "Mail now [[id1]]"
+msgstr ""
