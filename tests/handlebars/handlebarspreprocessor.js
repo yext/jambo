@@ -39,4 +39,19 @@ describe('HandlebarsPreprocessor works correctly', () => {
 
     expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent)).toEqual(processedHbsHandlebarsContent);
   });
+
+  it('passes correct arguments to translatePlural', () => {
+    const translatePlural = jest.fn(() => ({
+      0: 'singular',
+      1: 'plural',
+      locale: 'en'
+    }));
+    Translator.mockImplementation(() => ({ translatePlural }));
+    const handlebarsPreprocessor = new HandlebarsPreprocessor(new Translator());
+
+    const raw = `{{ translate phrase='singular' pluralForm='plural' }}`;
+    const processed = `{{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }}`;
+    expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
+    expect(translatePlural.mock.calls).toEqual([['singular', 'plural']]);
+  });
 });
