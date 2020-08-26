@@ -1,5 +1,5 @@
-const Page = require("../../models/page");
-const UserError = require("../../errors/usererror");
+const Page = require("../../../models/page");
+const UserError = require("../../../errors/usererror");
 
 /**
  * PageUniquenessValidator is responsible for validating whether the given pages are unique.

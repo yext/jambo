@@ -1,8 +1,8 @@
 const { getPageName } = require('../utils/fileutils');
+const { parseLocale } = require('../utils/configutils');
 const GlobalConfig = require('./globalconfig');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
-const UserError = require('../errors/usererror');
 
 /**
  * ConfigurationRegistry is a registry of the configuration files provided to Jambo.
@@ -73,9 +73,6 @@ module.exports = class ConfigurationRegistry {
     const localizationConfigName = 'locale_config';
 
     const rawGlobalConfig = configNameToRawConfig[globalConfigName];
-    if (!rawGlobalConfig) {
-      throw new UserError(`Error: Cannot find '${globalConfigName}', exiting.`);
-    }
 
     const rawLocaleConfig = configNameToRawConfig[localizationConfigName];
     if (!rawLocaleConfig) {
@@ -89,7 +86,7 @@ module.exports = class ConfigurationRegistry {
           const pageName = localizationConfig.hasConfig()
             ? getPageName(configName)
             : configName;
-          const locale = localizationConfig.hasConfig() && ConfigurationRegistry._parseLocale(configName);
+          const locale = localizationConfig.hasConfig() && parseLocale(configName);
           return new PageConfig({
             pageName: pageName,
             locale: locale,
@@ -104,16 +101,5 @@ module.exports = class ConfigurationRegistry {
       localizationConfig: localizationConfig,
       pageConfigs: pageConfigs,
     });
-  }
-
-  /**
-   * Parses the locale from a given configName
-   *
-   * @param {String} configName the file name of the config, without the extension
-   * @returns {String}
-   */
-  static _parseLocale (configName) {
-    const configNameParts = configName.split('.');
-    return configNameParts.length > 1 && configNameParts[1];
   }
 }

@@ -1,5 +1,6 @@
 const ConfigurationRegistry = require('../../src/models/configurationregistry');
 const { getPageName } = require('../../src/utils/fileutils');
+const { parseLocale } = require('../../src/utils/configutils');
 const GlobalConfig = require('../../src/models/globalconfig');
 const LocalizationConfig = require('../../src/models/localizationconfig');
 const PageConfig = require('../../src/models/pageconfig');
@@ -59,7 +60,7 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
       .toEqual([
         new PageConfig({
           pageName: getPageName(configName),
-          locale: ConfigurationRegistry._parseLocale(configName),
+          locale: parseLocale(configName),
           rawConfig: rawPageConfig
         }),
         new PageConfig({
