@@ -13,7 +13,7 @@ class standardCardComponent extends BaseCard['standard'] {
    */
   dataForRender(profile) {
     return {
-      title: {{ translateJS phrase='Hello' }}, // The header text of the card
+      title: {{ translateJS phrase='Hello' }} + {{ translateJS phrase='Hello' }}, // The header text of the card
       url: profile.website || profile.landingPageUrl, // If the card title is a clickable link, set URL here
       target: '_top', // If the title's URL should open in a new tab, etc.
       titleEventOptions: this.addDefaultEventOptions(),
