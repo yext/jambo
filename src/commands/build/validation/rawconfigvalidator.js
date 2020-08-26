@@ -13,8 +13,6 @@ module.exports = class RawConfigValidator {
     if (!this._isMissingLocaleConfig()){
       new LocaleConfigValidator(this._getLocaleConfig()).validate();
       new PageConfigsValidator(this._configNameToRawConfig).validate();
-    } else {
-      console.log("SKIPPING LOCALE CONFIG VALIDATION");
     }
   }
 
