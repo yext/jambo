@@ -16,6 +16,13 @@ describe('HandlebarsPreprocessor works correctly', () => {
           1: 'Les articles [[name]]',
           locale: 'fr-FR'
         };
+      },
+      translatePluralWithContext: () => {
+        return {
+          0: 'L\'homme',
+          1: 'Les hommes',
+          locale: 'fr-FR'
+        }
       }
     };
   });

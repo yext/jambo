@@ -99,6 +99,60 @@ describe('translations with one plural form (French)', () => {
     });
   });
 
+  describe('Translations with pluralization and context', () => {
+    it('Pluralization works as expected when context = male', () => {
+      const translation = translator.translatePluralWithContext(
+        'The person',
+        'The people',
+        'male');
+      const expectedResult = {
+        0: 'L\'homme',
+        1: 'Les hommes',
+        locale: 'fr-FR'
+      };
+      expect(translation).toEqual(expectedResult);
+    });
+
+    it('Pluralization works as expected when context = female', () => {
+      const translation = translator.translatePluralWithContext(
+        'The person',
+        'The people',
+        'female');
+      const expectedResult = {
+        0: 'La femme',
+        1: 'Les femmes',
+        locale: 'fr-FR'
+      };
+      expect(translation).toEqual(expectedResult);
+    });
+
+    it('Pluralization and interpolation works as expected when context = male', () => {
+      const translation = translator.translatePluralWithContext(
+      'The [[count]] person went on a walk',
+        'The [[count]] people went on a walk',
+        'male');
+      const expectedResult = {
+        0: 'Le [[count]] homme est parti en promenade',
+        1: 'Les [[count]] Hommes fait une promenade',
+        locale: 'fr-FR'
+      };
+      expect(translation).toEqual(expectedResult);
+    });
+
+    it('Pluralization and interpolation works as expected when context = female', () => {
+      const translation = translator.translatePluralWithContext(
+        'The [[count]] person went on a walk',
+        'The [[count]] people went on a walk',
+        'female');
+      const expectedResult = {
+        0: 'La [[count]] femme a fait une promenade',
+        1: 'Les [[count]] femmes fait une promenade',
+        locale: 'fr-FR'
+      };
+      expect(translation).toEqual(expectedResult);
+    });
+  });
+
   describe('supports text intermixed with HTML', () => {
     it('text with html link', () => {
       const translation = translator.translate('Alternatively, you can<a class="yxt-AlternativeVerticals-universalLink" href=universalUrl>view results across all search categories</a>');
