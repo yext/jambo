@@ -132,9 +132,9 @@ class Translator {
    * Creates a map of count (or 'plural') to the correct translated form
    * 
    * @param {string} locale The locale used when creating the map
-   * @param {*} pluralRegex Regex that matches pluralized keys
-   * @param {*} singularPhrase The singular form of the phrase
-   * @param {*} pluralizationIndex The index of the pluralization in the translation key when split by '_'
+   * @param {RegExp} pluralRegex Regex that matches pluralized keys
+   * @param {string} singularPhrase The singular form of the phrase
+   * @param {number} pluralizationIndex The index of the pluralization in the translation key when split by '_'
    */
   _generateMapOfPluralizationsToTranslations(locale, pluralRegex, singularPhrase, pluralizationIndex) {
     const localeTranslations = 
