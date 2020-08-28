@@ -6,10 +6,18 @@ const Translator = require('../../src/i18n/translator/translator');
 const HandlebarsPreprocessor = require('../../src/handlebars/handlebarspreprocessor');
 jest.mock('../../src/i18n/translator/translator')
 
-describe('HandlebarsPreprocessor works correctly on a simple example', () => {
+describe('HandlebarsPreprocessor works correctly', () => {
   Translator.mockImplementation(() => {
     return {
-      translate: () => 'Bonjour',
+      translate: (phrase) => {
+        if (phrase === 'Hello') {
+          return "Bonjour"
+        } else if (phrase === 'The man') {
+          return 'L\'homme';
+        } else if (phrase === '<span class="yext">The dog\'s bone</span>') {
+          return '<span class="yext">L\'os du chien</span>';
+        }
+      },
       translateWithContext: () => 'Mail maintenant [[id1]]',
       translatePlural: () => {
         return {
@@ -40,18 +48,18 @@ describe('HandlebarsPreprocessor works correctly on a simple example', () => {
 
   it('transpiles all "translate" and "translateJS" invocations in a JS template', () => {
     const rawJsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/simple-example/rawcomponent.js'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/rawcomponent.js'), 'utf8');
     const processedJsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/simple-example/processedcomponent.js'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/processedcomponent.js'), 'utf8');
 
     expect(handlebarsPreprocessor.process(rawJsHandlebarsContent)).toEqual(processedJsHandlebarsContent);
   });
 
   it('transpiles all "translate" and "translateJS" invocations in a HBS template', () => {
     const rawHbsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/simple-example/rawtemplate.hbs'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/rawtemplate.hbs'), 'utf8');
     const processedHbsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/simple-example/processedtemplate.hbs'), 'utf8');
+      path.join(__dirname, '../fixtures/handlebars/processedtemplate.hbs'), 'utf8');
 
     expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent)).toEqual(processedHbsHandlebarsContent);
   });
@@ -78,40 +86,5 @@ describe('HandlebarsPreprocessor works correctly on a simple example', () => {
         `{{!-- {{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }} --}}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
     });
-  });
-});
-
-describe('HandlebarsPreprocessor works correctly on edge cases', () => {
-  jest.mock('../../src/i18n/translator/translator')
-  Translator.mockImplementation(() => {
-    return {
-      translate: (phrase) => {
-        if (phrase === 'The man') {
-          return 'L\'homme';
-        } else if (phrase === '<span class="yext">The dog\'s bone</span>') {
-          return '<span class="yext">L\'os du chien</span>';
-        }
-      }
-    };
-  });
-  const translator = new Translator();
-  const handlebarsPreprocessor = new HandlebarsPreprocessor(translator);
-
-  it('transpiles all "translate" and "translateJS" invocations in a JS template', () => {
-    const rawJsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/edge-cases/rawcomponent.js'), 'utf8');
-    const processedJsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/edge-cases/processedcomponent.js'), 'utf8');
-
-    expect(handlebarsPreprocessor.process(rawJsHandlebarsContent)).toEqual(processedJsHandlebarsContent);
-  });
-
-  it('transpiles all "translate" and "translateJS" invocations in a HBS template', () => {
-    const rawHbsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/edge-cases/rawtemplate.hbs'), 'utf8');
-    const processedHbsHandlebarsContent = readFileSync(
-      path.join(__dirname, '../fixtures/handlebars/edge-cases/processedtemplate.hbs'), 'utf8');
-
-    expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent)).toEqual(processedHbsHandlebarsContent);
   });
 });
