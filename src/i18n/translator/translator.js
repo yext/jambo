@@ -58,7 +58,6 @@ class Translator {
   translatePlural(phrase, pluralForm, originalLocale = 'en') {
     const escapedPhrase = this._getEscapedPhrase(phrase);
     const pluralKeyRegex = new RegExp(`${escapedPhrase}_([0-9]+|plural)`);
-    const pluralizationIndex = 1; //Pluralization is at this index when phrase is split by the '_' delimiter
     const i18nextOptions = this._i18next.options;
 
     // We first look for the translations in the given locale. If none can be
@@ -70,8 +69,7 @@ class Translator {
       return this._generateMapOfPluralizationsToTranslations(
         localeWithPluralTranslations, 
         pluralKeyRegex, 
-        phrase,
-        pluralizationIndex);
+        phrase);
     } 
     
     return this._getUntranslatedPluralizations(phrase, pluralForm, originalLocale);
@@ -92,7 +90,6 @@ class Translator {
   translatePluralWithContext(phrase, pluralForm, context, originalLocale = 'en') {
     const escapedPhrase = this._getEscapedPhrase(phrase);
     const pluralWithContextKeyRegex = new RegExp(`${escapedPhrase}_${context}_([0-9]+|plural)`);
-    const pluralizationIndex = 2; //Pluralization is at this index when phrase is split by the '_' delimiter
     const i18nextOptions = this._i18next.options;
 
     // We first look for the translations in the given locale. If none can be
@@ -104,8 +101,7 @@ class Translator {
       return this._generateMapOfPluralizationsToTranslations(
         localeWithPluralTranslations, 
         pluralWithContextKeyRegex, 
-        `${phrase}_${context}`,
-        pluralizationIndex);
+        `${phrase}_${context}`);
     }
 
     return this._getUntranslatedPluralizations(phrase, pluralForm, originalLocale);
@@ -133,10 +129,9 @@ class Translator {
    * 
    * @param {string} locale The locale used when creating the map
    * @param {RegExp} pluralRegex Regex that matches pluralized keys
-   * @param {string} singularPhrase The singular form of the phrase
-   * @param {number} pluralizationIndex The index of the pluralization in the translation key when split by '_'
+   * @param {string} translationKey The key for the singular form of the phrase
    */
-  _generateMapOfPluralizationsToTranslations(locale, pluralRegex, singularPhrase, pluralizationIndex) {
+  _generateMapOfPluralizationsToTranslations(locale, pluralRegex, translationKey) {
     const localeTranslations = 
         this._i18next.options.resources[locale].translation;
 
@@ -144,12 +139,13 @@ class Translator {
       .filter(translationKey => pluralRegex.test(translationKey))
       .reduce(
         (pluralForms, translationKey) => {
-          const keySuffix = translationKey.split('_')[pluralizationIndex];
+          const splitTranslationKeys = translationKey.split('_');
+          const keySuffix = splitTranslationKeys[splitTranslationKeys.length-1];
           const pluralFormIndex = keySuffix === 'plural' ? '1' : keySuffix;
           pluralForms[pluralFormIndex] = localeTranslations[translationKey];
           return pluralForms;
         }, 
-        { 0: localeTranslations[singularPhrase], locale: locale });
+        { 0: localeTranslations[translationKey], locale: locale });
   }
 
   /**
@@ -160,8 +156,8 @@ class Translator {
    */
   _getEscapedPhrase(phrase) {
     return phrase
-    .replace(/\[\[/g, '\\[\\[')
-    .replace(/\]\]/g, '\\]\\]');
+      .replace(/\[\[/g, '\\[\\[')
+      .replace(/\]\]/g, '\\]\\]');
   }
 
   /**
