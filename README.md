@@ -119,6 +119,23 @@ The build command uses the 'defaultTheme' attribute in the jambo.json in Jambo's
 }
 ```
 
+##### Helpers
+
+The build command registers a few handlebars helpers for convenience:
+
+* `json(context)`: Renders the context as JSON
+* `ifeq(arg1, arg2, options)`: if arg1 == arg2 then options.fn, otherwise options.inverse
+* `read(fileName)`: Reads contents of the given fileName
+* `concat(prefix, id)`: Concatenates prefix + id
+* `babel(options)`: Adds babel transforms to the given code with the options given
+* `partialPattern(cardPath, opt)`
+* `deepMerge(...args)`: Performs a deep merge of the given objects
+
+Note: The babel helper does not polyfill all necessary functionality needed for IE11 for example.
+You should use global polyfills if you wish to use them in the code. For example, you might
+want to import core-js/stable.
+
+
 ### Upgrade
 
 ```bash
