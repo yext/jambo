@@ -51,11 +51,11 @@ describe('RawConfigValidator works properly', () => {
     expect(() => new RawConfigValidator(singleLangConfig).validate()).not.toThrow(UserError);
   });
 
-  it('_isMissingLocaleConfig returns false when it is not missing', () => {
-    expect(new RawConfigValidator(multiLangConfig)._isMissingLocaleConfig()).toEqual(false);
+  it('_isMultiLanguageSite returns true for multilang sites', () => {
+    expect(new RawConfigValidator(multiLangConfig)._isMultiLanguageSite()).toEqual(true);
   })
 
-  it('_isMissingLocaleConfig returns true when it is missing', () => {
-    expect(new RawConfigValidator(singleLangConfig)._isMissingLocaleConfig()).toEqual(true);
+  it('_isMultiLanguageSite returns false for single language sites', () => {
+    expect(new RawConfigValidator(singleLangConfig)._isMultiLanguageSite()).toEqual(false);
   })
 });

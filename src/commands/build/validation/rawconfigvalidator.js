@@ -23,17 +23,18 @@ module.exports = class RawConfigValidator {
    */
   validate () {
     new GlobalConfigValidator(this._getGlobalConfig()).validate();
-    if (!this._isMissingLocaleConfig()){
+
+    if (this._isMultiLanguageSite()){
       new LocaleConfigValidator(this._getLocaleConfig()).validate();
       new PageConfigsValidator(this._configNameToRawConfig).validate();
     }
   }
 
   /**
-   * @returns {boolean}
+   * @returns {boolean} True if the site is configured for multiple languages
    */
-  _isMissingLocaleConfig () {
-    return !this._configNameToRawConfig[configKeys.LOCALE_CONFIG];
+  _isMultiLanguageSite () {
+    return Boolean(this._getLocaleConfig());
   }
 
   /**
