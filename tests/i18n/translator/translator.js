@@ -151,6 +151,19 @@ describe('translations with one plural form (French)', () => {
       };
       expect(translation).toEqual(expectedResult);
     });
+
+    it('Pluralization and interpolation with context works as expected when the translation is not found', () => {
+      const translation = translator.translatePluralWithContext(
+        'The [[count]] elephant went on a drive',
+        'The [[count]] elephants went on a drive',
+        'male');
+      const expectedResult = {
+        0: 'The [[count]] elephant went on a drive',
+        1: 'The [[count]] elephants went on a drive',
+        locale: 'en'
+      };
+      expect(translation).toEqual(expectedResult);
+    });
   });
 
   describe('supports text intermixed with HTML', () => {
@@ -160,13 +173,13 @@ describe('translations with one plural form (French)', () => {
     });
 
     it('apostrophe inside text and html class with double quotes', () => {
-      const translation = translator.translate('<span class="yext">The dog\'s bone<span>');
-      expect(translation).toEqual('<span class="yext">L\'os du chien<span>');
+      const translation = translator.translate('<span class="yext">The dog\'s bone</span>');
+      expect(translation).toEqual('<span class="yext">L\'os du chien</span>');
     });
 
     it('apostrophe inside text and html class with double quotes (all inside double quoted string)', () => {
-      const translation = translator.translate("<span class=\"yext\">The dog's bone<span>");
-      expect(translation).toEqual("<span class=\"yext\">L'os du chien<span>");
+      const translation = translator.translate("<span class=\"yext\">The dog's bone</span>");
+      expect(translation).toEqual("<span class=\"yext\">L'os du chien</span>");
     });
   });
 });

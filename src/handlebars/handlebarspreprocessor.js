@@ -59,7 +59,11 @@ class HandlebarsPreprocessor {
     }
 
     if (invocation.canBeTranslatedStatically()) {
-      return invocation.getInvokedHelper() === 'translateJS' ? `'${translatorResult}'` : translatorResult;
+      const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+
+      return invocation.getInvokedHelper() === 'translateJS' ? 
+        `'${escapedTranslatorResult}'`: 
+        translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
 
