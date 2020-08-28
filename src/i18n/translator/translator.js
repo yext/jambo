@@ -56,7 +56,7 @@ class Translator {
    *                                          see https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
   translatePlural(phrase, pluralForm, originalLocale = 'en') {
-    const escapedPhrase = this._getEscapedPhrase(phrase);
+    const escapedPhrase = this._escapeInterpolationBrackets(phrase);
     const pluralKeyRegex = new RegExp(`${escapedPhrase}_([0-9]+|plural)`);
     const i18nextOptions = this._i18next.options;
 
@@ -88,7 +88,7 @@ class Translator {
    *                                          see https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
   translatePluralWithContext(phrase, pluralForm, context, originalLocale = 'en') {
-    const escapedPhrase = this._getEscapedPhrase(phrase);
+    const escapedPhrase = this._escapeInterpolationBrackets(phrase);
     const pluralWithContextKeyRegex = new RegExp(`${escapedPhrase}_${context}_([0-9]+|plural)`);
     const i18nextOptions = this._i18next.options;
 
@@ -154,7 +154,7 @@ class Translator {
    * @param {string} phrase 
    * @returns {string}
    */
-  _getEscapedPhrase(phrase) {
+  _escapeInterpolationBrackets(phrase) {
     return phrase
       .replace(/\[\[/g, '\\[\\[')
       .replace(/\]\]/g, '\\]\\]');
