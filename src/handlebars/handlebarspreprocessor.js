@@ -19,10 +19,6 @@ class HandlebarsPreprocessor {
    * @returns {string} The transpiled Handlebars content.
    */
   process(handlebarsContent) {
-    if (!this._translator) {
-      return handlebarsContent;
-    }
-
     let processedHandlebarsContent = handlebarsContent;
     const translateHelperCalls =
       processedHandlebarsContent.match(/\{\{\s?translate(JS)?\s.+\}\}/g) || [];
