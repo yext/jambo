@@ -31,11 +31,11 @@ describe('LocaleConfigValidator works properly', () => {
   }
 
   it('does not throw an error with a correct config', () => {
-      expect(() => new LocaleConfigValidator(config).validate()).not.toThrow(UserError);
+    expect(() => new LocaleConfigValidator(config).validate()).not.toThrow(UserError);
   });
 
   it('throws error when key "default" is missing or misspelled', () => {
-      expect(() => new LocaleConfigValidator(defaultMispelledConfig).validate()).toThrow(UserError);
+    expect(() => new LocaleConfigValidator(defaultMispelledConfig).validate()).toThrow(UserError);
   });
 
   it('throws error when key "localeConfig" is missing or misspelled', () => {
