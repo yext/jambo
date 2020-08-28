@@ -1,6 +1,5 @@
 const UserError = require('../../../errors/usererror');
 const { fileNames } = require('../../../constants');
-const fs = require('fs');
 
 /**
  * Performs validation on global_config.json
@@ -18,9 +17,8 @@ module.exports = class GlobalConfigValidator {
   }
 
   _validateConfigExists () {
-    const pathToConfig = `config/${fileNames.GLOBAL_CONFIG}`;
-    if (!fs.existsSync(pathToConfig)) {
-      throw new UserError(`Error: Cannot find ${pathToConfig}, exiting.`);
+    if (!this._globalConfig) {
+      throw new UserError(`Error: Cannot find config/${fileNames.GLOBAL_CONFIG}, exiting.`);
     }
   }
 }
