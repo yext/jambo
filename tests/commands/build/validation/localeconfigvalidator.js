@@ -2,7 +2,7 @@ const LocaleConfigValidator = require('../../../../src/commands/build/validation
 const UserError = require('../../../../src/errors/usererror');
 
 describe('LocaleConfigValidator works properly', () => {
-  const correctConfig = {
+  const config = {
     default: 'en',
     localeConfig: {
       en: {
@@ -31,7 +31,7 @@ describe('LocaleConfigValidator works properly', () => {
   }
 
   it('does not throw an error with a correct config', () => {
-      expect(() => new LocaleConfigValidator(correctconfig).validate()).not.toThrow(UserError);
+      expect(() => new LocaleConfigValidator(config).validate()).not.toThrow(UserError);
   });
 
   it('throws error when key "default" is missing or misspelled', () => {
