@@ -2,6 +2,7 @@ const GlobalConfigValidator = require('./globalconfigvalidator');
 const LocaleConfigValidator = require('./localeconfigvalidator');
 const PageConfigsValidator = require('./pageconfigsvalidator');
 const { configKeys } = require('../../../constants');
+const { cloneDeep } = require('lodash/cloneDeep');
 
 /**
  * Performs validation on the raw configuration files
@@ -26,7 +27,7 @@ module.exports = class RawConfigValidator {
 
     if (this._isMultiLanguageSite()){
       new LocaleConfigValidator(this._getLocaleConfig()).validate();
-      new PageConfigsValidator(this._configNameToRawConfig).validate();
+      new PageConfigsValidator(this._getPageConfigs(), this._getConfiguredLocales()).validate();
     }
   }
 
@@ -49,5 +50,26 @@ module.exports = class RawConfigValidator {
    */
   _getLocaleConfig () {
     return this._configNameToRawConfig[configKeys.LOCALE_CONFIG];
+  }
+
+  /**
+   * @returns {Object<string, string|Object>} The keys are locale strings
+   */
+  _getPageConfigs () {
+    let pageConfigs = cloneDeep(this._configNameToRawConfig);
+
+    delete pageConfigs[configKeys.LOCALE_CONFIG];
+    delete pageConfigs[configKeys.GLOBAL_CONFIG];
+
+    return pageConfigs;
+  }
+
+  /**
+   * Gets the locale keys inside localeConfig of locale_config.json
+   * 
+   * @type {string[]}
+   */
+  _getConfiguredLocales () {
+    return Object.keys(this._getLocaleConfig()['localeConfig']);
   }
 }

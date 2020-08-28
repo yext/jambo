@@ -6,11 +6,11 @@ const { fileNames, configKeys } = require('../../../constants');
  * Performs validation on page config files
  */
 module.exports = class PageConfigsValidator {
-  constructor (configNameToRawConfig) {
+  constructor (pageConfigs, configuredLocales) {
     /**
      * @type {Object<string, Object>}
      */
-    this._configNameToRawConfig = configNameToRawConfig;
+    this._pageConfigs = pageConfigs;
 
     /**
      * A list of the locales accociated with the page config files
@@ -24,7 +24,7 @@ module.exports = class PageConfigsValidator {
      * 
      * @type {string[]}
      */
-    this._configuredLocales = this._getConfiguredLocales();
+    this._configuredLocales = configuredLocales;
   }
   
   /**
@@ -42,7 +42,7 @@ module.exports = class PageConfigsValidator {
    * @returns {string[]}
    */
   _getPageLocales () {
-    let locales = Object.keys(this._configNameToRawConfig)
+    let locales = Object.keys(this._pageConfigs)
       .filter(configName => 
         configName !== configKeys.GLOBAL_CONFIG && 
         configName !== configKeys.LOCALE_CONFIG &&
@@ -61,13 +61,6 @@ module.exports = class PageConfigsValidator {
    */
   _removeDuplicates (list) {
     return [...new Set(list)];
-  }
-
-  /**
-   * @type {string[]}
-   */
-  _getConfiguredLocales () {
-    return Object.keys(this._configNameToRawConfig[configKeys.LOCALE_CONFIG]['localeConfig'])
   }
 
   _validatePageLocalesHaveConfigs () {

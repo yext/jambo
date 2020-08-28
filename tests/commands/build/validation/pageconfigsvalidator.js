@@ -3,55 +3,24 @@ const UserError = require('../../../../src/errors/usererror');
 
 describe('PageConfigValidator works properly', () => {
   const config = {
-    locale_config: {
-      default: 'en',
-      localeConfig: {
-        en: {
-          experienceKey: 'key',
-          apiKey: 'apikey'
-        },
-        fr: {
-          experienceKey: 'fr_key',
-          apiKey: 'fr_apikey'
-        }
-      },
-      urlFormat: {
-        baseLocale: '{locale}/{pageName}.{pageExt}',
-        default: '{pageName}.{pageExt}'
-      }
-    },
     'test.fr': {},
     test: {}
   }
 
-  const invalidConfig = {
-    locale_config: {
-      default: 'en',
-      localeConfig: {
-        en: {
-          experienceKey: 'key',
-          apiKey: 'apikey'
-        },
-        fr: {
-          experienceKey: 'fr_key',
-          apiKey: 'fr_apikey'
-        }
-      },
-      urlFormat: {
-        baseLocale: '{locale}/{pageName}.{pageExt}',
-        default: '{pageName}.{pageExt}'
-      }
-    },
+  const configWithMoreLanguages = {
+    'test.it': {},
     'test.es': {},
     'test.fr': {},
     test: {}
   }
 
+  const configuredLocales = ['en', 'fr'];
+
   it('does not throw an error for a correct config', () => {
-    expect(() => new PageConfigsConfigValidator(config).validate()).not.toThrow(UserError);
+    expect(() => new PageConfigsConfigValidator(config, configuredLocales).validate()).not.toThrow(UserError);
   });
 
-  it('throws a user error when a localeConfig is not defined', () => {
-    expect(() => new PageConfigsConfigValidator(invalidConfig).validate()).toThrow(UserError);
+  it('throws a user error when locales are referenced by page configs but they aren\'t configured', () => {
+    expect(() => new PageConfigsConfigValidator(configWithMoreLanguages, configuredLocales).validate()).toThrow(UserError);
   });
 });
