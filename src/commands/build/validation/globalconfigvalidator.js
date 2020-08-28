@@ -18,7 +18,7 @@ module.exports = class GlobalConfigValidator {
 
   _validateConfigExists () {
     if (!this._globalConfig) {
-      throw new UserError(`Error: Cannot find config/${fileNames.GLOBAL_CONFIG}, exiting.`);
+      throw new UserError(`Error: Cannot find ${fileNames.GLOBAL_CONFIG}, exiting.`);
     }
   }
 }
