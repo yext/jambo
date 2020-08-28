@@ -25,7 +25,7 @@ describe('LocaleConfigValidator works properly', () => {
     localeConfig: {}
   }
 
-  const LocaleConfigMispelledConfig = {
+  const localeConfigMispelledConfig = {
     defautl: 'en',
     localeConfig: {}
   }
@@ -39,6 +39,6 @@ describe('LocaleConfigValidator works properly', () => {
   });
 
   it('throws error when key "localeConfig" is missing or misspelled', () => {
-    expect(() => new LocaleConfigValidator(LocaleConfigMispelledConfig).validate()).toThrow(UserError);
+    expect(() => new LocaleConfigValidator(localeConfigMispelledConfig).validate()).toThrow(UserError);
   });
 });
