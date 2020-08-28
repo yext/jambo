@@ -12,6 +12,11 @@ module.exports = class LocaleConfigValidator {
     this._localizationConfig = localizationConfig;
   }
   
+  /**
+   * Performs a series of validation steps
+   * 
+   * @throws {UserError} Thrown if validation fails
+   */
   validate () {
     this._validateConfigHasKey('default');
     this._validateConfigHasKey('localeConfig');

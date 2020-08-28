@@ -16,6 +16,11 @@ module.exports = class RawConfigValidator {
     this._configNameToRawConfig = configNameToRawConfig;
   }
 
+  /**
+   * Performs a series of validation steps
+   * 
+   * @throws {UserError} Thrown if validation fails
+   */
   validate () {
     new GlobalConfigValidator(this._getGlobalConfig()).validate();
     if (!this._isMissingLocaleConfig()){

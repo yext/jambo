@@ -12,6 +12,11 @@ module.exports = class GlobalConfigValidator {
     this._globalConfig = globalConfig;
   }
 
+  /**
+   * Performs a series of validation steps
+   * 
+   * @throws {UserError} Thrown if validation fails
+   */
   validate () {
     this._validateConfigExists();
   }

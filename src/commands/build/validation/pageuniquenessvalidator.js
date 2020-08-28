@@ -10,6 +10,7 @@ module.exports = class PageUniquenessValidator {
    * broken validation rule if present.
    *
    * @param {Array<Page>} pages
+   * @throws {UserError} Thrown if validation fails
    */
   validate(pages) {
     if (!pages || pages.length < 1) {

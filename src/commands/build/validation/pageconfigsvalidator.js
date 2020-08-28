@@ -27,6 +27,11 @@ module.exports = class PageConfigsValidator {
     this._configuredLocales = this._getConfiguredLocales();
   }
   
+  /**
+   * Performs a series of validation steps
+   * 
+   * @throws {UserError} Thrown if validation fails
+   */
   validate () {
     this._validatePageLocalesHaveConfigs();
   }
