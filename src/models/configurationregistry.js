@@ -3,6 +3,8 @@ const { parseLocale } = require('../utils/configutils');
 const GlobalConfig = require('./globalconfig');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
+const { FileNames, ConfigKeys } = require('../constants');
+const RawConfigValidator = require('../commands/build/validation/rawconfigvalidator');
 
 /**
  * ConfigurationRegistry is a registry of the configuration files provided to Jambo.
@@ -60,6 +62,16 @@ module.exports = class ConfigurationRegistry {
   }
 
   /**
+   * Performs validation on the raw configuration files
+   * 
+   * @param {Object<String, Object>} configNameToRawConfig 
+   * @throws {UserError} Thrown if validation fails
+   */
+  static validate (configNameToRawConfig) {
+    new RawConfigValidator(configNameToRawConfig).validate();
+  }
+
+  /**
    * Creates @type {ConfigurationRegistry} from the raw configuration objects.
    * This method converts the raw configuration objects into domain models that the
    * ConfigurationRegistry understands, but it does not mutate or localize the
@@ -67,22 +79,22 @@ module.exports = class ConfigurationRegistry {
    *
    * @param {Object<String, Object>} configNameToRawConfig
    * @returns {ConfigurationRegistry}
+   * @throws {UserError} Thrown if configNameToRawConfig is invalid
    */
   static from(configNameToRawConfig) {
-    const globalConfigName = 'global_config';
-    const localizationConfigName = 'locale_config';
+    this.validate(configNameToRawConfig);
 
-    const rawGlobalConfig = configNameToRawConfig[globalConfigName];
+    const rawGlobalConfig = configNameToRawConfig[ConfigKeys.GLOBAL_CONFIG];
+    const rawLocaleConfig = configNameToRawConfig[ConfigKeys.LOCALE_CONFIG];
 
-    const rawLocaleConfig = configNameToRawConfig[localizationConfigName];
     if (!rawLocaleConfig) {
-      console.log(`Cannot find '${localizationConfigName}', using locale information from ${globalConfigName}.`);
+      console.log(`Cannot find '${FileNames.LOCALE_CONFIG}', using locale information from ${FileNames.GLOBAL_CONFIG}.`);
     }
     const localizationConfig = new LocalizationConfig(rawLocaleConfig);
 
     const pageConfigs = Object.keys(configNameToRawConfig)
       .map((configName) => {
-        if (configName !== globalConfigName && configName !== localizationConfigName) {
+        if (configName !== ConfigKeys.GLOBAL_CONFIG && configName !== ConfigKeys.LOCALE_CONFIG) {
           const pageName = localizationConfig.hasConfig()
             ? getPageName(configName)
             : configName;

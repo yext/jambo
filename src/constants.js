@@ -1,11 +1,11 @@
 exports.NO_LOCALE = '';
 
-exports.fileNames = {
+exports.FileNames = {
   GLOBAL_CONFIG: 'global_config.json',
   LOCALE_CONFIG: 'locale_config.json',
 }
 
-exports.configKeys = {
+exports.ConfigKeys = {
   GLOBAL_CONFIG: 'global_config',
   LOCALE_CONFIG: 'locale_config',
 }

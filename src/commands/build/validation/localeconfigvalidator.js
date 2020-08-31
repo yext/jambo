@@ -1,5 +1,5 @@
 const UserError = require('../../../errors/usererror');
-const { fileNames } = require('../../../constants');
+const { FileNames } = require('../../../constants');
 
 /**
  * Performs validation on locale_config.json
@@ -27,7 +27,7 @@ module.exports = class LocaleConfigValidator {
    */
   _validateConfigHasKey (key) {
     if (!(key in this._localizationConfig)) {
-      throw new UserError(`Key '${key}' not found in ${fileNames.LOCALE_CONFIG}`);
+      throw new UserError(`Key '${key}' not found in ${FileNames.LOCALE_CONFIG}`);
     }
   }
 }

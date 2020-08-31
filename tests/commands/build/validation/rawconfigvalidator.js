@@ -31,11 +31,11 @@ describe('RawConfigValidator works properly', () => {
   }
 
   it('does not throw an error with a correct multi-language config', () => {
-    expect(() => new RawConfigValidator(multiLangConfig).validate()).not.toThrow(UserError);
+    expect(() => new RawConfigValidator(multiLangConfig).validate()).not.toThrow(Error);
   });
 
   it('does not throw an error with a correct single-language config', () => {
-    expect(() => new RawConfigValidator(singleLangConfig).validate()).not.toThrow(UserError);
+    expect(() => new RawConfigValidator(singleLangConfig).validate()).not.toThrow(Error);
   });
 
   it('_isMultiLanguageSite returns true for multilang sites', () => {

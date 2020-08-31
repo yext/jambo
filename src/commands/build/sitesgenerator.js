@@ -63,8 +63,6 @@ exports.SitesGenerator = class {
       }
     });
 
-    new RawConfigValidator(configNameToRawConfig).validate();
-
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
     const hasLocalizationConfig = configRegistry.getLocalizationConfig().hasConfig();
 

@@ -1,7 +1,7 @@
 const GlobalConfigValidator = require('./globalconfigvalidator');
 const LocaleConfigValidator = require('./localeconfigvalidator');
 const PageConfigsValidator = require('./pageconfigsvalidator');
-const { configKeys } = require('../../../constants');
+const { ConfigKeys } = require('../../../constants');
 const cloneDeep = require('lodash/cloneDeep');
 
 /**
@@ -42,14 +42,14 @@ module.exports = class RawConfigValidator {
    * @returns {Object<string, string>}
    */
   _getGlobalConfig () {
-    return this._configNameToRawConfig[configKeys.GLOBAL_CONFIG];
+    return this._configNameToRawConfig[ConfigKeys.GLOBAL_CONFIG];
   }
 
   /**
    * @returns {Object<string, string|Object>}
    */
   _getLocaleConfig () {
-    return this._configNameToRawConfig[configKeys.LOCALE_CONFIG];
+    return this._configNameToRawConfig[ConfigKeys.LOCALE_CONFIG];
   }
 
   /**
@@ -58,8 +58,8 @@ module.exports = class RawConfigValidator {
   _getPageConfigs () {
     const pageConfigs = cloneDeep(this._configNameToRawConfig);
 
-    delete pageConfigs[configKeys.LOCALE_CONFIG];
-    delete pageConfigs[configKeys.GLOBAL_CONFIG];
+    delete pageConfigs[ConfigKeys.LOCALE_CONFIG];
+    delete pageConfigs[ConfigKeys.GLOBAL_CONFIG];
 
     return pageConfigs;
   }

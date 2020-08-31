@@ -10,6 +10,7 @@ const { getRepoForTheme } = require('../../utils/gitutils');
 const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/usererror');
 const { isCustomError } = require('../../utils/errorutils');
+const { FileNames } = require('../../constants');
 
 exports.ThemeImporter = class {
   constructor(jamboConfig) {
@@ -41,14 +42,14 @@ exports.ThemeImporter = class {
         await git.clone(themeRepo, localPath);
       }
 
-      if (fs.existsSync(`${localPath}/locale_config.json`)) {
+      if (fs.existsSync(`${localPath}/${FileNames.LOCALE_CONFIG}`)) {
         fs.copyFileSync(
-          `${localPath}/locale_config.json`,
-          `${this.config.dirs.config}/locale_config.json`);
+          `${localPath}/${FileNames.LOCALE_CONFIG}`,
+          `${this.config.dirs.config}/${FileNames.LOCALE_CONFIG}`);
       }
       fs.copyFileSync(
-        `${localPath}/global_config.json`,
-        `${this.config.dirs.config}/global_config.json`);
+        `${localPath}/${FileNames.GLOBAL_CONFIG}`,
+        `${this.config.dirs.config}/${FileNames.GLOBAL_CONFIG}`);
       this._copyStaticAssets(localPath);
       this._updateDefaultTheme(themeName);
       this._copyLayoutFiles(themeName);

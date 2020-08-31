@@ -1,6 +1,6 @@
 const UserError = require('../../../errors/usererror');
 const { parseLocale, containsLocale } = require('../../../utils/configutils');
-const { fileNames, configKeys } = require('../../../constants');
+const { FileNames, ConfigKeys } = require('../../../constants');
 
 /**
  * Performs validation on page config files
@@ -81,9 +81,9 @@ module.exports = class PageConfigsValidator {
    */
   _throwErrorForLocalesMissingConfigs (locales) {
     if (locales.length == 1) {
-      throw new UserError(`The locale '${locales}' is referenced but is not configured inside ${fileNames.LOCALE_CONFIG}`);
+      throw new UserError(`The locale '${locales}' is referenced but is not configured inside ${FileNames.LOCALE_CONFIG}`);
     } else if (locales.length > 1) {
-      throw new UserError(`The locales '${locales}' are referenced but are not defined inside ${fileNames.LOCALE_CONFIG}`);
+      throw new UserError(`The locales '${locales}' are referenced but are not defined inside ${FileNames.LOCALE_CONFIG}`);
     }
   }
 }

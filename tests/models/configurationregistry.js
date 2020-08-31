@@ -11,9 +11,13 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     const rawGlobalConfig = {
       test: 'config'
     };
+    const rawLocaleConfig = {
+      default: 'en',
+      localeConfig: {}
+    }
     const configRegistry = ConfigurationRegistry.from({
       global_config: rawGlobalConfig,
-      locale_config: new LocalizationConfig()
+      locale_config: rawLocaleConfig
     });
     expect(configRegistry.getGlobalConfig())
       .toEqual(new GlobalConfig(rawGlobalConfig));
@@ -21,7 +25,8 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
 
   it('creates LocalizationConfig properly when locale_config is present', () => {
     const localizationConfig = {
-      defaultLocale: 'en'
+      default: 'en',
+      localeConfig: {}
     };
     const configRegistry = ConfigurationRegistry.from({
       global_config: {},
@@ -49,7 +54,6 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     };
     const rawConfigs = {
       global_config: {},
-      locale_config: {},
       [configName]: rawPageConfig,
       [configNameWithLocale]: rawPageConfig,
     };
