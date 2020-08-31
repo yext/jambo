@@ -2,31 +2,31 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: tests/fixtures/extractions/rawtemplate.hbs:12
+#: tests/fixtures/extractions/rawtemplate.hbs:13
 msgid "<span class=\"yext\">The dog's bone</span>"
 msgstr ""
 
-#: tests/fixtures/extractions/rawtemplate.hbs:2
+#: tests/fixtures/extractions/rawtemplate.hbs:3
 msgid "Hello"
 msgstr ""
 
-#: tests/fixtures/extractions/rawtemplate.hbs:4
+#: tests/fixtures/extractions/rawtemplate.hbs:5
 msgid "Some item [[name]]"
 msgid_plural "Some items [[name]]"
 msgstr[0] ""
 msgstr[1] ""
 
-#: tests/fixtures/extractions/rawtemplate.hbs:11
+#: tests/fixtures/extractions/rawtemplate.hbs:12
 msgid "this is a raw template"
 msgstr ""
 
-#: tests/fixtures/extractions/rawtemplate.hbs:10
-#: tests/fixtures/extractions/rawtemplate.hbs:8
+#: tests/fixtures/extractions/rawtemplate.hbs:11
+#: tests/fixtures/extractions/rawtemplate.hbs:9
 msgctxt "Mail is a verb"
 msgid "Mail now [[id1]]"
 msgstr ""
 
-#: tests/fixtures/extractions/rawtemplate.hbs:14
+#: tests/fixtures/extractions/rawtemplate.hbs:15
 msgctxt "male"
 msgid "The [[count]] person went on a walk"
 msgid_plural "The [[count]] people went on a walk"
