@@ -8,16 +8,11 @@ const { fileNames, configKeys } = require('../../../constants');
 module.exports = class PageConfigsValidator {
   constructor (pageConfigs, configuredLocales) {
     /**
-     * @type {Object<string, Object>}
+     * A mapping of pages to their configurations
+     * 
+     * @type {Object<string, Object>} Keys are the config file name, and the values are the config
      */
     this._pageConfigs = pageConfigs;
-
-    /**
-     * A list of the locales accociated with the page config files
-     * 
-     * @type {string[]}
-     */
-    this._pageLocales = this._getPageLocales();
 
     /**
      * A list of the locales configured in locale_config.json
@@ -44,8 +39,6 @@ module.exports = class PageConfigsValidator {
   _getPageLocales () {
     let locales = Object.keys(this._pageConfigs)
       .filter(configName => 
-        configName !== configKeys.GLOBAL_CONFIG && 
-        configName !== configKeys.LOCALE_CONFIG &&
         containsLocale(configName)
       )
       .map(configName => {
@@ -64,19 +57,21 @@ module.exports = class PageConfigsValidator {
   }
 
   _validatePageLocalesHaveConfigs () {
-    const locales = this._getLocalesMissingConfigs();
-    this._throwErrorForLocalesMissingConfigs(locales);
+    const pageLocales = this._getPageLocales();
+    const localesMissingConfigs = this._getLocalesMissingConfigs(pageLocales);
+    this._throwErrorForLocalesMissingConfigs(localesMissingConfigs);
   }
 
   /**
-   * Gets locales defined by a page configs which do not
+   * Gets locales defined by page configs which do not
    * have a localeConfig in locale_config.json
    * 
+   * @param {string[]} pageLocales A list of locales defined by page config files
    * @returns {string[]}
    */
-  _getLocalesMissingConfigs () {
+  _getLocalesMissingConfigs (pageLocales) {
     let locales = [];
-    this._pageLocales.forEach(locale => {
+    pageLocales.forEach(locale => {
       if (!(this._configuredLocales.includes(locale))){
         locales.push(locale);
       }
