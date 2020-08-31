@@ -75,16 +75,18 @@ class TranslationExtractor {
 
   _extractMessagesFromTemplate(template, filepath) {
     const tree = Handlebars.parseWithoutProcessing(template);
-    for (const statement of tree.body) {
-      if (this._statementIsTranslationHelper(statement)) {
-        this._registerMessageToExtractor(statement, filepath);
-      }
-    }
+    const visitor = new Handlebars.Visitor();
+    visitor.MustacheStatement =
+      mustacheStatement => this._handleMustacheStatement(mustacheStatement, filepath);
+    visitor.accept(tree);
   }
 
-  _statementIsTranslationHelper (statement) {
-    return statement.type === 'MustacheStatement' &&
-      this._options.translateMethods.includes(statement.path.original);
+  _handleMustacheStatement(mustacheStatement, filepath) {
+    const isTranslationHelper =
+    this._options.translateMethods.includes(mustacheStatement.path.original);
+    if (isTranslationHelper) {
+      this._registerMessageToExtractor(mustacheStatement, filepath);
+    }
   }
   
   _registerMessageToExtractor (mustacheStatement, filepath) {
