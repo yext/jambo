@@ -25,7 +25,7 @@ module.exports = class RawConfigValidator {
   validate () {
     new GlobalConfigValidator(this._getGlobalConfig()).validate();
 
-    if (this._isMultiLanguageSite()){
+    if (this._isMultiLanguageSite()) {
       new LocaleConfigValidator(this._getLocaleConfig()).validate();
       new PageConfigsValidator(this._getPageConfigs(), this._getConfiguredLocales()).validate();
     }
@@ -56,7 +56,7 @@ module.exports = class RawConfigValidator {
    * @returns {Object<string, string|Object>} The keys are locale strings
    */
   _getPageConfigs () {
-    let pageConfigs = cloneDeep(this._configNameToRawConfig);
+    const pageConfigs = cloneDeep(this._configNameToRawConfig);
 
     delete pageConfigs[configKeys.LOCALE_CONFIG];
     delete pageConfigs[configKeys.GLOBAL_CONFIG];

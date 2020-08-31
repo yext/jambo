@@ -39,10 +39,10 @@ describe('RawConfigValidator works properly', () => {
   });
 
   it('_isMultiLanguageSite returns true for multilang sites', () => {
-    expect(new RawConfigValidator(multiLangConfig)._isMultiLanguageSite()).toEqual(true);
+    expect(new RawConfigValidator(multiLangConfig)._isMultiLanguageSite()).toBeTruthy();
   })
 
   it('_isMultiLanguageSite returns false for single language sites', () => {
-    expect(new RawConfigValidator(singleLangConfig)._isMultiLanguageSite()).toEqual(false);
+    expect(new RawConfigValidator(singleLangConfig)._isMultiLanguageSite()).toBeFalsy();
   })
 });

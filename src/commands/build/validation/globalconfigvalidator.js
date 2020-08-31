@@ -2,8 +2,8 @@ const UserError = require('../../../errors/usererror');
 const { fileNames } = require('../../../constants');
 
 /**
- * Performs validation on global_config.json
- */
+* Performs validation on global_config.json
+*/
 module.exports = class GlobalConfigValidator {
   constructor (globalConfig) {
     /**
@@ -23,7 +23,7 @@ module.exports = class GlobalConfigValidator {
 
   _validateConfigExists () {
     if (!this._globalConfig) {
-      throw new UserError(`Error: Cannot find ${fileNames.GLOBAL_CONFIG}, exiting.`);
+      throw new UserError(`Error: Cannot find config ${fileNames.GLOBAL_CONFIG}, exiting.`);
     }
   }
 }

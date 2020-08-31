@@ -49,8 +49,8 @@ module.exports = class PageConfigsValidator {
   }
 
   /**
-   * @param {*[]} list 
-   * @returns {*[]}
+   * @param {string[]} list 
+   * @returns {string[]}
    */
   _removeDuplicates (list) {
     return [...new Set(list)];
@@ -70,12 +70,9 @@ module.exports = class PageConfigsValidator {
    * @returns {string[]}
    */
   _getLocalesMissingConfigs (pageLocales) {
-    let locales = [];
-    pageLocales.forEach(locale => {
-      if (!(this._configuredLocales.includes(locale))){
-        locales.push(locale);
-      }
-    })
+    const locales = pageLocales.filter(locale => {
+      return !this._configuredLocales.includes(locale)
+    });
     return locales;
   }
 
@@ -84,9 +81,9 @@ module.exports = class PageConfigsValidator {
    */
   _throwErrorForLocalesMissingConfigs (locales) {
     if (locales.length == 1) {
-      throw new UserError(`The locale '${locales}' is defined in a page configuration file name but is not defined inside ${fileNames.LOCALE_CONFIG}`);
+      throw new UserError(`The locale '${locales}' is referenced but is not configured inside ${fileNames.LOCALE_CONFIG}`);
     } else if (locales.length > 1) {
-      throw new UserError(`The locales '${locales}' are defined in page configuration file names but are not defined inside ${fileNames.LOCALE_CONFIG}`);
+      throw new UserError(`The locales '${locales}' are referenced but are not defined inside ${fileNames.LOCALE_CONFIG}`);
     }
   }
 }
