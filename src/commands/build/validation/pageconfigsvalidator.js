@@ -37,13 +37,9 @@ module.exports = class PageConfigsValidator {
    * @returns {string[]}
    */
   _getPageLocales () {
-    let locales = Object.keys(this._pageConfigs)
-      .filter(configName => 
-        containsLocale(configName)
-      )
-      .map(configName => {
-        return parseLocale(configName);
-      })
+    const locales = Object.keys(this._pageConfigs)
+      .filter(configName => containsLocale(configName))
+      .map(configName => parseLocale(configName));
 
     return this._removeDuplicates(locales);
   }

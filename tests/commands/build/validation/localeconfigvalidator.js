@@ -5,20 +5,7 @@ describe('LocaleConfigValidator works properly', () => {
   it('does not throw an error with a correct config', () => {
     const config = {
       default: 'en',
-      localeConfig: {
-        en: {
-          experienceKey: 'key',
-          apiKey: 'apikey'
-        },
-        fr: {
-          experienceKey: 'fr_key',
-          apiKey: 'fr_apikey'
-        }
-      },
-      urlFormat: {
-        baseLocale: '{locale}/{pageName}.{pageExt}',
-        default: '{pageName}.{pageExt}'
-      }
+      localeConfig: {}
     };
     expect(() => new LocaleConfigValidator(config).validate()).not.toThrow(UserError);
   });
