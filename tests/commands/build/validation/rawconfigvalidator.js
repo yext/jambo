@@ -7,23 +7,10 @@ describe('RawConfigValidator works properly', () => {
     locale_config: {
       default: 'en',
       localeConfig: {
-        en: {
-          experienceKey: 'key',
-          apiKey: 'apikey'
-        },
-        fr: {
-          experienceKey: 'fr_key',
-          apiKey: 'fr_apikey'
-        },
-        es: {
-          experienceKey: 'es_key',
-          apiKey: 'es_apikey'
-        }
+        en: {},
+        fr: {},
+        es: {}
       },
-      urlFormat: {
-        baseLocale: '{locale}/{pageName}.{pageExt}',
-        default: '{pageName}.{pageExt}'
-      }
     },
     index: {},
     faqs: {},

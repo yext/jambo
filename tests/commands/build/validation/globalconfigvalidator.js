@@ -2,9 +2,8 @@ const GlobalConfigValidator = require('../../../../src/commands/build/validation
 const UserError = require('../../../../src/errors/usererror');
 
 describe('GlobalConfigValidator works properly', () => {
-  const config = {};
-
   it('does not throw an error with a correct config', () => {
+    const config = {};
     expect(() => new GlobalConfigValidator(config).validate()).not.toThrow(UserError);
   });
 
