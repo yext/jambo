@@ -76,80 +76,68 @@ describe('translations with one plural form (French)', () => {
   });
 
   describe('Translations with context and no pluralization', () => {
-    it('context works as expected with context = male', () => {
-      const translation = translator.translateWithContext('Child', 'male');
-      expect(translation).toEqual('fils');
+    it('context works as expected', () => {
+      const translationWithMaleContext = translator.translateWithContext('Child', 'male');
+      const translationWithFemaleContext = translator.translateWithContext('Child', 'female');
+      expect(translationWithMaleContext).toEqual('fils');
+      expect(translationWithFemaleContext).toEqual('fille');
     });
 
-    it('context works as expected with context = female', () => {
-      const translation = translator.translateWithContext('Child', 'female');
-      expect(translation).toEqual('fille');
-    });
-
-    it('context and interpolation works as expected with context = male', () => {
-      const translation = translator.translateWithContext(
+    it('context and interpolation works as expected', () => {
+      const translationWithMaleContext = translator.translateWithContext(
         'I am looking for my child named [[name]]', 'male');
-      expect(translation).toEqual('Je cherche mon fils nommé [[name]]')
-    });
-
-    it('context and interpolation works as expected with context = female', () => {
-      const translation = translator.translateWithContext(
+      const translationWithFemaleContext = translator.translateWithContext(
         'I am looking for my child named [[name]]', 'female');
-      expect(translation).toEqual('Je cherche mon fille nommé [[name]]')
+      expect(translationWithMaleContext).toEqual('Je cherche mon fils nommé [[name]]')
+      expect(translationWithFemaleContext).toEqual('Je cherche mon fille nommé [[name]]')
     });
   });
 
   describe('Translations with pluralization and context', () => {
-    it('Pluralization works as expected when context = male', () => {
-      const translation = translator.translatePluralWithContext(
+    it('Pluralization and context works as expected', () => {
+      const translationWithMaleContext = translator.translatePluralWithContext(
         'The person',
         'The people',
         'male');
-      const expectedResult = {
+      const translationWithFemaleContext = translator.translatePluralWithContext(
+        'The person',
+        'The people',
+        'female');
+      const expectedResultWithMaleContext = {
         0: 'L\'homme',
         1: 'Les hommes',
         locale: 'fr-FR'
       };
-      expect(translation).toEqual(expectedResult);
-    });
-
-    it('Pluralization works as expected when context = female', () => {
-      const translation = translator.translatePluralWithContext(
-        'The person',
-        'The people',
-        'female');
-      const expectedResult = {
+      const expectedResultWithFemaleContext = {
         0: 'La femme',
         1: 'Les femmes',
         locale: 'fr-FR'
       };
-      expect(translation).toEqual(expectedResult);
+      expect(translationWithMaleContext).toEqual(expectedResultWithMaleContext);
+      expect(translationWithFemaleContext).toEqual(expectedResultWithFemaleContext);
     });
 
-    it('Pluralization and interpolation works as expected when context = male', () => {
-      const translation = translator.translatePluralWithContext(
+    it('Pluralization and interpolation works as expected', () => {
+      const translationWithMaleContext = translator.translatePluralWithContext(
       'The [[count]] person went on a walk',
         'The [[count]] people went on a walk',
         'male');
-      const expectedResult = {
+      const translationWithFemaleContext = translator.translatePluralWithContext(
+        'The [[count]] person went on a walk',
+        'The [[count]] people went on a walk',
+        'female');
+      const expectedResultWithMaleContext = {
         0: 'Le [[count]] homme est parti en promenade',
         1: 'Les [[count]] Hommes fait une promenade',
         locale: 'fr-FR'
       };
-      expect(translation).toEqual(expectedResult);
-    });
-
-    it('Pluralization and interpolation works as expected when context = female', () => {
-      const translation = translator.translatePluralWithContext(
-        'The [[count]] person went on a walk',
-        'The [[count]] people went on a walk',
-        'female');
-      const expectedResult = {
+      const expectedResultWithFemaleContext = {
         0: 'La [[count]] femme a fait une promenade',
         1: 'Les [[count]] femmes fait une promenade',
         locale: 'fr-FR'
       };
-      expect(translation).toEqual(expectedResult);
+      expect(translationWithMaleContext).toEqual(expectedResultWithMaleContext);
+      expect(translationWithFemaleContext).toEqual(expectedResultWithFemaleContext);
     });
 
     it('Pluralization and interpolation with context works as expected when the translation is not found', () => {
