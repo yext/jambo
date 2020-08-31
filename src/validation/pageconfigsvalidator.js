@@ -1,6 +1,6 @@
-const UserError = require('../../../errors/usererror');
-const { parseLocale, containsLocale } = require('../../../utils/configutils');
-const { FileNames, ConfigKeys } = require('../../../constants');
+const UserError = require('../errors/usererror');
+const { parseLocale, containsLocale } = require('../utils/configutils');
+const { FileNames } = require('../constants');
 
 /**
  * Performs validation on page config files

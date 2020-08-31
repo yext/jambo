@@ -1,5 +1,5 @@
-const PageConfigsConfigValidator = require('../../../../src/commands/build/validation/pageconfigsvalidator');
-const UserError = require('../../../../src/errors/usererror');
+const PageConfigsConfigValidator = require('../../src/validation/pageconfigsvalidator');
+const UserError = require('../../src/errors/usererror');
 
 describe('PageConfigValidator works properly', () => {
   it('does not throw an error for a correct config', () => {

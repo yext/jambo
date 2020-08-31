@@ -1,7 +1,7 @@
 const GlobalConfigValidator = require('./globalconfigvalidator');
 const LocaleConfigValidator = require('./localeconfigvalidator');
 const PageConfigsValidator = require('./pageconfigsvalidator');
-const { ConfigKeys } = require('../../../constants');
+const { ConfigKeys } = require('../constants');
 const cloneDeep = require('lodash/cloneDeep');
 
 /**

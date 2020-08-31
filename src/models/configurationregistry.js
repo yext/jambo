@@ -4,7 +4,7 @@ const GlobalConfig = require('./globalconfig');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
 const { FileNames, ConfigKeys } = require('../constants');
-const RawConfigValidator = require('../commands/build/validation/rawconfigvalidator');
+const RawConfigValidator = require('../validation/rawconfigvalidator');
 
 /**
  * ConfigurationRegistry is a registry of the configuration files provided to Jambo.

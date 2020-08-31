@@ -1,5 +1,5 @@
-const UserError = require('../../../errors/usererror');
-const { FileNames } = require('../../../constants');
+const UserError = require('../errors/usererror');
+const { FileNames } = require('../constants');
 
 /**
  * Performs validation on locale_config.json

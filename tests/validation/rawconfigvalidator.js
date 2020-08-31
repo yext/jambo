@@ -1,5 +1,4 @@
-const RawConfigValidator = require('../../../../src/commands/build/validation/rawconfigvalidator');
-const UserError = require('../../../../src/errors/usererror');
+const RawConfigValidator = require('../../src/validation/rawconfigvalidator');
 
 describe('RawConfigValidator works properly', () => {
   it('does not throw an error with a correct multi-language config', () => {
