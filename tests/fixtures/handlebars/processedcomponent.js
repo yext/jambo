@@ -13,7 +13,7 @@ class standardCardComponent extends BaseCard['standard'] {
    */
   dataForRender(profile) {
     return {
-      title: 'Bonjour' + 'Bonjour', // The header text of the card
+      title: 'Bonjour' + 'L\'homme', // The header text of the card
       url: profile.website || profile.landingPageUrl, // If the card title is a clickable link, set URL here
       target: '_top', // If the title's URL should open in a new tab, etc.
       titleEventOptions: this.addDefaultEventOptions(),
@@ -32,7 +32,7 @@ class standardCardComponent extends BaseCard['standard'] {
         eventOptions: this.addDefaultEventOptions()
       },
       CTA2: {
-        label: 'Bonjour',
+        label: '<span class="yext">L\'os du chien</span>',
         iconName: 'chevron',
         url: Formatter.generateCTAFieldTypeLink(profile.c_secondaryCTA),
         target: '_top',

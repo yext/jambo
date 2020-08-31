@@ -16,6 +16,14 @@ describe('LocalFileParser works correctly', () => {
       'There is [[count]] item [[name]]_plural': 'Il y a [[count]] articles [[name]]',
       'I am looking for my child named [[name]]_male': 'Je cherche mon fils nommé [[name]]',
       'I am looking for my child named [[name]]_female': 'Je cherche mon fille nommé [[name]]',
+      'The person_female': 'La femme',
+      'The person_female_plural': 'Les femmes',
+      'The person_male': 'L\'homme',
+      'The person_male_plural': 'Les hommes',
+      "The [[count]] person went on a walk_female": "La [[count]] femme a fait une promenade",
+      "The [[count]] person went on a walk_female_plural": "Les [[count]] femmes fait une promenade",
+      "The [[count]] person went on a walk_male": "Le [[count]] homme est parti en promenade",
+      "The [[count]] person went on a walk_male_plural": "Les [[count]] Hommes fait une promenade",
     };
 
     return localFileParser.fetch('fr-FR').then(translations => {
