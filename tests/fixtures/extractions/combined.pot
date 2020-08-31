@@ -33,3 +33,10 @@ msgstr ""
 msgctxt "Mail is a verb"
 msgid "Mail now [[id1]]"
 msgstr ""
+
+#: tests/fixtures/extractions/rawtemplate.hbs:14
+msgctxt "male"
+msgid "The [[count]] person went on a walk"
+msgid_plural "The [[count]] people went on a walk"
+msgstr[0] ""
+msgstr[1] ""
