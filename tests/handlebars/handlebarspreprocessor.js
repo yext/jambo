@@ -1,6 +1,7 @@
 const path = require('path');
 const { readFileSync } = require('file-system');
 
+const LocalFileParser = require('../../src/i18n/translationfetchers/localfileparser');
 const Translator = require('../../src/i18n/translator/translator');
 const HandlebarsPreprocessor = require('../../src/handlebars/handlebarspreprocessor');
 jest.mock('../../src/i18n/translator/translator')
@@ -8,7 +9,15 @@ jest.mock('../../src/i18n/translator/translator')
 describe('HandlebarsPreprocessor works correctly', () => {
   Translator.mockImplementation(() => {
     return {
-      translate: () => 'Bonjour',
+      translate: (phrase) => {
+        if (phrase === 'Hello') {
+          return "Bonjour"
+        } else if (phrase === 'The man') {
+          return 'L\'homme';
+        } else if (phrase === '<span class="yext">The dog\'s bone</span>') {
+          return '<span class="yext">L\'os du chien</span>';
+        }
+      },
       translateWithContext: () => 'Mail maintenant [[id1]]',
       translatePlural: () => {
         return {
@@ -16,6 +25,21 @@ describe('HandlebarsPreprocessor works correctly', () => {
           1: 'Les articles [[name]]',
           locale: 'fr-FR'
         };
+      },
+      translatePluralWithContext: (phrase, pluralForm, context) => {
+        if (context === 'male') {
+          return {
+            0: 'L\'homme',
+            1: 'Les hommes',
+            locale: 'fr-FR'
+          }
+        } else if (context === 'female') {
+          return {
+            0: 'La femme',
+            1: 'Les femmes',
+            locale: 'fr-FR'
+          }
+        }
       }
     };
   });

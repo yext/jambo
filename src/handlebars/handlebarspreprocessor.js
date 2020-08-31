@@ -44,11 +44,14 @@ class HandlebarsPreprocessor {
    */
   _handleTranslateInvocation(invocation) {
     let translatorResult;
+    const translationContext = invocation.getContext();
     if (invocation.isUsingPluralization()) {
-      translatorResult = JSON.stringify(
-        this._translator.translatePlural(invocation.getPhrase(), invocation.getPluralForm()));
+      translatorResult = translationContext ?
+        JSON.stringify(this._translator.translatePluralWithContext(
+          invocation.getPhrase(), invocation.getPluralForm(), translationContext)):
+        JSON.stringify(this._translator.translatePlural(
+          invocation.getPhrase(), invocation.getPluralForm()));
     } else {
-      const translationContext = invocation.getContext();
       translatorResult = translationContext ?
         this._translator.translateWithContext(
           invocation.getPhrase(), translationContext) :
@@ -56,7 +59,11 @@ class HandlebarsPreprocessor {
     }
 
     if (invocation.canBeTranslatedStatically()) {
-      return invocation.getInvokedHelper() === 'translateJS' ? `'${translatorResult}'` : translatorResult;
+      const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+
+      return invocation.getInvokedHelper() === 'translateJS' ? 
+        `'${escapedTranslatorResult}'`: 
+        translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
 
@@ -72,8 +79,6 @@ class HandlebarsPreprocessor {
    * Constructs a call to the SDK's Javascript method for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
-   * TODO: after updating translate invocation to use the Handlebars parser, update this method
-   * to escape single quotes in translatorResult.
    *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {boolean} needsPluralization If pluralization is required when translating.
@@ -90,15 +95,15 @@ class HandlebarsPreprocessor {
       return `ANSWERS.translateJS('${translatorResult}', ${parsedParams}, ${count})`;
     }
 
-    return `ANSWERS.translateJS('${translatorResult}', ${parsedParams})`;
+    const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+
+    return `ANSWERS.translateJS('${escapedTranslatorResult}', ${parsedParams})`;
   }
 
   /**
    * Constructs a call to the SDK's Handlebars helper for run-time translation.
    * This call is constructed using the translation(s) for a phrase and any interpolation
    * paramters.
-   * TODO: after updating translate invocation to use the Handlebars parser, update this method
-   * to escape single quotes in translatorResult.
    *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
@@ -111,7 +116,21 @@ class HandlebarsPreprocessor {
         return params + `${paramName}=${paramValue} `;
       }, '');
 
-    return `{{ runtimeTranslation phrase='${translatorResult}' ${paramsString}}}`;
+    const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+    
+    return `{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}`;
+  }
+  
+  /**
+   * Escape single quotes in the provided string
+   * @param {string} str 
+   * 
+   * @returns {string}
+   */
+  _escapeSingleQuotes(str) {
+    const regex = new RegExp('\'', 'g');
+    const escapedString = str.replace(regex, '\\\'');
+    return escapedString;
   }
 }
 module.exports = HandlebarsPreprocessor;
