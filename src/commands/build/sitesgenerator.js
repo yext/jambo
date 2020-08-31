@@ -301,9 +301,14 @@ exports.SitesGenerator = class {
       return babel.transformSync(srcCode, {
         compact: true,
         minified: true,
-        presets: [
-          '@babel/preset-env',
-          ],
+        sourceType: 'script',
+        presets: ['@babel/preset-env'],
+        plugins: [
+          '@babel/syntax-dynamic-import',
+          '@babel/plugin-transform-arrow-functions',
+          '@babel/plugin-proposal-object-rest-spread',
+          '@babel/plugin-transform-object-assign',
+        ]
         }).code;
     })
 
