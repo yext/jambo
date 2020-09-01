@@ -7,7 +7,7 @@ describe('LocaleConfigValidator works properly', () => {
       default: 'en',
       localeConfig: {}
     };
-    expect(() => new LocaleConfigValidator(config).validate()).not.toThrow(UserError);
+    expect(() => new LocaleConfigValidator(config).validate()).not.toThrow();
   });
 
   it('throws error when key "default" is missing or misspelled', () => {
