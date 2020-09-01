@@ -45,7 +45,7 @@ module.exports = class PageSetsBuilder {
     for (const [locale, pageConfigs] of Object.entries(localeToPageConfigs)) {
       const templates = localeToPageTemplates[locale];
       if (!templates || templates.length < 1) {
-        const localeMessage = config.getLocale() !== NO_LOCALE
+        const localeMessage = locale !== NO_LOCALE
           ? ` for '${locale}' locale`
           : '';
         console.log(`Warning: No page templates found${localeMessage}, not generating a page set${localeMessage}`);

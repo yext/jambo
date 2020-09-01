@@ -28,7 +28,7 @@ exports.getPageName = getPageName;
  * @param {string} filename the file name
  * @returns {string}
  */
-isValidFile = function(fileName) {
+isValidFile = function (fileName) {
   return fileName && !fileName.startsWith('.');
 }
 exports.isValidFile = isValidFile;
