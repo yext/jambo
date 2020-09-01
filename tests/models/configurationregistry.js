@@ -1,5 +1,6 @@
 const ConfigurationRegistry = require('../../src/models/configurationregistry');
 const { getPageName } = require('../../src/utils/fileutils');
+const { parseLocale } = require('../../src/utils/configutils');
 const GlobalConfig = require('../../src/models/globalconfig');
 const LocalizationConfig = require('../../src/models/localizationconfig');
 const PageConfig = require('../../src/models/pageconfig');
@@ -10,9 +11,13 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     const rawGlobalConfig = {
       test: 'config'
     };
+    const rawLocaleConfig = {
+      default: 'en',
+      localeConfig: {}
+    }
     const configRegistry = ConfigurationRegistry.from({
       global_config: rawGlobalConfig,
-      locale_config: new LocalizationConfig()
+      locale_config: rawLocaleConfig
     });
     expect(configRegistry.getGlobalConfig())
       .toEqual(new GlobalConfig(rawGlobalConfig));
@@ -20,7 +25,8 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
 
   it('creates LocalizationConfig properly when locale_config is present', () => {
     const localizationConfig = {
-      defaultLocale: 'en'
+      default: 'en',
+      localeConfig: {}
     };
     const configRegistry = ConfigurationRegistry.from({
       global_config: {},
@@ -48,7 +54,6 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     };
     const rawConfigs = {
       global_config: {},
-      locale_config: {},
       [configName]: rawPageConfig,
       [configNameWithLocale]: rawPageConfig,
     };
@@ -59,7 +64,7 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
       .toEqual([
         new PageConfig({
           pageName: getPageName(configName),
-          locale: ConfigurationRegistry._parseLocale(configName),
+          locale: parseLocale(configName),
           rawConfig: rawPageConfig
         }),
         new PageConfig({
