@@ -12,7 +12,7 @@ const GeneratedData = require('../../models/generateddata');
 const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
 const LocalizationConfig = require('../../models/localizationconfig');
 const PageTemplate = require('../../models/pagetemplate');
-const PageUniquenessValidator = require('./pageuniquenessvalidator');
+const PageUniquenessValidator = require('../../validation/pageuniquenessvalidator');
 const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
@@ -61,6 +61,7 @@ exports.SitesGenerator = class {
         }
       }
     });
+
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
     const hasLocalizationConfig = configRegistry.getLocalizationConfig().hasConfig();
 

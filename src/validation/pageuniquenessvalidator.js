@@ -1,5 +1,5 @@
-const Page = require("../../models/page");
-const UserError = require("../../errors/usererror");
+const Page = require("../models/page");
+const UserError = require("../errors/usererror");
 
 /**
  * PageUniquenessValidator is responsible for validating whether the given pages are unique.
@@ -10,6 +10,7 @@ module.exports = class PageUniquenessValidator {
    * broken validation rule if present.
    *
    * @param {Array<Page>} pages
+   * @throws {UserError} Thrown if validation fails
    */
   validate(pages) {
     if (!pages || pages.length < 1) {
