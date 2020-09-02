@@ -126,12 +126,6 @@ exports.SitesGenerator = class {
       ? await this._extractTranslations(locales, configRegistry.getLocalizationConfig())
       : {};
 
-    const localeToTranslator = {};
-    for (const locale of locales) {
-      localeToTranslator[locale] = await Translator
-        .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
-    }
-
     // Register needed Handlebars helpers.
     console.log('Registering Jambo Handlebars helpers');
     try {
@@ -144,7 +138,9 @@ exports.SitesGenerator = class {
     for (const pageSet of pageSets) {
       // Pre-process partials and register them with the Handlebars instance
       const locale = pageSet.getLocale();
-      const handlebarsPreprocessor = new HandlebarsPreprocessor(localeToTranslator[locale]);
+      const translator = await Translator
+        .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
+      const handlebarsPreprocessor = new HandlebarsPreprocessor(translator);
 
       console.log(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
