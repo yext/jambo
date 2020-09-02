@@ -32,9 +32,10 @@ class LocalFileParser {
    *                            i18next format.
   */
   async fetch(locale, translationFilePath) {
-    const translationFile = path.join(this._translationsDir, translationFilePath);
+    const fileName = translationFilePath || `${locale}.po`;
+    const translationFile = path.join(this._translationsDir, fileName);
     if (!existsSync(translationFile)) {
-      throw new UserError(`Cannot find translation file for '${locale}' at '${translationFilePath}'`);
+      throw new UserError(`Cannot find translation file for '${locale}' at '${translationFile}'`);
     }
 
     const localeTranslations =
