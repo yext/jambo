@@ -61,3 +61,9 @@ msgid "The [[count]] person went on a walk"
 msgid_plural "The [[count]] people went on a walk"
 msgstr[0] "La [[count]] femme a fait une promenade"
 msgstr[1] "Les [[count]] femmes fait une promenade"
+
+msgid "The dog."
+msgstr "Le chien."
+
+msgid "The: dog"
+msgstr "Le: chien"

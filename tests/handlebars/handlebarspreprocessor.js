@@ -16,6 +16,10 @@ describe('HandlebarsPreprocessor works correctly', () => {
           return 'L\'homme';
         } else if (phrase === '<span class="yext">The dog\'s bone</span>') {
           return '<span class="yext">L\'os du chien</span>';
+        } else if (phrase === 'The dog.') {
+          return 'Le chien.';
+        } else if (phrase === 'The: dog') {
+          return 'Le: chien';
         }
       },
       translateWithContext: () => 'Mail maintenant [[id1]]',
