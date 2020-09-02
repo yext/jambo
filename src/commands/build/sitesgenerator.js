@@ -310,8 +310,13 @@ exports.SitesGenerator = class {
     const translations = {};
 
     for (const locale of locales) {
-      const localeTranslations = await localFileParser
-        .fetch(locale, localizationConfig.getTranslationFile(locale));
+      const translationFilePath = localizationConfig.getTranslationFile(locale);
+      if (!translationFilePath) {
+        console.log(`Warning: No translation file specified for '${locale}'`);
+        continue;
+      }
+
+      const localeTranslations = await localFileParser.fetch(locale, translationFilePath);
       translations[locale] = { translation: localeTranslations };
     }
 

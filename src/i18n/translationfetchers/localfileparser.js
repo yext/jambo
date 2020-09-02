@@ -1,6 +1,7 @@
 const path = require('path');
 const { readFileSync, existsSync } = require('fs');
 const { gettextToI18next } = require('i18next-conv');
+const UserError = require('../../errors/usererror');
 
 /**
  * This class parses translations from a local .PO file. The i18next-conv
@@ -31,16 +32,14 @@ class LocalFileParser {
    *                            i18next format.
   */
   async fetch(locale, translationFilePath) {
-    const fileName = translationFilePath || `${locale}.po`;
-    const translationFile = path.join(this._translationsDir, fileName);
-
-    if (existsSync(translationFile)) {
-      const localeTranslations =
-        gettextToI18next(locale, readFileSync(translationFile), this._options);
-      return localeTranslations.then(data => JSON.parse(data));
+    const translationFile = path.join(this._translationsDir, translationFilePath);
+    if (!existsSync(translationFile)) {
+      throw new UserError(`Cannot find translation file for '${locale}' at '${translationFilePath}'`);
     }
 
-    return {};
+    const localeTranslations =
+      gettextToI18next(locale, readFileSync(translationFile), this._options);
+    return localeTranslations.then(data => JSON.parse(data));
   }
 }
 module.exports = LocalFileParser;
