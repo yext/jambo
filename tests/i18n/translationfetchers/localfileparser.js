@@ -24,6 +24,8 @@ describe('LocalFileParser works correctly', () => {
       "The [[count]] person went on a walk_female_plural": "Les [[count]] femmes fait une promenade",
       "The [[count]] person went on a walk_male": "Le [[count]] homme est parti en promenade",
       "The [[count]] person went on a walk_male_plural": "Les [[count]] Hommes fait une promenade",
+      "The dog.": "Le chien.",
+      "The: dog": "Le: chien"
     };
 
     return localFileParser.fetch('fr-FR').then(translations => {

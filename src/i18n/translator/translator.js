@@ -219,6 +219,8 @@ class Translator {
     const i18nextInstance = i18next.createInstance();
     await i18nextInstance.init({
       lng: locale,
+      nsSeparator: false,     // allow keys to be phrases having `:`
+      keySeparator: false,    // allow keys to be phrases having `.`
       fallbackLng: fallbacks,
       resources: translations,
     });

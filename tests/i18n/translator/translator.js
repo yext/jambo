@@ -35,6 +35,16 @@ describe('translations with one plural form (French)', () => {
       const translation = translator.translate('Breakfast');
       expect(translation).toEqual('Petit Déjeuner');
     });
+
+    it('translation with a period . work as expected', () => {
+      const translation = translator.translate('The dog.');
+      expect(translation).toEqual('Le chien.');
+    });
+
+    it('translation with a colon : work as expected', () => {
+      const translation = translator.translate('The: dog');
+      expect(translation).toEqual('Le: chien');
+    });
   });
 
   describe('Translations with pluralization and no context', () => {
