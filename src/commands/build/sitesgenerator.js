@@ -304,7 +304,7 @@ exports.SitesGenerator = class {
    *
    * @param {Array<string>} locales The list of locales.
    * @param {LocalizationConfig} localizationConfig
-   * @returns {Object<string, Object} A map of locale to formatted translations.
+   * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractTranslations(locales, localizationConfig) {
     const customTranslations = await this._extractCustomTranslations(locales, localizationConfig);
@@ -321,7 +321,7 @@ exports.SitesGenerator = class {
    *
    * @param {Array<string>} locales The list of locales.
    * @param {LocalizationConfig} localizationConfig
-   * @returns {Object<string>, Object} A map of locale to formatted translations.
+   * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractCustomTranslations(locales, localizationConfig) {
     const localFileParser = new LocalFileParser(this.config.dirs.translations);
@@ -344,7 +344,7 @@ exports.SitesGenerator = class {
    * The translations are returned in i18next format.
    *
    * @param {Array<string>} locales The list of locales.
-   * @returns {Object<string>, Object} A map of locale to formatted translations.
+   * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractThemeTranslations(locales) {
     const themeTranslationsDir = 
@@ -368,9 +368,9 @@ exports.SitesGenerator = class {
    * and themeTranslations. customTranslations override
    * themeTranslations with the same translation key
    * 
-   * @param {Object<string>, Object} themeTranslations 
-   * @param {Object<string>, Object} customTranslations 
-   * @return {Object<string>, Object}
+   * @param {Object<string, Object>} themeTranslations 
+   * @param {Object<string, Object>} customTranslations 
+   * @return {Object<string, Object>}
    */
   _mergeTranslations(themeTranslations, customTranslations) {
     return Object.entries(customTranslations).reduce((mergedTranslations, [locale, val]) => {
