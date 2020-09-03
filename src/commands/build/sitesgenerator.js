@@ -309,8 +309,8 @@ exports.SitesGenerator = class {
   async _extractTranslations(locales, localizationConfig) {
     const customTranslations = await this._extractCustomTranslations(locales, localizationConfig);
     const themeTranslations = await this._extractThemeTranslations(locales);
-    const mergedTranslations = this._mergeTranslations(themeTranslations, customTranslations);
-
+    const mergedTranslations = _.merge(themeTranslations, customTranslations);
+    
     return mergedTranslations;
   }
 
@@ -361,23 +361,5 @@ exports.SitesGenerator = class {
     }
 
     return translations;
-  }
-
-  /**
-   * Returns an object which is a merge of customTranslations
-   * and themeTranslations. customTranslations override
-   * themeTranslations with the same translation key
-   * 
-   * @param {Object<string, Object>} themeTranslations 
-   * @param {Object<string, Object>} customTranslations 
-   * @return {Object<string, Object>}
-   */
-  _mergeTranslations(themeTranslations, customTranslations) {
-    return Object.entries(customTranslations).reduce((mergedTranslations, [locale, val]) => {
-      const correspondingThemeTranslations = themeTranslations[locale] || {};
-      mergedTranslations[locale] = {};
-      mergedTranslations[locale]['translation'] = Object.assign({}, val['translation'], correspondingThemeTranslations['translation']);
-      return mergedTranslations;
-    }, {});
   }
 }
