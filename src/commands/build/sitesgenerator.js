@@ -344,7 +344,6 @@ exports.SitesGenerator = class {
    * The translations are returned in i18next format.
    *
    * @param {Array<string>} locales The list of locales.
-   * @param {LocalizationConfig} localizationConfig
    * @returns {Object<string, Object} A map of locale to formatted translations.
    */
   async _extractThemeTranslations(locales) {
