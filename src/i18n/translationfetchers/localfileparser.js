@@ -34,8 +34,13 @@ class LocalFileParser {
   async fetch(locale, translationFilePath) {
     const fileName = translationFilePath || `${locale}.po`;
     const translationFile = path.join(this._translationsDir, fileName);
-    if (!existsSync(translationFile)) {
+    const translationFileExists = existsSync(translationFile);
+
+    if (translationFilePath && !translationFileExists) {
       throw new UserError(`Cannot find translation file for '${locale}' at '${translationFile}'`);
+    }
+    if (!translationFileExists) { // Cases w/o a translation file
+      return {};
     }
 
     const localeTranslations =
