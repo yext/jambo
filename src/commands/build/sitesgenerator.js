@@ -321,7 +321,7 @@ exports.SitesGenerator = class {
    *
    * @param {Array<string>} locales The list of locales.
    * @param {LocalizationConfig} localizationConfig
-   * @returns {Object<string, Object} A map of locale to formatted translations.
+   * @returns {Object<string>, Object} A map of locale to formatted translations.
    */
   async _extractCustomTranslations(locales, localizationConfig) {
     const localFileParser = new LocalFileParser(this.config.dirs.translations);
@@ -344,10 +344,11 @@ exports.SitesGenerator = class {
    * The translations are returned in i18next format.
    *
    * @param {Array<string>} locales The list of locales.
-   * @returns {Object<string, Object} A map of locale to formatted translations.
+   * @returns {Object<string>, Object} A map of locale to formatted translations.
    */
   async _extractThemeTranslations(locales) {
-    const themeTranslationsDir = `${this.config.dirs.themes}/${this.config.defaultTheme}/translations`
+    const themeTranslationsDir = 
+      `${this.config.dirs.themes}/${this.config.defaultTheme}/translations`;
     const localFileParser = new LocalFileParser(themeTranslationsDir);
     const translations = {};
 
@@ -363,20 +364,20 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Adds customTranslations to translations
-   * If keys confict, customTranslaitons will override them
+   * Returns an object which is a merge of customTranslations
+   * and themeTranslations. customTranslations override
+   * themeTranslations with the same translation key
    * 
-   * @param {Object<string, Object} translations 
-   * @param {Object<string, Object} customTranslations 
-   * @return {Object<string, Object}
+   * @param {Object<string>, Object} themeTranslations 
+   * @param {Object<string>, Object} customTranslations 
+   * @return {Object<string>, Object}
    */
-  _mergeTranslations(translations, customTranslations) {
-    for (const locale of Object.keys(customTranslations)) {
-      for (const [translationKey, translation] of Object.entries(customTranslations[locale]['translation'])) {
-        translations[locale]['translation'][translationKey] = translation;
-      }
-    }
-
-    return translations;
+  _mergeTranslations(themeTranslations, customTranslations) {
+    return Object.entries(customTranslations).reduce((mergedTranslations, [locale, val]) => {
+      const correspondingThemeTranslations = themeTranslations[locale] || {};
+      mergedTranslations[locale] = {};
+      mergedTranslations[locale]['translation'] = Object.assign({}, val['translation'], correspondingThemeTranslations['translation']);
+      return mergedTranslations;
+    }, {});
   }
 }
