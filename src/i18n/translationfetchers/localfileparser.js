@@ -35,7 +35,7 @@ class LocalFileParser {
     const fileName = translationFilePath || `${locale}.po`;
     const translationFile = path.join(this._translationsDir, fileName);
     if (!existsSync(translationFile)) {
-      throw new UserError(`Cannot find translation file for '${locale}' at '${translationFile}'`);
+      Promise.reject(new UserError(`Cannot find translation file for '${locale}' at '${translationFile}'`));
     }
 
     const localeTranslations =

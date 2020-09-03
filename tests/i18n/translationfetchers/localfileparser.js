@@ -33,9 +33,7 @@ describe('LocalFileParser works correctly', () => {
     })
   });
 
-  it('works correctly when no translation file exists for the locale', () => {
-    return localFileParser.fetch('es').then(translations => {
-      expect(translations).toEqual({});
-    })
+  it('Rejects with an error when no translation file exists for the locale', () => {
+    expect(localFileParser.fetch('es')).rejects.toThrow();
   })
 });

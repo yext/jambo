@@ -328,9 +328,11 @@ exports.SitesGenerator = class {
     const translations = {};
 
     for (const locale of locales) {
-      const localeTranslations = await localFileParser
-        .fetch(locale, localizationConfig.getTranslationFile(locale));
-      translations[locale] = { translation: localeTranslations };
+      if (locale !== localizationConfig.getDefaultLocale()) {
+        const localeTranslations = await localFileParser
+          .fetch(locale, localizationConfig.getTranslationFile(locale));
+        translations[locale] = { translation: localeTranslations };
+      }
     }
 
     return translations;
@@ -351,8 +353,11 @@ exports.SitesGenerator = class {
     const translations = {};
 
     for (const locale of locales) {
-      const localeTranslations = await localFileParser.fetch(locale);
-      translations[locale] = { translation: localeTranslations };
+      const translationFile = path.join(themeTranslationsDir, `${locale}.po`);
+      if (fs.existsSync(translationFile)) {
+        const localeTranslations = await localFileParser.fetch(locale);
+        translations[locale] = { translation: localeTranslations };
+      }
     }
 
     return translations;
