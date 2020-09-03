@@ -1,5 +1,6 @@
 const path = require('path');
 const LocalFileParser = require('../../../src/i18n/translationfetchers/localfileparser');
+const UserError = require('../../../src/errors/usererror');
 
 describe('LocalFileParser works correctly', () => {
   const translationsPath = path.join(__dirname, '../../fixtures/translations');
@@ -33,9 +34,7 @@ describe('LocalFileParser works correctly', () => {
     })
   });
 
-  it('works correctly when no translation file exists for the locale', () => {
-    return localFileParser.fetch('es').then(translations => {
-      expect(translations).toEqual({});
-    })
+  it('Rejects with an error when no translation file exists for the locale', () => {
+    expect(localFileParser.fetch('es')).rejects.toThrow(UserError);
   })
 });
