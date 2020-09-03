@@ -298,14 +298,32 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Parses the local translation files for the provided locales. The translations
-   * are returned in i18next format.
+   * Parses the local translation files for the provided locales. 
+   * Parses both custom and theme translations.
+   * The translations are returned in i18next format.
    *
    * @param {Array<string>} locales The list of locales.
    * @param {LocalizationConfig} localizationConfig
    * @returns {Object<string, Object} A map of locale to formatted translations.
    */
   async _extractTranslations(locales, localizationConfig) {
+    const customTranslations = await this._extractCustomTranslations(locales, localizationConfig);
+    const themeTranslations = await this._extractThemeTranslations(locales);
+    const mergedTranslations = this._mergeTranslations(themeTranslations, customTranslations);
+
+    return mergedTranslations;
+  }
+
+  /**
+   * Parses the local translation files for the provided locales. 
+   * Parses translations in the custom translations folder
+   * The translations are returned in i18next format.
+   *
+   * @param {Array<string>} locales The list of locales.
+   * @param {LocalizationConfig} localizationConfig
+   * @returns {Object<string, Object} A map of locale to formatted translations.
+   */
+  async _extractCustomTranslations(locales, localizationConfig) {
     const localFileParser = new LocalFileParser(this.config.dirs.translations);
     const translations = {};
 
@@ -313,6 +331,46 @@ exports.SitesGenerator = class {
       const localeTranslations = await localFileParser
         .fetch(locale, localizationConfig.getTranslationFile(locale));
       translations[locale] = { translation: localeTranslations };
+    }
+
+    return translations;
+  }
+
+  /**
+   * Parses the local translation files for the provided locales. 
+   * Parses translations in the theme translations folder
+   * The translations are returned in i18next format.
+   *
+   * @param {Array<string>} locales The list of locales.
+   * @param {LocalizationConfig} localizationConfig
+   * @returns {Object<string, Object} A map of locale to formatted translations.
+   */
+  async _extractThemeTranslations(locales) {
+    const themeTranslationsDir = `${this.config.dirs.themes}/${this.config.defaultTheme}/translations`
+    const localFileParser = new LocalFileParser(themeTranslationsDir);
+    const translations = {};
+
+    for (const locale of locales) {
+      const localeTranslations = await localFileParser.fetch(locale);
+      translations[locale] = { translation: localeTranslations };
+    }
+
+    return translations;
+  }
+
+  /**
+   * Adds customTranslations to translations
+   * If keys confict, customTranslaitons will override them
+   * 
+   * @param {Object<string, Object} translations 
+   * @param {Object<string, Object} customTranslations 
+   * @return {Object<string, Object}
+   */
+  _mergeTranslations(translations, customTranslations) {
+    for (const locale of Object.keys(customTranslations)) {
+      for (const [translationKey, translation] of Object.entries(customTranslations[locale]['translation'])) {
+        translations[locale]['translation'][translationKey] = translation;
+      }
     }
 
     return translations;
