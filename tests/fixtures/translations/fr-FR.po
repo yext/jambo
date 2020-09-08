@@ -67,3 +67,18 @@ msgstr "Le chien."
 
 msgid "The: dog"
 msgstr "Le: chien"
+
+msgid "<a href=\"https://www.yext.com\">View our website [[name]]</a>"
+msgstr "<a href=\"https://www.yext.com\">Voir notre site web [[name]]</a>"
+
+msgid "<a href=\"https://www.yext.com\">View our website [[name]]</a>"
+msgid_plural "<a href=\"https://www.yext.com\">View our websites [[name]]</a>"
+msgstr[0] "<a href=\"https://www.yext.com\">Voir notre site web [[name]]</a>"
+msgstr[1] "<a href=\"https://www.yext.com\">Voir nos sites web [[name]]</a>"
+
+msgctxt "internet web, not spider web"
+msgid "<a href=\"https://www.yext.com\">View our website [[name]]</a>"
+msgid_plural "<a href=\"https://www.yext.com\">View our websites [[name]]</a>"
+msgstr[0] "<a href=\"https://www.yext.com\">Voir notre site web [[name]]</a>"
+msgstr[1] "<a href=\"https://www.yext.com\">Voir nos sites web [[name]]</a>"
+

@@ -130,6 +130,7 @@ class Translator {
    * @param {string} locale The locale used when creating the map
    * @param {RegExp} pluralRegex Regex that matches pluralized keys
    * @param {string} translationKey The key for the singular form of the phrase
+   * @returns {Object<string|number, string>} A map containing the various forms as well as the locale.
    */
   _generateMapOfPluralizationsToTranslations(locale, pluralRegex, translationKey) {
     const localeTranslations = 

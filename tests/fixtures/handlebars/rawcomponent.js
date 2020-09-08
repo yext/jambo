@@ -18,6 +18,9 @@ class standardCardComponent extends BaseCard['standard'] {
       target: '_top', // If the title's URL should open in a new tab, etc.
       titleEventOptions: this.addDefaultEventOptions(),
       details: {{ translateJS phrase='Some item [[name]]' pluralForm='Some items [[name]]' name=profile.name count=profile.count }}, // The text in the body of the card
+      intermixed: {{ translateJS phrase='<a href="https://www.yext.com">View our website [[name]]</a>' pluralForm='<a href="https://www.yext.com">View our websites [[name]]</a>' count=2 name=name}},
+      singleQuote: {{ translateJS phrase='The dog\'s bone' }},
+      pluralizedSingleQuote: {{ translateJS phrase='The person' pluralForm='The people' context='male' count=myCount}},
       showMoreDetails: {
         showMoreLimit: 750, // Character count limit
         showMoreText: 'Show more', // Label when toggle will show truncated text
