@@ -6,9 +6,9 @@ const SystemError = require('../../errors/systemerror');
 const git = simpleGit();
 
 /**
- * RepositorySettings contains the information needed by Jambo to scaffold a new site repository.
- * Currently, these settings include an optional theme and whether or not the theme should be
- * imported as a submodule.
+ * RepositorySettings contains the information needed by Jambo to scaffold a new site
+ * repository. Currently, these settings include an optional theme and whether or not
+ * the theme should be imported as a submodule.
  */
 exports.RepositorySettings = class {
   constructor({ theme, addThemeAsSubmodule }) {
@@ -27,9 +27,10 @@ exports.RepositorySettings = class {
 
 exports.RepositoryScaffolder = class {
   /**
-   * This method scaffolds a new site repository based on the provided RepositorySettings object.
-   * The repository will include all directories needed by Jambo as well as the Git infrastructure
-   * needed for source control. If a theme is specified, that will also be imported.
+   * This method scaffolds a new site repository based on the provided RepositorySettings
+   * object. The repository will include all directories needed by Jambo as well as the 
+   * Git infrastructure needed for source control. If a theme is specified, that will 
+   * also be imported.
    *
    * @param {RepositoryScaffolder} repositorySettings The settings for the new repository.
    */
@@ -65,8 +66,8 @@ exports.RepositoryScaffolder = class {
   }
 
   /**
-   * Create the top-level Jambo config which indicates the paths to the various directories
-   * needed by Jambo.
+   * Create the top-level Jambo config which indicates the paths to the various
+   * directories needed by Jambo.
    *
    * @returns {Object} The constructed config.
    */

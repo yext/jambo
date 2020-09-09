@@ -46,7 +46,8 @@ exports.PageScaffolder = class {
 
     let configContents = layout ? { layout } : {};
     if (theme && template) {
-      const rootTemplatePath = `${this.config.dirs.themes}/${theme}/templates/${template}`;
+      const rootTemplatePath = 
+        `${this.config.dirs.themes}/${theme}/templates/${template}`;
       fs.copyFileSync(`${rootTemplatePath}/page.html.hbs`, htmlFilePath);
 
       configContents = assign(

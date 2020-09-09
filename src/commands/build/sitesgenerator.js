@@ -2,7 +2,7 @@ const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
-const babel = require("@babel/core");
+const babel = require('@babel/core');
 const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
@@ -42,14 +42,16 @@ exports.SitesGenerator = class {
         try {
           pagesConfig[pageId] = parse(fs.readFileSync(path, 'utf8'), null, true);
         } catch (err) {
-          throw new UserError('JSON SyntaxError: could not parse file ' + path, err.stack);
+          throw new UserError(
+            'JSON SyntaxError: could not parse file ' + path, err.stack);
         }
       }
     })
 
     const globalConfigName = 'global_config';
     if (!pagesConfig[globalConfigName]) {
-      throw new UserError(`Cannot find ${globalConfigName} file in '` + config.dirs.config + '/\' directory.');
+      throw new UserError(
+        `Cannot find ${globalConfigName} file in '${config.dirs.config}' directory.`);
     }
 
     // Register needed Handlebars helpers.
@@ -57,7 +59,7 @@ exports.SitesGenerator = class {
     try {
       this._registerHelpers();
     } catch (err) {
-      throw new SystemError("Failed to register jambo handlebars helpers", err.stack);
+      throw new SystemError('Failed to register jambo handlebars helpers', err.stack);
     }
 
     // Register theme partials.
@@ -66,14 +68,14 @@ exports.SitesGenerator = class {
     try {
       defaultTheme && this._registerThemePartials(defaultTheme, config.dirs.themes);
     } catch (err) {
-      throw new SystemError("Failed to register theme partials", err.stack);
+      throw new SystemError('Failed to register theme partials', err.stack);
     }
 
     // Register all custom partials.
     try {
       this._registerCustomPartials(config.dirs.partials);
     } catch (err) {
-      throw new UserError("Failed to register custom partials", err.stack);
+      throw new UserError('Failed to register custom partials', err.stack);
     }
 
     const verticalConfigs = Object.keys(pagesConfig).reduce((object, key) => {
@@ -85,7 +87,10 @@ exports.SitesGenerator = class {
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
-    if (fs.existsSync(config.dirs.output) && !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles))) {
+    const shouldCleanOutput = 
+      fs.existsSync(config.dirs.output) && 
+      !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles));
+    if (shouldCleanOutput) {
       this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
 
@@ -126,7 +131,8 @@ exports.SitesGenerator = class {
           template = hbs.compile(fs.readFileSync(path).toString());
         }
 
-        const outputFileName = this._stripExtension(relative).substring(config.dirs.pages);
+        const outputFileName = 
+          this._stripExtension(relative).substring(config.dirs.pages);
         const result = template(pageConfig);
         const outputPath =
           `${config.dirs.output}/${outputFileName}`;
@@ -171,7 +177,8 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Checks whether a file or directory matches a glob wildcard in list of preserved files.
+   * Checks whether a file or directory matches a glob wildcard in list of
+   * preserved files.
    *
    * @param {string} path The path of a directory or file.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
@@ -226,10 +233,10 @@ exports.SitesGenerator = class {
   }
 
   _stripExtension(fn) {
-    if (fn.indexOf(".") === -1) {
+    if (fn.indexOf('.') === -1) {
       return fn;
     }
-    return fn.substring(0, fn.lastIndexOf("."));
+    return fn.substring(0, fn.lastIndexOf('.'));
   }
 
   /**
@@ -284,11 +291,11 @@ exports.SitesGenerator = class {
       return JSON.stringify(context || {});
     });
 
-    hbs.registerHelper('ifeq', function (arg1, arg2, options) {
+    hbs.registerHelper('ifeq', function(arg1, arg2, options) {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
 
-    hbs.registerHelper('read', function (fileName) {
+    hbs.registerHelper('read', function(fileName) {
       return hbs.partials[fileName];
     });
 
@@ -312,7 +319,7 @@ exports.SitesGenerator = class {
         }).code;
     })
 
-    hbs.registerHelper('partialPattern', function (cardPath, opt) {
+    hbs.registerHelper('partialPattern', function(cardPath, opt) {
       let result = '';
       Object.keys(hbs.partials)
         .filter(key => key.match(new RegExp(cardPath)))
@@ -324,13 +331,13 @@ exports.SitesGenerator = class {
     /**
      * Performs a deep merge of the given objects.
      */
-    hbs.registerHelper('deepMerge', function (...args) {
+    hbs.registerHelper('deepMerge', function(...args) {
       return _.merge({}, ...args.slice(0, args.length - 1));
     });
   }
 
   _calculateRelativePath(filePath) {
-    return path.relative(path.dirname(filePath), "");
+    return path.relative(path.dirname(filePath), '');
   }
 
   _isValidFile(fileName) {

@@ -54,7 +54,12 @@ const options = yargs
         .option('theme', { description: 'theme to import', demandOption: true })
         .option(
           'addAsSubmodule', 
-          { description: 'import the theme as a submodule', default: true, type: 'boolean' });
+          { 
+            description: 'import the theme as a submodule', 
+            default: true, 
+            type: 'boolean' 
+          }
+        );
     },
     argv => {
       try {
@@ -71,7 +76,9 @@ const options = yargs
     'override a path within the theme',
     yargs => {
       return yargs
-        .option('path', { description: 'path in the theme to override', demandOption: true })
+        .option(
+          'path', 
+          { description: 'path in the theme to override', demandOption: true })
     },
     argv => {
       try {
@@ -99,7 +106,7 @@ const options = yargs
       try {
         pageScaffolder.create(pageConfiguration);
       } catch (err) {
-        exitWithError(new UserError("Failed to add page", err.stack));
+        exitWithError(new UserError('Failed to add page', err.stack));
       }
     })
   .command(
@@ -108,7 +115,9 @@ const options = yargs
     yargs => {
       return yargs
         .option('name', { description: 'name for the new card', demandOption: true })
-        .option('templateCardFolder', { description: 'folder of card to fork', demandOption: true });
+        .option(
+          'templateCardFolder', 
+          { description: 'folder of card to fork', demandOption: true });
     },
     argv => {
       try {
@@ -123,7 +132,9 @@ const options = yargs
     'add a new direct answer card for use in the site',
     yargs => {
       return yargs
-        .option('name', { description: 'name for the new direct answer card', demandOption: true })
+        .option(
+          'name', 
+          { description: 'name for the new direct answer card', demandOption: true })
         .option(
           'templateCardFolder',
           { description: 'folder of direct answer card to fork', demandOption: true });
@@ -153,7 +164,7 @@ const options = yargs
         if (isCustomError(err)) {
           exitWithError(err);
         }
-        exitWithError(new UserError("Failed to generate the site", err.stack));
+        exitWithError(new UserError('Failed to generate the site', err.stack));
       }
       
     })
@@ -163,7 +174,7 @@ const options = yargs
     yargs => {
       return yargs
         .option('disableScript', {
-            description: 'disable automatic execution ./upgrade.js after the upgrade is done',
+            description: 'disable execution of ./upgrade.js after the upgrade is done',
             type: 'boolean'
           })
         .option('isLegacy', {
