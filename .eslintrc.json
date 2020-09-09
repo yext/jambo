@@ -1,0 +1,18 @@
+{
+    "env": {
+        "commonjs": true,
+        "es2021": true,
+        "node": true,
+        "jest": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "ignorePatterns": ["tests/fixtures/**/*.js"],
+    "rules": {
+        "quotes": ["error", "single"],
+        "space-before-function-paren": ["error", {
+            "named": "never"
+        }]
+    }
+}
