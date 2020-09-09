@@ -4,7 +4,7 @@
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "eslint . && jest"
   },
   "repository": {
     "type": "git",

@@ -11,9 +11,9 @@ const UserError = require('../../errors/systemerror');
 const git = simpleGit();
 
 /**
- * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest version.
- * It first detects whether the theme was imported as a submodule or raw files, then handles
- * the upgrade accordingly.
+ * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest 
+ * version. It first detects whether the theme was imported as a submodule or raw files,
+ * then handles the upgrade accordingly.
  */
 exports.ThemeUpgrader = class {
   constructor(jamboConfig) {
@@ -31,7 +31,8 @@ exports.ThemeUpgrader = class {
   async upgrade(themeName, disableScript, isLegacy) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
-      throw new UserError(`Theme "${themeName}" not found within the "${this._themesDir}" folder`);
+      throw new UserError(
+        `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
     await this._isGitSubmodule(themePath)
       ? await this._upgradeSubmodule(themePath)
@@ -56,19 +57,20 @@ exports.ThemeUpgrader = class {
    * @param {string} upgradeScriptPath
    * @param {boolean} isLegacy
    */
-  _executePostUpgradeScript (upgradeScriptPath, isLegacy) {
+  _executePostUpgradeScript(upgradeScriptPath, isLegacy) {
     const customCommand = new CustomCommand({
       executable: `./${upgradeScriptPath}`
     });
     if (isLegacy) {
       customCommand.addArgs(['--isLegacy'])
     }
-    const { stdout, stderr } = new CustomCommandExecuter(this.config).execute(customCommand);
+    const { stdout, stderr } = 
+      new CustomCommandExecuter(this.config).execute(customCommand);
     const stdoutString = stdout.toString().trim();
     const stderrString = stderr.toString().trim();
     stdoutString && console.log(stdoutString);
     if (stderrString) {
-      throw new SystemError("Error executing theme post upgrade script", stderrString);
+      throw new SystemError('Error executing theme post upgrade script', stderrString);
     }
   } 
 

@@ -29,7 +29,7 @@ parseJamboConfig = function() {
     );
     return config;
   } catch (err) {
-    throw new UserError("Error parsing jambo.json", err.stack);
+    throw new UserError('Error parsing jambo.json', err.stack);
   }
   
 }

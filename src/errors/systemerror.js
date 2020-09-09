@@ -3,7 +3,7 @@
  * not likely to be caused by users of jambo
  */
 class SystemError extends Error {  
-  constructor (message, stack) {
+  constructor(message, stack) {
     super(message);
 
     if (stack) {

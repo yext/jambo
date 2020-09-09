@@ -2,7 +2,7 @@
  * Represents errors that we may reasonably expect a user to make
  */
 class UserError extends Error {  
-  constructor (message, stack) {
+  constructor(message, stack) {
     super(message);
 
     if (stack) {
