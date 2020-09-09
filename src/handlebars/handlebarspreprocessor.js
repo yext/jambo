@@ -48,9 +48,12 @@ class HandlebarsPreprocessor {
     if (invocation.isUsingPluralization()) {
       translatorResult = translationContext ?
         JSON.stringify(this._translator.translatePluralWithContext(
-          invocation.getPhrase(), invocation.getPluralForm(), translationContext)):
+          invocation.getPhrase(),
+          invocation.getPluralForm(), 
+          translationContext)):
         JSON.stringify(this._translator.translatePlural(
-          invocation.getPhrase(), invocation.getPluralForm()));
+          invocation.getPhrase(), 
+          invocation.getPluralForm()));
     } else {
       translatorResult = translationContext ?
         this._translator.translateWithContext(
@@ -72,7 +75,10 @@ class HandlebarsPreprocessor {
           translatorResult,
           interpParams,
           invocation.isUsingPluralization()) :
-        this._createRuntimeCallForHBS(translatorResult, interpParams);
+        this._createRuntimeCallForHBS(
+          translatorResult, 
+          interpParams,
+          invocation.isUsingPluralization());
   }
 
   /**
@@ -81,21 +87,22 @@ class HandlebarsPreprocessor {
    * paramters.
    *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
-   * @param {boolean} needsPluralization If pluralization is required when translating.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
    *                                                (including 'count').
+   * @param {boolean} needsPluralization If pluralization is required when translating.
    * @returns {string} The string-ified call to ANSWERS.translateJS.
    */
   _createRuntimeCallForJS(translatorResult, interpolationParams, needsPluralization) {
     let parsedParams = JSON.stringify(interpolationParams);
     parsedParams = parsedParams.replace(/[\'\"]/g, '');
 
+    let escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+
     if (needsPluralization) {
       const count = interpolationParams.count;
-      return `ANSWERS.translateJS('${translatorResult}', ${parsedParams}, ${count})`;
+      escapedTranslatorResult = this._escapeDoubleQuotes(escapedTranslatorResult);
+      return `ANSWERS.translateJS('${escapedTranslatorResult}', ${parsedParams}, ${count})`;
     }
-
-    const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
 
     return `ANSWERS.translateJS('${escapedTranslatorResult}', ${parsedParams})`;
   }
@@ -108,29 +115,44 @@ class HandlebarsPreprocessor {
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
    *                                                (including 'count').
+   * @param {boolean} needsPluralization If pluralization is required when translating.
    * @returns {string} The string-ified call to the 'runtimeTranslation' helper.
    */
-  _createRuntimeCallForHBS(translatorResult, interpolationParams) {
+  _createRuntimeCallForHBS(translatorResult, interpolationParams, needsPluralization) {
     const paramsString = Object.entries(interpolationParams)
       .reduce((params, [paramName, paramValue]) => {
         return params + `${paramName}=${paramValue} `;
       }, '');
 
-    const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+    let escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
     
+    if (needsPluralization) {
+      escapedTranslatorResult = this._escapeDoubleQuotes(escapedTranslatorResult);
+    }
+
     return `{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}`;
   }
   
   /**
-   * Escape single quotes in the provided string
+   * Escape single quotes in the string
    * @param {string} str 
    * 
    * @returns {string}
    */
   _escapeSingleQuotes(str) {
     const regex = new RegExp('\'', 'g');
-    const escapedString = str.replace(regex, '\\\'');
-    return escapedString;
+    return str.replace(regex, '\\\'');
+  }
+
+  /**
+   * Escapes double quotes in the string
+   * @param {string} str 
+   * 
+   * @returns {string}
+   */
+  _escapeDoubleQuotes(str) {
+    const regex = new RegExp('"', 'g');
+    return str.replace(regex, '\\"');
   }
 }
 module.exports = HandlebarsPreprocessor;
