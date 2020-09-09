@@ -1,7 +1,6 @@
 const path = require('path');
 const { readFileSync } = require('file-system');
 
-const LocalFileParser = require('../../src/i18n/translationfetchers/localfileparser');
 const Translator = require('../../src/i18n/translator/translator');
 const HandlebarsPreprocessor = require('../../src/handlebars/handlebarspreprocessor');
 jest.mock('../../src/i18n/translator/translator')
@@ -16,32 +15,67 @@ describe('HandlebarsPreprocessor works correctly', () => {
           return 'L\'homme';
         } else if (phrase === '<span class="yext">The dog\'s bone</span>') {
           return '<span class="yext">L\'os du chien</span>';
+        } else if (phrase === 'The dog\'s bone') {
+          return 'L\'os du chien';
         } else if (phrase === 'The dog.') {
           return 'Le chien.';
         } else if (phrase === 'The: dog') {
           return 'Le: chien';
+        } else if (phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
+          return '<a href="https://www.yext.com">Voir notre site web [[name]]</a>';
         }
       },
       translateWithContext: () => 'Mail maintenant [[id1]]',
-      translatePlural: () => {
-        return {
-          0: 'Un article [[name]]',
-          1: 'Les articles [[name]]',
-          locale: 'fr-FR'
-        };
+      translatePlural: (phrase) => {
+        if (phrase ==='Some item [[name]]') { 
+          return {
+            0: 'Un article [[name]]',
+            1: 'Les articles [[name]]',
+            locale: 'fr-FR'
+          };
+        } else if (phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
+          return {
+            0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
+            1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
+            locale: 'fr-FR'
+          };
+        } else if (phrase === 'singular') {
+          return {
+            0: 'singular',
+            1: 'plural',
+            locale: 'en'
+          };
+        }
       },
       translatePluralWithContext: (phrase, pluralForm, context) => {
-        if (context === 'male') {
-          return {
-            0: 'L\'homme',
-            1: 'Les hommes',
-            locale: 'fr-FR'
+        if (phrase === 'The [[count]] person went on a walk'){
+          if (context === 'male') {
+            return {
+              0: 'Le [[count]] homme est parti en promenade',
+              1: 'Les [[count]] Hommes fait une promenade',
+              locale: 'fr-FR'
+            }
+          } else if (context === 'female') {
+            return {
+              0: 'La [[count]] femme a fait une promenade',
+              1: 'Les [[count]] femmes fait une promenade',
+              locale: 'fr-FR'
+            }
           }
-        } else if (context === 'female') {
-          return {
-            0: 'La femme',
-            1: 'Les femmes',
+        } else if (phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
+          if (context === 'internet web, not spider web') {
+            return {
+              0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
+              1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
             locale: 'fr-FR'
+            }
+          }
+        } else if (phrase === 'The person') {
+          if (context === 'male') {
+            return {
+              0: 'L\'homme',
+              1: 'Les hommes'
+            }
           }
         }
       }
@@ -69,25 +103,30 @@ describe('HandlebarsPreprocessor works correctly', () => {
   });
 
   describe('when translating a language with a single plural form', () => {
-    const translatePlural = jest.fn(() => ({
-      0: 'singular',
-      1: 'plural',
-      locale: 'en'
-    }));
-    Translator.mockImplementation(() => ({ translatePlural }));
-    const handlebarsPreprocessor = new HandlebarsPreprocessor(new Translator());
+    Translator.mockImplementation(() => {
+      return {
+        translatePlural: () => {
+            return {
+              0: 'singular',
+              1: 'plural',
+              locale: 'en'
+            };
+        },
+      };
+    });
+    const translator = new Translator();
+    const handlebarsPreprocessor = new HandlebarsPreprocessor(translator);
 
     it('passes correct arguments to translatePlural', () => {
       const raw = `{{ translate phrase='singular' pluralForm='plural' }}`;
-      const processed = `{{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }}`;
+      const processed = `{{ runtimeTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
-      expect(translatePlural.mock.calls).toEqual([['singular', 'plural']]);
     });
 
     it('transpiles commented out "translate" invocations correctly', () => {
       const raw = `{{!-- {{ translate phrase='singular' pluralForm='plural' }} --}}`;
       const processed = 
-        `{{!-- {{ runtimeTranslation phrase='{"0":"singular","1":"plural","locale":"en"}' }} --}}`;
+        `{{!-- {{ runtimeTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }} --}}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
     });
   });
