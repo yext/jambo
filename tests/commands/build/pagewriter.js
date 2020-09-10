@@ -1,8 +1,8 @@
-const PageWriter = require('../../../src/commands/build/pagewriter');
-const PageSet = require('../../../src/models/pageset');
+const GlobalConfig = require('../../../src/models/globalconfig');
 const Page = require('../../../src/models/page');
 const PageConfig = require('../../../src/models/pageconfig');
-const GlobalConfig = require('../../../src/models/globalconfig');
+const PageSet = require('../../../src/models/pageset');
+const PageWriter = require('../../../src/commands/build/pagewriter');
 
 describe('PageWriter builds the object passed to the Handlebars Templates properly', () => {
   it('builds args as expected when all are present', () => {
