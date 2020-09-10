@@ -1,4 +1,5 @@
 const TranslateInvocation = require('./models/translateinvocation');
+const Handlebars = require('handlebars');
 
 /**
  * This class performs preprocessing on Handlebars content before it is registered
@@ -62,11 +63,16 @@ class HandlebarsPreprocessor {
     }
 
     if (invocation.canBeTranslatedStatically()) {
-      const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+      if (invocation.getInvokedHelper() === 'translateJS' ) {
+        const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+        return `'${escapedTranslatorResult}'`;
+      }
 
-      return invocation.getInvokedHelper() === 'translateJS' ? 
-        `'${escapedTranslatorResult}'`: 
-        translatorResult;
+      if (invocation.shouldEscapeHTML()) {
+        return Handlebars.Utils.escapeExpression(translatorResult);
+      }
+      
+      return translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
 
