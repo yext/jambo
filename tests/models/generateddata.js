@@ -94,7 +94,8 @@ describe('GeneratedData is correctly formed using with static from', () => {
           }),
         ],
         globalConfig: globalConfig,
-        params: {}
+        params: {},
+        sdkBundleLocale: 'en'
       })
     ]);
     expect(generatedData.getLocaleFallbacks(locale)).toEqual([]);
@@ -217,7 +218,8 @@ describe('GeneratedData is correctly formed using with static from', () => {
           ...globalConfig.getConfig(),
           locale: 'en'
         }),
-        params: {}
+        params: {},
+        sdkBundleLocale: 'en'
       }),
       new PageSet({
         locale: 'es',
@@ -266,7 +268,8 @@ describe('GeneratedData is correctly formed using with static from', () => {
           ...globalConfig.getConfig(),
           locale: 'es'
         }),
-        params: {}
+        params: {},
+        sdkBundleLocale: 'es'
       }),
       new PageSet({
         locale: 'fr',
@@ -289,7 +292,8 @@ describe('GeneratedData is correctly formed using with static from', () => {
           ...globalConfig.getConfig(),
           locale: 'fr'
         }),
-        params: {}
+        params: {},
+        sdkBundleLocale: 'fr'
       }),
     ]);
 

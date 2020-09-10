@@ -1,49 +1,62 @@
 const PageWriter = require('../../../src/commands/build/pagewriter');
+const PageSet = require('../../../src/models/pageset');
+const Page = require('../../../src/models/page');
+const PageConfig = require('../../../src/models/pageconfig');
+const GlobalConfig = require('../../../src/models/globalconfig');
 
 describe('PageWriter builds the object passed to the Handlebars Templates properly', () => {
   it('builds args as expected when all are present', () => {
     const env = {
       envVar: 'envVar',
     };
+    const path = 'relativePath';
     const pageConfig = {
       pageConfigParam: 'param',
     };
-    const path = 'relativePath';
+    const sdkBundleLocale = 'en';
     const params = {
       param: 'test'
     };
     const globalConfig = {
       apiKey: 'apiKey'
     };
-    const pageNameToConfig = {
-      page1: {
-        config: {
-          prop: 'example'
-        }
-      },
-      page2: {
-        config: {
-          prop: 'example2'
-        }
-      }
-    };
+
+    const pageSet = new PageSet({
+      locale: 'en-US',
+      pages: [
+        new Page({
+          pageConfig: new PageConfig({
+            pageName: 'page1',
+            rawConfig: {
+              prop: 'example'
+            }
+          })
+        }),
+        new Page({
+          pageConfig: new PageConfig({
+            pageName: 'page2',
+            rawConfig: {
+              prop: 'example2'
+            }
+          })
+        })
+      ],
+      globalConfig: new GlobalConfig(globalConfig),
+      params: params,
+      sdkBundleLocale: sdkBundleLocale
+    });
 
     const args = new PageWriter({
       env: env
-    })._buildArgsForTemplate({
-      pageConfig: pageConfig,
-      params: params,
-      relativePath: path,
-      globalConfig: globalConfig,
-      pageNameToConfig: pageNameToConfig
-    });
+    })._buildArgsForTemplate(pageConfig, path, pageSet);
 
     expect(args).toEqual({
       ...pageConfig,
-      verticalConfigs: pageNameToConfig,
+      verticalConfigs: pageSet.getPageNameToConfig(),
       global_config: globalConfig,
-      relativePath: path,
       params: params,
+      sdkBundleLocale: sdkBundleLocale,
+      relativePath: path,
       env: env
     });
   });
