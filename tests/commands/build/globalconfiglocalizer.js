@@ -27,7 +27,6 @@ describe('GlobalConfigLocalizer generates expected localized global configs', ()
     default: 'en',
     localeConfig: {
       en: {
-        apiKey: 'en_apiKeyFromLocalizationConfig',
         experienceKey: 'en_experienceKeyFromLocalizationConfig'
       },
       fr: {}
@@ -40,7 +39,7 @@ describe('GlobalConfigLocalizer generates expected localized global configs', ()
     expect(globalConfigLocalizer.localize(globalConfig, 'en')).toEqual(
       new GlobalConfig({
         locale: 'en',
-        apiKey: 'en_apiKeyFromLocalizationConfig',
+        apiKey: 'apiKeyFromGlobalConfig',
         experienceKey: 'en_experienceKeyFromLocalizationConfig'
       }));
 

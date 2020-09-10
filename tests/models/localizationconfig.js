@@ -15,7 +15,7 @@ describe('LocalizationConfig is properly built from raw object', () => {
           fallback: ['es']
         },
         es: {
-          apiKey: 'en should not fallback to this'
+          experienceKey: 'en should not fallback to this'
         }
       }
     };
@@ -23,8 +23,6 @@ describe('LocalizationConfig is properly built from raw object', () => {
     const locale = 'en';
 
     expect(localizationConfig.getLocales()).toEqual(['en', 'es']);
-    expect(localizationConfig.getApiKey(locale))
-      .toEqual(rawLocalizationConfig.localeConfig[locale].apiKey);
     expect(localizationConfig.getExperienceKey(locale))
       .toEqual(rawLocalizationConfig.localeConfig[locale].experienceKey);
     expect(localizationConfig.getParams(locale))
