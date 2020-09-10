@@ -55,11 +55,16 @@ module.exports = class PageSetsBuilder {
       const localizedGlobalConfig = new GlobalConfigLocalizer(this._localizationConfig)
         .localize(this._globalConfig, locale);
 
+      const sdkBundleLocale = this._localizationConfig.getSdkBundleLocaleOverride(locale)
+        || locale
+        || 'en';
+
       pageSets.push(new PageSet({
         locale: locale,
         pages: this._buildPages(pageConfigs, templates),
         globalConfig: localizedGlobalConfig,
-        params: this._localizationConfig.getParams(locale)
+        params: this._localizationConfig.getParams(locale),
+        sdkBundleLocale: sdkBundleLocale
       }));
     }
     return pageSets;

@@ -43,13 +43,10 @@ module.exports = class PageWriter {
       }
 
       console.log(`Writing output file for the '${page.getName()}' page`);
-      const templateArguments = this._buildArgsForTemplate({
-        pageConfig: page.getConfig(),
-        relativePath: this._calculateRelativePath(page.getOutputPath()),
-        params: pageSet.getParams(),
-        globalConfig: pageSet.getGlobalConfig().getConfig(),
-        pageNameToConfig: pageSet.getPageNameToConfig(),
-      });
+      const templateArguments = this._buildArgsForTemplate(
+        page.getConfig(),
+        this._calculateRelativePath(page.getOutputPath()),
+        pageSet);
 
       const template = hbs.compile(page.getTemplateContents());
       const outputHTML = template(templateArguments);
@@ -66,20 +63,19 @@ module.exports = class PageWriter {
    *
    * @param {Object} pageConfig the configuration for the current page
    * @param {String} relativePath
-   * @param {String} params
-   * @param {Object} globalConfig
-   * @param {Object} pageNameToConfig
+   * @param {PageSet} pageSet
    * @returns {Object}
    */
-  _buildArgsForTemplate ({ pageConfig, relativePath, params, globalConfig, pageNameToConfig }) {
+  _buildArgsForTemplate (pageConfig, relativePath, pageSet) {
     return Object.assign(
       {},
       pageConfig,
       {
-        verticalConfigs: pageNameToConfig,
-        global_config: globalConfig,
+        verticalConfigs: pageSet.getPageNameToConfig(),
+        global_config: pageSet.getGlobalConfig().getConfig(),
+        params: pageSet.getParams(),
+        sdkBundleLocale: pageSet.getSdkBundleLocale(),
         relativePath: relativePath,
-        params: params,
         env: this._env
      }
     );

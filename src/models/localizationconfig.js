@@ -68,6 +68,10 @@ module.exports = class LocalizationConfig {
     return this._getConfigForLocale(locale).params || {};
   }
 
+  getSdkBundleLocaleOverride (locale) {
+    return this._getConfigForLocale(locale).sdkBundleLocaleOverride;
+  }
+
   getTranslationFile (locale) {
     return this._getConfigForLocale(locale).translationFile;
   }

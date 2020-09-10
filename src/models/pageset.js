@@ -13,8 +13,9 @@ module.exports = class PageSet {
    * @param {Array<Page>} pages
    * @param {GlobalConfig} globalConfig
    * @param {Object} params
+   * @param {string} sdkBundleLocale
    */
-  constructor({ locale, pages, globalConfig, params }) {
+  constructor({ locale, pages, globalConfig, params, sdkBundleLocale }) {
     /**
      * @type {String}
      */
@@ -44,6 +45,11 @@ module.exports = class PageSet {
      * @type {Object}
      */
     this.params = params || {};
+
+    /**
+     * @type {string}
+     */
+    this.sdkBundleLocale = sdkBundleLocale;
   }
 
   /**
@@ -71,6 +77,15 @@ module.exports = class PageSet {
    */
   getParams () {
     return this.params;
+  }
+
+  /*
+   * Returns the sdkBundleLocale
+   *
+   * @returns {string} sdkBundleLocale
+   */
+  getSdkBundleLocale () {
+    return this.sdkBundleLocale;
   }
 
   /**
