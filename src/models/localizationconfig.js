@@ -18,7 +18,6 @@ module.exports = class LocalizationConfig {
      * {
      *   'locale': {
      *     experienceKey: ''   // String
-     *     apiKey: ''          // String
      *     params: {}          // Object
      *     urlOverride: ''     // String
      *     translationFile: '' // String
@@ -54,10 +53,6 @@ module.exports = class LocalizationConfig {
 
   getLocales () {
     return Object.keys(this._localeToConfig);
-  }
-
-  getApiKey (locale) {
-    return this._getConfigForLocale(locale).apiKey;
   }
 
   getExperienceKey (locale) {

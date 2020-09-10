@@ -20,13 +20,10 @@ module.exports = class GlobalConfigLocalizer {
   localize(globalConfig, locale) {
     const experienceKey = this._localizationConfig.getExperienceKey(locale)
       || globalConfig.getExperienceKey();
-    const apiKey = this._localizationConfig.getApiKey(locale)
-      || globalConfig.getApiKey();
 
     return new GlobalConfig({
       ...globalConfig.getConfig(),
       experienceKey: experienceKey,
-      apiKey: apiKey,
       ...locale && { locale: locale }
     });
   }
