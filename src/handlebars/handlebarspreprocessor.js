@@ -140,10 +140,9 @@ class HandlebarsPreprocessor {
       escapedTranslatorResult = this._escapeDoubleQuotes(escapedTranslatorResult);
     }
 
-    if (shouldEscapeHTML) {
-      return `{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}`;
-    }
-    return `{{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}}`;
+    return shouldEscapeHTML ?
+      `{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}` :
+      `{{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}}`
   }
   
   /**
