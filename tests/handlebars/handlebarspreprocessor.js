@@ -25,7 +25,13 @@ describe('HandlebarsPreprocessor works correctly', () => {
           return '<a href="https://www.yext.com">Voir notre site web [[name]]</a>';
         }
       },
-      translateWithContext: () => 'Mail maintenant [[id1]]',
+      translateWithContext: (phrase, context) => {
+        if (phrase === "Mail now [[id1]]") {
+          return 'Mail maintenant [[id1]]';
+        } else if (phrase === "Person" && context == "male") {
+          return 'L\'homme';
+        }
+      },
       translatePlural: (phrase) => {
         if (phrase ==='Some item [[name]]') { 
           return {
