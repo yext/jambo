@@ -1,4 +1,5 @@
 const TranslateInvocation = require('./models/translateinvocation');
+const Handlebars = require('handlebars');
 
 /**
  * This class performs preprocessing on Handlebars content before it is registered
@@ -62,11 +63,16 @@ class HandlebarsPreprocessor {
     }
 
     if (invocation.canBeTranslatedStatically()) {
-      const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+      if (invocation.getInvokedHelper() === 'translateJS' ) {
+        const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
+        return `'${escapedTranslatorResult}'`;
+      }
 
-      return invocation.getInvokedHelper() === 'translateJS' ? 
-        `'${escapedTranslatorResult}'`: 
-        translatorResult;
+      if (invocation.shouldEscapeHTML()) {
+        return Handlebars.Utils.escapeExpression(translatorResult);
+      }
+      
+      return translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
 
@@ -78,7 +84,8 @@ class HandlebarsPreprocessor {
         this._createRuntimeCallForHBS(
           translatorResult, 
           interpParams,
-          invocation.isUsingPluralization());
+          invocation.isUsingPluralization(),
+          invocation.shouldEscapeHTML());
   }
 
   /**
@@ -116,9 +123,12 @@ class HandlebarsPreprocessor {
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
    *                                                (including 'count').
    * @param {boolean} needsPluralization If pluralization is required when translating.
+   * @param {boolean} shouldEscapeHTML If HTML should be escaped. If false, wrap the call
+   *                                   in triple curly braces. If true, wrap in in double
+   *                                   double curly braces.
    * @returns {string} The string-ified call to the 'runtimeTranslation' helper.
    */
-  _createRuntimeCallForHBS(translatorResult, interpolationParams, needsPluralization) {
+  _createRuntimeCallForHBS(translatorResult, interpolationParams, needsPluralization, shouldEscapeHTML) {
     const paramsString = Object.entries(interpolationParams)
       .reduce((params, [paramName, paramValue]) => {
         return params + `${paramName}=${paramValue} `;
@@ -130,7 +140,9 @@ class HandlebarsPreprocessor {
       escapedTranslatorResult = this._escapeDoubleQuotes(escapedTranslatorResult);
     }
 
-    return `{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}`;
+    return shouldEscapeHTML ?
+      `{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}` :
+      `{{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}}`
   }
   
   /**
