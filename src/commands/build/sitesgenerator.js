@@ -265,7 +265,34 @@ exports.SitesGenerator = class {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
 
-    hbs.registerHelper('read', function(fileName) {
+    hbs.registerHelper({
+      eq: function (v1, v2) {
+        return v1 === v2;
+      },
+      ne: function (v1, v2) {
+        return v1 !== v2;
+      },
+      lt: function (v1, v2) {
+        return v1 < v2;
+      },
+      gt: function (v1, v2) {
+        return v1 > v2;
+      },
+      lte: function (v1, v2) {
+        return v1 <= v2;
+      },
+      gte: function (v1, v2) {
+        return v1 >= v2;
+      },
+      and: function () {
+        return Array.prototype.slice.call(arguments).every(Boolean);
+      },
+      or: function () {
+        return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+      }
+    });
+
+    hbs.registerHelper('read', function (fileName) {
       return hbs.partials[fileName];
     });
 
@@ -320,7 +347,7 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Parses the local translation files for the provided locales. 
+   * Parses the local translation files for the provided locales.
    * Parses both custom and theme translations.
    * The translations are returned in i18next format.
    *
@@ -332,12 +359,12 @@ exports.SitesGenerator = class {
     const customTranslations = await this._extractCustomTranslations(locales, localizationConfig);
     const themeTranslations = await this._extractThemeTranslations(locales);
     const mergedTranslations = _.merge(themeTranslations, customTranslations);
-    
+
     return mergedTranslations;
   }
 
   /**
-   * Parses the local translation files for the provided locales. 
+   * Parses the local translation files for the provided locales.
    * Parses translations in the custom translations folder
    * The translations are returned in i18next format.
    *
@@ -361,7 +388,7 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Parses the local translation files for the provided locales. 
+   * Parses the local translation files for the provided locales.
    * Parses translations in the theme translations folder
    * The translations are returned in i18next format.
    *
@@ -369,7 +396,7 @@ exports.SitesGenerator = class {
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractThemeTranslations(locales) {
-    const themeTranslationsDir = 
+    const themeTranslationsDir =
       `${this.config.dirs.themes}/${this.config.defaultTheme}/translations`;
     const localFileParser = new LocalFileParser(themeTranslationsDir);
     const translations = {};
