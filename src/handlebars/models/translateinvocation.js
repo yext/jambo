@@ -9,6 +9,7 @@ const ParamTypes = {
   PLURAL: 'pluralForm',
   CONTEXT: 'context',
   COUNT: 'count',
+  ESCAPE: 'escapeHTML',
   OTHER: 'other'
 }
 Object.freeze(ParamTypes);
@@ -42,7 +43,19 @@ class TranslateInvocation {
    */
   canBeTranslatedStatically() {
     return Object.keys(this._providedParams).every(
-      param => param === ParamTypes.PHRASE || param === ParamTypes.CONTEXT);
+      param => 
+        param === ParamTypes.PHRASE || 
+        param === ParamTypes.CONTEXT || 
+        param === ParamTypes.ESCAPE);
+  }
+
+  /**
+   * Returns true if the HTML in the translation should be escaped.
+   * 
+   * @returns {boolean}
+   */
+  shouldEscapeHTML() {
+    return !(this._providedParams[ParamTypes.ESCAPE] === 'false');
   }
 
   /**
@@ -99,7 +112,7 @@ class TranslateInvocation {
   getInterpolationParams() {
     const interpParams = _.cloneDeep(this._providedParams);
     const paramsToRemove =
-      [ParamTypes.CONTEXT, ParamTypes.PHRASE, ParamTypes.PLURAL];
+      [ParamTypes.CONTEXT, ParamTypes.PHRASE, ParamTypes.PLURAL, ParamTypes.ESCAPE];
     paramsToRemove.forEach(param => delete interpParams[param]);
 
     return interpParams;
