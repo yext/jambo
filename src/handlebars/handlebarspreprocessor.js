@@ -89,15 +89,15 @@ class HandlebarsPreprocessor {
   }
 
   /**
-   * Constructs a call to the SDK's Javascript method for run-time translation.
-   * This call is constructed using the translation(s) for a phrase and any interpolation
-   * paramters.
+   * Constructs a call to the SDK's Javascript method for run-time translation
+   * processing. This call is constructed using the translation(s) for a phrase and any
+   * interpolation parameters.
    *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
    *                                                (including 'count').
    * @param {boolean} needsPluralization If pluralization is required when translating.
-   * @returns {string} The string-ified call to ANSWERS.translateJS.
+   * @returns {string} The string-ified call to ANSWERS.processTranslation.
    */
   _createRuntimeCallForJS(translatorResult, interpolationParams, needsPluralization) {
     let parsedParams = JSON.stringify(interpolationParams);
@@ -108,16 +108,16 @@ class HandlebarsPreprocessor {
     if (needsPluralization) {
       const count = interpolationParams.count;
       escapedTranslatorResult = this._escapeDoubleQuotes(escapedTranslatorResult);
-      return `ANSWERS.translateJS('${escapedTranslatorResult}', ${parsedParams}, ${count})`;
+      return `ANSWERS.processTranslation('${escapedTranslatorResult}', ${parsedParams}, ${count})`;
     }
 
-    return `ANSWERS.translateJS('${escapedTranslatorResult}', ${parsedParams})`;
+    return `ANSWERS.processTranslation('${escapedTranslatorResult}', ${parsedParams})`;
   }
 
   /**
-   * Constructs a call to the SDK's Handlebars helper for run-time translation.
-   * This call is constructed using the translation(s) for a phrase and any interpolation
-   * paramters.
+   * Constructs a call to the SDK's Javascript method for run-time translation
+   * processing. This call is constructed using the translation(s) for a phrase and any
+   * interpolation parameters.
    *
    * @param {Object|string} translatorResult The translation(s) for the phrase.
    * @param {Object<string, ?>} interpolationParams The needed interpolation parameters
@@ -126,7 +126,7 @@ class HandlebarsPreprocessor {
    * @param {boolean} shouldEscapeHTML If HTML should be escaped. If false, wrap the call
    *                                   in triple curly braces. If true, wrap in in double
    *                                   double curly braces.
-   * @returns {string} The string-ified call to the 'runtimeTranslation' helper.
+   * @returns {string} The string-ified call to the 'processTranslation' helper.
    */
   _createRuntimeCallForHBS(translatorResult, interpolationParams, needsPluralization, shouldEscapeHTML) {
     const paramsString = Object.entries(interpolationParams)
@@ -141,8 +141,8 @@ class HandlebarsPreprocessor {
     }
 
     return shouldEscapeHTML ?
-      `{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}` :
-      `{{{ runtimeTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}}`
+      `{{ processTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}` :
+      `{{{ processTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}}`
   }
   
   /**

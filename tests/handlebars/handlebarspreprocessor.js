@@ -125,14 +125,14 @@ describe('HandlebarsPreprocessor works correctly', () => {
 
     it('passes correct arguments to translatePlural', () => {
       const raw = `{{ translate phrase='singular' pluralForm='plural' }}`;
-      const processed = `{{ runtimeTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }}`;
+      const processed = `{{ processTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
     });
 
     it('transpiles commented out "translate" invocations correctly', () => {
       const raw = `{{!-- {{ translate phrase='singular' pluralForm='plural' }} --}}`;
       const processed = 
-        `{{!-- {{ runtimeTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }} --}}`;
+        `{{!-- {{ processTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }} --}}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
     });
   });

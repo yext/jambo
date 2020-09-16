@@ -1,16 +1,16 @@
 <div>
     <button>Bonjour Bonjour</button>
     <div>
-        {{ runtimeTranslation phrase='{\"0\":\"Un article [[name]]\",\"1\":\"Les articles [[name]]\",\"locale\":\"fr-FR\"}' name=myName count=myCount }}
+        {{ processTranslation phrase='{\"0\":\"Un article [[name]]\",\"1\":\"Les articles [[name]]\",\"locale\":\"fr-FR\"}' name=myName count=myCount }}
     </div>
     <script>
         const profile = { name: 'Tom' };
-        ANSWERS.translateJS('Mail maintenant [[id1]]', {id1:profile.name})
+        ANSWERS.processTranslation('Mail maintenant [[id1]]', {id1:profile.name})
     </script>
-    <button>{{ runtimeTranslation phrase='Mail maintenant [[id1]]' id1=myName }}</button>
+    <button>{{ processTranslation phrase='Mail maintenant [[id1]]' id1=myName }}</button>
     <div>
-        {{ runtimeTranslation phrase='{\"0\":\"Le [[count]] homme est parti en promenade\",\"1\":\"Les [[count]] Hommes fait une promenade\",\"locale\":\"fr-FR\"}' count=myCount }}
-        {{ runtimeTranslation phrase='{\"0\":\"La [[count]] femme a fait une promenade\",\"1\":\"Les [[count]] femmes fait une promenade\",\"locale\":\"fr-FR\"}' count=myCount }}
+        {{ processTranslation phrase='{\"0\":\"Le [[count]] homme est parti en promenade\",\"1\":\"Les [[count]] Hommes fait une promenade\",\"locale\":\"fr-FR\"}' count=myCount }}
+        {{ processTranslation phrase='{\"0\":\"La [[count]] femme a fait une promenade\",\"1\":\"Les [[count]] femmes fait une promenade\",\"locale\":\"fr-FR\"}' count=myCount }}
     </div>
     <button>L&#x27;homme</button>
     L&#x27;homme
@@ -19,9 +19,9 @@
     <span class="yext">L'os du chien</span>
     Le chien.
     Le: chien
-    {{{ runtimeTranslation phrase='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' name=name }}}
-    {{ runtimeTranslation phrase='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' name=name }}
-    {{{ runtimeTranslation phrase='{\"0\":\"<a href=\\"https://www.yext.com\\">Voir notre site web [[name]]</a>\",\"1\":\"<a href=\\"https://www.yext.com\\">Voir nos sites web [[name]]</a>\",\"locale\":\"fr-FR\"}' count=2 name=name }}}
-    {{ runtimeTranslation phrase='{\"0\":\"<a href=\\"https://www.yext.com\\">Voir notre site web [[name]]</a>\",\"1\":\"<a href=\\"https://www.yext.com\\">Voir nos sites web [[name]]</a>\",\"locale\":\"fr-FR\"}' count=2 name=name }}
-    {{{ runtimeTranslation phrase='{\"0\":\"<a href=\\"https://www.yext.com\\">Voir notre site web [[name]]</a>\",\"1\":\"<a href=\\"https://www.yext.com\\">Voir nos sites web [[name]]</a>\",\"locale\":\"fr-FR\"}' count=2 name=name }}}
+    {{{ processTranslation phrase='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' name=name }}}
+    {{ processTranslation phrase='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' name=name }}
+    {{{ processTranslation phrase='{\"0\":\"<a href=\\"https://www.yext.com\\">Voir notre site web [[name]]</a>\",\"1\":\"<a href=\\"https://www.yext.com\\">Voir nos sites web [[name]]</a>\",\"locale\":\"fr-FR\"}' count=2 name=name }}}
+    {{ processTranslation phrase='{\"0\":\"<a href=\\"https://www.yext.com\\">Voir notre site web [[name]]</a>\",\"1\":\"<a href=\\"https://www.yext.com\\">Voir nos sites web [[name]]</a>\",\"locale\":\"fr-FR\"}' count=2 name=name }}
+    {{{ processTranslation phrase='{\"0\":\"<a href=\\"https://www.yext.com\\">Voir notre site web [[name]]</a>\",\"1\":\"<a href=\\"https://www.yext.com\\">Voir nos sites web [[name]]</a>\",\"locale\":\"fr-FR\"}' count=2 name=name }}}
 </div>
