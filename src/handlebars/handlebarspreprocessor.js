@@ -115,7 +115,7 @@ class HandlebarsPreprocessor {
   }
 
   /**
-   * Constructs a call to the SDK's Javascript method for run-time translation
+   * Constructs a call to the SDK's Handlebars helper for run-time translation
    * processing. This call is constructed using the translation(s) for a phrase and any
    * interpolation parameters.
    *
