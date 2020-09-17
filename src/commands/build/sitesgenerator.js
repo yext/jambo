@@ -303,6 +303,11 @@ exports.SitesGenerator = class {
       return (prefix + id);
     });
 
+    hbs.registerHelper('matches', function(str, regexPattern) {
+      const regex = new RegExp(regexPattern);
+      return str.match(regex);
+    });
+
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
