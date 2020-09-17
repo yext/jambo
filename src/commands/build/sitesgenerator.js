@@ -303,7 +303,7 @@ exports.SitesGenerator = class {
       return (prefix + id);
     });
 
-    hbs.registerHelper('contains', function(str, regexPattern) {
+    hbs.registerHelper('matches', function(str, regexPattern) {
       const regex = new RegExp(regexPattern);
       return str.match(regex);
     });
