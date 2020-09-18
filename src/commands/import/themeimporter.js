@@ -19,14 +19,14 @@ exports.ThemeImporter = class {
   }
 
   /**
-   * Imports the requested theme into Jambo's Themes directory. Note that the theme can either
-   * be cloned directly into this directory or added there as a submodule.
+   * Imports the requested theme into Jambo's Themes directory. Note that the theme can
+   * either be cloned directly into this directory or added there as a submodule.
    *
    * @param {string} themeName The name of the theme
    * @param {boolean} addAsSubmodule If the theme should be imported as a submodule.
    * @returns {Promise<string>} If the addition of the submodule was successful, a Promise
-   *                            containing the new submodule's local path. If the addition failed,
-   *                            a Promise containing the error.
+   *                            containing the new submodule's local path. If the addition
+   *                            failed, a Promise containing the error.
    */
   async import(themeName, addAsSubmodule) {
     if (!this.config) {
@@ -83,9 +83,15 @@ exports.ThemeImporter = class {
         }
       };
 
-      copyFileIfExists(`${staticAssetsPath}/scss/answers.scss`, `${siteStaticDir}/scss/answers.scss`);
-      copyFileIfExists(`${staticAssetsPath}/scss/answers-variables.scss`, `${siteStaticDir}/scss/answers-variables.scss`);
-      copyFileIfExists(`${staticAssetsPath}/scss/fonts.scss`, `${siteStaticDir}/scss/fonts.scss`);
+      copyFileIfExists(
+        `${staticAssetsPath}/scss/answers.scss`,
+        `${siteStaticDir}/scss/answers.scss`);
+      copyFileIfExists(
+        `${staticAssetsPath}/scss/answers-variables.scss`,
+        `${siteStaticDir}/scss/answers-variables.scss`);
+      copyFileIfExists(
+        `${staticAssetsPath}/scss/fonts.scss`,
+        `${siteStaticDir}/scss/fonts.scss`);
 
       copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
       copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
