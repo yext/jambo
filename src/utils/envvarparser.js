@@ -25,7 +25,7 @@ class EnvironmentVariableParser {
             } else {
                 accumulator[envVar] = this._envVars[envVar];
             }
-            return accumulator;
+            return null;
         }
 
         return Object.keys(this._envVars).reduce(parsedValuesAccumulator, {});
