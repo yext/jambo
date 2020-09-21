@@ -141,7 +141,11 @@ class HandlebarsPreprocessor {
    * @returns {string} The call to the 'processTranslation' helper.
    */
   _createRuntimeCallForHBS(
-  translatorResult, interpolationParams, needsPluralization, shouldEscapeHTML) {
+    translatorResult, 
+    interpolationParams, 
+    needsPluralization, 
+    shouldEscapeHTML) 
+  {
     const translationString = needsPluralization ?
       Object.entries(translatorResult)
         .reduce((params, [paramName, paramValue]) => {
