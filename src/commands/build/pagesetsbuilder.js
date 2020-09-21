@@ -50,7 +50,7 @@ module.exports = class PageSetsBuilder {
           : '';
         console.log(
           `Warning: No page templates found${localeMessage}, not generating a ` +
-          ` page set${localeMessage}`);
+          `page set${localeMessage}`);
         continue;
       }
 

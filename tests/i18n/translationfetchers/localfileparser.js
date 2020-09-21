@@ -7,20 +7,22 @@ describe('LocalFileParser works correctly', () => {
   const localFileParser = new LocalFileParser(translationsPath);
 
   it('translations are parsed and converted into i18next format', () => {
+    const englishLink = '<a href="https://www.yext.com">' +
+      'View our website [[name]]</a>';
+    const frenchLinkSingular = '<a href="https://www.yext.com">' +
+      'Voir notre site web [[name]]</a>';
+    const frenchLinkPlural = '<a href="https://www.yext.com">' +
+      'Voir nos sites web [[name]]</a>';
     const expectedTranslations = {
       Item: 'Article',
       Item_plural: 'Articles',
       'Hello [[name]]': 'Bonjour [[name]]',
       Child_male: 'fils',
       Child_female: 'fille',
-      '<a href="yext.com">View our website [[name]]</a>':
-        '<a href="yext.com">Voir notre site web [[name]]</a>',
-      '<a href="yext.com">View our website [[name]]</a>_internet web, not spider web':
-        '<a href="yext.com">Voir notre site web [[name]]</a>',
-   '<a href="yext.com">View our website [[name]]</a>_internet web, not spider web_plural':
-        '<a href="yext.com">Voir nos sites web [[name]]</a>',
-      '<a href="yext.com">View our website [[name]]</a>_plural':
-        '<a href="yext.com">Voir nos sites web [[name]]</a>',
+      [englishLink]: frenchLinkSingular,
+      [`${englishLink}_internet web, not spider web`]: frenchLinkSingular,
+      [`${englishLink}_internet web, not spider web_plural`]: frenchLinkPlural,
+      [`${englishLink}_plural`]: frenchLinkPlural,
       'There is [[count]] item [[name]]': 'Il y a [[count]] article [[name]]',
       'There is [[count]] item [[name]]_plural': 'Il y a [[count]] articles [[name]]',
       'I am looking for my child named [[name]]_male':

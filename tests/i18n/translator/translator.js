@@ -183,30 +183,30 @@ describe('translations with one plural form (French)', () => {
 
     it('with interpolation', () => {
       const translation = translator.translate(
-        '<a href="yext.com">View our website [[name]]</a>');
+        '<a href="https://www.yext.com">View our website [[name]]</a>');
       expect(translation).toEqual(
-        '<a href="yext.com">Voir notre site web [[name]]</a>');
+        '<a href="https://www.yext.com">Voir notre site web [[name]]</a>');
     });
 
     it('with pluralization', () => {
       const translation = translator.translatePlural(
-        '<a href="yext.com">View our website [[name]]</a>',
-        '<a href="yext.com">View our websites [[name]]</a>');
+        '<a href="https://www.yext.com">View our website [[name]]</a>',
+        '<a href="https://www.yext.com">View our websites [[name]]</a>');
       const expectedResult = {
-        0: '<a href="yext.com">Voir notre site web [[name]]</a>',
-        1: '<a href="yext.com">Voir nos sites web [[name]]</a>',
+        0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
+        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
         locale: 'fr-FR'};
       expect(translation).toEqual(expectedResult);
     });
 
     it('with pluralization and context', () => {
       const translation = translator.translatePluralWithContext(
-        '<a href="yext.com">View our website [[name]]</a>',
-        '<a href="yext.com">View our websites [[name]]</a>',
+        '<a href="https://www.yext.com">View our website [[name]]</a>',
+        '<a href="https://www.yext.com">View our websites [[name]]</a>',
         'internet web, not spider web');
       const expectedResult = {
-        0: '<a href="yext.com">Voir notre site web [[name]]</a>',
-        1: '<a href="yext.com">Voir nos sites web [[name]]</a>',
+        0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
+        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
         locale: 'fr-FR'};
       expect(translation).toEqual(expectedResult);
     });

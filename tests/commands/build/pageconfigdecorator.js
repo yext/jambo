@@ -33,7 +33,7 @@ describe('PageConfigDecorator adds proper attributes to PageConfigs', () => {
     });
   });
 
-  it('decorats pages configs correctly with multiple locales and fallbacks', () => {
+  it('decorates pages configs correctly with multiple locales and fallbacks', () => {
     const defaultLocale = 'es';
     const configForDefaultLocale = new PageConfig({
       pageName: 'pageName',
