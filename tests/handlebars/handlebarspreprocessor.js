@@ -23,6 +23,8 @@ describe('HandlebarsPreprocessor works correctly', () => {
           return 'Le: chien';
         } else if (phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
           return '<a href="https://www.yext.com">Voir notre site web [[name]]</a>';
+        } else if (phrase === '[[name]]\'s mail') {
+          return '[[name]]\'s mail';
         }
       },
       translateWithContext: (phrase, context) => {
@@ -124,15 +126,15 @@ describe('HandlebarsPreprocessor works correctly', () => {
     const handlebarsPreprocessor = new HandlebarsPreprocessor(translator);
 
     it('passes correct arguments to translatePlural', () => {
-      const raw = `{{ translate phrase='singular' pluralForm='plural' }}`;
-      const processed = `{{ processTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }}`;
+      const raw = `{{ translate phrase='singular' pluralForm='plural' count=mycount}}`;
+      const processed = `{{ processTranslation pluralForm0='singular' pluralForm1='plural' locale='en'  count=mycount }}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
     });
 
     it('transpiles commented out "translate" invocations correctly', () => {
-      const raw = `{{!-- {{ translate phrase='singular' pluralForm='plural' }} --}}`;
+      const raw = `{{!-- {{ translate phrase='singular' pluralForm='plural' count=mycount}} --}}`;
       const processed = 
-        `{{!-- {{ processTranslation phrase='{\\"0\\":\\"singular\\",\\"1\\":\\"plural\\",\\"locale\\":\\"en\\"}' }} --}}`;
+        `{{!-- {{ processTranslation pluralForm0='singular' pluralForm1='plural' locale='en'  count=mycount }} --}}`;
       expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
     });
   });
