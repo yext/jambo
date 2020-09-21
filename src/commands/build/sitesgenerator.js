@@ -2,7 +2,7 @@ const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
-const babel = require("@babel/core");
+const babel = require('@babel/core');
 const globToRegExp = require('glob-to-regexp');
 const _ = require('lodash');
 
@@ -51,10 +51,15 @@ exports.SitesGenerator = class {
       if (isValidFile(filename)) {
         let configName = stripExtension(relative);
         try {
-          configNameToRawConfig[configName] = parse(fs.readFileSync(path, 'utf8'), null, true);
+          configNameToRawConfig[configName] = parse(
+            fs.readFileSync(path, 'utf8'),
+            null,
+            true
+          );
         } catch (err) {
           if (err instanceof SyntaxError) {
-            throw new UserError(`JSON SyntaxError: could not parse file ${path}`, err.stack);
+            throw new UserError(
+              `JSON SyntaxError: could not parse file ${path}`, err.stack);
           } else {
             throw err;
           }
@@ -88,7 +93,7 @@ exports.SitesGenerator = class {
         themePath: `${config.dirs.themes}/${config.defaultTheme}`
       });
     } catch (err) {
-      throw new UserError("Failed to build partials", err.stack);
+      throw new UserError('Failed to build partials', err.stack);
     }
 
     // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
@@ -106,7 +111,10 @@ exports.SitesGenerator = class {
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
-    if (fs.existsSync(config.dirs.output) && !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles))) {
+    const shouldCleanOutput =
+      fs.existsSync(config.dirs.output) &&
+      !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles));
+    if (shouldCleanOutput) {
       this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
 
@@ -128,7 +136,7 @@ exports.SitesGenerator = class {
     try {
       this._registerHelpers();
     } catch (err) {
-      throw new SystemError("Failed to register jambo handlebars helpers", err.stack);
+      throw new SystemError('Failed to register jambo handlebars helpers', err.stack);
     }
 
     const pageSets = GENERATED_DATA.getPageSets();
@@ -147,10 +155,11 @@ exports.SitesGenerator = class {
         );
       }
 
-      // Pre-process page template contents - these are not registered with the Handlebars instance,
-      // the PageWriter compiles them with their args
+      // Pre-process page template contents - these are not registered with the
+      // Handlebars instance, the PageWriter compiles them with their args
       for (const page of pageSet.getPages()) {
-        const processedTemplate = handlebarsPreprocessor.process(page.getTemplateContents());
+        const processedTemplate = handlebarsPreprocessor.process(
+          page.getTemplateContents());
         page.setTemplateContents(processedTemplate);
       }
 
@@ -198,7 +207,8 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Checks whether a file or directory matches a glob wildcard in list of preserved files.
+   * Checks whether a file or directory matches a glob wildcard in list of
+   * preserved files.
    *
    * @param {string} path The path of a directory or file.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
@@ -257,38 +267,38 @@ exports.SitesGenerator = class {
       return JSON.stringify(context || {});
     });
 
-    hbs.registerHelper('ifeq', function (arg1, arg2, options) {
+    hbs.registerHelper('ifeq', function(arg1, arg2, options) {
       return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     });
 
     hbs.registerHelper({
-      eq: function (v1, v2) {
+      eq: function(v1, v2) {
         return v1 === v2;
       },
-      ne: function (v1, v2) {
+      ne: function(v1, v2) {
         return v1 !== v2;
       },
-      lt: function (v1, v2) {
+      lt: function(v1, v2) {
         return v1 < v2;
       },
-      gt: function (v1, v2) {
+      gt: function(v1, v2) {
         return v1 > v2;
       },
-      lte: function (v1, v2) {
+      lte: function(v1, v2) {
         return v1 <= v2;
       },
-      gte: function (v1, v2) {
+      gte: function(v1, v2) {
         return v1 >= v2;
       },
-      and: function () {
+      and: function() {
         return Array.prototype.slice.call(arguments).every(Boolean);
       },
-      or: function () {
+      or: function() {
         return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
       }
     });
 
-    hbs.registerHelper('read', function (fileName) {
+    hbs.registerHelper('read', function(fileName) {
       return hbs.partials[fileName];
     });
 
@@ -296,18 +306,28 @@ exports.SitesGenerator = class {
       return (prefix + id);
     });
 
+    hbs.registerHelper('matches', function(str, regexPattern) {
+      const regex = new RegExp(regexPattern);
+      return str.match(regex);
+    });
+
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
         compact: true,
         minified: true,
-        presets: [
-          '@babel/preset-env',
-          ],
+        sourceType: 'script',
+        presets: ['@babel/preset-env'],
+        plugins: [
+          '@babel/syntax-dynamic-import',
+          '@babel/plugin-transform-arrow-functions',
+          '@babel/plugin-proposal-object-rest-spread',
+          '@babel/plugin-transform-object-assign',
+        ]
         }).code;
     })
 
-    hbs.registerHelper('partialPattern', function (cardPath, opt) {
+    hbs.registerHelper('partialPattern', function(cardPath, opt) {
       let result = '';
       Object.keys(hbs.partials)
         .filter(key => key.match(new RegExp(cardPath)))
@@ -319,13 +339,13 @@ exports.SitesGenerator = class {
     /**
      * Performs a deep merge of the given objects.
      */
-    hbs.registerHelper('deepMerge', function (...args) {
+    hbs.registerHelper('deepMerge', function(...args) {
       return _.merge({}, ...args.slice(0, args.length - 1));
     });
   }
 
   /**
-   * Parses the local translation files for the provided locales. 
+   * Parses the local translation files for the provided locales.
    * Parses both custom and theme translations.
    * The translations are returned in i18next format.
    *
@@ -334,15 +354,16 @@ exports.SitesGenerator = class {
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractTranslations(locales, localizationConfig) {
-    const customTranslations = await this._extractCustomTranslations(locales, localizationConfig);
+    const customTranslations = await this._extractCustomTranslations(
+      locales, localizationConfig);
     const themeTranslations = await this._extractThemeTranslations(locales);
     const mergedTranslations = _.merge(themeTranslations, customTranslations);
-    
+
     return mergedTranslations;
   }
 
   /**
-   * Parses the local translation files for the provided locales. 
+   * Parses the local translation files for the provided locales.
    * Parses translations in the custom translations folder
    * The translations are returned in i18next format.
    *
@@ -366,7 +387,7 @@ exports.SitesGenerator = class {
   }
 
   /**
-   * Parses the local translation files for the provided locales. 
+   * Parses the local translation files for the provided locales.
    * Parses translations in the theme translations folder
    * The translations are returned in i18next format.
    *
@@ -374,7 +395,7 @@ exports.SitesGenerator = class {
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractThemeTranslations(locales) {
-    const themeTranslationsDir = 
+    const themeTranslationsDir =
       `${this.config.dirs.themes}/${this.config.defaultTheme}/translations`;
     const localFileParser = new LocalFileParser(themeTranslationsDir);
     const translations = {};

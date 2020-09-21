@@ -10,7 +10,7 @@ describe('HandlebarsPreprocessor works correctly', () => {
     return {
       translate: (phrase) => {
         if (phrase === 'Hello') {
-          return "Bonjour"
+          return 'Bonjour'
         } else if (phrase === 'The man') {
           return 'L\'homme';
         } else if (phrase === '<span class="yext">The dog\'s bone</span>') {
@@ -21,70 +21,73 @@ describe('HandlebarsPreprocessor works correctly', () => {
           return 'Le chien.';
         } else if (phrase === 'The: dog') {
           return 'Le: chien';
-        } else if (phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
+        } else if (
+          phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
           return '<a href="https://www.yext.com">Voir notre site web [[name]]</a>';
         } else if (phrase === '[[name]]\'s mail') {
           return '[[name]]\'s mail';
         }
       },
       translateWithContext: (phrase, context) => {
-        if (phrase === "Mail now [[id1]]") {
+        if (phrase === 'Mail now [[id1]]') {
           return 'Mail maintenant [[id1]]';
-        } else if (phrase === "Person" && context == "male") {
+        } else if (phrase === 'Person' && context == 'male') {
           return 'L\'homme';
         }
       },
       translatePlural: (phrase) => {
-        if (phrase ==='Some item [[name]]') { 
-          return {
-            0: 'Un article [[name]]',
-            1: 'Les articles [[name]]',
-            locale: 'fr-FR'
-          };
-        } else if (phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
-          return {
-            0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
-            1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
-            locale: 'fr-FR'
-          };
-        } else if (phrase === 'singular') {
-          return {
-            0: 'singular',
-            1: 'plural',
-            locale: 'en'
-          };
-        }
-      },
-      translatePluralWithContext: (phrase, pluralForm, context) => {
-        if (phrase === 'The [[count]] person went on a walk'){
-          if (context === 'male') {
+        switch (phrase) {
+          case 'Some item [[name]]':
             return {
-              0: 'Le [[count]] homme est parti en promenade',
-              1: 'Les [[count]] Hommes fait une promenade',
+              0: 'Un article [[name]]',
+              1: 'Les articles [[name]]',
               locale: 'fr-FR'
-            }
-          } else if (context === 'female') {
-            return {
-              0: 'La [[count]] femme a fait une promenade',
-              1: 'Les [[count]] femmes fait une promenade',
-              locale: 'fr-FR'
-            }
-          }
-        } else if (phrase === '<a href="https://www.yext.com">View our website [[name]]</a>') {
-          if (context === 'internet web, not spider web') {
+            };
+          case '<a href="https://www.yext.com">View our website [[name]]</a>':
             return {
               0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
               1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
-            locale: 'fr-FR'
-            }
-          }
-        } else if (phrase === 'The person') {
-          if (context === 'male') {
+              locale: 'fr-FR'
+            };
+          case 'singular':
             return {
-              0: 'L\'homme',
-              1: 'Les hommes'
+              0: 'singular',
+              1: 'plural',
+              locale: 'en'
+            };
+        }
+      },
+      translatePluralWithContext: (phrase, pluralForm, context) => {
+        switch (phrase) {
+          case 'The [[count]] person went on a walk':
+            if (context === 'male') {
+              return {
+                0: 'Le [[count]] homme est parti en promenade',
+                1: 'Les [[count]] Hommes fait une promenade',
+                locale: 'fr-FR'
+              }
+            } else if (context === 'female') {
+              return {
+                0: 'La [[count]] femme a fait une promenade',
+                1: 'Les [[count]] femmes fait une promenade',
+                locale: 'fr-FR'
+              }
             }
-          }
+          case '<a href="https://www.yext.com">View our website [[name]]</a>':
+            if (context === 'internet web, not spider web') {
+              return {
+                0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
+                1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
+              locale: 'fr-FR'
+              }
+            }
+          case 'The person':
+            if (context === 'male') {
+              return {
+                0: 'L\'homme',
+                1: 'Les hommes'
+              }
+            }
         }
       }
     };
@@ -98,7 +101,8 @@ describe('HandlebarsPreprocessor works correctly', () => {
     const processedJsHandlebarsContent = readFileSync(
       path.join(__dirname, '../fixtures/handlebars/processedcomponent.js'), 'utf8');
 
-    expect(handlebarsPreprocessor.process(rawJsHandlebarsContent)).toEqual(processedJsHandlebarsContent);
+    expect(handlebarsPreprocessor.process(rawJsHandlebarsContent))
+      .toEqual(processedJsHandlebarsContent);
   });
 
   it('transpiles all "translate" and "translateJS" invocations in a HBS template', () => {
@@ -107,35 +111,7 @@ describe('HandlebarsPreprocessor works correctly', () => {
     const processedHbsHandlebarsContent = readFileSync(
       path.join(__dirname, '../fixtures/handlebars/processedtemplate.hbs'), 'utf8');
 
-    expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent)).toEqual(processedHbsHandlebarsContent);
-  });
-
-  describe('when translating a language with a single plural form', () => {
-    Translator.mockImplementation(() => {
-      return {
-        translatePlural: () => {
-            return {
-              0: 'singular',
-              1: 'plural',
-              locale: 'en'
-            };
-        },
-      };
-    });
-    const translator = new Translator();
-    const handlebarsPreprocessor = new HandlebarsPreprocessor(translator);
-
-    it('passes correct arguments to translatePlural', () => {
-      const raw = `{{ translate phrase='singular' pluralForm='plural' count=mycount}}`;
-      const processed = `{{ processTranslation pluralForm0='singular' pluralForm1='plural' locale='en'  count=mycount }}`;
-      expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
-    });
-
-    it('transpiles commented out "translate" invocations correctly', () => {
-      const raw = `{{!-- {{ translate phrase='singular' pluralForm='plural' count=mycount}} --}}`;
-      const processed = 
-        `{{!-- {{ processTranslation pluralForm0='singular' pluralForm1='plural' locale='en'  count=mycount }} --}}`;
-      expect(handlebarsPreprocessor.process(raw)).toEqual(processed);
-    });
+    expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent))
+      .toEqual(processedHbsHandlebarsContent);
   });
 });

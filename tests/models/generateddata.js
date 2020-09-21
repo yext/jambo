@@ -109,18 +109,18 @@ describe('GeneratedData is correctly formed using with static from', () => {
     const localizationConfig = new LocalizationConfig({
       default: 'en',
       localeConfig: {
-        'en': {},
-        'fr': {
+        en: {},
+        fr: {
           fallback: [
             'en'
           ]
         },
-        'es': {
+        es: {
           fallback: [
             'en'
           ]
         },
-        'it': {
+        it: {
           fallback: [
             'en'
           ]
@@ -210,7 +210,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'home',
               path: 'pages/home.html.hbs',
             }),
-            outputPath: `/en/home.html`
+            outputPath: '/en/home.html'
           }),
         ],
         globalConfig: new GlobalConfig({
@@ -233,7 +233,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'home',
               path: 'pages/home.html.hbs',
             }),
-            outputPath: `home.html`
+            outputPath: 'home.html'
           }),
           new Page({
             pageConfig: new PageConfig({
@@ -246,7 +246,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'links',
               path: 'pages/links.es.html.hbs',
             }),
-            outputPath: `links.html`
+            outputPath: 'links.html'
           }),
           new Page({
             pageConfig: new PageConfig({
@@ -259,7 +259,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'locations',
               path: 'pages/locations.es.html.hbs',
             }),
-            outputPath: `locations.html`
+            outputPath: 'locations.html'
           })
         ],
         globalConfig: new GlobalConfig({
@@ -282,7 +282,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
               pageName: 'faqs',
               path: 'pages/faqs.fr.html.hbs',
             }),
-            outputPath: `faqs.html`
+            outputPath: 'faqs.html'
           })
         ],
         globalConfig: new GlobalConfig({

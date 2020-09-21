@@ -11,14 +11,14 @@ describe('PageUniquenessValidator validates a set of pages properly', () => {
           locale: 'en',
           pageName: 'home'
         }),
-        outputPath: `/en/home.html`
+        outputPath: '/en/home.html'
       }),
       new Page({
         pageConfig: new PageConfig({
           locale: 'es',
           pageName: 'home'
         }),
-        outputPath: `/es/home.html`
+        outputPath: '/es/home.html'
       })
     ];
 
@@ -33,14 +33,14 @@ describe('PageUniquenessValidator validates a set of pages properly', () => {
           locale: 'en',
           pageName: 'home'
         }),
-        outputPath: `/en/home.html`
+        outputPath: '/en/home.html'
       }),
       new Page({
         pageConfig: new PageConfig({
           locale: 'en',
           pageName: 'home'
         }),
-        outputPath: `/override/home.html`
+        outputPath: '/override/home.html'
       })
     ];
 
@@ -54,14 +54,14 @@ describe('PageUniquenessValidator validates a set of pages properly', () => {
           locale: 'en',
           pageName: 'home'
         }),
-        outputPath: `/override/home.html`
+        outputPath: '/override/home.html'
       }),
       new Page({
         pageConfig: new PageConfig({
           locale: 'es',
           pageName: 'home'
         }),
-        outputPath: `/override/home.html`
+        outputPath: '/override/home.html'
       })
     ];
     expect(() => new PageUniquenessValidator().validate(pages)).toThrow(UserError);

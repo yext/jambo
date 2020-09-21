@@ -28,7 +28,7 @@ module.exports = class PageWriter {
    *
    * @param {PageSet} pageSet the collection of pages to generate
    */
-  writePages (pageSet) {
+  writePages(pageSet) {
     if (!pageSet || pageSet.getPages().length < 1) {
       return;
     }
@@ -71,7 +71,9 @@ module.exports = class PageWriter {
    * @param {Object} pageNameToConfig
    * @returns {Object}
    */
-  _buildArgsForTemplate ({ pageConfig, relativePath, params, globalConfig, pageNameToConfig }) {
+  _buildArgsForTemplate(
+    { pageConfig, relativePath, params, globalConfig, pageNameToConfig }
+  ){
     return Object.assign(
       {},
       pageConfig,
@@ -91,7 +93,7 @@ module.exports = class PageWriter {
    * @param {String} filePath the path to the page output file
    * @returns {String}
    */
-  _calculateRelativePath (filePath) {
-    return path.relative(path.dirname(filePath), "");
+  _calculateRelativePath(filePath) {
+    return path.relative(path.dirname(filePath), '');
   }
 }

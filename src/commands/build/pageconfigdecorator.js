@@ -51,7 +51,8 @@ module.exports = class PageConfigDecorator {
    * @returns {PageConfig}
    */
   _decoratePageConfig(localeSpecificConfig, configsForPage) {
-    const currentLocale = localeSpecificConfig.getLocale() || this._localizationConfig.getDefaultLocale();
+    const currentLocale = localeSpecificConfig.getLocale()
+      || this._localizationConfig.getDefaultLocale();
     const localeFallbacks = this._localizationConfig.getFallbacks(currentLocale);
     const fallbackConfigs = [];
     for (let i = localeFallbacks.length - 1; i >= 0 ; i--) {

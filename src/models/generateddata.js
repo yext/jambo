@@ -32,7 +32,7 @@ module.exports = class GeneratedData {
    * @param {String} locale
    * @returns {Array<String>}
    */
-  getLocales () {
+  getLocales() {
     return this._localizationConfig.getLocales();
   }
 
@@ -42,7 +42,7 @@ module.exports = class GeneratedData {
    * @param {String} locale
    * @returns {Array<String>}
    */
-  getLocaleFallbacks (locale) {
+  getLocaleFallbacks(locale) {
     return this._localizationConfig.getFallbacks(locale);
   }
 
@@ -51,12 +51,13 @@ module.exports = class GeneratedData {
    *
    * @returns {Array<PageSet>}
    */
-  getPageSets () {
+  getPageSets() {
     return this._pageSets;
   }
 
   /**
-   * Builds a {@link GeneratedData} from the given configurations and {@link PageTemplates}.
+   * Builds a {@link GeneratedData} from the given configurations and
+   * {@link PageTemplates}.
    *
    * @param {GlobalConfig} globalConfig
    * @param {LocalizationConfig} localizationConfig
