@@ -43,10 +43,11 @@ exports.CardCreator = class {
     }
   }
 
-  _renameCardComponent (customCardName, cardFolder) {
+  _renameCardComponent(customCardName, cardFolder) {
     const cardComponentPath = path.resolve(cardFolder, 'component.js');
     const originalComponent = fs.readFileSync(cardComponentPath).toString();
-    const renamedComponent = this._getRenamedCardComponent(originalComponent, customCardName);
+    const renamedComponent = 
+      this._getRenamedCardComponent(originalComponent, customCardName);
     fs.writeFileSync(cardComponentPath, renamedComponent);
   }
 
@@ -57,7 +58,7 @@ exports.CardCreator = class {
    * @param {string} customCardName
    * @returns {string}
    */
-  _getRenamedCardComponent (content, customCardName) {
+  _getRenamedCardComponent(content, customCardName) {
     const cardNameSuffix = 'CardComponent';
     const registerComponentTypeRegex = /\([\w_]+CardComponent\)/g;
     const regexArray = [ ...content.matchAll(/componentName\s*=\s*'(.*)'/g) ];

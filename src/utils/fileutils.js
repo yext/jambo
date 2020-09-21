@@ -3,11 +3,11 @@
  *
  * @returns {string} filename
  */
-stripExtension = function (filename) {
-  if (filename.indexOf(".") === -1) {
+stripExtension = function(filename) {
+  if (filename.indexOf('.') === -1) {
     return filename;
   }
-  return filename.substring(0, filename.lastIndexOf("."));
+  return filename.substring(0, filename.lastIndexOf('.'));
 }
 exports.stripExtension = stripExtension;
 
@@ -17,7 +17,7 @@ exports.stripExtension = stripExtension;
  * @param {string} filename the file name of the page handlebars template
  * @returns {string}
  */
-getPageName = function (filename) {
+getPageName = function(filename) {
   return filename.split('.')[0];
 }
 exports.getPageName = getPageName;
@@ -28,7 +28,7 @@ exports.getPageName = getPageName;
  * @param {string} filename the file name
  * @returns {string}
  */
-isValidFile = function (fileName) {
+isValidFile = function(fileName) {
   return fileName && !fileName.startsWith('.');
 }
 exports.isValidFile = isValidFile;

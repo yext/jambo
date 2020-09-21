@@ -27,7 +27,8 @@ class HandlebarsPreprocessor {
     translateHelperCalls.forEach(call => {
       const translateInvocation = TranslateInvocation.from(call);
       const transpiledCall = this._handleTranslateInvocation(translateInvocation);
-      processedHandlebarsContent = processedHandlebarsContent.replace(call, transpiledCall);
+      processedHandlebarsContent = processedHandlebarsContent.replace(
+        call, transpiledCall);
     });
 
     return processedHandlebarsContent;
@@ -50,10 +51,10 @@ class HandlebarsPreprocessor {
       translatorResult = translationContext ?
         JSON.stringify(this._translator.translatePluralWithContext(
           invocation.getPhrase(),
-          invocation.getPluralForm(), 
+          invocation.getPluralForm(),
           translationContext)):
         JSON.stringify(this._translator.translatePlural(
-          invocation.getPhrase(), 
+          invocation.getPhrase(),
           invocation.getPluralForm()));
     } else {
       translatorResult = translationContext ?
@@ -71,7 +72,7 @@ class HandlebarsPreprocessor {
       if (invocation.shouldEscapeHTML()) {
         return Handlebars.Utils.escapeExpression(translatorResult);
       }
-      
+
       return translatorResult;
     }
     const interpParams = invocation.getInterpolationParams();
@@ -82,7 +83,7 @@ class HandlebarsPreprocessor {
           interpParams,
           invocation.isUsingPluralization()) :
         this._createRuntimeCallForHBS(
-          translatorResult, 
+          translatorResult,
           interpParams,
           invocation.isUsingPluralization(),
           invocation.shouldEscapeHTML());
@@ -108,7 +109,8 @@ class HandlebarsPreprocessor {
     if (needsPluralization) {
       const count = interpolationParams.count;
       escapedTranslatorResult = this._escapeDoubleQuotes(escapedTranslatorResult);
-      return `ANSWERS.processTranslation('${escapedTranslatorResult}', ${parsedParams}, ${count})`;
+      return 'ANSWERS.processTranslation(' +
+        `'${escapedTranslatorResult}', ${parsedParams}, ${count})`;
     }
 
     return `ANSWERS.processTranslation('${escapedTranslatorResult}', ${parsedParams})`;
@@ -128,14 +130,16 @@ class HandlebarsPreprocessor {
    *                                   double curly braces.
    * @returns {string} The string-ified call to the 'processTranslation' helper.
    */
-  _createRuntimeCallForHBS(translatorResult, interpolationParams, needsPluralization, shouldEscapeHTML) {
+  _createRuntimeCallForHBS(
+    translatorResult, interpolationParams, needsPluralization, shouldEscapeHTML)
+  {
     const paramsString = Object.entries(interpolationParams)
       .reduce((params, [paramName, paramValue]) => {
         return params + `${paramName}=${paramValue} `;
       }, '');
 
     let escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
-    
+
     if (needsPluralization) {
       escapedTranslatorResult = this._escapeDoubleQuotes(escapedTranslatorResult);
     }
@@ -144,11 +148,11 @@ class HandlebarsPreprocessor {
       `{{ processTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}` :
       `{{{ processTranslation phrase='${escapedTranslatorResult}' ${paramsString}}}}`
   }
-  
+
   /**
    * Escape single quotes in the string
-   * @param {string} str 
-   * 
+   * @param {string} str
+   *
    * @returns {string}
    */
   _escapeSingleQuotes(str) {
@@ -158,8 +162,8 @@ class HandlebarsPreprocessor {
 
   /**
    * Escapes double quotes in the string
-   * @param {string} str 
-   * 
+   * @param {string} str
+   *
    * @returns {string}
    */
   _escapeDoubleQuotes(str) {

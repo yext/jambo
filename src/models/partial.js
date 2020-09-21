@@ -1,4 +1,4 @@
-const { stripExtension } = require("../utils/fileutils");
+const { stripExtension } = require('../utils/fileutils');
 
 /**
  * A data model representing a partial that registered with Jambo.

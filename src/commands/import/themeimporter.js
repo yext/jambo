@@ -84,13 +84,13 @@ exports.ThemeImporter = class {
       };
 
       copyFileIfExists(
-        `${staticAssetsPath}/scss/answers.scss`, 
+        `${staticAssetsPath}/scss/answers.scss`,
         `${siteStaticDir}/scss/answers.scss`);
       copyFileIfExists(
-        `${staticAssetsPath}/scss/answers-variables.scss`, 
+        `${staticAssetsPath}/scss/answers-variables.scss`,
         `${siteStaticDir}/scss/answers-variables.scss`);
       copyFileIfExists(
-        `${staticAssetsPath}/scss/fonts.scss`, 
+        `${staticAssetsPath}/scss/fonts.scss`,
         `${siteStaticDir}/scss/fonts.scss`);
 
       copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');

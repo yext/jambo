@@ -1,6 +1,6 @@
 const PageWriter = require('../../../src/commands/build/pagewriter');
 
-describe('PageWriter builds the object passed to the Handlebars Templates properly', () => {
+describe('PageWriter builds args for Handlebars Templates properly', () => {
   it('builds args as expected when all are present', () => {
     const env = {
       envVar: 'envVar',
