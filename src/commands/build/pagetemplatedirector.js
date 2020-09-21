@@ -48,29 +48,32 @@ module.exports = class PageTemplateDirector {
 
 
   /**
-   * Finds the PageTemplate for the given locale in the provided collection of PageTemplates,
-   * the match is determined based the locale and the fallbacks.
+   * Finds the PageTemplate for the given locale in the provided collection of
+   * PageTemplates, the match is determined based the locale and the fallbacks.
    *
    * @param {String} locale
    * @param {Array<PageTemplate>} templatesForPage
    * @returns {PageTemplate}
    */
   _findPageTemplateForLocale(locale, templatesForPage) {
-    let pageTemplate = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), locale));
+    let pageTemplate = templatesForPage
+      .find(template => this._isLocaleMatch(template.getLocale(), locale));
     if (pageTemplate) {
       return pageTemplate;
     }
 
     const localeFallbacks = this._localizationConfig.getFallbacks(locale);
     for (const fallback of localeFallbacks) {
-      pageTemplate = templatesForPage.find(template => this._isLocaleMatch(template.getLocale(), fallback));
+      pageTemplate = templatesForPage
+        .find(template => this._isLocaleMatch(template.getLocale(), fallback));
 
       if (pageTemplate) {
         return pageTemplate;
       }
     }
 
-    return templatesForPage.find(template => this._isDefaultLocale(template.getLocale()));
+    return templatesForPage
+      .find(template => this._isDefaultLocale(template.getLocale()));
   }
 
   /**

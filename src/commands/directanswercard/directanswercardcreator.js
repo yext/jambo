@@ -10,8 +10,9 @@ exports.DirectAnswerCardCreator = class {
   }
 
   /**
-   * Creates a new, custom direct answer card in the top-level 'directanswercards' directory.
-   * This card will be based off either an existing custom card or one supplied by the Theme.
+   * Creates a new, custom direct answer card in the top-level 'directanswercards'
+   * directory. This card will be based off either an existing custom card or one
+   * supplied by the Theme.
    * 
    * @param {string} cardName           The name of the new card. A folder with a
    *                                    lowercased version of this name will be
@@ -42,21 +43,24 @@ exports.DirectAnswerCardCreator = class {
     }
   }
 
-  _renameCardComponent (customCardName, cardFolder) {
+  _renameCardComponent(customCardName, cardFolder) {
     const cardComponentPath = path.resolve(cardFolder, 'component.js');
     const originalComponent = fs.readFileSync(cardComponentPath).toString();
-    const renamedComponent = this._getRenamedCardComponent(originalComponent, customCardName);
+    const renamedComponent = 
+      this._getRenamedCardComponent(originalComponent, customCardName);
     fs.writeFileSync(cardComponentPath, renamedComponent);
   }
 
   /**
-   * Returns the internal contents for a newly-created direct answer card, updated based on
-   * the given customCardName. (e.g. allfields_standardComponent -> [CustomName]Component)
+   * Returns the internal contents for a newly-created direct answer card, updated
+   * based on the given customCardName. (e.g. allfields_standardComponent ->
+   * [CustomName]Component)
+   * 
    * @param {string} content
    * @param {string} customCardName
    * @returns {string}
    */
-  _getRenamedCardComponent (content, customCardName) {
+  _getRenamedCardComponent(content, customCardName) {
     const cardNameSuffix = 'Component';
     const registerComponentTypeRegex = /\([\w_]+Component\)/g;
     const regexArray = [ ...content.matchAll(/componentName\s*=\s*'(.*)'/g) ];
@@ -73,7 +77,8 @@ exports.DirectAnswerCardCreator = class {
       .replace(registerComponentTypeRegex, `(${customComponentClassName})`)
       .replace(new RegExp(originalComponentName, 'g'), customCardName)
       .replace(
-        /directanswercards[/_](.*)[/_]template/g, `directanswercards/${customCardName}/template`);
+        /directanswercards[/_](.*)[/_]template/g, 
+        `directanswercards/${customCardName}/template`);
   }
 
   /**

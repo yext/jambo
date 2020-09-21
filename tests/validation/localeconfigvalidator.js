@@ -15,7 +15,8 @@ describe('LocaleConfigValidator works properly', () => {
       defautl: 'en',
       localeConfig: {}
     }
-    expect(() => new LocaleConfigValidator(defaultMispelledConfig).validate()).toThrow(UserError);
+    expect(() => new LocaleConfigValidator(defaultMispelledConfig).validate())
+      .toThrow(UserError);
   });
 
   it('throws error when key "localeConfig" is missing or misspelled', () => {
@@ -23,6 +24,7 @@ describe('LocaleConfigValidator works properly', () => {
       default: 'en',
       localeConfiggg: {}
     }
-    expect(() => new LocaleConfigValidator(localeConfigMispelledConfig).validate()).toThrow(UserError);
+    expect(() => new LocaleConfigValidator(localeConfigMispelledConfig).validate())
+      .toThrow(UserError);
   });
 });
