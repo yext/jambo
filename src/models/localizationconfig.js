@@ -1,5 +1,5 @@
-const { NO_LOCALE } = require("../constants");
-const UserError = require("../errors/usererror");
+const { NO_LOCALE } = require('../constants');
+const UserError = require('../errors/usererror');
 
 /**
  * LocalizationConfig represents the configuration required to localize pages. It contains
@@ -28,7 +28,8 @@ module.exports = class LocalizationConfig {
     this._localeToConfig = config.localeConfig || {};
 
     if (this.hasConfig() && !this._localeToConfig[this._defaultLocale]) {
-      throw new UserError('A \'default\' locale with an entry in the locale config is required');
+      throw new UserError(
+        'A \'default\' locale with an entry in the locale config is required');
     }
 
     const urlFormat = config.urlFormat || {};
@@ -43,31 +44,31 @@ module.exports = class LocalizationConfig {
    *
    * @returns {boolean}
    */
-  hasConfig () {
+  hasConfig() {
     return Object.keys(this._localeToConfig).length > 0;
   }
 
-  getDefaultLocale () {
+  getDefaultLocale() {
     return this._defaultLocale;
   }
 
-  getLocales () {
+  getLocales() {
     return Object.keys(this._localeToConfig);
   }
 
-  getExperienceKey (locale) {
+  getExperienceKey(locale) {
     return this._getConfigForLocale(locale).experienceKey;
   }
 
-  getParams (locale) {
+  getParams(locale) {
     return this._getConfigForLocale(locale).params || {};
   }
 
-  getTranslationFile (locale) {
+  getTranslationFile(locale) {
     return this._getConfigForLocale(locale).translationFile;
   }
 
-  getFallbacks (locale) {
+  getFallbacks(locale) {
     return this._getConfigForLocale(locale).fallback || [];
   }
 
@@ -77,15 +78,17 @@ module.exports = class LocalizationConfig {
    * @param {string} locale
    * @returns {function}
    */
-  getUrlFormatter (locale) {
-    // TODO (agrow) this assumes language and suffix of locale are separated by a "-" (e.g. en-US)
+  getUrlFormatter(locale) {
+    // TODO (agrow) this assumes language and region are separated by a "-" (e.g. en-US)
     const language = locale
-      ? locale.substring(0, locale.lastIndexOf("-")) || locale
+      ? locale.substring(0, locale.lastIndexOf('-')) || locale
       : '';
     const basicUrlPattern = locale === this._defaultLocale
       ? this._defaultUrlPattern
       : this._baseLocalePattern;
-    let urlPattern = this._getUrlOverride(locale) || basicUrlPattern || '{pageName}.{pageExt}';
+    let urlPattern = this._getUrlOverride(locale)
+      || basicUrlPattern
+      || '{pageName}.{pageExt}';
     return (pageName, pageExt) => {
       return urlPattern
         .replace('{language}', language)
@@ -101,7 +104,7 @@ module.exports = class LocalizationConfig {
    * @param {Object} locale
    * @returns {Object}
    */
-  _getConfigForLocale (locale) {
+  _getConfigForLocale(locale) {
     return this._localeToConfig[locale] || {};
   }
 
@@ -111,7 +114,7 @@ module.exports = class LocalizationConfig {
    * @param {Object} locale
    * @returns {string}
    */
-  _getUrlOverride (locale) {
+  _getUrlOverride(locale) {
     return this._getConfigForLocale(locale).urlOverride;
   }
 }

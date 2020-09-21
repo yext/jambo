@@ -51,7 +51,11 @@ exports.SitesGenerator = class {
       if (isValidFile(filename)) {
         let configName = stripExtension(relative);
         try {
-          configNameToRawConfig[configName] = parse(fs.readFileSync(path, 'utf8'), null, true);
+          configNameToRawConfig[configName] = parse(
+            fs.readFileSync(path, 'utf8'),
+            null,
+            true
+          );
         } catch (err) {
           if (err instanceof SyntaxError) {
             throw new UserError(
@@ -89,7 +93,7 @@ exports.SitesGenerator = class {
         themePath: `${config.dirs.themes}/${config.defaultTheme}`
       });
     } catch (err) {
-      throw new UserError("Failed to build partials", err.stack);
+      throw new UserError('Failed to build partials', err.stack);
     }
 
     // TODO (agrow) refactor sitesgenerator and pull this logic out of the class.
@@ -132,7 +136,7 @@ exports.SitesGenerator = class {
     try {
       this._registerHelpers();
     } catch (err) {
-      throw new SystemError("Failed to register jambo handlebars helpers", err.stack);
+      throw new SystemError('Failed to register jambo handlebars helpers', err.stack);
     }
 
     const pageSets = GENERATED_DATA.getPageSets();
@@ -151,10 +155,11 @@ exports.SitesGenerator = class {
         );
       }
 
-      // Pre-process page template contents - these are not registered with the Handlebars instance,
-      // the PageWriter compiles them with their args
+      // Pre-process page template contents - these are not registered with the
+      // Handlebars instance, the PageWriter compiles them with their args
       for (const page of pageSet.getPages()) {
-        const processedTemplate = handlebarsPreprocessor.process(page.getTemplateContents());
+        const processedTemplate = handlebarsPreprocessor.process(
+          page.getTemplateContents());
         page.setTemplateContents(processedTemplate);
       }
 
@@ -267,33 +272,33 @@ exports.SitesGenerator = class {
     });
 
     hbs.registerHelper({
-      eq: function (v1, v2) {
+      eq: function(v1, v2) {
         return v1 === v2;
       },
-      ne: function (v1, v2) {
+      ne: function(v1, v2) {
         return v1 !== v2;
       },
-      lt: function (v1, v2) {
+      lt: function(v1, v2) {
         return v1 < v2;
       },
-      gt: function (v1, v2) {
+      gt: function(v1, v2) {
         return v1 > v2;
       },
-      lte: function (v1, v2) {
+      lte: function(v1, v2) {
         return v1 <= v2;
       },
-      gte: function (v1, v2) {
+      gte: function(v1, v2) {
         return v1 >= v2;
       },
-      and: function () {
+      and: function() {
         return Array.prototype.slice.call(arguments).every(Boolean);
       },
-      or: function () {
+      or: function() {
         return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
       }
     });
 
-    hbs.registerHelper('read', function (fileName) {
+    hbs.registerHelper('read', function(fileName) {
       return hbs.partials[fileName];
     });
 
@@ -349,7 +354,8 @@ exports.SitesGenerator = class {
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractTranslations(locales, localizationConfig) {
-    const customTranslations = await this._extractCustomTranslations(locales, localizationConfig);
+    const customTranslations = await this._extractCustomTranslations(
+      locales, localizationConfig);
     const themeTranslations = await this._extractThemeTranslations(locales);
     const mergedTranslations = _.merge(themeTranslations, customTranslations);
 

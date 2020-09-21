@@ -12,7 +12,7 @@ describe('translations with one plural form (French)', () => {
     const frFRTranslations = await localFileParser.fetch('fr-FR');
     const frTranslations = await localFileParser.fetch('fr');
     const translations = {
-      'fr': { translation: frTranslations },
+      fr: { translation: frTranslations },
       'fr-FR': { translation: frFRTranslations },
     }
 
@@ -26,7 +26,7 @@ describe('translations with one plural form (French)', () => {
     });
 
     it('simple translation with interpolation works as expected', () => {
-      const translation = 
+      const translation =
         translator.translate('Hello [[name]]');
       expect(translation).toEqual('Bonjour [[name]]');
     });
@@ -73,7 +73,7 @@ describe('translations with one plural form (French)', () => {
 
     it('falls back correctly when no translations present', () => {
       const translation = translator.translatePlural(
-        'Missing [[count]] translation [[name]]', 
+        'Missing [[count]] translation [[name]]',
         'Missing [[count]] translations [[name]]');
       const expectedResult = {
         0: 'Missing [[count]] translation [[name]]',
@@ -87,8 +87,10 @@ describe('translations with one plural form (French)', () => {
 
   describe('Translations with context and no pluralization', () => {
     it('context works as expected', () => {
-      const translationWithMaleContext = translator.translateWithContext('Child', 'male');
-      const translationWithFemaleContext = translator.translateWithContext('Child', 'female');
+      const translationWithMaleContext = translator
+        .translateWithContext('Child', 'male');
+      const translationWithFemaleContext = translator
+        .translateWithContext('Child', 'female');
       expect(translationWithMaleContext).toEqual('fils');
       expect(translationWithFemaleContext).toEqual('fille');
     });
@@ -150,60 +152,61 @@ describe('translations with one plural form (French)', () => {
       expect(translationWithFemaleContext).toEqual(expectedResultWithFemaleContext);
     });
 
-    it('Pluralization and interpolation with context works as expected when the translation is not found', () => {
-      const translation = translator.translatePluralWithContext(
-        'The [[count]] elephant went on a drive',
-        'The [[count]] elephants went on a drive',
-        'male');
-      const expectedResult = {
-        0: 'The [[count]] elephant went on a drive',
-        1: 'The [[count]] elephants went on a drive',
-        locale: 'en'
-      };
-      expect(translation).toEqual(expectedResult);
-    });
+    it('Pluralization and interpolation with context works when translation is not found',
+      () => {
+        const translation = translator.translatePluralWithContext(
+          'The [[count]] elephant went on a drive',
+          'The [[count]] elephants went on a drive',
+          'male');
+        const expectedResult = {
+          0: 'The [[count]] elephant went on a drive',
+          1: 'The [[count]] elephants went on a drive',
+          locale: 'en'
+        };
+        expect(translation).toEqual(expectedResult);
+      }
+    );
   });
 
   describe('supports text intermixed with HTML', () => {
-    it('text with html link', () => {
-      const translation = translator.translate('Alternatively, you can<a class="yxt-AlternativeVerticals-universalLink" href=universalUrl>view results across all search categories</a>');
-      expect(translation).toEqual('Sinon vous pouvez<a class="yxt-AlternativeVerticals-universalLink" href=universalUrl>afficher les résultats dans toutes les catégories de recherche</a>');
-    });
-
     it('apostrophe inside text and html class with double quotes', () => {
-      const translation = translator.translate('<span class="yext">The dog\'s bone</span>');
+      const translation = translator.translate(
+        '<span class="yext">The dog\'s bone</span>');
       expect(translation).toEqual('<span class="yext">L\'os du chien</span>');
     });
 
-    it('apostrophe inside text and html class with double quotes (all inside double quoted string)', () => {
-      const translation = translator.translate("<span class=\"yext\">The dog's bone</span>");
-      expect(translation).toEqual("<span class=\"yext\">L'os du chien</span>");
+    it('test with apostrophe and double quotes', () => {
+      const translation = translator.translate(
+        '<span class="yext">The dog\'s bone</span>');
+      expect(translation).toEqual('<span class="yext">L\'os du chien</span>');
     });
 
     it('with interpolation', () => {
-      const translation = translator.translate('<a href="https://www.yext.com">View our website [[name]]</a>');
-      expect(translation).toEqual('<a href="https://www.yext.com">Voir notre site web [[name]]</a>')
+      const translation = translator.translate(
+        '<a href="yext.com">View our website [[name]]</a>');
+      expect(translation).toEqual(
+        '<a href="yext.com">Voir notre site web [[name]]</a>');
     });
 
     it('with pluralization', () => {
       const translation = translator.translatePlural(
-        '<a href="https://www.yext.com">View our website [[name]]</a>',
-        '<a href="https://www.yext.com">View our websites [[name]]</a>');
+        '<a href="yext.com">View our website [[name]]</a>',
+        '<a href="yext.com">View our websites [[name]]</a>');
       const expectedResult = {
-        0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
-        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
+        0: '<a href="yext.com">Voir notre site web [[name]]</a>',
+        1: '<a href="yext.com">Voir nos sites web [[name]]</a>',
         locale: 'fr-FR'};
       expect(translation).toEqual(expectedResult);
     });
 
     it('with pluralization and context', () => {
       const translation = translator.translatePluralWithContext(
-        '<a href="https://www.yext.com">View our website [[name]]</a>',
-        '<a href="https://www.yext.com">View our websites [[name]]</a>',
+        '<a href="yext.com">View our website [[name]]</a>',
+        '<a href="yext.com">View our websites [[name]]</a>',
         'internet web, not spider web');
       const expectedResult = {
-        0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
-        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
+        0: '<a href="yext.com">Voir notre site web [[name]]</a>',
+        1: '<a href="yext.com">Voir nos sites web [[name]]</a>',
         locale: 'fr-FR'};
       expect(translation).toEqual(expectedResult);
     });
@@ -225,7 +228,8 @@ describe('translations with multiple plural forms (Lithuanian)', () => {
   });
 
   it('simple pluralization works as expected', () => {
-    const translation = translator.translatePlural('Unable to email review', 'Unable to email reviews');
+    const translation = translator.translatePlural(
+      'Unable to email review', 'Unable to email reviews');
     const expectedResult = {
       0: 'Nepavyksta nusiųsti apžvalgos el. paštu',
       1: 'Nepavyksta nusiųsti apžvalgų el. paštu',

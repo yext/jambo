@@ -1,4 +1,4 @@
-const { NO_LOCALE } = require("../constants");
+const { NO_LOCALE } = require('../constants');
 
 /**
  * PageConfig is a representation of the configuration for the Page for
@@ -32,7 +32,7 @@ module.exports = class PageConfig {
    *
    * @returns {Object}
    */
-  getConfig () {
+  getConfig() {
     return this.rawConfig;
   }
 
@@ -41,7 +41,7 @@ module.exports = class PageConfig {
    *
    * @returns {String}
    */
-  getPageName () {
+  getPageName() {
     return this.pageName;
   }
 
@@ -50,7 +50,7 @@ module.exports = class PageConfig {
    *
    * @returns {String}
    */
-  getLocale () {
+  getLocale() {
     return this.locale;
   }
 }

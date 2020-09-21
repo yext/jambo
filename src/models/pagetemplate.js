@@ -79,7 +79,7 @@ module.exports = class PageTemplate {
    *
    * @returns {PageTemplate}
    */
-  clone () {
+  clone() {
     return new PageTemplate({
       locale: this.locale,
       path: this.path,
@@ -94,7 +94,7 @@ module.exports = class PageTemplate {
    * @param {String} filename the file name of the page handlebars template
    * @returns {String}
    */
-  static parseLocale (filename) {
+  static parseLocale(filename) {
     const pageParts = stripExtension(stripExtension(filename)).split('.');
     return pageParts.length > 1 && pageParts[1];
   }
