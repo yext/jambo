@@ -11,9 +11,9 @@ const UserError = require('../../errors/systemerror');
 const git = simpleGit();
 
 /**
- * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest version.
- * It first detects whether the theme was imported as a submodule or raw files, then handles
- * the upgrade accordingly.
+ * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest
+ * version. It first detects whether the theme was imported as a submodule or raw files,
+ * then handles the upgrade accordingly.
  */
 exports.ThemeUpgrader = class {
   constructor(jamboConfig) {
@@ -24,14 +24,15 @@ exports.ThemeUpgrader = class {
 
   /**
    * Upgrades the given theme to the latest version.
-   * @param {string} themeName 
+   * @param {string} themeName
    * @param {boolean} disableScript
    * @param {booolean} isLegacy
    */
   async upgrade(themeName, disableScript, isLegacy) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
-      throw new UserError(`Theme "${themeName}" not found within the "${this._themesDir}" folder`);
+      throw new UserError(
+        `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
     await this._isGitSubmodule(themePath)
       ? await this._upgradeSubmodule(themePath)
@@ -56,35 +57,36 @@ exports.ThemeUpgrader = class {
    * @param {string} upgradeScriptPath
    * @param {boolean} isLegacy
    */
-  _executePostUpgradeScript (upgradeScriptPath, isLegacy) {
+  _executePostUpgradeScript(upgradeScriptPath, isLegacy) {
     const customCommand = new CustomCommand({
       executable: `./${upgradeScriptPath}`
     });
     if (isLegacy) {
       customCommand.addArgs(['--isLegacy'])
     }
-    const { stdout, stderr } = new CustomCommandExecuter(this.config).execute(customCommand);
+    const { stdout, stderr } =
+      new CustomCommandExecuter(this.config).execute(customCommand);
     const stdoutString = stdout.toString().trim();
     const stderrString = stderr.toString().trim();
     stdoutString && console.log(stdoutString);
     if (stderrString) {
-      throw new SystemError("Error executing theme post upgrade script", stderrString);
+      throw new SystemError('Error executing theme post upgrade script', stderrString);
     }
-  } 
+  }
 
   /**
    * Calls "git update --remote" on the given submodule path, which
    * updates the given submodule to the most recent version of the branch
    * it is set to track (defaults to master).
-   * @param {string} submodulePath 
+   * @param {string} submodulePath
    */
   async _upgradeSubmodule(submodulePath) {
     await git.submoduleUpdate(['--remote', submodulePath])
   }
 
   /**
-   * @param {string} themeName 
-   * @param {string} themePath 
+   * @param {string} themeName
+   * @param {string} themePath
    */
   async _recloneTheme(themeName, themePath) {
     await fs.remove(themePath);
@@ -94,7 +96,7 @@ exports.ThemeUpgrader = class {
 
   /**
    * Returns whether the given file path is registered as a git submodule.
-   * @param {string} submodulePath 
+   * @param {string} submodulePath
    * @returns {boolean}
    */
   async _isGitSubmodule(submodulePath) {
