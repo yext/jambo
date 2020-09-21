@@ -48,7 +48,9 @@ module.exports = class PageSetsBuilder {
         const localeMessage = locale !== NO_LOCALE
           ? ` for '${locale}' locale`
           : '';
-        console.log(`Warning: No page templates found${localeMessage}, not generating a page set${localeMessage}`);
+        console.log(
+          `Warning: No page templates found${localeMessage}, not generating a ` +
+          ` page set${localeMessage}`);
         continue;
       }
 
@@ -72,7 +74,7 @@ module.exports = class PageSetsBuilder {
    * @param {Array<PageTemplate>} pageTemplates
    * @returns {Array<Page>}
    */
-  _buildPages (pageConfigs, pageTemplates) {
+  _buildPages(pageConfigs, pageTemplates) {
     let pages = [];
     for (const config of pageConfigs) {
       const pageTemplate = pageTemplates
@@ -82,7 +84,9 @@ module.exports = class PageSetsBuilder {
         const localeMessage = config.getLocale() !== NO_LOCALE
           ? ` found for '${config.getLocale()}' locale`
           : '';
-        console.log(`Warning: No page template '${config.getPageName()}'${localeMessage}, not generating a '${config.getPageName()}' page${localeMessage}`);
+        console.log(
+          `Warning: No page template '${config.getPageName()}'${localeMessage}, ` +
+          `not generating a '${config.getPageName()}' page${localeMessage}`);
         continue;
       }
 

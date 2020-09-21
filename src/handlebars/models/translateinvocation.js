@@ -27,7 +27,7 @@ class TranslateInvocation {
 
   /**
    * Whether or not this invocation requires pluralization.
-   * 
+   *
    * @returns {boolean}
    */
   isUsingPluralization() {
@@ -38,20 +38,20 @@ class TranslateInvocation {
    * If the translation requested by the invocation can be resolved at
    * compile-time. This is true if no pluralization or interpolation is
    * requested.
-   * 
+   *
    * @returns {boolean}
    */
   canBeTranslatedStatically() {
     return Object.keys(this._providedParams).every(
-      param => 
-        param === ParamTypes.PHRASE || 
-        param === ParamTypes.CONTEXT || 
+      param =>
+        param === ParamTypes.PHRASE ||
+        param === ParamTypes.CONTEXT ||
         param === ParamTypes.ESCAPE);
   }
 
   /**
    * Returns true if the HTML in the translation should be escaped.
-   * 
+   *
    * @returns {boolean}
    */
   shouldEscapeHTML() {
@@ -61,7 +61,7 @@ class TranslateInvocation {
   /**
    * Returns which Jambo helper is being invoked: 'translate' or
    * 'translateJS'.
-   * 
+   *
    * @returns {string} The invoked helper.
    */
   getInvokedHelper() {
@@ -70,7 +70,7 @@ class TranslateInvocation {
 
   /**
    * Returns the phrase needing translation.
-   * 
+   *
    * @returns {string} The phrase to be translated.
    */
   getPhrase() {
@@ -79,7 +79,7 @@ class TranslateInvocation {
 
   /**
    * Returns the plural form if one exists, otherwise returns undefined.
-   * 
+   *
    * @returns {string|undefined}
    */
   getPluralForm() {
@@ -88,7 +88,7 @@ class TranslateInvocation {
 
   /**
    * Returns any included translation context.
-   * 
+   *
    * @returns {string} The translation context.
    */
   getContext() {
@@ -97,7 +97,7 @@ class TranslateInvocation {
 
   /**
    * Returns the line number of the invocation.
-   * 
+   *
    * @returns {number}
    */
   getLineNumber() {
@@ -105,8 +105,8 @@ class TranslateInvocation {
   }
 
   /**
-   * Returns any interpolation params included with the invocation. 
-   * 
+   * Returns any interpolation params included with the invocation.
+   *
    * @returns {Object<string, string>} The interpolation params.
    */
   getInterpolationParams() {
@@ -136,7 +136,8 @@ class TranslateInvocation {
       return this.fromMustacheStatementNode(node);
     } catch (err) {
       throw new UserError(
-        `Error: Could not parse "${invocationString}" as a valid translate helper.`, err.stack);
+        `Error: Could not parse "${invocationString}" as a valid translate helper.`,
+        err.stack);
     }
   }
 
@@ -155,10 +156,10 @@ class TranslateInvocation {
   /**
    * Converts an array of Handlebars HashPair parameters into a map of keys to values.
    * Errors out when given a parameter that is a SubExpression.
-   * @param {Array<HashPair>} hashPairs 
+   * @param {Array<HashPair>} hashPairs
    * @returns {Object}
    */
-  static _convertHashPairsToParamsMap (hashPairs) {
+  static _convertHashPairsToParamsMap(hashPairs) {
     return hashPairs.reduce((map, pair) => {
       const expression = pair.value;
       if (expression.type === 'NullLiteral') {

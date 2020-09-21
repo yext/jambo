@@ -3,7 +3,7 @@ const PageConfigDecorator = require('../../../src/commands/build/pageconfigdecor
 const LocalizationConfig = require('../../../src/models/localizationconfig');
 const { NO_LOCALE } = require('../../../src/constants');
 
-describe('PageConfigDecorator decorates PageConfigs and builds the expected object', () => {
+describe('PageConfigDecorator adds proper attributes to PageConfigs', () => {
   it('builds decorated pages configs correctly when there is no locale config', () => {
     const localeConfig = new LocalizationConfig();
     const decoratedConfigs = new PageConfigDecorator(localeConfig).decorate([
@@ -33,7 +33,7 @@ describe('PageConfigDecorator decorates PageConfigs and builds the expected obje
     });
   });
 
-  it('builds decorated pages configs correctly when there are multiple locales and fallbacks', () => {
+  it('decorats pages configs correctly with multiple locales and fallbacks', () => {
     const defaultLocale = 'es';
     const configForDefaultLocale = new PageConfig({
       pageName: 'pageName',
@@ -189,7 +189,8 @@ describe('Matches locales properly', () => {
   );
 
   it('default config matches if locale is not specified', () => {
-    expect(pageConfigDecorator._isLocaleMatch(defaultLocale, defaultLocale)).toEqual(true);
+    expect(pageConfigDecorator._isLocaleMatch(defaultLocale, defaultLocale))
+      .toEqual(true);
     expect(pageConfigDecorator._isLocaleMatch(defaultLocale, '')).toEqual(true);
     expect(pageConfigDecorator._isLocaleMatch('', undefined)).toEqual(true);
     expect(pageConfigDecorator._isLocaleMatch('es', undefined)).toEqual(false);

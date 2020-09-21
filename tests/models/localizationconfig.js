@@ -55,7 +55,8 @@ describe('Getting URL Formatting function works properly', () => {
     });
 
     let urlFormatter = localizationConfig.getUrlFormatter(locale);
-    expect(urlFormatter('pageName', 'pageExt')).toEqual(`pages/${locale}/pageName.pageExt`);
+    expect(urlFormatter('pageName', 'pageExt'))
+      .toEqual(`pages/${locale}/pageName.pageExt`);
   });
 
   it('applies correct url formatting pattern to non-default locales', () => {
@@ -69,7 +70,7 @@ describe('Getting URL Formatting function works properly', () => {
 
     let locale = 'en';
     let urlFormatter = localizationConfig.getUrlFormatter(locale);
-    expect(urlFormatter('pageName', 'pageExt')).toEqual(`pages/pageName.pageExt`);
+    expect(urlFormatter('pageName', 'pageExt')).toEqual('pages/pageName.pageExt');
   });
 
   it('applies correct url formatting pattern for locale with urlOverride', () => {
@@ -77,7 +78,7 @@ describe('Getting URL Formatting function works properly', () => {
     let config = new LocalizationConfig({
       default: 'en',
       localeConfig: {
-        'en': {
+        en: {
           urlOverride: urlOverridePattern
         }
       },
@@ -93,7 +94,7 @@ describe('Getting URL Formatting function works properly', () => {
     config = new LocalizationConfig({
       default: 'en',
       localeConfig: {
-        'en': {},
+        en: {},
         'en-US': {
           urlOverride: '{language}/{locale}/{pageName}.{pageExt}'
         }
@@ -104,6 +105,7 @@ describe('Getting URL Formatting function works properly', () => {
       }
     });
     const complicatedFormatter = config.getUrlFormatter('en-US');
-    expect(complicatedFormatter('pageName', 'pageExt')).toEqual('en/en-US/pageName.pageExt');
+    expect(complicatedFormatter('pageName', 'pageExt'))
+      .toEqual('en/en-US/pageName.pageExt');
   });
 });
