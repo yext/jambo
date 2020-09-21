@@ -5,7 +5,7 @@ const { FileNames } = require('../constants');
  * Performs validation on locale_config.json
  */
 module.exports = class LocaleConfigValidator {
-  constructor (localizationConfig) {
+  constructor(localizationConfig) {
     /**
      * @type {Object<string, string|Object>}
      */
@@ -17,7 +17,7 @@ module.exports = class LocaleConfigValidator {
    * 
    * @throws {UserError} Thrown if validation fails
    */
-  validate () {
+  validate() {
     this._validateConfigHasKey('default');
     this._validateConfigHasKey('localeConfig');
   }
@@ -25,7 +25,7 @@ module.exports = class LocaleConfigValidator {
   /**
    * @param {string} key The key to check
    */
-  _validateConfigHasKey (key) {
+  _validateConfigHasKey(key) {
     if (!(key in this._localizationConfig)) {
       throw new UserError(`Key '${key}' not found in ${FileNames.LOCALE_CONFIG}`);
     }

@@ -84,7 +84,7 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
       locale_config: {
         default: 'es',
         localeConfig: {
-          'es': {}
+          es: {}
         }
       },
       [configName]: {},

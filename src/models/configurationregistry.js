@@ -39,7 +39,7 @@ module.exports = class ConfigurationRegistry {
    *
    * @returns {GlobalConfig} global config
    */
-  getGlobalConfig () {
+  getGlobalConfig() {
     return this._globalConfig;
   }
 
@@ -48,7 +48,7 @@ module.exports = class ConfigurationRegistry {
    *
    * @returns {LocalizationConfig} localization config
    */
-  getLocalizationConfig () {
+  getLocalizationConfig() {
     return this._localizationConfig;
   }
 
@@ -57,17 +57,17 @@ module.exports = class ConfigurationRegistry {
    *
    * @returns {Array<PageConfig>} page configs
    */
-  getPageConfigs () {
+  getPageConfigs() {
     return this._pageConfigs;
   }
 
   /**
    * Performs validation on the raw configuration files
-   * 
-   * @param {Object<String, Object>} configNameToRawConfig 
+   *
+   * @param {Object<String, Object>} configNameToRawConfig
    * @throws {UserError} Thrown if validation fails
    */
-  static validate (configNameToRawConfig) {
+  static validate(configNameToRawConfig) {
     new RawConfigValidator(configNameToRawConfig).validate();
   }
 
@@ -88,13 +88,16 @@ module.exports = class ConfigurationRegistry {
     const rawLocaleConfig = configNameToRawConfig[ConfigKeys.LOCALE_CONFIG];
 
     if (!rawLocaleConfig) {
-      console.log(`Cannot find '${FileNames.LOCALE_CONFIG}', using locale information from ${FileNames.GLOBAL_CONFIG}.`);
+      console.log(
+        `Cannot find '${FileNames.LOCALE_CONFIG}', using locale information ` +
+        `from ${FileNames.GLOBAL_CONFIG}.`);
     }
     const localizationConfig = new LocalizationConfig(rawLocaleConfig);
 
     const pageConfigs = Object.keys(configNameToRawConfig)
       .map((configName) => {
-        if (configName !== ConfigKeys.GLOBAL_CONFIG && configName !== ConfigKeys.LOCALE_CONFIG) {
+        if (configName !== ConfigKeys.GLOBAL_CONFIG
+            && configName !== ConfigKeys.LOCALE_CONFIG) {
           const pageName = localizationConfig.hasConfig()
             ? getPageName(configName)
             : configName;
