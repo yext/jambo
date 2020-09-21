@@ -51,7 +51,7 @@ module.exports = class PageSet {
    *
    * @returns {String} locale
    */
-  getLocale () {
+  getLocale() {
     return this.locale;
   }
 
@@ -60,7 +60,7 @@ module.exports = class PageSet {
    *
    * @returns {Array<Page>} pages
    */
-  getPages () {
+  getPages() {
     return this.pages;
   }
 
@@ -69,7 +69,7 @@ module.exports = class PageSet {
    *
    * @returns {Object} params
    */
-  getParams () {
+  getParams() {
     return this.params;
   }
 
@@ -78,7 +78,7 @@ module.exports = class PageSet {
    *
    * @returns {GlobalConfig} globalConfigs
    */
-  getGlobalConfig () {
+  getGlobalConfig() {
     return this.globalConfig;
   }
 
@@ -87,7 +87,7 @@ module.exports = class PageSet {
    *
    * @returns {Object<String, PageConfig>}
    */
-  getPageNameToConfig () {
+  getPageNameToConfig() {
     return this.pageNameToConfig;
   }
 }

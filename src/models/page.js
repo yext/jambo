@@ -34,7 +34,7 @@ module.exports = class Page {
    *
    * @returns {String}
    */
-  setTemplateContents (templateContents) {
+  setTemplateContents(templateContents) {
     this.templateContents = templateContents;
   }
 
@@ -43,7 +43,7 @@ module.exports = class Page {
    *
    * @returns {String}
    */
-  getLocale () {
+  getLocale() {
     return this.pageConfig.getLocale();
   }
 
@@ -52,7 +52,7 @@ module.exports = class Page {
    *
    * @returns {String}
    */
-  getName () {
+  getName() {
     return this.pageConfig.getPageName();
   }
 
@@ -61,7 +61,7 @@ module.exports = class Page {
    *
    * @returns {Object}
    */
-  getConfig () {
+  getConfig() {
     return Object.assign({}, {
         url: this.outputPath,
       },
@@ -83,7 +83,7 @@ module.exports = class Page {
    *
    * @returns {String}
    */
-  getOutputPath () {
+  getOutputPath() {
     return this.outputPath;
   }
 
@@ -114,7 +114,7 @@ module.exports = class Page {
    * @param {String} urlFormatter
    * @returns {String}
    */
-  static buildUrl (pageName, path, urlFormatter) {
+  static buildUrl(pageName, path, urlFormatter) {
     const pathWithoutHbsExtension = stripExtension(path);
     const pageExt = pathWithoutHbsExtension
       .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);

@@ -15,22 +15,24 @@ class TranslationExtractor {
     this._options = {
       extensions: ['.hbs', '.js'], // only extract from files with these extensions
       translateMethods: [ 'translate', 'translateJS' ], // method names to search for
-      baseDirectory: process.cwd(), // the root directory when adding a reference to the filepath:linenumber of a translation
+      baseDirectory: process.cwd(), // the root directory when adding a reference to
+                                    // the filepath:linenumber of a translation
       ...options,
     };
-    this._extractor = new GettextExtractor(); 
+    this._extractor = new GettextExtractor();
   }
 
    /**
     * Extracts messages from all of the input files into the extractor.
     * @param {Object} input
     * @param {Array<string>} input.directories directories to recursively extract from
-    * @param {Array<string>} input.specificFiles specific files to extract from 
+    * @param {Array<string>} input.specificFiles specific files to extract from
     * @param {Array<string>} input.ignoredPaths paths to recursively ignore
     */
-  extract (input) {
+  extract(input) {
     const { directories, specificFiles, ignoredPaths} = input;
-    const filepaths = this._globInputFilePaths(directories || [], specificFiles || [], ignoredPaths || []);
+    const filepaths = this._globInputFilePaths(
+      directories || [], specificFiles || [], ignoredPaths || []);
     for (const filepath of filepaths) {
       const template = fs.readFileSync(filepath).toString();
       const filepathForReference = path.relative(this._options.baseDirectory, filepath);
@@ -40,7 +42,7 @@ class TranslationExtractor {
 
   /**
    * Returns the extracted messages as a pot file string.
-   * https://github.com/lukasgeiter/gettext-extractor/wiki/API-Reference#getpotstringheaders
+   * //github.com/lukasgeiter/gettext-extractor/wiki/API-Reference#getpotstringheaders
    * @returns {Array<Object>}
    */
   getPotString() {
@@ -52,7 +54,7 @@ class TranslationExtractor {
    * Creates any parent directories as necessary.
    * @param {string} outputPath
    */
-  savePotFile (outputPath) {
+  savePotFile(outputPath) {
     const parentDirectory = outputPath.substring(0, outputPath.lastIndexOf('/'));
     parentDirectory && fsExtra.mkdirpSync(parentDirectory);
     this._extractor.savePotFile(outputPath);
@@ -61,11 +63,11 @@ class TranslationExtractor {
    /**
     * Globs together an array of files to extract from.
     * @param {Array<string>} directories directories to recursively extract from
-    * @param {Array<string>} specificFiles specific files to extract from 
+    * @param {Array<string>} specificFiles specific files to extract from
     * @param {Array<string>} ignoredPaths paths to recursively ignore
     * @returns {Array<string>}
     */
-  _globInputFilePaths (directories, specificFiles, ignoredPaths) {
+  _globInputFilePaths(directories, specificFiles, ignoredPaths) {
     const extensions = this._options.extensions.join(',');
     const directoryGlobs = directories.map(dirpath => `${dirpath}/**/*{${extensions}}`);
     const ignoreGlobs = ignoredPaths.map(dirpath => `!${dirpath}`);
@@ -88,8 +90,8 @@ class TranslationExtractor {
       this._registerMessageToExtractor(mustacheStatement, filepath);
     }
   }
-  
-  _registerMessageToExtractor (mustacheStatement, filepath) {
+
+  _registerMessageToExtractor(mustacheStatement, filepath) {
     const invocation = TranslateInvocation.fromMustacheStatementNode(mustacheStatement);
     this._extractor.addMessage({
       text: invocation.getPhrase(),

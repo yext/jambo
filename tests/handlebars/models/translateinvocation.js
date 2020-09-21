@@ -5,7 +5,8 @@ describe('TranslateInvocation can parse translate helper calls', () => {
     const phrase = 'We. Live! In: A, Society?.';
     const translateCall = TranslateInvocation.from(`{{ translate phrase='${phrase}' }}`);
     expect(translateCall.getInvokedHelper()).toEqual('translate');
-    const translateJSCall = TranslateInvocation.from(`{{ translateJS phrase='${phrase}' }}`);
+    const translateJSCall = TranslateInvocation
+      .from(`{{ translateJS phrase='${phrase}' }}`);
     expect(translateJSCall.getInvokedHelper()).toEqual('translateJS');
   });
 
@@ -27,7 +28,7 @@ describe('TranslateInvocation can parse translate helper calls', () => {
   });
 });
 
-describe('TranslationInvocation can parse all Hash parameter types (but SubExpressions)', () => {
+describe('TranslationInvocation parses Hash parameters (except SubExpressions)', () => {
   it('works for StringLiterals (wrapped in quotes)', () => {
     const phrase = 'Please, [[relative]], pass the [[kitchenAppliance]].';
     const invocation = TranslateInvocation.from(`{{translate
@@ -99,7 +100,7 @@ describe('TranslationInvocation can parse all Hash parameter types (but SubExpre
   });
 });
 
-describe('TranslationInvocation throws correct errors when given an invalid invocation', () => {
+describe('TranslationInvocation throws correct errors for invalid invocations', () => {
   it('errors when given just a ContentStatement', () => {
     const invocation = 'this is a ContentStatement';
     expect(() => TranslateInvocation.from(invocation)).toThrow();
@@ -116,7 +117,7 @@ describe('TranslationInvocation throws correct errors when given an invalid invo
   });
 
   it('errors when given a template with multiple AST nodes', () => {
-    const helper = `{{translate phrase='a phrase'}}`
+    const helper = '{{translate phrase=\'a phrase\'}}'
     const invocation = `${helper} ${helper}`;
     expect(() => TranslateInvocation.from(invocation)).toThrow();
   });
@@ -131,7 +132,7 @@ describe('TranslationInvocation throws correct errors when given an invalid invo
   });
 
   it('errors when given a blank string', () => {
-    const createInvocation = () => TranslateInvocation.from("");
+    const createInvocation = () => TranslateInvocation.from('');
     expect(createInvocation).toThrow();
   });
 });

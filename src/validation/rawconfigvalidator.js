@@ -6,11 +6,11 @@ const cloneDeep = require('lodash/cloneDeep');
 
 /**
  * Performs validation on the raw configuration files
- * including global_config.json, locale_config.json, and 
+ * including global_config.json, locale_config.json, and
  * the various page configurations
  */
 module.exports = class RawConfigValidator {
-  constructor (configNameToRawConfig) {
+  constructor(configNameToRawConfig) {
     /**
      * @type {Object<string, Object>}
      */
@@ -19,43 +19,44 @@ module.exports = class RawConfigValidator {
 
   /**
    * Performs a series of validation steps
-   * 
+   *
    * @throws {UserError} Thrown if validation fails
    */
-  validate () {
+  validate() {
     new GlobalConfigValidator(this._getGlobalConfig()).validate();
 
     if (this._isMultiLanguageSite()) {
       new LocaleConfigValidator(this._getLocaleConfig()).validate();
-      new PageConfigsValidator(this._getPageConfigs(), this._getConfiguredLocales()).validate();
+      new PageConfigsValidator(this._getPageConfigs(), this._getConfiguredLocales())
+        .validate();
     }
   }
 
   /**
    * @returns {boolean} True if the site is configured for multiple languages
    */
-  _isMultiLanguageSite () {
+  _isMultiLanguageSite() {
     return Boolean(this._getLocaleConfig());
   }
 
   /**
    * @returns {Object<string, string>}
    */
-  _getGlobalConfig () {
+  _getGlobalConfig() {
     return this._configNameToRawConfig[ConfigKeys.GLOBAL_CONFIG];
   }
 
   /**
    * @returns {Object<string, string|Object>}
    */
-  _getLocaleConfig () {
+  _getLocaleConfig() {
     return this._configNameToRawConfig[ConfigKeys.LOCALE_CONFIG];
   }
 
   /**
    * @returns {Object<string, string|Object>} The keys are locale strings
    */
-  _getPageConfigs () {
+  _getPageConfigs() {
     const pageConfigs = cloneDeep(this._configNameToRawConfig);
 
     delete pageConfigs[ConfigKeys.LOCALE_CONFIG];
@@ -66,10 +67,10 @@ module.exports = class RawConfigValidator {
 
   /**
    * Gets the locale keys inside localeConfig of locale_config.json
-   * 
+   *
    * @type {string[]}
    */
-  _getConfiguredLocales () {
+  _getConfiguredLocales() {
     return Object.keys(this._getLocaleConfig()['localeConfig']);
   }
 }
