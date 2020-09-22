@@ -40,20 +40,17 @@ describe('HandlebarsPreprocessor works correctly', () => {
           case 'Some item [[name]]':
             return {
               0: 'Un article [[name]]',
-              1: 'Les articles [[name]]',
-              locale: 'fr-FR'
+              1: 'Les articles [[name]]'
             };
           case '<a href="https://www.yext.com">View our website [[name]]</a>':
             return {
               0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
-              1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
-              locale: 'fr-FR'
+              1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'
             };
           case 'singular':
             return {
               0: 'singular',
-              1: 'plural',
-              locale: 'en'
+              1: 'plural'
             };
         }
       },
@@ -63,22 +60,19 @@ describe('HandlebarsPreprocessor works correctly', () => {
             if (context === 'male') {
               return {
                 0: 'Le [[count]] homme est parti en promenade',
-                1: 'Les [[count]] Hommes fait une promenade',
-                locale: 'fr-FR'
+                1: 'Les [[count]] Hommes fait une promenade'
               }
             } else if (context === 'female') {
               return {
                 0: 'La [[count]] femme a fait une promenade',
-                1: 'Les [[count]] femmes fait une promenade',
-                locale: 'fr-FR'
+                1: 'Les [[count]] femmes fait une promenade'
               }
             }
           case '<a href="https://www.yext.com">View our website [[name]]</a>':
             if (context === 'internet web, not spider web') {
               return {
                 0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
-                1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
-              locale: 'fr-FR'
+                1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'
               }
             }
           case 'The person':

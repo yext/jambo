@@ -1,7 +1,7 @@
 <div>
     <button>Bonjour Bonjour</button>
     <div>
-        {{ processTranslation pluralForm0='Un article [[name]]' pluralForm1='Les articles [[name]]' locale='fr-FR'  name=myName count=myCount }}
+        {{ processTranslation pluralForm0='Un article [[name]]' pluralForm1='Les articles [[name]]'  name=myName count=myCount }}
     </div>
     <script>
         const profile = { name: 'Tom' };
@@ -10,11 +10,11 @@
     <button>{{ processTranslation phrase='Mail maintenant [[id1]]' id1=myName }}</button>
     {{ processTranslation phrase='[[name]]\'s mail' name=myName }}
     <div>
-        {{ processTranslation pluralForm0='Le [[count]] homme est parti en promenade' pluralForm1='Les [[count]] Hommes fait une promenade' locale='fr-FR'  count=myCount }}
-        {{ processTranslation pluralForm0='La [[count]] femme a fait une promenade' pluralForm1='Les [[count]] femmes fait une promenade' locale='fr-FR'  count=myCount }}
+        {{ processTranslation pluralForm0='Le [[count]] homme est parti en promenade' pluralForm1='Les [[count]] Hommes fait une promenade'  count=myCount }}
+        {{ processTranslation pluralForm0='La [[count]] femme a fait une promenade' pluralForm1='Les [[count]] femmes fait une promenade'  count=myCount }}
     </div>
     <button>L&#x27;homme</button>
-    {{!-- {{ processTranslation pluralForm0='singular' pluralForm1='plural' locale='en'  count=mycount }} --}}
+    {{!-- {{ processTranslation pluralForm0='singular' pluralForm1='plural'  count=mycount }} --}}
     L&#x27;homme
     L'homme
     &lt;span class&#x3D;&quot;yext&quot;&gt;L&#x27;os du chien&lt;/span&gt;
@@ -23,7 +23,7 @@
     Le: chien
     {{{ processTranslation phrase='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' name=name }}}
     {{ processTranslation phrase='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' name=name }}
-    {{{ processTranslation pluralForm0='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' pluralForm1='<a href="https://www.yext.com">Voir nos sites web [[name]]</a>' locale='fr-FR'  count=2 name=name }}}
-    {{ processTranslation pluralForm0='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' pluralForm1='<a href="https://www.yext.com">Voir nos sites web [[name]]</a>' locale='fr-FR'  count=2 name=name }}
-    {{{ processTranslation pluralForm0='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' pluralForm1='<a href="https://www.yext.com">Voir nos sites web [[name]]</a>' locale='fr-FR'  count=2 name=name }}}
+    {{{ processTranslation pluralForm0='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' pluralForm1='<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'  count=2 name=name }}}
+    {{ processTranslation pluralForm0='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' pluralForm1='<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'  count=2 name=name }}
+    {{{ processTranslation pluralForm0='<a href="https://www.yext.com">Voir notre site web [[name]]</a>' pluralForm1='<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'  count=2 name=name }}}
 </div>
