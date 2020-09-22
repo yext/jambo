@@ -106,9 +106,9 @@ class HandlebarsPreprocessor {
 
     if (needsPluralization) {
       const count = interpolationParams.count;
-      const pluralFormPairs = this._getPluralFormPairs(translatorResult);
+      const pluralForms = this._getFormattedPluralForms(translatorResult);
 
-      return `ANSWERS.processTranslation(${pluralFormPairs}, ${parsedParams}, ${count})`;
+      return `ANSWERS.processTranslation(${pluralForms}, ${parsedParams}, ${count})`;
     }
     const escapedTranslatorResult = this._escapeSingleQuotes(translatorResult);
 
@@ -116,14 +116,14 @@ class HandlebarsPreprocessor {
   }
 
   /**
-   * Constructs a string representation of a translatorResult. This output is similar to
-   * JSON.stringiy(), however keys are not surrounded by quotes, and values are
-   * surrounded by single quotes.
+   * Constructs a string representation of a translatorResult Object. This output is
+   * similar to JSON.stringiy(), however keys are not surrounded by quotes, and values
+   * are surrounded by single quotes.
    * 
    * @param {Object<number,string>} translatorResult 
    * @returns {string}
    */
-  _getPluralFormPairs(translatorResult) {
+  _getFormattedPluralForms(translatorResult) {
     const pluralFormPairs = Object.entries(translatorResult)
         .reduce((params, [pluralFormIndex, pluralForm], index, array) => {
           const escapedPluralForm = this._escapeSingleQuotes(pluralForm);
