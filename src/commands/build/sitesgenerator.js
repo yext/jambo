@@ -308,7 +308,7 @@ exports.SitesGenerator = class {
 
     hbs.registerHelper('matches', function(str, regexPattern) {
       const regex = new RegExp(regexPattern);
-      return str.match(regex);
+      return str && str.match(regex);
     });
 
     hbs.registerHelper('all', function(...args) {
