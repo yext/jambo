@@ -28,7 +28,7 @@ exports.SitesGenerator = class {
     if (!config) {
       throw new UserError('Cannot find Jambo config in this directory, exiting.');
     }
-    
+
     // Pull all data from environment variables.
     const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
@@ -87,8 +87,8 @@ exports.SitesGenerator = class {
 
     // Clear the output directory but keep preserved files before writing new files
     console.log('Cleaning output directory');
-    const shouldCleanOutput = 
-      fs.existsSync(config.dirs.output) && 
+    const shouldCleanOutput =
+      fs.existsSync(config.dirs.output) &&
       !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles));
     if (shouldCleanOutput) {
       this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
@@ -131,7 +131,7 @@ exports.SitesGenerator = class {
           template = hbs.compile(fs.readFileSync(path).toString());
         }
 
-        const outputFileName = 
+        const outputFileName =
           this._stripExtension(relative).substring(config.dirs.pages);
         const result = template(pageConfig);
         const outputPath =
@@ -306,6 +306,14 @@ exports.SitesGenerator = class {
     hbs.registerHelper('matches', function(str, regexPattern) {
       const regex = new RegExp(regexPattern);
       return str.match(regex);
+    });
+
+    hbs.registerHelper('all', function (...args) {
+      return args.filter(item => item).length === args.length;
+    });
+
+    hbs.registerHelper('any', function (...args) {
+      return args.filter(item => item).length > 1;
     });
 
     hbs.registerHelper('babel', function(options) {
