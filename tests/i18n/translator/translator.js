@@ -52,8 +52,7 @@ describe('translations with one plural form (French)', () => {
       const translation = translator.translatePlural('Item', 'Items');
       const expectedResult = {
         0: 'Article',
-        1: 'Articles',
-        locale: 'fr-FR'
+        1: 'Articles'
       };
 
       expect(translation).toEqual(expectedResult);
@@ -64,8 +63,7 @@ describe('translations with one plural form (French)', () => {
         'There is [[count]] item [[name]]', 'There are [[count]] items [[name]]');
       const expectedResult = {
         0: 'Il y a [[count]] article [[name]]',
-        1: 'Il y a [[count]] articles [[name]]',
-        locale: 'fr-FR'
+        1: 'Il y a [[count]] articles [[name]]'
       };
 
       expect(translation).toEqual(expectedResult);
@@ -77,8 +75,7 @@ describe('translations with one plural form (French)', () => {
         'Missing [[count]] translations [[name]]');
       const expectedResult = {
         0: 'Missing [[count]] translation [[name]]',
-        1: 'Missing [[count]] translations [[name]]',
-        locale: 'en'
+        1: 'Missing [[count]] translations [[name]]'
       };
 
       expect(translation).toEqual(expectedResult);
@@ -117,13 +114,11 @@ describe('translations with one plural form (French)', () => {
         'female');
       const expectedResultWithMaleContext = {
         0: 'L\'homme',
-        1: 'Les hommes',
-        locale: 'fr-FR'
+        1: 'Les hommes'
       };
       const expectedResultWithFemaleContext = {
         0: 'La femme',
-        1: 'Les femmes',
-        locale: 'fr-FR'
+        1: 'Les femmes'
       };
       expect(translationWithMaleContext).toEqual(expectedResultWithMaleContext);
       expect(translationWithFemaleContext).toEqual(expectedResultWithFemaleContext);
@@ -140,13 +135,11 @@ describe('translations with one plural form (French)', () => {
         'female');
       const expectedResultWithMaleContext = {
         0: 'Le [[count]] homme est parti en promenade',
-        1: 'Les [[count]] Hommes fait une promenade',
-        locale: 'fr-FR'
+        1: 'Les [[count]] Hommes fait une promenade'
       };
       const expectedResultWithFemaleContext = {
         0: 'La [[count]] femme a fait une promenade',
-        1: 'Les [[count]] femmes fait une promenade',
-        locale: 'fr-FR'
+        1: 'Les [[count]] femmes fait une promenade'
       };
       expect(translationWithMaleContext).toEqual(expectedResultWithMaleContext);
       expect(translationWithFemaleContext).toEqual(expectedResultWithFemaleContext);
@@ -160,8 +153,7 @@ describe('translations with one plural form (French)', () => {
           'male');
         const expectedResult = {
           0: 'The [[count]] elephant went on a drive',
-          1: 'The [[count]] elephants went on a drive',
-          locale: 'en'
+          1: 'The [[count]] elephants went on a drive'
         };
         expect(translation).toEqual(expectedResult);
       }
@@ -194,8 +186,7 @@ describe('translations with one plural form (French)', () => {
         '<a href="https://www.yext.com">View our websites [[name]]</a>');
       const expectedResult = {
         0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
-        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
-        locale: 'fr-FR'};
+        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'};
       expect(translation).toEqual(expectedResult);
     });
 
@@ -206,8 +197,7 @@ describe('translations with one plural form (French)', () => {
         'internet web, not spider web');
       const expectedResult = {
         0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
-        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>',
-        locale: 'fr-FR'};
+        1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'};
       expect(translation).toEqual(expectedResult);
     });
   });
@@ -233,8 +223,7 @@ describe('translations with multiple plural forms (Lithuanian)', () => {
     const expectedResult = {
       0: 'Nepavyksta nusiųsti apžvalgos el. paštu',
       1: 'Nepavyksta nusiųsti apžvalgų el. paštu',
-      2: 'Nepavyksta nusiųsti apžvalgų el. paštu',
-      locale: 'lt-LT'
+      2: 'Nepavyksta nusiųsti apžvalgų el. paštu'
     };
 
     expect(translation).toEqual(expectedResult);
@@ -248,8 +237,7 @@ describe('translations with multiple plural forms (Lithuanian)', () => {
     const expectedResult = {
       0: 'Pasirinkta [[count]] tinklalapis',
       1: 'Pasirinkta [[count]] tinklalapiai',
-      2: 'Pasirinkta [[count]] tinklalapių',
-      locale: 'lt-LT'
+      2: 'Pasirinkta [[count]] tinklalapių'
     };
 
     expect(translation).toEqual(expectedResult);

@@ -8,11 +8,13 @@
         {{translateJS phrase='Mail now [[id1]]' context='Mail is a verb' id1=profile.name}}
     </script>
     <button>{{translate phrase='Mail now [[id1]]' context='Mail is a verb' id1=myName}}</button>
+    {{translate phrase='[[name]]\'s mail' name=myName}}
     <div>
         {{ translate phrase='The [[count]] person went on a walk' pluralForm='The [[count]] people went on a walk' context='male' count=myCount}}
         {{ translate phrase='The [[count]] person went on a walk' pluralForm='The [[count]] people went on a walk' context='female' count=myCount}}
     </div>
     <button>{{ translate phrase='The man' }}</button>
+    {{!-- {{ translate phrase='singular' pluralForm='plural' count=mycount}} --}}
     {{ translate phrase='Person' context="male" escapeHTML=true}}
     {{ translate phrase='Person' context="male" escapeHTML=false}}
     {{ translate phrase='<span class="yext">The dog\'s bone</span>' escapeHTML=true}}
