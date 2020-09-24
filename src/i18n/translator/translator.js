@@ -50,12 +50,11 @@ class Translator {
    *
    * @param {string} phrase The phrase to translate.
    * @param {string} pluralForm The untranslated, plural form of the phrase.
-   * @param {string} originalLocale The original locale of the passed in phrase.
    * @returns {Object<string|number, string>} A map containing the various forms as
    *   well as the locale. A form is keyed by its gettext plural form count see
    *   https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
-  translatePlural(phrase, pluralForm, originalLocale = 'en') {
+  translatePlural(phrase, pluralForm) {
     const escapedPhrase = this._escapeInterpolationBrackets(phrase);
     const pluralKeyRegex = new RegExp(`${escapedPhrase}_([0-9]+|plural)`);
     const i18nextOptions = this._i18next.options;
@@ -72,7 +71,7 @@ class Translator {
         phrase);
     }
 
-    return this._getUntranslatedPluralizations(phrase, pluralForm, originalLocale);
+    return this._getUntranslatedPluralizations(phrase, pluralForm);
   }
 
   /**
@@ -82,12 +81,11 @@ class Translator {
    * @param {string} phrase The phrase to translate.
    * @param {string} pluralForm The untranslated, plural form of the phrase.
    * @param {string} context The translation context
-   * @param {string} originalLocale The original locale of the passed in phrase.
    * @returns {Object<string|number, string>} A map containing the various forms as
    *   well as the locale. A form is keyed by its gettext plural form count, see
    *   https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
-  translatePluralWithContext(phrase, pluralForm, context, originalLocale = 'en') {
+  translatePluralWithContext(phrase, pluralForm, context) {
     const escapedPhrase = this._escapeInterpolationBrackets(phrase);
     const pluralWithContextKeyRegex = new RegExp(
       `${escapedPhrase}_${context}_([0-9]+|plural)`);
@@ -105,24 +103,24 @@ class Translator {
         `${phrase}_${context}`);
     }
 
-    return this._getUntranslatedPluralizations(phrase, pluralForm, originalLocale);
+    return this._getUntranslatedPluralizations(phrase, pluralForm);
   }
 
 
   /**
    * Constructs a pluralization dictionary without translating any strings
+   * TODO (cea2aj) This will need to be updated if we want to support developing in
+   * languages with more than two plural forms
    *
    * @param {string} phrase
    * @param {string} pluralForm
-   * @param {string} originalLocale
    * @returns {Object<string|number, string>} A map containing the various forms as
    *   well as the locale.
    */
-  _getUntranslatedPluralizations(phrase, pluralForm, originalLocale){
+  _getUntranslatedPluralizations(phrase, pluralForm){
     return {
       0: phrase,
-      1: pluralForm,
-      locale: originalLocale
+      1: pluralForm
     };
   }
 
@@ -149,7 +147,7 @@ class Translator {
           pluralForms[pluralFormIndex] = localeTranslations[translationKey];
           return pluralForms;
         },
-        { 0: localeTranslations[translationKey], locale: locale });
+        { 0: localeTranslations[translationKey] });
   }
 
   /**
