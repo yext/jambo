@@ -82,3 +82,7 @@ msgid_plural "<a href=\"https://www.yext.com\">View our websites [[name]]</a>"
 msgstr[0] "<a href=\"https://www.yext.com\">Voir notre site web [[name]]</a>"
 msgstr[1] "<a href=\"https://www.yext.com\">Voir nos sites web [[name]]</a>"
 
+msgid "([[resultsCount]] result)"
+msgid_plural "([[resultsCount]] results)"
+msgstr[0] "([[resultsCount]] résultat)"
+msgstr[1] "([[resultsCount]] résultats)"
