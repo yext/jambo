@@ -201,6 +201,18 @@ describe('translations with one plural form (French)', () => {
       expect(translation).toEqual(expectedResult);
     });
   });
+
+  describe('Handles plural translation keys by escaping regex charaters', () => {
+    it('does not confuse parenthesis for a capturing group', () => {
+      const translation = translator.translatePlural(
+        '([[resultsCount]] result)',
+        '([[resultsCount]] results)');
+      const expectedResult = {
+        0: '([[resultsCount]] résultat)',
+        1: '([[resultsCount]] résultats)'};
+      expect(translation).toEqual(expectedResult);
+    });
+  });
 });
 
 describe('translations with multiple plural forms (Lithuanian)', () => {
