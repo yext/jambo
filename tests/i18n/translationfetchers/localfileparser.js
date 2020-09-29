@@ -19,6 +19,8 @@ describe('LocalFileParser works correctly', () => {
       'Hello [[name]]': 'Bonjour [[name]]',
       Child_male: 'fils',
       Child_female: 'fille',
+      '([[resultsCount]] result)': '([[resultsCount]] résultat)',
+      '([[resultsCount]] result)_plural': '([[resultsCount]] résultats)',
       [englishLink]: frenchLinkSingular,
       [`${englishLink}_internet web, not spider web`]: frenchLinkSingular,
       [`${englishLink}_internet web, not spider web_plural`]: frenchLinkPlural,
