@@ -210,7 +210,7 @@ describe('translations with one plural form (French)', () => {
       const expectedResult = {
         0: '([[resultsCount]] résultat)',
         1: '([[resultsCount]] résultats)'};
-    expect(translation).toEqual(expectedResult);
+      expect(translation).toEqual(expectedResult);
     });
   });
 });
