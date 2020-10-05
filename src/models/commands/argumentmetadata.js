@@ -2,9 +2,9 @@
  * An enum describing the different kinds of argument that are supported.
  */
 const ArgumentType = {
-    STRING: 'string',
-    NUMBER: 'number',
-    BOOLEAN: 'boolean'
+  STRING: 'string',
+  NUMBER: 'number',
+  BOOLEAN: 'boolean'
 }
 Object.freeze(ArgumentType);
 
@@ -13,32 +13,40 @@ Object.freeze(ArgumentType);
  * the type of the argument's values, if it is required, and an optional default.
  */
 class ArgumentMetadata {
-    constructor(type, isRequired, defaultValue) {
-        this._type = type;
-        this._isRequired = isRequired;
-        this._defaultValue = defaultValue;
-    }
+  constructor(type, description, isRequired, defaultValue) {
+    this._type = type;
+    this._isRequired = isRequired;
+    this._defaultValue = defaultValue;
+    this._description = description;
+  }
 
-    /**
-     * @returns {ArgumentType} The type of the argument, e.g. STRING, BOOLEAN, etc.
-     */
-    getType() {
-        return this._type;
-    }
-    
-    /**
-     * @returns {boolean} A boolean indicating if the argument is required.
-     */
-    isRequired() {
-        return !!this._isRequired;
-    }
+  /**
+   * @returns {ArgumentType} The type of the argument, e.g. STRING, BOOLEAN, etc.
+   */
+  getType() {
+    return this._type;
+  }
 
-    /**
-     * @returns {string|boolean|number} Optional, a default value for the argument. 
-     */
-    defaultValue() {
-        return this._defaultValue;
-    }
+  /**
+   * @returns {string} The description of the argument.
+   */
+  getDescription() {
+    return this._description
+  }
+
+  /**
+   * @returns {boolean} A boolean indicating if the argument is required.
+   */
+  isRequired() {
+    return !!this._isRequired;
+  }
+
+  /**
+   * @returns {string|boolean|number} Optional, a default value for the argument. 
+   */
+  defaultValue() {
+    return this._defaultValue;
+  }
 
 }
 exports = { ArgumentMetadata, ArgumentType };
