@@ -5,22 +5,23 @@ const fs = require('fs-extra');
  * Imports all custom {@link Command}s within a Jambo repository.
  */
 class CommandImporter {
-  constructor(themeDir, outputDir) {
-    this._themeDir = themeDir;
+  constructor(outputDir, themeDir) {
     this._outputDir = outputDir;
+    this._themeDir = themeDir;
   }
 
   /**
-   * Imports custom commands from the Theme and the top-level of the Jambo
-   * repository. If a custom command is specified in both places, it is deduped, 
-   * with the override in the top-level taking priority. 
+   * Imports custom commands from the Theme (if one has been applied) and the top-level
+   * of the Jambo repository. If a custom command is specified in both places, it is
+   * deduped, with the override in the top-level taking priority. 
    * 
    * @returns {Array<Command>} The imported {@link Command}s, ready to be registered
    *                           with Jambo.
    */
   import() {
-    const commandDirectories = [path.join(this._themeDir, 'commands'), 'commands']
-      .filter(fs.existsSync);
+    let commandDirectories = ['commands'];
+    this._themeDir && commandDirectories.unshift(path.join(this._themeDir, 'commands'));
+    commandDirectories = commandDirectories.filter(fs.existsSync);
 
     let customCommands = [];
     if (commandDirectories.length > 0) {
