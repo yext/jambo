@@ -27,7 +27,7 @@ class CommandImporter {
     if (commandDirectories.length > 0) {
       const mergedDirectory = this._mergeCommandDirectories(commandDirectories);
       customCommands = fs.readdirSync(mergedDirectory)
-        .map(directoryPath => path.join(process.cwd(), mergedDirectory, directoryPath))
+        .map(directoryPath => path.resolve(mergedDirectory, directoryPath))
         .filter(directoryPath => fs.lstatSync(directoryPath).isFile())
         .map(require);
 
