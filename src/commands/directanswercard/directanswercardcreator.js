@@ -63,7 +63,7 @@ exports.DirectAnswerCardCreator = class {
   _getRenamedCardComponent(content, customCardName) {
     const cardNameSuffix = 'Component';
     const registerComponentTypeRegex = /\([\w_]+Component\)/g;
-    const regexArray = [ ...content.matchAll(/componentName\s*=\s*'(.*)'/g) ];
+    const regexArray = Array.from(content.matchAll(/componentName\s*=\s*'(.*)'/g));
     if (regexArray.length === 0 || regexArray[0].length < 2) {
       return content;
     }

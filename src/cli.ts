@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('file-system');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
+import Command from './models/commands/command';
+
+// As we cut things over to TS, we will gradually replace these with ES6 imports.
 const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const { exitWithError } = require('./utils/errorutils');
 const CommandRegistry = require('./commands/commandregistry');
@@ -25,7 +28,7 @@ if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
       path.join(jamboConfig.dirs.themes, jamboConfig.defaultTheme)) :
     new CommandImporter(jamboConfig.dirs.output);
   
-  commandImporter.import().forEach(customCommand => {
+  commandImporter.import().forEach((customCommand: Command) => {
     commandRegistry.addCommand(customCommand)
   });
 }

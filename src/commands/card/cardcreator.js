@@ -61,7 +61,7 @@ exports.CardCreator = class {
   _getRenamedCardComponent(content, customCardName) {
     const cardNameSuffix = 'CardComponent';
     const registerComponentTypeRegex = /\([\w_]+CardComponent\)/g;
-    const regexArray = [ ...content.matchAll(/componentName\s*=\s*'(.*)'/g) ];
+    const regexArray = Array.from(content.matchAll(/componentName\s*=\s*'(.*)'/g));
     if (regexArray.length === 0 || regexArray[0].length < 2) {
       return content;
     }

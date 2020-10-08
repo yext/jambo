@@ -1,30 +1,28 @@
 /**
  * An interface that represents a command in the Jambo CLI. 
  */
-class Command {
+export default interface Command {
+  /**
+   * The alias for the command, used to invoke it in the CLI.
+   */
+  getAlias(): string;
 
   /**
-   * @returns {string} The alias for the command.
+   * A short, one sentence description of the command. This description appears as part
+   * of the help text in the CLI. 
    */
-  getAlias() { }
-
-  /**
-   * @returns {string} A short, one sentence description of the command. This
-   *                   description appears as part of the help text in the CLI. 
-   */
-  getShortDescription() { }
+  getShortDescription(): string;
 
   /**
    * Executes the command with the provided arguments.
    * 
    * @param {Object<string, ?>} args The arguments, keyed by name.
    */
-  execute(args) { }
+  execute(args: Object): void;
 
   /**
    * @returns {Object<string, ArgumentMetadata>} Descriptions of each argument,
    *                                             keyed by name.
    */
-  args() { }
+  args(): Object;
 }
-module.exports = Command;
