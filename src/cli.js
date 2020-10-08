@@ -18,16 +18,17 @@ try {
 }
 
 const commandRegistry = new CommandRegistry();
-
-const commandImporter = jamboConfig.defaultTheme ?
-  new CommandImporter(
-    jamboConfig.dirs.output, 
-    path.join(jamboConfig.dirs.themes, jamboConfig.defaultTheme)) :
-  new CommandImporter(jamboConfig.dirs.output);
+if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
+  const commandImporter = jamboConfig.defaultTheme ?
+    new CommandImporter(
+      jamboConfig.dirs.output, 
+      path.join(jamboConfig.dirs.themes, jamboConfig.defaultTheme)) :
+    new CommandImporter(jamboConfig.dirs.output);
   
-commandImporter.import().forEach(customCommand => {
-  commandRegistry.addCommand(customCommand)
-});
+  commandImporter.import().forEach(customCommand => {
+    commandRegistry.addCommand(customCommand)
+  });
+}
 
 const yargsFactory = new YargsFactory(commandRegistry);
 const options = yargsFactory.createCLI(jamboConfig);
