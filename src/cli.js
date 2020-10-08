@@ -18,7 +18,7 @@ try {
 }
 
 const commandRegistry = new CommandRegistry();
-if (jamboConfig.dirs && jamboConfig.dirs.output) {
+if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
   const commandImporter = jamboConfig.defaultTheme ?
     new CommandImporter(
       jamboConfig.dirs.output, 
