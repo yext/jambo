@@ -8,6 +8,8 @@ const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
 const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
 const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
+const CommandDescriber = require('./commands/describe/commanddescriber');
+const RepoAnalyzer = require('./commands/describe/repoanalyzer');
 const SystemError = require('./errors/systemerror');
 const UserError = require('./errors/usererror');
 const { exitWithError, isCustomError } = require('./utils/errorutils');
@@ -214,7 +216,16 @@ class YargsFactory {
               }
               exitWithError(new SystemError(err.message, err.stack));
             });
-        });
+        })
+    .command(
+      'describe',
+      'describe all the registered jambo commands and their possible arguments',
+      () => {},
+      argv => {
+        const repoAnalyzer = new RepoAnalyzer(jamboConfig);
+        new CommandDescriber(repoAnalyzer).describe();
+      }
+    );
   }
 
   /**
