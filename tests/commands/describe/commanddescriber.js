@@ -72,7 +72,8 @@ describe('CommandDescriber works correctly', () => {
         },
         addAsSubmodule: {
           displayName: 'Add as Submodule',
-          type: 'boolean'
+          type: 'boolean',
+          default: true
         }
       }
     });

@@ -55,7 +55,8 @@ exports.import = function(themes) {
       },
       addAsSubmodule: {
         displayName: 'Add as Submodule',
-        type: 'boolean'
+        type: 'boolean',
+        default: true
       }
     }
   }
