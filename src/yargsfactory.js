@@ -5,8 +5,6 @@ const buildCommand = require('./commands/build/sitesgenerator');
 const addPageCommand = require('./commands/page/add/pagescaffolder');
 const overrideCommand = require('./commands/override/themeshadower');
 const themeCommand = require('./commands/import/themeimporter');
-const addCardCommand = require('./commands/card/cardcreator');
-const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
 const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
 const SystemError = require('./errors/systemerror');
 const UserError = require('./errors/usererror');
@@ -129,47 +127,6 @@ class YargsFactory {
           }
         })
       .command(
-        'card',
-        'add a new card for use in the site',
-        yargs => {
-          return yargs
-            .option('name', { description: 'name for the new card', demandOption: true })
-            .option(
-              'templateCardFolder',
-              { description: 'folder of card to fork', demandOption: true });
-        },
-        argv => {
-          try {
-            const cardCreator = new addCardCommand.CardCreator(jamboConfig);
-            cardCreator.create(argv.name, argv.templateCardFolder);
-          } catch (e) {
-            exitWithError(e);
-          }
-        })
-      .command(
-        'directanswercard',
-        'add a new direct answer card for use in the site',
-        yargs => {
-          return yargs
-            .option(
-              'name',
-              { description: 'name for the new direct answer card', demandOption: true })
-            .option(
-              'templateCardFolder',
-              { 
-                description: 'folder of direct answer card to fork', 
-                demandOption: true 
-              });
-        },
-        argv => {
-          try {
-            const cardCreator = new DirectAnswerCardCreator(jamboConfig);
-            cardCreator.create(argv.name, argv.templateCardFolder);
-          } catch (e) {
-            exitWithError(e);
-          }
-        })
-      .command(
         'build',
         'build the static pages for the site',
         yargs => {
@@ -227,7 +184,7 @@ class YargsFactory {
       desc: command.getShortDescription(),
       builder: yargs => {
         Object.entries(command.args()).forEach(([name, metadata]) => {
-          yargs.option(name, metadata);
+          yargs.option(name, {type: metadata.getType(), description: metadata.getDescription(), demandOption: metadata.isRequired(), default: metadata.defaultValue()});
         });
       },
       handler: argv => command.execute(argv)
