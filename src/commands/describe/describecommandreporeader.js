@@ -2,6 +2,11 @@ const fs = require('fs');
 const fileSystem = require('file-system');
 const path = require('path');
 
+/**
+ * DescribeCommandRepoReader holds the filesystem logic used in the describe command.
+ * TODO(SLAP-766): This class is temporary and will be removed when the built-in commands
+ * are updated to use the Command interface.
+ */
 module.exports = class DescribeCommandRepoReader {
   constructor(jamboConfig) {
     this.themesDir = jamboConfig.dirs.themes;

@@ -1,3 +1,6 @@
+// TODO(SLAP-766): This pattern is temporary willbe removed when we
+// update the built-in commands to use the Command interface.
+
 /**
  * @param {Array<string>} themes the available themes
  */
