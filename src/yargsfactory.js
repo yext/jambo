@@ -8,7 +8,7 @@ const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
 const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
 const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
-const CommandDescriber = require('./commands/describe/commanddescriber');
+const DescribeCommand = require('./commands/describe/describecommand');
 const SystemError = require('./errors/systemerror');
 const UserError = require('./errors/usererror');
 const { exitWithError, isCustomError } = require('./utils/errorutils');
@@ -32,6 +32,8 @@ class YargsFactory {
     this._commandRegistry.getCommands().forEach(command => {
       cli.command(this._createCommandModule(command));
     });
+    cli.command(this._createCommandModule(
+      new DescribeCommand(jamboConfig, this._commandRegistry)));
     cli.strict()
 
     return cli;
@@ -215,15 +217,7 @@ class YargsFactory {
               }
               exitWithError(new SystemError(err.message, err.stack));
             });
-        })
-    .command(
-      'describe',
-      'describe all the registered jambo commands and their possible arguments',
-      () => {},
-      argv => {
-        new CommandDescriber(jamboConfig, this._commandRegistry).describe();
-      }
-    );
+        });
   }
 
   /**

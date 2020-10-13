@@ -14,7 +14,19 @@ class CommandDescriber {
     this.repoReader = new DescribeCommandRepoReader(jamboConfig);
   }
 
-  describe() {
+  getAlias() {
+    return 'describe';
+  }
+
+  getShortDescription() {
+    return 'describe all the registered jambo commands and their possible arguments';
+  }
+
+  args() {
+    return {};
+  }
+
+  execute() {
     const builtInDescriptions = this._getBuiltInDescriptions();
     const customDescriptions = this._getCustomDescriptions();
     const descriptions = Object.assign({}, builtInDescriptions, customDescriptions);

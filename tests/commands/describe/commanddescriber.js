@@ -1,4 +1,4 @@
-const CommandDescriber = require('../../../src/commands/describe/commanddescriber');
+const DescribeCommand = require('../../../src/commands/describe/describecommand');
 jest.mock('../../../src/commands/describe/describecommandreporeader', () => {
   return jest.fn().mockImplementation(() => {
     return {
@@ -32,7 +32,7 @@ const mockCommandRegistry = {
 };
 
 describe('CommandDescriber works correctly', () => {
-  new CommandDescriber({}, mockCommandRegistry).describe();
+  new DescribeCommand({}, mockCommandRegistry).execute();
   const descriptions = consoleSpy.mock.calls[0][0];
 
   it('describes init', () => {
