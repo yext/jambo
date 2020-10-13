@@ -2,10 +2,10 @@ const Descriptions = require('./descriptions');
 const DescribeCommandRepoReader = require('./describecommandreporeader');
 
 /**
- * CommandDescriber outputs JSON that describes all registered Jambo commands
+ * DescribeCommand outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
-class CommandDescriber {
+module.exports = class DescribeCommand {
   constructor(jamboConfig = {}, commandRegistry) {
     this.commandRegistry = commandRegistry;
     /**
@@ -62,5 +62,3 @@ class CommandDescriber {
     }
   }
 }
-
-module.exports = CommandDescriber;

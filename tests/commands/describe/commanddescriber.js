@@ -31,7 +31,7 @@ const mockCommandRegistry = {
   }
 };
 
-describe('CommandDescriber works correctly', () => {
+describe('DescribeCommand works correctly', () => {
   new DescribeCommand({}, mockCommandRegistry).execute();
   const descriptions = consoleSpy.mock.calls[0][0];
 
