@@ -1,27 +1,31 @@
 const CommandDescriber = require('../../../src/commands/describe/commanddescriber');
+jest.mock('../../../src/commands/describe/describecommandreporeader', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      getThemes() {
+        return ['answers-hitchhiker-theme'];
+      },
+      getPageTemplates() {
+        return ['page1', 'page2']
+      },
+      getThemeFiles() {
+        return [
+          'themes/answers-hitchhiker-theme/test1.hbs',
+          'themes/answers-hitchhiker-theme/test2.hbs',
+        ];
+      },
+      getCards() {
+        return ['card1', 'card2'];
+      },
+      getDirectAnswerCards() {
+        return ['dacard1', 'dacard2'];
+      }
+    };
+  });
+});
 
 describe('CommandDescriber works correctly', () => {
-  const repoAnalyzer = {
-    getThemes() {
-      return ['answers-hitchhiker-theme'];
-    },
-    getPageTemplates() {
-      return ['page1', 'page2']
-    },
-    getThemeFiles() {
-      return [
-        'themes/answers-hitchhiker-theme/test1.hbs',
-        'themes/answers-hitchhiker-theme/test2.hbs',
-      ];
-    },
-    getCards() {
-      return ['card1', 'card2'];
-    },
-    getDirectAnswerCards() {
-      return ['dacard1', 'dacard2'];
-    }
-  };
-  const commandDescriber = new CommandDescriber(repoAnalyzer);
+  const commandDescriber = new CommandDescriber();
   const descriptions = commandDescriber._getCommandDescriptions()
 
   it('describes init', () => {

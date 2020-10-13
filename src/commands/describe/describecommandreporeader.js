@@ -2,7 +2,7 @@ const fs = require('fs');
 const fileSystem = require('file-system');
 const path = require('path');
 
-module.exports = class RepoAnalyzer {
+module.exports = class DescribeCommandRepoReader {
   constructor(jamboConfig) {
     this.themesDir = jamboConfig.dirs.themes;
     this.defaultTheme = jamboConfig.defaultTheme;

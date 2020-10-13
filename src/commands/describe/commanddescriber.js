@@ -1,16 +1,16 @@
 const Descriptions = require('./descriptions');
-const RepoAnalyzer = require('./repoanalyzer');
+const DescribeCommandRepoReader = require('./describecommandreporeader');
 
 /**
  * CommandDescriber outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
 class CommandDescriber {
-  constructor(repoAnalyzer) {
+  constructor(jamboConfig = {}) {
     /**
-     * @type {RepoAnalyzer}
+     * @type {DescribeCommandRepoReader}
      */
-    this.repoAnalyzer = repoAnalyzer;
+    this.repoReader = new DescribeCommandRepoReader(jamboConfig);
   }
 
   describe() {
@@ -22,11 +22,11 @@ class CommandDescriber {
   }
 
   _getCommandDescriptions() {
-    const themes = this.repoAnalyzer.getThemes();
-    const pageTemplates = this.repoAnalyzer.getPageTemplates();
-    const themeFiles = this.repoAnalyzer.getThemeFiles();
-    const cards = this.repoAnalyzer.getCards();
-    const daCards = this.repoAnalyzer.getDirectAnswerCards();
+    const themes = this.repoReader.getThemes();
+    const pageTemplates = this.repoReader.getPageTemplates();
+    const themeFiles = this.repoReader.getThemeFiles();
+    const cards = this.repoReader.getCards();
+    const daCards = this.repoReader.getDirectAnswerCards();
     return {
       init: Descriptions.init(themes),
       page: Descriptions.page(pageTemplates),
