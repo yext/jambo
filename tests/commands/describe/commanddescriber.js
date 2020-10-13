@@ -2,7 +2,7 @@ const CommandDescriber = require('../../../src/commands/describe/commanddescribe
 jest.mock('../../../src/commands/describe/describecommandreporeader', () => {
   return jest.fn().mockImplementation(() => {
     return {
-      getThemes() {
+      getImportableThemes() {
         return ['answers-hitchhiker-theme'];
       },
       getPageTemplates() {
@@ -24,9 +24,16 @@ jest.mock('../../../src/commands/describe/describecommandreporeader', () => {
   });
 });
 
+const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
+const mockCommandRegistry = {
+  getCommands() {
+    return []
+  }
+};
+
 describe('CommandDescriber works correctly', () => {
-  const commandDescriber = new CommandDescriber();
-  const descriptions = commandDescriber._getCommandDescriptions()
+  new CommandDescriber({}, mockCommandRegistry).describe();
+  const descriptions = consoleSpy.mock.calls[0][0];
 
   it('describes init', () => {
     expect(descriptions.init).toEqual({

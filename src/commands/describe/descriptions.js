@@ -11,7 +11,7 @@ exports.init = function(importableThemes) {
       theme: {
         displayName: 'Theme',
         type: 'singleoption',
-        options: themes
+        options: importableThemes
       },
       addThemeAsSubmodule: {
         displayName: 'Add Theme as Submodule',
@@ -54,7 +54,7 @@ exports.import = function(importableThemes) {
         displayName: 'Theme',
         type: 'string',
         required: true,
-        options: themes
+        options: importableThemes
       },
       addAsSubmodule: {
         displayName: 'Add as Submodule',
