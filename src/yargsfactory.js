@@ -184,7 +184,14 @@ class YargsFactory {
       desc: command.getShortDescription(),
       builder: yargs => {
         Object.entries(command.args()).forEach(([name, metadata]) => {
-          yargs.option(name, {type: metadata.getType(), description: metadata.getDescription(), demandOption: metadata.isRequired(), default: metadata.defaultValue()});
+          yargs.option(
+            name,
+            {
+              type: metadata.getType(),
+              description: metadata.getDescription(),
+              demandOption: metadata.isRequired(),
+              default: metadata.defaultValue()
+            });
         });
       },
       handler: argv => command.execute(argv)
