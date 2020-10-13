@@ -221,7 +221,7 @@ class YargsFactory {
       'describe all the registered jambo commands and their possible arguments',
       () => {},
       argv => {
-        new CommandDescriber(jamboConfig).describe();
+        new CommandDescriber(jamboConfig, this._commandRegistry).describe();
       }
     );
   }

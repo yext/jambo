@@ -6,7 +6,8 @@ const DescribeCommandRepoReader = require('./describecommandreporeader');
  * and their possible arguments.
  */
 class CommandDescriber {
-  constructor(jamboConfig = {}) {
+  constructor(jamboConfig = {}, commandRegistry) {
+    this.commandRegistry = commandRegistry;
     /**
      * @type {DescribeCommandRepoReader}
      */
@@ -14,14 +15,24 @@ class CommandDescriber {
   }
 
   describe() {
-    const descriptions = this._getCommandDescriptions();
+    const builtInDescriptions = this._getBuiltInDescriptions();
+    const customDescriptions = this._getCustomDescriptions();
+    const descriptions = Object.assign({}, builtInDescriptions, customDescriptions);
     console.dir(descriptions, {
       depth: null,
       maxArrayLength: null
     });
   }
 
-  _getCommandDescriptions() {
+  _getCustomDescriptions() {
+    const customDescriptions = {};
+    for (const command of this.commandRegistry.getCommands()) {
+      customDescriptions[command.getAlias()] = command.describe();
+    }
+    return customDescriptions;
+  }
+
+  _getBuiltInDescriptions() {
     const themes = this.repoReader.getThemes();
     const pageTemplates = this.repoReader.getPageTemplates();
     const themeFiles = this.repoReader.getThemeFiles();
