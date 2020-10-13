@@ -13,15 +13,27 @@ module.exports = class DescribeCommandRepoReader {
     this.defaultTheme = jamboConfig.defaultTheme;
   }
 
-  getThemes() {
+  /**
+   * @returns {Array<string>} the names of the available themes to be imported
+   */
+  getImportableThemes() {
     return ['answers-hitchhiker-theme'];
   }
 
+  /**
+   * @returns {Array<string>}
+   */
   getPageTemplates() {
+    if (!this.defaultTheme) {
+      return [];
+    }
     const pageTemplatesDir = path.resolve(this.themesDir, this.defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
   }
 
+  /**
+   * @returns {Array<string>} all theme files that can be overridden
+   */
   getThemeFiles() {
     const themeFiles = []
     fileSystem.recurseSync(this.themesDir, function(filepath) {
@@ -32,14 +44,26 @@ module.exports = class DescribeCommandRepoReader {
     return themeFiles;
   }
 
+  /**
+   * @returns {Array<string>} the names of the available cards
+   */
   getCards() {
+    if (!this.defaultTheme) {
+      return [];
+    }
     const cardsDir = path.resolve(this.themesDir, this.defaultTheme, 'cards');
     return fs.readdirSync(cardsDir, { withFileTypes: true })
       .filter(dirent => !dirent.isFile())
       .map(dirent => dirent.name);
   }
 
+  /**
+   * @returns {Array<string>} the names of the available direct answer cards
+   */
   getDirectAnswerCards() {
+    if (!this.defaultTheme) {
+      return [];
+    }
     const daCardsDir =
       path.resolve(this.themesDir, this.defaultTheme, 'directanswercards');
     return fs.readdirSync(daCardsDir, { withFileTypes: true })

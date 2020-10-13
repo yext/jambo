@@ -2,9 +2,9 @@
 // update the built-in commands to use the Command interface.
 
 /**
- * @param {Array<string>} themes the available themes
+ * @param {Array<string>} importableThemes the available themes for import
  */
-exports.init = function(themes) {
+exports.init = function(importableThemes) {
   return {
     displayName: 'Initialize Jambo',
     params: {
@@ -44,9 +44,9 @@ exports.page = function(pages) {
 }
 
 /**
- * @param {Array<string>} themes the available themes
+ * @param {Array<string>} importableThemes the available themes for import
  */
-exports.import = function(themes) {
+exports.import = function(importableThemes) {
   return {
     displayName: 'Import Theme',
     params: {

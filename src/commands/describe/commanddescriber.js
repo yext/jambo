@@ -33,15 +33,15 @@ class CommandDescriber {
   }
 
   _getBuiltInDescriptions() {
-    const themes = this.repoReader.getThemes();
+    const importableThemes = this.repoReader.getImportableThemes();
     const pageTemplates = this.repoReader.getPageTemplates();
     const themeFiles = this.repoReader.getThemeFiles();
     const cards = this.repoReader.getCards();
     const daCards = this.repoReader.getDirectAnswerCards();
     return {
-      init: Descriptions.init(themes),
+      init: Descriptions.init(importableThemes),
       page: Descriptions.page(pageTemplates),
-      import: Descriptions.import(themes),
+      import: Descriptions.import(importableThemes),
       override: Descriptions.override(themeFiles),
       upgrade: Descriptions.upgrade(),
       build: Descriptions.build(),
