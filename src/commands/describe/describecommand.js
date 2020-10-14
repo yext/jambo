@@ -7,6 +7,9 @@ const DescribeCommandRepoReader = require('./describecommandreporeader');
  */
 module.exports = class DescribeCommand {
   constructor(getCommands, repoReader) {
+    /**
+     * @type {Function}
+     */
     this.getCommands = getCommands;
     /**
      * @type {DescribeCommandRepoReader}
@@ -43,16 +46,24 @@ module.exports = class DescribeCommand {
     });
   }
 
+  /**
+   * Returns the descriptions for all commands registered
+   * with the {@link Command} interface.
+   */
   _getCommandModuleDescriptions() {
-    const customDescriptions = {};
+    const descriptions = {};
     for (const command of this.getCommands()) {
       if (command.getAlias() !== 'describe') {
-        customDescriptions[command.getAlias()] = command.describe();
+        descriptions[command.getAlias()] = command.describe();
       }
     }
-    return customDescriptions;
+    return descriptions;
   }
 
+  /**
+   * Returns the descriptions for all built-in commands that have
+   * not been migrated to the {@link Command} interface.
+   */
   _getBuiltInDescriptions() {
     const importableThemes = this.repoReader.getImportableThemes();
     const pageTemplates = this.repoReader.getPageTemplates();
