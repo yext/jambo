@@ -1,39 +1,62 @@
 const DescribeCommand = require('../../../src/commands/describe/describecommand');
-jest.mock('../../../src/commands/describe/describecommandreporeader', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      getImportableThemes() {
-        return ['answers-hitchhiker-theme'];
-      },
-      getPageTemplates() {
-        return ['page1', 'page2']
-      },
-      getThemeFiles() {
-        return [
-          'themes/answers-hitchhiker-theme/test1.hbs',
-          'themes/answers-hitchhiker-theme/test2.hbs',
-        ];
-      },
-      getCards() {
-        return ['card1', 'card2'];
-      },
-      getDirectAnswerCards() {
-        return ['dacard1', 'dacard2'];
-      }
-    };
-  });
-});
 
-const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
-const mockCommandRegistry = {
-  getCommands() {
-    return []
+const mockRepoReader = {
+  getImportableThemes() {
+    return ['answers-hitchhiker-theme'];
+  },
+  getPageTemplates() {
+    return ['page1', 'page2']
+  },
+  getThemeFiles() {
+    return [
+      'themes/answers-hitchhiker-theme/test1.hbs',
+      'themes/answers-hitchhiker-theme/test2.hbs',
+    ];
+  },
+  getCards() {
+    return ['card1', 'card2'];
+  },
+  getDirectAnswerCards() {
+    return ['dacard1', 'dacard2'];
   }
 };
 
+const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
+const mockCustomCommand = {
+  getAlias() { return 'mockCustomCommand' },
+  describe() {
+    return {
+      displayName: 'mock custom command'
+    }
+  }
+}
+
+
 describe('DescribeCommand works correctly', () => {
-  new DescribeCommand({}, mockCommandRegistry).execute();
+  new DescribeCommand(() => [ mockCustomCommand ], mockRepoReader).execute();
   const descriptions = consoleSpy.mock.calls[0][0];
+
+  it('describes all jambo commands and nothing more', () => {
+    const expectedCommandNames = [
+      'init',
+      'import',
+      'page',
+      'build',
+      'override',
+      'upgrade',
+      'card',
+      'directanswercard',
+      'mockCustomCommand'
+    ].sort();
+    const actualCommandNames = Object.keys(descriptions).sort();
+    expect(actualCommandNames).toEqual(expectedCommandNames);
+  });
+
+  it('describes mockCustomCommand', () => {
+    expect(descriptions.mockCustomCommand).toEqual({
+      displayName: 'mock custom command'
+    });
+  });
 
   it('describes init', () => {
     expect(descriptions.init).toEqual({

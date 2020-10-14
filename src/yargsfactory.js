@@ -8,7 +8,6 @@ const themeCommand = require('./commands/import/themeimporter');
 const addCardCommand = require('./commands/card/cardcreator');
 const { DirectAnswerCardCreator } = require('./commands/directanswercard/directanswercardcreator');
 const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
-const DescribeCommand = require('./commands/describe/describecommand');
 const SystemError = require('./errors/systemerror');
 const UserError = require('./errors/usererror');
 const { exitWithError, isCustomError } = require('./utils/errorutils');
@@ -32,8 +31,6 @@ class YargsFactory {
     this._commandRegistry.getCommands().forEach(command => {
       cli.command(this._createCommandModule(command));
     });
-    cli.command(this._createCommandModule(
-      new DescribeCommand(jamboConfig, this._commandRegistry)));
     cli.strict()
 
     return cli;

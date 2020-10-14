@@ -1,8 +1,12 @@
+const DescribeCommand = require('../commands/describe/describecommand');
+const DescribeCommandRepoReader = require('../commands/describe/describecommandreporeader');
+
 /**
  * A registry that maintains the built-in and custom commands for the Jambo CLI.
  */
 class CommandRegistry {
-  constructor() {
+  constructor(jamboConfig) {
+    this._jamboConfig = jamboConfig;
     this._commandsByName = this._initialize();
   }
 
@@ -39,7 +43,12 @@ class CommandRegistry {
    */
   _initialize() {
     // TODO: Add built-in commands as they are cut over to the new pattern.
-    return {};
+    const describeRepoReader = new DescribeCommandRepoReader(this._jamboConfig);
+    const describeCommand =
+      new DescribeCommand(() => this.getCommands(), describeRepoReader);
+    return {
+      [ describeCommand.getAlias() ]: describeCommand
+    };
   }
 }
 module.exports = CommandRegistry;

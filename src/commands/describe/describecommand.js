@@ -6,12 +6,12 @@ const DescribeCommandRepoReader = require('./describecommandreporeader');
  * and their possible arguments.
  */
 module.exports = class DescribeCommand {
-  constructor(jamboConfig = {}, commandRegistry) {
-    this.commandRegistry = commandRegistry;
+  constructor(getCommands, repoReader) {
+    this.getCommands = getCommands;
     /**
      * @type {DescribeCommandRepoReader}
      */
-    this.repoReader = new DescribeCommandRepoReader(jamboConfig);
+    this.repoReader = repoReader;
   }
 
   getAlias() {
@@ -26,20 +26,29 @@ module.exports = class DescribeCommand {
     return {};
   }
 
+  /**
+   * The describe command filters its own describe out of the jambo describe output.
+   */
+  describe() {
+    return {};
+  }
+
   execute() {
     const builtInDescriptions = this._getBuiltInDescriptions();
-    const customDescriptions = this._getCustomDescriptions();
-    const descriptions = Object.assign({}, builtInDescriptions, customDescriptions);
+    const commandModuleDescriptions = this._getCommandModuleDescriptions();
+    const descriptions = { ...builtInDescriptions, ...commandModuleDescriptions};
     console.dir(descriptions, {
       depth: null,
       maxArrayLength: null
     });
   }
 
-  _getCustomDescriptions() {
+  _getCommandModuleDescriptions() {
     const customDescriptions = {};
-    for (const command of this.commandRegistry.getCommands()) {
-      customDescriptions[command.getAlias()] = command.describe();
+    for (const command of this.getCommands()) {
+      if (command.getAlias() !== 'describe') {
+        customDescriptions[command.getAlias()] = command.describe();
+      }
     }
     return customDescriptions;
   }

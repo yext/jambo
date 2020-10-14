@@ -8,8 +8,8 @@ const path = require('path');
  * are updated to use the Command interface.
  */
 module.exports = class DescribeCommandRepoReader {
-  constructor(jamboConfig) {
-    this.themesDir = jamboConfig.dirs.themes;
+  constructor(jamboConfig = {}) {
+    this.themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.defaultTheme = jamboConfig.defaultTheme;
   }
 
@@ -24,7 +24,7 @@ module.exports = class DescribeCommandRepoReader {
    * @returns {Array<string>}
    */
   getPageTemplates() {
-    if (!this.defaultTheme) {
+    if (!this.defaultTheme || !this.themesDir) {
       return [];
     }
     const pageTemplatesDir = path.resolve(this.themesDir, this.defaultTheme, 'templates');
@@ -35,6 +35,9 @@ module.exports = class DescribeCommandRepoReader {
    * @returns {Array<string>} all theme files that can be overridden
    */
   getThemeFiles() {
+    if (!this.themesDir) {
+      return [];
+    }
     const themeFiles = []
     fileSystem.recurseSync(this.themesDir, function(filepath) {
       if (fs.statSync(filepath).isFile()) {
@@ -48,7 +51,7 @@ module.exports = class DescribeCommandRepoReader {
    * @returns {Array<string>} the names of the available cards
    */
   getCards() {
-    if (!this.defaultTheme) {
+    if (!this.defaultTheme || !this.themesDir) {
       return [];
     }
     const cardsDir = path.resolve(this.themesDir, this.defaultTheme, 'cards');
@@ -61,7 +64,7 @@ module.exports = class DescribeCommandRepoReader {
    * @returns {Array<string>} the names of the available direct answer cards
    */
   getDirectAnswerCards() {
-    if (!this.defaultTheme) {
+    if (!this.defaultTheme || !this.themesDir) {
       return [];
     }
     const daCardsDir =
