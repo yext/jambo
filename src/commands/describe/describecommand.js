@@ -38,7 +38,7 @@ module.exports = class DescribeCommand {
 
   execute() {
     const builtInDescriptions = this._getBuiltInDescriptions();
-    const commandModuleDescriptions = this._getCommandModuleDescriptions();
+    const commandModuleDescriptions = this._getCommandDescriptions();
     const descriptions = { ...builtInDescriptions, ...commandModuleDescriptions};
     console.dir(descriptions, {
       depth: null,
@@ -47,10 +47,9 @@ module.exports = class DescribeCommand {
   }
 
   /**
-   * Returns the descriptions for all commands registered
-   * with the {@link Command} interface.
+   * Returns the descriptions of all registered Commands
    */
-  _getCommandModuleDescriptions() {
+  _getCommandDescriptions() {
     const descriptions = {};
     for (const command of this.getCommands()) {
       if (command.getAlias() !== 'describe') {
