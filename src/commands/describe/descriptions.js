@@ -105,9 +105,9 @@ exports.build = function() {
 }
 
 /**
- * @param {Array<string>} cards all available cards
+ * @param {Array<string>} cardPaths all available cards
  */
-exports.card = function(cards) {
+exports.card = function(cardPaths) {
   return {
     displayName: 'Add Card',
     params: {
@@ -120,16 +120,16 @@ exports.card = function(cards) {
         displayName: 'Template Card Folder',
         required: true,
         type: 'singleoption',
-        options: cards
+        options: cardPaths
       }
     }
   }
 }
 
 /**
- * @param {Array<string>} cards all available direct answer cards
+ * @param {Array<string>} directanswercardPaths all available direct answer cards
  */
-exports.directanswercard = function(directanswercards) {
+exports.directanswercard = function(directanswercardPaths) {
   return {
     displayName: 'Add Direct Answer Card',
     params: {
@@ -142,7 +142,7 @@ exports.directanswercard = function(directanswercards) {
         displayName: 'Template Card Folder',
         required: true,
         type: 'singleoption',
-        options: directanswercards
+        options: directanswercardPaths
       }
     }
   }

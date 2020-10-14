@@ -14,10 +14,16 @@ const mockRepoReader = {
     ];
   },
   getCards() {
-    return ['card1', 'card2'];
+    return [
+      'themes/answers-hitchhiker-theme/cards/card1',
+      'themes/answers-hitchhiker-theme/cards/card2'
+    ];
   },
   getDirectAnswerCards() {
-    return ['dacard1', 'dacard2'];
+    return [
+      'themes/answers-hitchhiker-theme/directanswercards/card1',
+      'themes/answers-hitchhiker-theme/directanswercards/card2'
+    ];
   }
 };
 
@@ -165,7 +171,10 @@ describe('DescribeCommand works correctly', () => {
           displayName: 'Template Card Folder',
           required: true,
           type: 'singleoption',
-          options: ['card1', 'card2']
+          options: [
+            'themes/answers-hitchhiker-theme/cards/card1',
+            'themes/answers-hitchhiker-theme/cards/card2'
+          ]
         }
       }
     });
@@ -184,7 +193,10 @@ describe('DescribeCommand works correctly', () => {
           displayName: 'Template Card Folder',
           required: true,
           type: 'singleoption',
-          options: ['dacard1', 'dacard2']
+          options: [
+            'themes/answers-hitchhiker-theme/directanswercards/card1',
+            'themes/answers-hitchhiker-theme/directanswercards/card2'
+          ]
         }
       }
     });

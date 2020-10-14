@@ -54,10 +54,10 @@ module.exports = class DescribeCommandRepoReader {
     if (!this.defaultTheme || !this.themesDir) {
       return [];
     }
-    const cardsDir = path.resolve(this.themesDir, this.defaultTheme, 'cards');
+    const cardsDir = path.join(this.themesDir, this.defaultTheme, 'cards');
     return fs.readdirSync(cardsDir, { withFileTypes: true })
       .filter(dirent => !dirent.isFile())
-      .map(dirent => dirent.name);
+      .map(dirent => path.join(cardsDir, dirent.name));
   }
 
   /**
@@ -67,10 +67,9 @@ module.exports = class DescribeCommandRepoReader {
     if (!this.defaultTheme || !this.themesDir) {
       return [];
     }
-    const daCardsDir =
-      path.resolve(this.themesDir, this.defaultTheme, 'directanswercards');
+    const daCardsDir = path.join(this.themesDir, this.defaultTheme, 'directanswercards');
     return fs.readdirSync(daCardsDir, { withFileTypes: true })
       .filter(dirent => !dirent.isFile())
-      .map(dirent => dirent.name);
+      .map(dirent => path.join(daCardsDir, dirent.name));
   }
 }
