@@ -15,7 +15,7 @@ class CommandImporter {
    * of the Jambo repository. If a custom command is specified in both places, it is
    * deduped, with the override in the top-level taking priority. 
    * 
-   * @returns {Array<{(jamboConfig: Object) => Command}>} The imported functions to create 
+   * @returns {Array<{(jamboConfig: Object) => Command}>} The imported functions to create
    *                                     {@link Command}s, ready to be used by Jambo.
    */
   import() {
