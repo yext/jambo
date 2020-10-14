@@ -127,9 +127,9 @@ exports.card = function(cardPaths) {
 }
 
 /**
- * @param {Array<string>} directanswercardPaths all available direct answer cards
+ * @param {Array<string>} directAnswerCardPaths all available direct answer cards
  */
-exports.directanswercard = function(directanswercardPaths) {
+exports.directanswercard = function(directAnswerCardPaths) {
   return {
     displayName: 'Add Direct Answer Card',
     params: {
@@ -142,7 +142,7 @@ exports.directanswercard = function(directanswercardPaths) {
         displayName: 'Template Card Folder',
         required: true,
         type: 'singleoption',
-        options: directanswercardPaths
+        options: directAnswerCardPaths
       }
     }
   }
