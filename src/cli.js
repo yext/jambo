@@ -17,7 +17,7 @@ try {
   exitWithError(e);
 }
 
-const commandRegistry = new CommandRegistry();
+const commandRegistry = new CommandRegistry(jamboConfig);
 if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
   const commandImporter = jamboConfig.defaultTheme ?
     new CommandImporter(
