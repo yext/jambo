@@ -308,11 +308,11 @@ exports.SitesGenerator = class {
       return str.match(regex);
     });
 
-    hbs.registerHelper('all', function (...args) {
+    hbs.registerHelper('all', function(...args) {
       return args.filter(item => item).length === args.length;
     });
 
-    hbs.registerHelper('any', function (...args) {
+    hbs.registerHelper('any', function(...args) {
       return args.filter(item => item).length > 1;
     });
 
