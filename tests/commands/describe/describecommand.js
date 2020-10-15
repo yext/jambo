@@ -106,7 +106,7 @@ describe('DescribeCommand works correctly', () => {
       params: {
         theme: {
           displayName: 'Theme',
-          type: 'string',
+          type: 'singleoption',
           required: true,
           options: ['answers-hitchhiker-theme']
         },
