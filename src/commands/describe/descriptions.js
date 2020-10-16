@@ -52,7 +52,7 @@ exports.import = function(importableThemes) {
     params: {
       theme: {
         displayName: 'Theme',
-        type: 'string',
+        type: 'singleoption',
         required: true,
         options: importableThemes
       },
