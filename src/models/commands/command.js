@@ -26,5 +26,11 @@ class Command {
    *                                             keyed by name.
    */
   args() { }
+
+  /**
+   * @returns {Object} description of the card command, including paths to 
+   *                   all available cards
+   */
+  describe() { }
 }
 module.exports = Command;

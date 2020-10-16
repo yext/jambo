@@ -28,18 +28,63 @@ const mockRepoReader = {
 };
 
 const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
-const mockCustomCommand = {
-  getAlias() { return 'mockCustomCommand' },
+const mockCardCommand = {
+  getAlias() {
+    return 'card';
+  },
   describe() {
     return {
-      displayName: 'mock custom command'
+      displayName: 'Add Card',
+      params: {
+        name: {
+          displayName: 'Card Name',
+          required: true,
+          type: 'string'
+        },
+        templateCardFolder: {
+          displayName: 'Template Card Folder',
+          required: true,
+          type: 'singleoption',
+          options: [
+            'themes/answers-hitchhiker-theme/cards/card1',
+            'themes/answers-hitchhiker-theme/cards/card2'
+          ]
+        }
+      }
+    }
+  }
+}
+const mockDirectAnswerCardCommand = {
+  getAlias() {
+    return 'directanswercard';
+  },
+  describe() {
+    return {
+      displayName: 'Add Direct Answer Card',
+      params: {
+        name: {
+          displayName: 'Direct Answer Card Name',
+          required: true,
+          type: 'string'
+        },
+        templateCardFolder: {
+          displayName: 'Template Card Folder',
+          required: true,
+          type: 'singleoption',
+          options: [
+            'themes/answers-hitchhiker-theme/directanswercards/card1',
+            'themes/answers-hitchhiker-theme/directanswercards/card2'
+          ]
+        }
+      }
     }
   }
 }
 
 
 describe('DescribeCommand works correctly', () => {
-  new DescribeCommand(() => [ mockCustomCommand ], mockRepoReader).execute();
+  new DescribeCommand(
+    () => [ mockCardCommand, mockDirectAnswerCardCommand ], mockRepoReader).execute();
   const descriptions = consoleSpy.mock.calls[0][0];
 
   it('describes all jambo commands and nothing more', () => {
@@ -51,17 +96,10 @@ describe('DescribeCommand works correctly', () => {
       'override',
       'upgrade',
       'card',
-      'directanswercard',
-      'mockCustomCommand'
+      'directanswercard'
     ].sort();
     const actualCommandNames = Object.keys(descriptions).sort();
     expect(actualCommandNames).toEqual(expectedCommandNames);
-  });
-
-  it('describes mockCustomCommand', () => {
-    expect(descriptions.mockCustomCommand).toEqual({
-      displayName: 'mock custom command'
-    });
   });
 
   it('describes init', () => {

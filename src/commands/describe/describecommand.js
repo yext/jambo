@@ -67,8 +67,6 @@ module.exports = class DescribeCommand {
     const importableThemes = this.repoReader.getImportableThemes();
     const pageTemplates = this.repoReader.getPageTemplates();
     const themeFiles = this.repoReader.getThemeFiles();
-    const cards = this.repoReader.getCards();
-    const daCards = this.repoReader.getDirectAnswerCards();
     return {
       init: Descriptions.init(importableThemes),
       page: Descriptions.page(pageTemplates),
@@ -76,8 +74,6 @@ module.exports = class DescribeCommand {
       override: Descriptions.override(themeFiles),
       upgrade: Descriptions.upgrade(),
       build: Descriptions.build(),
-      card: Descriptions.card(cards),
-      directanswercard: Descriptions.directanswercard(daCards)
     }
   }
 }
