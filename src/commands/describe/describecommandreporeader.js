@@ -46,30 +46,4 @@ module.exports = class DescribeCommandRepoReader {
     });
     return themeFiles;
   }
-
-  /**
-   * @returns {Array<string>} the names of the available cards
-   */
-  getCards() {
-    if (!this.defaultTheme || !this.themesDir) {
-      return [];
-    }
-    const cardsDir = path.join(this.themesDir, this.defaultTheme, 'cards');
-    return fs.readdirSync(cardsDir, { withFileTypes: true })
-      .filter(dirent => !dirent.isFile())
-      .map(dirent => path.join(cardsDir, dirent.name));
-  }
-
-  /**
-   * @returns {Array<string>} the names of the available direct answer cards
-   */
-  getDirectAnswerCards() {
-    if (!this.defaultTheme || !this.themesDir) {
-      return [];
-    }
-    const daCardsDir = path.join(this.themesDir, this.defaultTheme, 'directanswercards');
-    return fs.readdirSync(daCardsDir, { withFileTypes: true })
-      .filter(dirent => !dirent.isFile())
-      .map(dirent => path.join(daCardsDir, dirent.name));
-  }
 }
