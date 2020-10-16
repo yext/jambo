@@ -5,9 +5,10 @@ const fs = require('fs-extra');
  * Imports all custom {@link Command}s within a Jambo repository.
  */
 class CommandImporter {
-  constructor(outputDir, themeDir) {
+  constructor(outputDir, themeDir, jamboConfig) {
     this._outputDir = outputDir;
     this._themeDir = themeDir;
+    this._jamboConfig = jamboConfig;
   }
 
   /**
@@ -15,8 +16,8 @@ class CommandImporter {
    * of the Jambo repository. If a custom command is specified in both places, it is
    * deduped, with the override in the top-level taking priority. 
    * 
-   * @returns {Array<Command>} The imported {@link Command}s, ready to be registered
-   *                           with Jambo.
+   * @returns {Array<{Command}>} The imported {@link Command}s, ready to be registered
+   *                             with Jambo.
    */
   import() {
     let commandDirectories = ['commands'];
@@ -29,7 +30,8 @@ class CommandImporter {
       customCommands = fs.readdirSync(mergedDirectory)
         .map(directoryPath => path.resolve(mergedDirectory, directoryPath))
         .filter(directoryPath => fs.lstatSync(directoryPath).isFile())
-        .map(require);
+        .map(require)
+        .map(commandFn => commandFn(this._jamboConfig));
 
       // Remove the merged commands directory from 'public' as it is no longer needed.
       fs.removeSync(mergedDirectory);
