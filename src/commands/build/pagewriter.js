@@ -94,6 +94,6 @@ module.exports = class PageWriter {
    * @returns {String}
    */
   _calculateRelativePath(filePath) {
-    return path.relative(path.dirname(filePath), '');
+    return path.relative(path.dirname(filePath), '') || '.';
   }
 }
