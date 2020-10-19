@@ -1,4 +1,5 @@
 const { NO_LOCALE } = require('../constants');
+const { canonicalizeLocale } = require('../utils/i18nutils');
 const UserError = require('../errors/usererror');
 
 /**
@@ -25,7 +26,11 @@ module.exports = class LocalizationConfig {
      *   ...
      * }
      */
-    this._localeToConfig = config.localeConfig || {};
+    this._localeToConfig = {};
+    for (const [localeCode, localeConfig] of Object.entries(config.localeConfig || {})) {
+      const normalizedLocale = canonicalizeLocale(localeCode);
+      this._localeToConfig[normalizedLocale] = localeConfig;
+    };
 
     if (this.hasConfig() && !this._localeToConfig[this._defaultLocale]) {
       throw new UserError(
