@@ -4,7 +4,7 @@
  * @param {string} localeCode
  * @returns {string}
  */
-canonicalizeLocale = function (localeCode) {
+canonicalizeLocale = function(localeCode) {
   if (!localeCode) {
     return;
   }

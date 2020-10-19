@@ -84,7 +84,7 @@ module.exports = class LocalizationConfig {
    * @returns {function}
    */
   getUrlFormatter(locale) {
-    // TODO (agrow) this assumes language and region are separated by a "-" (e.g. en-US)
+    // TODO (agrow) this assumes language and region are separated by a "-" (e.g. en-us)
     const language = locale
       ? locale.substring(0, locale.lastIndexOf('-')) || locale
       : '';
