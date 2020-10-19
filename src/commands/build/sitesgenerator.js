@@ -311,6 +311,14 @@ exports.SitesGenerator = class {
       return str && str.match(regex);
     });
 
+    hbs.registerHelper('all', function(...args) {
+      return args.filter(item => item).length === args.length;
+    });
+
+    hbs.registerHelper('any', function(...args) {
+      return args.filter(item => item).length > 1;
+    });
+
     hbs.registerHelper('babel', function(options) {
       const srcCode = options.fn(this);
       return babel.transformSync(srcCode, {
