@@ -127,9 +127,8 @@ exports.SitesGenerator = class {
 
     console.log('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
-    const translations = config.dirs.translations
-      ? await this._extractTranslations(locales, configRegistry.getLocalizationConfig())
-      : {};
+    const translations = 
+      await this._extractTranslations(locales, configRegistry.getLocalizationConfig());
 
     // Register needed Handlebars helpers.
     console.log('Registering Jambo Handlebars helpers');
@@ -380,13 +379,23 @@ exports.SitesGenerator = class {
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractCustomTranslations(locales, localizationConfig) {
-    const localFileParser = new LocalFileParser(this.config.dirs.translations);
+    const translationsDir = this.config.dirs.translations;
+
+    if (!translationsDir) {
+      return {};
+    }
+
+    const localFileParser = new LocalFileParser(translationsDir);
     const translations = {};
 
     for (const locale of locales) {
-      if (locale !== localizationConfig.getDefaultLocale()) {
+      const translationFileName = 
+        localizationConfig.getTranslationFile(locale) || `${locale}.po`;
+      const translationFilePath = path.join(translationsDir, translationFileName);
+      const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
+      if (!isDefaultLocale && fs.existsSync(translationFilePath)) {
         const localeTranslations = await localFileParser
-          .fetch(locale, localizationConfig.getTranslationFile(locale));
+          .fetch(locale, translationFileName);
         translations[locale] = { translation: localeTranslations };
       }
     }
@@ -409,9 +418,11 @@ exports.SitesGenerator = class {
     const translations = {};
 
     for (const locale of locales) {
-      const translationFile = path.join(themeTranslationsDir, `${locale}.po`);
-      if (fs.existsSync(translationFile)) {
-        const localeTranslations = await localFileParser.fetch(locale);
+      const translationFileName = `${locale}.po`;
+      const translationFilePath = path.join(themeTranslationsDir, translationFileName);
+      if (fs.existsSync(translationFilePath)) {
+        const localeTranslations = await localFileParser
+          .fetch(locale, translationFileName);
         translations[locale] = { translation: localeTranslations };
       }
     }
