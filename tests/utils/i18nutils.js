@@ -1,7 +1,7 @@
 const { canonicalizeLocale } = require('../../src/utils/i18nutils');
 
 describe('canonicalizeLocale correctly normalizes locales', () => {
-  it('converts to language to lower case and region to upper case', () => {
+  it('converts language to lower case and region to upper case', () => {
     const locale = 'FR_ch';
     const canonicalizedLocale = canonicalizeLocale(locale);
     expect(canonicalizedLocale).toEqual('fr_CH');
