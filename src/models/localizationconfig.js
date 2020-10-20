@@ -12,7 +12,7 @@ module.exports = class LocalizationConfig {
    */
   constructor(rawLocalizationConfig) {
     const config = rawLocalizationConfig || {};
-    this._defaultLocale = config.default || NO_LOCALE;
+    this._defaultLocale = canonicalizeLocale(config.default) || NO_LOCALE;
 
     /**
      * localeToConfig is an Object mapping locale to configuration
