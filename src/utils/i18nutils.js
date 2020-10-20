@@ -8,6 +8,18 @@ canonicalizeLocale = function(localeCode) {
   if (!localeCode) {
     return;
   }
-  return localeCode.toLowerCase();
+  const localeCodeSections = localeCode.replace('_', '-')
+    .split('-');
+
+  const languageIndex = 0;
+  const regionIndex = 1;
+
+  localeCodeSections[languageIndex] = localeCodeSections[languageIndex].toLowerCase();
+
+  if (localeCodeSections.length > regionIndex) {
+    localeCodeSections[regionIndex] = localeCodeSections[regionIndex].toUpperCase();
+  }
+
+  return localeCodeSections.join('-');
 }
 exports.canonicalizeLocale = canonicalizeLocale;

@@ -84,9 +84,8 @@ module.exports = class LocalizationConfig {
    * @returns {function}
    */
   getUrlFormatter(locale) {
-    // TODO (agrow) this assumes language and region are separated by a "-" (e.g. en-us)
     const language = locale
-      ? locale.substring(0, locale.lastIndexOf('-')) || locale
+      ? locale.substring(0, locale.indexOf('-')) || locale
       : '';
     const basicUrlPattern = locale === this._defaultLocale
       ? this._defaultUrlPattern

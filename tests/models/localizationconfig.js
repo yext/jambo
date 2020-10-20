@@ -95,7 +95,7 @@ describe('Getting URL Formatting function works properly', () => {
       default: 'en',
       localeConfig: {
         en: {},
-        'en-us': {
+        'en-US': {
           urlOverride: '{language}/{locale}/{pageName}.{pageExt}'
         }
       },
@@ -104,8 +104,8 @@ describe('Getting URL Formatting function works properly', () => {
         default: 'pages/{locale}/{pageName}.{pageExt}'
       }
     });
-    const complicatedFormatter = config.getUrlFormatter('en-us');
+    const complicatedFormatter = config.getUrlFormatter('en-US');
     expect(complicatedFormatter('pageName', 'pageExt'))
-      .toEqual('en/en-us/pageName.pageExt');
+      .toEqual('en/en-US/pageName.pageExt');
   });
 });
