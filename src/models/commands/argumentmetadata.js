@@ -13,7 +13,8 @@ Object.freeze(ArgumentType);
  * the type of the argument's values, if it is required, and an optional default.
  */
 class ArgumentMetadata {
-  constructor(type, description, isRequired, defaultValue) {
+  constructor({ type, description, isRequired, defaultValue, displayName }) {
+    this._displayName = displayName;
     this._type = type;
     this._isRequired = isRequired;
     this._defaultValue = defaultValue;
@@ -42,11 +43,29 @@ class ArgumentMetadata {
   }
 
   /**
-   * @returns {string|boolean|number} Optional, a default value for the argument. 
+   * @returns {string|boolean|number} Optional, a default value for the argument.
    */
   defaultValue() {
     return this._defaultValue;
   }
 
+  /**
+   * @returns {string} The display name for the argument.
+   */
+  getDisplayName() {
+    return this._displayName;
+  }
+
+  /**
+   * @returns {Object} The serialized ArgumentMetadata
+   */
+  serialize() {
+    return {
+      displayName: this.getDisplayName(),
+      type: this.getType(),
+      required: this.isRequired(),
+      default: this.defaultValue(),
+    }
+  }
 }
 module.exports = { ArgumentMetadata, ArgumentType };

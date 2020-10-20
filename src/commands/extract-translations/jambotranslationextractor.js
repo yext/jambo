@@ -22,19 +22,24 @@ class JamboTranslationExtractor {
 
   args() {
     return {
-      output: new ArgumentMetadata(
-        ArgumentType.STRING,
-        'the output path to extract the .pot file to',
-        false,
-        'messages.pot'
-      )
+      output: new ArgumentMetadata({
+        displayName: 'Output Path',
+        type: ArgumentType.STRING,
+        description: 'the output path to extract the .pot file to',
+        isRequired: false,
+        defaultValue: 'messages.pot'
+      })
     };
   }
 
   describe() {
+    const args = this.args();
     return {
       displayName: 'Extract Translations',
-      params: this.args()
+      params: Object.keys(args).reduce((params, alias) => {
+        params[alias] = args[alias].serialize();
+        return params;
+      }, {})
     };
   }
 
