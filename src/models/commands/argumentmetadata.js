@@ -57,15 +57,17 @@ class ArgumentMetadata {
   }
 
   /**
-   * @returns {Object} The serialized ArgumentMetadata
+   * Returns an Object with the keys expected by the Jambo describe command
+   *
+   * @returns {Object}
    */
-  serialize() {
+  toDescribeFormat() {
     return {
       displayName: this.getDisplayName(),
       type: this.getType(),
       required: this.isRequired(),
       default: this.defaultValue(),
-    }
+    };
   }
 }
 module.exports = { ArgumentMetadata, ArgumentType };

@@ -37,7 +37,7 @@ class JamboTranslationExtractor {
     return {
       displayName: 'Extract Translations',
       params: Object.keys(args).reduce((params, alias) => {
-        params[alias] = args[alias].serialize();
+        params[alias] = args[alias].toDescribeFormat();
         return params;
       }, {})
     };
