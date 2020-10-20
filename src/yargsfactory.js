@@ -8,7 +8,7 @@ const themeCommand = require('./commands/import/themeimporter');
 const { ThemeUpgrader } = require('./commands/upgrade/themeupgrader');
 const SystemError = require('./errors/systemerror');
 const UserError = require('./errors/usererror');
-const { exitWithError, isCustomError } = require('./utils/errorutils');
+const { isCustomError } = require('./utils/errorutils');
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
@@ -61,7 +61,7 @@ class YargsFactory {
         argv => {
           const repositorySettings = new initCommand.RepositorySettings(argv);
           const repositoryScaffolder = new initCommand.RepositoryScaffolder();
-          repositoryScaffolder.create(repositorySettings).catch(e => exitWithError(e));
+          repositoryScaffolder.create(repositorySettings);
         })
       .command(
         'import',
@@ -79,14 +79,9 @@ class YargsFactory {
             );
         },
         argv => {
-          try {
-            const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
-            themeImporter.import(argv.theme, argv.addAsSubmodule)
-              .then(console.log)
-              .catch(e => exitWithError(e));
-          } catch (e) {
-            exitWithError(e);
-          }
+          const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
+          themeImporter.import(argv.theme, argv.addAsSubmodule)
+            .then(console.log);
         })
       .command(
         'override',
@@ -98,14 +93,10 @@ class YargsFactory {
               { description: 'path in the theme to override', demandOption: true })
         },
         argv => {
-          try {
-            const shadowConfiguration = new overrideCommand.ShadowConfiguration(
-              { ...argv, theme: jamboConfig.defaultTheme });
-            const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
-            themeShadower.createShadow(shadowConfiguration);
-          } catch (e) {
-            exitWithError(e);
-          }
+          const shadowConfiguration = new overrideCommand.ShadowConfiguration(
+            { ...argv, theme: jamboConfig.defaultTheme });
+          const themeShadower = new overrideCommand.ThemeShadower(jamboConfig);
+          themeShadower.createShadow(shadowConfiguration);
         })
       .command(
         'page',
@@ -123,7 +114,7 @@ class YargsFactory {
           try {
             pageScaffolder.create(pageConfiguration);
           } catch (err) {
-            exitWithError(new UserError('Failed to add page', err.stack));
+            throw new UserError('Failed to add page', err.stack);
           }
         })
       .command(
@@ -141,9 +132,9 @@ class YargsFactory {
             sitesGenerator.generate(argv.jsonEnvVars);
           } catch (err) {
             if (isCustomError(err)) {
-              exitWithError(err);
+              throw err;
             }
-            exitWithError(new UserError('Failed to generate the site', err.stack));
+            throw new UserError('Failed to generate the site', err.stack);
           }
 
         })
@@ -167,9 +158,9 @@ class YargsFactory {
             .upgrade(jamboConfig.defaultTheme, argv.disableScript, argv.isLegacy)
             .catch(err => {
               if (isCustomError(err)) {
-                exitWithError(err);
+                throw err;
               }
-              exitWithError(new SystemError(err.message, err.stack));
+              throw new SystemError(err.message, err.stack);
             });
         });
   }

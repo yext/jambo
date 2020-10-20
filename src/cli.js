@@ -11,11 +11,15 @@ const CommandImporter = require('./commands/commandimporter');
 
 let jamboConfig;
 
-try {
-  jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
-} catch (e) {
-  exitWithError(e);
-}
+// Exit with a non-zero exit code for unhandled rejections and uncaught exceptions
+process.on('unhandledRejection', err => {
+  exitWithError(err);
+});
+process.on('uncaughtException', err => {
+  exitWithError(err);
+});
+
+jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
 
 const commandRegistry = new CommandRegistry(jamboConfig);
 if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
