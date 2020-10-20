@@ -55,7 +55,7 @@ class CommandImporter {
     if (fs.existsSync(mergedDirectory)) {
       fs.removeSync(mergedDirectory);
     }
-    fs.mkdirSync(mergedDirectory);
+    fs.ensureDirSync(mergedDirectory);
     directories.forEach(directory => fs.copySync(directory, mergedDirectory));
 
     return mergedDirectory;
