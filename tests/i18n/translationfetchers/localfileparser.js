@@ -47,12 +47,12 @@ describe('LocalFileParser works correctly', () => {
       'The: dog': 'Le: chien'
     };
 
-    return localFileParser.fetch('fr-FR').then(translations => {
+    return localFileParser.fetch('fr-FR', 'fr-FR.po').then(translations => {
       expect(translations).toStrictEqual(expectedTranslations);
     })
   });
 
   it('Rejects with an error when no translation file exists for the locale', () => {
-    expect(localFileParser.fetch('es')).rejects.toThrow(UserError);
+    expect(localFileParser.fetch('es', 'es.po')).rejects.toThrow(UserError);
   })
 });
