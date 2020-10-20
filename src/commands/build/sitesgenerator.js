@@ -127,9 +127,8 @@ exports.SitesGenerator = class {
 
     console.log('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
-    const translations = config.dirs.translations
-      ? await this._extractTranslations(locales, configRegistry.getLocalizationConfig())
-      : {};
+    const translations = 
+      await this._extractTranslations(locales, configRegistry.getLocalizationConfig());
 
     // Register needed Handlebars helpers.
     console.log('Registering Jambo Handlebars helpers');
@@ -380,11 +379,16 @@ exports.SitesGenerator = class {
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
   async _extractCustomTranslations(locales, localizationConfig) {
-    const localFileParser = new LocalFileParser(this.config.dirs.translations);
+    const translationsDir = this.config.dirs.translations
+      ? this.config.dirs.translations
+      : 'translations';
+
+    const localFileParser = new LocalFileParser(translationsDir);
     const translations = {};
 
     for (const locale of locales) {
-      if (locale !== localizationConfig.getDefaultLocale()) {
+      const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
+      if (!isDefaultLocale) {
         const localeTranslations = await localFileParser
           .fetch(locale, localizationConfig.getTranslationFile(locale));
         translations[locale] = { translation: localeTranslations };
