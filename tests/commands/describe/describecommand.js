@@ -81,10 +81,29 @@ const mockDirectAnswerCardCommand = {
   }
 }
 
+const mockExtractTranslationsCommand = {
+  getAlias() {
+    return 'extract-translations';
+  },
+  describe() {
+    return {
+      displayName: 'Extract Translations',
+      params: {
+        output: { displayName: 'Output Path' }
+      }
+    };
+  }
+};
 
 describe('DescribeCommand works correctly', () => {
   new DescribeCommand(
-    () => [ mockCardCommand, mockDirectAnswerCardCommand ], mockRepoReader).execute();
+    () => [
+      mockExtractTranslationsCommand,
+      mockCardCommand,
+      mockDirectAnswerCardCommand
+    ],
+    mockRepoReader
+  ).execute();
   const descriptions = consoleSpy.mock.calls[0][0];
 
   it('describes all jambo commands and nothing more', () => {
@@ -96,7 +115,8 @@ describe('DescribeCommand works correctly', () => {
       'override',
       'upgrade',
       'card',
-      'directanswercard'
+      'directanswercard',
+      'extract-translations'
     ].sort();
     const actualCommandNames = Object.keys(descriptions).sort();
     expect(actualCommandNames).toEqual(expectedCommandNames);
