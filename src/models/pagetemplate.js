@@ -1,4 +1,5 @@
 const { stripExtension } = require('../utils/fileutils');
+const { canonicalizeLocale } = require('../utils/i18nutils');
 const { NO_LOCALE } = require('../constants');
 
 /**
@@ -96,6 +97,7 @@ module.exports = class PageTemplate {
    */
   static parseLocale(filename) {
     const pageParts = stripExtension(stripExtension(filename)).split('.');
-    return pageParts.length > 1 && pageParts[1];
+    const locale = pageParts.length > 1 && pageParts[1];
+    return canonicalizeLocale(locale);
   }
 }

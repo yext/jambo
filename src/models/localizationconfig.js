@@ -1,4 +1,5 @@
 const { NO_LOCALE } = require('../constants');
+const { canonicalizeLocale } = require('../utils/i18nutils');
 const UserError = require('../errors/usererror');
 
 /**
@@ -25,7 +26,11 @@ module.exports = class LocalizationConfig {
      *   ...
      * }
      */
-    this._localeToConfig = config.localeConfig || {};
+    this._localeToConfig = {};
+    for (const [localeCode, localeConfig] of Object.entries(config.localeConfig || {})) {
+      const normalizedLocale = canonicalizeLocale(localeCode);
+      this._localeToConfig[normalizedLocale] = localeConfig;
+    };
 
     if (this.hasConfig() && !this._localeToConfig[this._defaultLocale]) {
       throw new UserError(
@@ -79,10 +84,7 @@ module.exports = class LocalizationConfig {
    * @returns {function}
    */
   getUrlFormatter(locale) {
-    // TODO (agrow) this assumes language and region are separated by a "-" (e.g. en-US)
-    const language = locale
-      ? locale.substring(0, locale.lastIndexOf('-')) || locale
-      : '';
+    const language = locale.split('_')[0];
     const basicUrlPattern = locale === this._defaultLocale
       ? this._defaultUrlPattern
       : this._baseLocalePattern;
