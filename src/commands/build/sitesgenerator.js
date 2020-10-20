@@ -389,7 +389,8 @@ exports.SitesGenerator = class {
     const translations = {};
 
     for (const locale of locales) {
-      const translationFileName = localizationConfig.getTranslationFile(locale) || `${locale}.po`;
+      const translationFileName = 
+        localizationConfig.getTranslationFile(locale) || `${locale}.po`;
       const translationFilePath = path.join(translationsDir, translationFileName);
       const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
       if (!isDefaultLocale && fs.existsSync(translationFilePath)) {
