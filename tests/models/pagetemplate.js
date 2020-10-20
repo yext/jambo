@@ -27,7 +27,7 @@ describe('PageTemplate parses locale from filename', () => {
   });
 
   it('parses correctly when there is a locale', () => {
-    const locale = PageTemplate.parseLocale('test.fr-CH.html.hbs');
-    expect(locale).toEqual('fr-CH');
+    const locale = PageTemplate.parseLocale('test.fr_CH.html.hbs');
+    expect(locale).toEqual('fr_CH');
   });
 });

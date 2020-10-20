@@ -8,8 +8,8 @@ canonicalizeLocale = function(localeCode) {
   if (!localeCode) {
     return;
   }
-  const localeCodeSections = localeCode.replace('_', '-')
-    .split('-');
+  const localeCodeSections = localeCode.replace('-', '_')
+    .split('_');
 
   const languageIndex = 0;
   const regionIndex = 1;
@@ -20,6 +20,6 @@ canonicalizeLocale = function(localeCode) {
     localeCodeSections[regionIndex] = localeCodeSections[regionIndex].toUpperCase();
   }
 
-  return localeCodeSections.join('-');
+  return localeCodeSections.join('_');
 }
 exports.canonicalizeLocale = canonicalizeLocale;
