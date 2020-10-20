@@ -9,8 +9,8 @@ describe('translations with one plural form (French)', () => {
     const translationsPath = path.join(__dirname, '../../fixtures/translations');
     const localFileParser = new LocalFileParser(translationsPath);
 
-    const frFRTranslations = await localFileParser.fetch('fr-FR');
-    const frTranslations = await localFileParser.fetch('fr');
+    const frFRTranslations = await localFileParser.fetch('fr-FR', 'fr-FR.po');
+    const frTranslations = await localFileParser.fetch('fr', 'fr.po');
     const translations = {
       fr: { translation: frTranslations },
       'fr-FR': { translation: frFRTranslations },
@@ -221,7 +221,7 @@ describe('translations with multiple plural forms (Lithuanian)', () => {
     const translationsPath = path.join(__dirname, '../../fixtures/translations');
     const localFileParser = new LocalFileParser(translationsPath);
 
-    const ltLT_Translations = await localFileParser.fetch('lt-LT');
+    const ltLT_Translations = await localFileParser.fetch('lt-LT', 'lt-LT.po');
     const translations = {
       'lt-LT': { translation: ltLT_Translations }
     }
