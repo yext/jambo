@@ -423,8 +423,8 @@ exports.SitesGenerator = class {
       const translationFileName = `${locale}.po`;
       const translationFilePath = path.join(themeTranslationsDir, translationFileName);
       if (fs.existsSync(translationFilePath)) {
-        const localeTranslations = 
-          await localFileParser.fetch(locale, translationFileName);
+        const localeTranslations = await localFileParser
+          .fetch(locale, translationFileName);
         translations[locale] = { translation: localeTranslations };
       }
     }
