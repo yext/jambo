@@ -6,15 +6,15 @@ class SystemError extends Error {
   constructor(message, stack) {
     super(message);
 
+    this.name = 'SystemError'
+    this.exitCode = 14;
+
     if (stack) {
       this.stack = stack;
-      this.message = message;
+      this.message = `${this.name}: ${message}`;
     } else {
       Error.captureStackTrace(this, this.constructor);
     }
-
-    this.name = 'SystemError'
-    this.exitCode = 14;
   }
 }
 

@@ -21,20 +21,20 @@ class LocalFileParser {
   }
 
   /**
-   * Extracts a locale's translations from the local filesystem. If no such
-   * translations exist, an empty object is returned.
+   * Extracts a locale's translations from the local filesystem. If the translation file
+   * doesn't exist, the function rejects with an error
    *
    * @param {string} locale The desired locale.
    * @param {string} translationFilePath The path to the translation file locale within
-   *                                     the translations directory; if not present,
-   *                                     defaults to [locale].po
+   *                                     the translations directory
    * @returns {Promise<Object>} A Promise containing the parsed translations in
    *                            i18next format.
   */
   async fetch(locale, translationFilePath) {
-    const fileName = translationFilePath || `${locale}.po`;
-    const translationFile = path.join(this._translationsDir, fileName);
-    if (!existsSync(translationFile)) {
+    const translationFile = path.join(this._translationsDir, translationFilePath);
+    const translationFileExists = existsSync(translationFile);
+
+    if (!translationFileExists) {
       throw new UserError(
         `Cannot find translation file for '${locale}' at '${translationFile}'`);
     }

@@ -136,7 +136,7 @@ class TranslateInvocation {
       return this.fromMustacheStatementNode(node);
     } catch (err) {
       throw new UserError(
-        `Error: Could not parse "${invocationString}" as a valid translate helper.`,
+        `Could not parse "${invocationString}" as a valid translate helper.`,
         err.stack);
     }
   }
