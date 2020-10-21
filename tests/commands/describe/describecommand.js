@@ -1,4 +1,5 @@
 const DescribeCommand = require('../../../src/commands/describe/describecommand');
+const JamboTranslationExtractor = require('../../../src/commands/extract-translations/jambotranslationextractor');
 
 const mockRepoReader = {
   getImportableThemes() {
@@ -81,24 +82,12 @@ const mockDirectAnswerCardCommand = {
   }
 }
 
-const mockExtractTranslationsCommand = {
-  getAlias() {
-    return 'extract-translations';
-  },
-  describe() {
-    return {
-      displayName: 'Extract Translations',
-      params: {
-        output: { displayName: 'Output Path' }
-      }
-    };
-  }
-};
+const extractTranslationsCommand = new JamboTranslationExtractor({});
 
 describe('DescribeCommand works correctly', () => {
   new DescribeCommand(
     () => [
-      mockExtractTranslationsCommand,
+      extractTranslationsCommand,
       mockCardCommand,
       mockDirectAnswerCardCommand
     ],
@@ -255,6 +244,20 @@ describe('DescribeCommand works correctly', () => {
             'themes/answers-hitchhiker-theme/directanswercards/card1',
             'themes/answers-hitchhiker-theme/directanswercards/card2'
           ]
+        }
+      }
+    });
+  });
+
+  it('describes extract-translations', () => {
+    expect(descriptions['extract-translations']).toEqual({
+      displayName: 'Extract Translations',
+      params: {
+        output: {
+          displayName: 'Output Path',
+          required: false,
+          default: 'messages.pot',
+          type: 'string'
         }
       }
     });
