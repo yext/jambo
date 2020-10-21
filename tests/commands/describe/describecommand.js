@@ -1,4 +1,5 @@
 const DescribeCommand = require('../../../src/commands/describe/describecommand');
+const JamboTranslationExtractor = require('../../../src/commands/extract-translations/jambotranslationextractor');
 
 const mockRepoReader = {
   getImportableThemes() {
@@ -81,10 +82,17 @@ const mockDirectAnswerCardCommand = {
   }
 }
 
+const extractTranslationsCommand = new JamboTranslationExtractor({});
 
 describe('DescribeCommand works correctly', () => {
   new DescribeCommand(
-    () => [ mockCardCommand, mockDirectAnswerCardCommand ], mockRepoReader).execute();
+    () => [
+      extractTranslationsCommand,
+      mockCardCommand,
+      mockDirectAnswerCardCommand
+    ],
+    mockRepoReader
+  ).execute();
   const descriptions = consoleSpy.mock.calls[0][0];
 
   it('describes all jambo commands and nothing more', () => {
@@ -96,7 +104,8 @@ describe('DescribeCommand works correctly', () => {
       'override',
       'upgrade',
       'card',
-      'directanswercard'
+      'directanswercard',
+      'extract-translations'
     ].sort();
     const actualCommandNames = Object.keys(descriptions).sort();
     expect(actualCommandNames).toEqual(expectedCommandNames);
@@ -235,6 +244,20 @@ describe('DescribeCommand works correctly', () => {
             'themes/answers-hitchhiker-theme/directanswercards/card1',
             'themes/answers-hitchhiker-theme/directanswercards/card2'
           ]
+        }
+      }
+    });
+  });
+
+  it('describes extract-translations', () => {
+    expect(descriptions['extract-translations']).toEqual({
+      displayName: 'Extract Translations',
+      params: {
+        output: {
+          displayName: 'Output Path',
+          required: false,
+          default: 'messages.pot',
+          type: 'string'
         }
       }
     });
