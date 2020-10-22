@@ -67,9 +67,9 @@ exports.ThemeImporter = class {
    * Copies the static assets from the Theme to the repository, if they exist. If a
    * Gruntfile, webpack-config, or package.json are included among the assets, those are
    * moved to the top-level of the repository. If an scss/answers.scss,
-   * answers-variables.scss, scss/fonts.scss, scss/header.scss, scss/footer.scss, or a
-   * scss/page.scss are included among the assets, those are moved under the static dir
-   * of the repository.
+   * scss/answers-variables.scss, scss/fonts.scss, scss/header.scss, scss/footer.scss, or
+   * an scss/page.scss are included among the assets, those are moved under the static
+   * dir of the repository.
    *
    * @param {string} localPath The path of the imported theme in the repository.
    */
