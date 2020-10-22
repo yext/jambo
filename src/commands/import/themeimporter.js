@@ -83,20 +83,31 @@ exports.ThemeImporter = class {
         }
       };
 
-      copyFileIfExists(
-        `${staticAssetsPath}/scss/answers.scss`,
-        `${siteStaticDir}/scss/answers.scss`);
-      copyFileIfExists(
-        `${staticAssetsPath}/scss/answers-variables.scss`,
-        `${siteStaticDir}/scss/answers-variables.scss`);
-      copyFileIfExists(
-        `${staticAssetsPath}/scss/fonts.scss`,
-        `${siteStaticDir}/scss/fonts.scss`);
+      const scssFiles = [
+        'answers.scss',
+        'answers-variables.scss',
+        'fonts.scss',
+        'header.scss',
+        'footer.scss',
+        'page.scss'
+      ]
 
-      copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
-      copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
-      copyFileIfExists(`${staticAssetsPath}/package.json`, 'package.json');
-      copyFileIfExists(`${staticAssetsPath}/package-lock.json`, 'package-lock.json');
+      scssFiles.forEach(fileName => {
+        copyFileIfExists(
+          `${staticAssetsPath}/scss/${fileName}`,
+          `${siteStaticDir}/scss/${fileName}`);
+      });
+
+      const topLevelStaticFiles = [
+        'Gruntfile.js',
+        'webpack-config.js',
+        'package.json',
+        'package-lock.json'
+      ]
+
+      topLevelStaticFiles.forEach(fileName => {
+        copyFileIfExists(`${staticAssetsPath}/${fileName}`, `${fileName}`);
+      });
     }
   }
 
