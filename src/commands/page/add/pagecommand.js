@@ -42,6 +42,7 @@ class PageCommand {
 
   describe() {
     const pageTemplates = this._getPageTemplates();
+    const pageLayouts = this._getPageLayouts();
     return {
       displayName: 'Add Page',
       params: {
@@ -54,6 +55,11 @@ class PageCommand {
           displayName: 'Page Template',
           type: 'singleoption',
           options: pageTemplates
+        },
+        layout: {
+          displayName: 'Page Layout',
+          type: 'singleoption',
+          options: pageLayouts
         }
       }
     }
@@ -70,6 +76,17 @@ class PageCommand {
     return fs.readdirSync(pageTemplatesDir);
   }
 
+  /**
+   * @returns {Array<string>}
+   */
+  _getPageLayouts() {
+    if (!this.defaultTheme || !this.themesDir) {
+      return [];
+    }
+    const pageLayoutDir = path.resolve(this.themesDir, this.defaultTheme, 'layouts');
+    return fs.readdirSync(pageLayoutDir);
+  }
+
   execute(args) {
     const pageConfiguration = new PageConfiguration(
       { ...args, theme: this.defaultTheme });
@@ -79,9 +96,6 @@ class PageCommand {
     } catch (err) {
       throw new UserError('Failed to add page', err.stack);
     }
-
-
-    console.log(this.jamboConfig)
   }
 }
 
