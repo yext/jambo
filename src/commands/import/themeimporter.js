@@ -66,9 +66,10 @@ exports.ThemeImporter = class {
   /**
    * Copies the static assets from the Theme to the repository, if they exist. If a
    * Gruntfile, webpack-config, or package.json are included among the assets, those are
-   * moved to the top-level of the repository. If a entry.js file, scss/answers.scss, or
-   * answers-variables.scss, scss/fonts.scss are included among the assets, those are
-   * moved under the static dir of the repository.
+   * moved to the top-level of the repository. If scss/answers.scss,
+   * scss/answers-variables.scss, scss/fonts.scss, scss/header.scss, scss/footer.scss, or
+   * scss/page.scss are included among the assets, those are moved under the static dir
+   * of the repository.
    *
    * @param {string} localPath The path of the imported theme in the repository.
    */
@@ -83,20 +84,31 @@ exports.ThemeImporter = class {
         }
       };
 
-      copyFileIfExists(
-        `${staticAssetsPath}/scss/answers.scss`,
-        `${siteStaticDir}/scss/answers.scss`);
-      copyFileIfExists(
-        `${staticAssetsPath}/scss/answers-variables.scss`,
-        `${siteStaticDir}/scss/answers-variables.scss`);
-      copyFileIfExists(
-        `${staticAssetsPath}/scss/fonts.scss`,
-        `${siteStaticDir}/scss/fonts.scss`);
+      const scssFiles = [
+        'answers.scss',
+        'answers-variables.scss',
+        'fonts.scss',
+        'header.scss',
+        'footer.scss',
+        'page.scss'
+      ];
 
-      copyFileIfExists(`${staticAssetsPath}/Gruntfile.js`, 'Gruntfile.js');
-      copyFileIfExists(`${staticAssetsPath}/webpack-config.js`, 'webpack-config.js');
-      copyFileIfExists(`${staticAssetsPath}/package.json`, 'package.json');
-      copyFileIfExists(`${staticAssetsPath}/package-lock.json`, 'package-lock.json');
+      scssFiles.forEach(fileName => {
+        copyFileIfExists(
+          `${staticAssetsPath}/scss/${fileName}`,
+          `${siteStaticDir}/scss/${fileName}`);
+      });
+
+      const topLevelStaticFiles = [
+        'Gruntfile.js',
+        'webpack-config.js',
+        'package.json',
+        'package-lock.json'
+      ];
+
+      topLevelStaticFiles.forEach(fileName => {
+        copyFileIfExists(`${staticAssetsPath}/${fileName}`, `${fileName}`);
+      });
     }
   }
 
