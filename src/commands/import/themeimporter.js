@@ -11,11 +11,70 @@ const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/usererror');
 const { isCustomError } = require('../../utils/errorutils');
 const { FileNames } = require('../../constants');
+const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
 
-exports.ThemeImporter = class {
+/**
+ * ThemeImporter imports a specified theme into the themes directory.
+ */
+class ThemeImporter{
   constructor(jamboConfig) {
     this.config = jamboConfig;
     this._themeShadower = new ThemeShadower(jamboConfig);
+  }
+
+  getAlias() {
+    return 'import';
+  }
+
+  getShortDescription() {
+    return 'import a theme';
+  }
+
+  args() {
+    return {
+      theme: new ArgumentMetadata({
+        type: ArgumentType.STRING,
+        description: 'theme to import',
+        isRequired: true
+      }),
+      addThemeAsSubmodule: new ArgumentMetadata({
+        type: ArgumentType.BOOLEAN, 
+        description: 'import the theme as a submodule',
+        defaultValue: true
+      }),
+    }
+  }
+
+  describe() {
+    const importableThemes = this._getImportableThemes();
+    return {
+      displayName: 'Import Theme',
+      params: {
+        theme: {
+          displayName: 'Theme',
+          type: 'singleoption',
+          required: true,
+          options: importableThemes
+        },
+        addAsSubmodule: {
+          displayName: 'Add as Submodule',
+          type: 'boolean',
+          default: true
+        }
+      }
+    }
+  }
+
+  /**
+   * @returns {Array<string>} the names of the available themes to be imported
+   */
+  _getImportableThemes() {
+    return ['answers-hitchhiker-theme'];
+  }
+
+  execute(args) {
+    this._import(args.theme, args.addAsSubmodule)
+      .then(console.log);
   }
 
   /**
@@ -28,7 +87,7 @@ exports.ThemeImporter = class {
    *                            containing the new submodule's local path. If the addition
    *                            failed, a Promise containing the error.
    */
-  async import(themeName, addAsSubmodule) {
+  async _import(themeName, addAsSubmodule) {
     if (!this.config) {
       throw new UserError('No jambo.json found. Did you `jambo init` yet?');
     }
@@ -139,3 +198,5 @@ exports.ThemeImporter = class {
     }
   }
 }
+
+module.exports = ThemeImporter;

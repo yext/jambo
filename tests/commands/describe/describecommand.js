@@ -1,34 +1,18 @@
 const DescribeCommand = require('../../../src/commands/describe/describecommand');
+const BuildCommand = require('../../../src/commands/build/buildcommand');
 const JamboTranslationExtractor = require('../../../src/commands/extract-translations/jambotranslationextractor');
-
-const mockRepoReader = {
-  getImportableThemes() {
-    return ['answers-hitchhiker-theme'];
-  },
-  getPageTemplates() {
-    return ['page1', 'page2']
-  },
-  getThemeFiles() {
-    return [
-      'themes/answers-hitchhiker-theme/test1.hbs',
-      'themes/answers-hitchhiker-theme/test2.hbs',
-    ];
-  },
-  getCards() {
-    return [
-      'themes/answers-hitchhiker-theme/cards/card1',
-      'themes/answers-hitchhiker-theme/cards/card2'
-    ];
-  },
-  getDirectAnswerCards() {
-    return [
-      'themes/answers-hitchhiker-theme/directanswercards/card1',
-      'themes/answers-hitchhiker-theme/directanswercards/card2'
-    ];
-  }
-};
+const UpgradeCommand = require('../../../src/commands/upgrade/themeupgrader');
 
 const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
+const mockJamboConfig = {
+  dirs: {
+    themes: 'themes',
+    config: 'config',
+    output: 'public',
+    pages: 'pages'
+  },
+  defaultTheme: 'answers-hitchhiker-theme'
+}
 const mockCardCommand = {
   getAlias() {
     return 'card';
@@ -81,17 +65,111 @@ const mockDirectAnswerCardCommand = {
     }
   }
 }
-
+const mockInitCommand = {
+  getAlias() {
+    return 'init';
+  },
+  describe() {
+    return {
+      displayName: 'Initialize Jambo',
+      params: {
+        theme: {
+          displayName: 'Theme',
+          type: 'singleoption',
+          options: ['answers-hitchhiker-theme']
+        },
+        addThemeAsSubmodule: {
+          displayName: 'Add Theme as Submodule',
+          type: 'boolean',
+          default: true
+        }
+      }
+    }
+  }
+}
+const mockPageCommand = {
+  getAlias() {
+    return 'page';
+  },
+  describe() {
+    return {
+      displayName: 'Add Page',
+      params: {
+        name: {
+          displayName: 'Page Name',
+          type: 'string',
+          required: true
+        },
+        template: {
+          displayName: 'Page Template',
+          type: 'singleoption',
+          options: ['page1', 'page2']
+        }
+      }
+    }
+  }
+}
+const mockImportCommand = {
+  getAlias() {
+    return 'import';
+  },
+  describe() {
+    return {
+      displayName: 'Import Theme',
+      params: {
+        theme: {
+          displayName: 'Theme',
+          type: 'singleoption',
+          required: true,
+          options: ['answers-hitchhiker-theme']
+        },
+        addAsSubmodule: {
+          displayName: 'Add as Submodule',
+          type: 'boolean',
+          default: true
+        }
+      }
+    }
+  }
+}
+const mockOverrideCommand = {
+  getAlias() {
+    return 'override';
+  },
+  describe() {
+    return {
+      displayName: 'Override Theme',
+      params: {
+        path: {
+          displayName: 'Path to Override',
+          type: 'filesystem',
+          required: true,
+          options: [
+            'themes/answers-hitchhiker-theme/test1.hbs',
+            'themes/answers-hitchhiker-theme/test2.hbs',
+          ]
+        }
+      }
+    }
+  }
+}
 const extractTranslationsCommand = new JamboTranslationExtractor({});
+const buildCommand = new BuildCommand({});
+const upgradeCommand = new UpgradeCommand(mockJamboConfig);
 
 describe('DescribeCommand works correctly', () => {
   new DescribeCommand(
     () => [
+      buildCommand,
+      mockInitCommand,
+      mockPageCommand,
+      mockImportCommand,
+      mockOverrideCommand,
+      upgradeCommand,
       extractTranslationsCommand,
       mockCardCommand,
       mockDirectAnswerCardCommand
     ],
-    mockRepoReader
   ).execute();
   const descriptions = consoleSpy.mock.calls[0][0];
 

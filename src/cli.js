@@ -34,5 +34,5 @@ if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
 }
 
 const yargsFactory = new YargsFactory(commandRegistry);
-const options = yargsFactory.createCLI(jamboConfig);
+const options = yargsFactory.createCLI();
 options.argv;

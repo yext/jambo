@@ -4,7 +4,8 @@
 const ArgumentType = {
   STRING: 'string',
   NUMBER: 'number',
-  BOOLEAN: 'boolean'
+  BOOLEAN: 'boolean',
+  ARRAY: 'array'
 }
 Object.freeze(ArgumentType);
 

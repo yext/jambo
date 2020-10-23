@@ -5,8 +5,10 @@ const simpleGit = require('simple-git/promise');
 const { getRepoForTheme } = require('../../utils/gitutils');
 const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
+const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
 const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/systemerror');
+const { isCustomError } = require('../../utils/errorutils');
 
 const git = simpleGit();
 
@@ -15,11 +17,60 @@ const git = simpleGit();
  * version. It first detects whether the theme was imported as a submodule or raw files,
  * then handles the upgrade accordingly.
  */
-exports.ThemeUpgrader = class {
+class ThemeUpgrader {
   constructor(jamboConfig) {
-    this.config = jamboConfig;
+    this.jamboConfig = jamboConfig;
     this._themesDir = jamboConfig.dirs.themes;
     this.upgradeScript = 'upgrade.js';
+  }
+
+  getAlias() {
+    return 'upgrade';
+  }
+
+  getShortDescription() {
+    return 'upgrade the default theme to the latest version';
+  }
+
+  args() {
+    return {
+      disableScript: new ArgumentMetadata({
+        type: ArgumentType.BOOLEAN,
+        description: 'disable execution of ./upgrade.js after the upgrade is done',
+        isRequired: false
+      }),
+      isLegacy: new ArgumentMetadata({
+        type: ArgumentType.BOOLEAN,
+        description: 'whether to pass the --isLegacy flag to ./upgrade.js',
+        isRequired: false
+      })
+    }
+  }
+
+  describe() {
+    return {
+      displayName: 'Upgrade Theme',
+      params: {
+        isLegacy: {
+          displayName: 'Is Legacy Upgrade',
+          type: 'boolean'
+        },
+        disableScript: {
+          displayName: 'Disable Upgrade Script',
+          type: 'boolean'
+        }
+      }
+    }
+  }
+
+  execute(args) {
+    this._upgrade(this.jamboConfig.defaultTheme, args.disableScript, args.isLegacy)
+      .catch(err => {
+        if (isCustomError(err)) {
+          throw err;
+        }
+        throw new SystemError(err.message, err.stack);
+      });
   }
 
   /**
@@ -28,7 +79,7 @@ exports.ThemeUpgrader = class {
    * @param {boolean} disableScript
    * @param {booolean} isLegacy
    */
-  async upgrade(themeName, disableScript, isLegacy) {
+  async _upgrade(themeName, disableScript, isLegacy) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
       throw new UserError(
@@ -65,7 +116,7 @@ exports.ThemeUpgrader = class {
       customCommand.addArgs(['--isLegacy'])
     }
     const { stdout, stderr } =
-      new CustomCommandExecuter(this.config).execute(customCommand);
+      new CustomCommandExecuter(this.jamboConfig).execute(customCommand);
     const stdoutString = stdout.toString().trim();
     const stderrString = stderr.toString().trim();
     stdoutString && console.log(stdoutString);
@@ -106,3 +157,5 @@ exports.ThemeUpgrader = class {
       .find(p => p === submodulePath)
   }
 }
+
+module.exports = ThemeUpgrader;
