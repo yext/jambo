@@ -21,7 +21,7 @@ const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
 
-exports.SitesGenerator = class {
+class SitesGenerator {
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
@@ -430,3 +430,5 @@ exports.SitesGenerator = class {
     return translations;
   }
 }
+
+module.exports = SitesGenerator;

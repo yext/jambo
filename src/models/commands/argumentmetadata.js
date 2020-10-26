@@ -10,13 +10,28 @@ const ArgumentType = {
 Object.freeze(ArgumentType);
 
 /**
+ * An enum describing the different kinds of elements an array argument
+ * could have.
+ * 
+ * ItemType is an optional parameter to be used when an array argument
+ * is specified.
+ */
+const ItemType = {
+  STRING: 'string',
+  NUMBER: 'number',
+  BOOLEAN: 'boolean'
+}
+Object.freeze(ItemType);
+
+/**
  * A class outlining the metadata for a {@link Command}'s argument. This includes
  * the type of the argument's values, if it is required, and an optional default.
  */
 class ArgumentMetadata {
-  constructor({ type, description, isRequired, defaultValue, displayName }) {
+  constructor({ type, itemType, description, isRequired, defaultValue, displayName }) {
     this._displayName = displayName;
     this._type = type;
+    this._itemType = itemType;
     this._isRequired = isRequired;
     this._defaultValue = defaultValue;
     this._description = description;
@@ -27,6 +42,13 @@ class ArgumentMetadata {
    */
   getType() {
     return this._type;
+  }
+
+  /**
+   * @returns {ItemType} The type of the elements of an array argument.
+   */
+  getItemType() {
+    return this._itemType;
   }
 
   /**
@@ -71,4 +93,4 @@ class ArgumentMetadata {
     };
   }
 }
-module.exports = { ArgumentMetadata, ArgumentType };
+module.exports = { ArgumentMetadata, ArgumentType, ItemType };
