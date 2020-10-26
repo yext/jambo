@@ -1,5 +1,5 @@
 const { SitesGenerator } = require('./sitesgenerator');
-const { ArgumentMetadata, ArgumentType, ItemType } = require('../../models/commands/argumentmetadata');
+const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
 
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the
@@ -22,7 +22,7 @@ class BuildCommand {
     return {
       jsonEnvVars: new ArgumentMetadata({
         type: ArgumentType.ARRAY,
-        itemType: ItemType.STRING, 
+        itemType: ArgumentType.STRING, 
         description: 'environment variables containing JSON',
         isRequired: false
       })

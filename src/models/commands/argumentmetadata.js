@@ -10,20 +10,6 @@ const ArgumentType = {
 Object.freeze(ArgumentType);
 
 /**
- * An enum describing the different kinds of elements an array argument
- * could have.
- * 
- * ItemType is an optional parameter to be used when an array argument
- * is specified.
- */
-const ItemType = {
-  STRING: 'string',
-  NUMBER: 'number',
-  BOOLEAN: 'boolean'
-}
-Object.freeze(ItemType);
-
-/**
  * A class outlining the metadata for a {@link Command}'s argument. This includes
  * the type of the argument's values, if it is required, and an optional default.
  */
@@ -93,4 +79,4 @@ class ArgumentMetadata {
     };
   }
 }
-module.exports = { ArgumentMetadata, ArgumentType, ItemType };
+module.exports = { ArgumentMetadata, ArgumentType };

@@ -1,3 +1,7 @@
+/**
+ * PageConfiguration contains all of the configuration information
+ * needed to create a new page in a Jambo repository.
+ */
 class PageConfiguration {
   constructor({ name, layout, theme, template }) {
     this._name = name;
