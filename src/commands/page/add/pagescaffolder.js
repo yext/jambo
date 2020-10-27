@@ -5,32 +5,7 @@ const {
   assign 
 } = require('comment-json');
 
-exports.PageConfiguration = class {
-  constructor({ name, layout, theme, template }) {
-    this._name = name;
-    this._layout = layout;
-    this._theme = theme;
-    this._template = template;
-  }
-
-  getName() {
-    return this._name;
-  }
-
-  getLayout() {
-    return this._layout;
-  }
-
-  getTheme() {
-    return this._theme;
-  }
-
-  getTemplate() {
-    return this._template;
-  }
-}
-
-exports.PageScaffolder = class {
+class PageScaffolder {
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
@@ -59,3 +34,4 @@ exports.PageScaffolder = class {
     fs.writeFileSync(configFilePath, stringify(configContents, null, 2));
   }
 }
+module.exports = PageScaffolder;

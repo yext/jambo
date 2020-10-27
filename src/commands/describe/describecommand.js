@@ -1,20 +1,13 @@
-const Descriptions = require('./descriptions');
-const DescribeCommandRepoReader = require('./describecommandreporeader');
-
 /**
  * DescribeCommand outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
 module.exports = class DescribeCommand {
-  constructor(getCommands, repoReader) {
+  constructor(getCommands) {
     /**
      * @type {Function}
      */
     this.getCommands = getCommands;
-    /**
-     * @type {DescribeCommandRepoReader}
-     */
-    this.repoReader = repoReader;
   }
 
   getAlias() {
@@ -37,10 +30,7 @@ module.exports = class DescribeCommand {
   }
 
   execute() {
-    const builtInDescriptions = this._getBuiltInDescriptions();
-    const commandModuleDescriptions = this._getCommandDescriptions();
-    const descriptions = { ...builtInDescriptions, ...commandModuleDescriptions};
-    console.dir(descriptions, {
+    console.dir(this._getCommandDescriptions(), {
       depth: null,
       maxArrayLength: null
     });
@@ -57,23 +47,5 @@ module.exports = class DescribeCommand {
       }
     }
     return descriptions;
-  }
-
-  /**
-   * Returns the descriptions for all built-in commands that have
-   * not been migrated to the {@link Command} interface.
-   */
-  _getBuiltInDescriptions() {
-    const importableThemes = this.repoReader.getImportableThemes();
-    const pageTemplates = this.repoReader.getPageTemplates();
-    const themeFiles = this.repoReader.getThemeFiles();
-    return {
-      init: Descriptions.init(importableThemes),
-      page: Descriptions.page(pageTemplates),
-      import: Descriptions.import(importableThemes),
-      override: Descriptions.override(themeFiles),
-      upgrade: Descriptions.upgrade(),
-      build: Descriptions.build(),
-    }
   }
 }

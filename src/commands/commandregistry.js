@@ -1,6 +1,13 @@
+const InitCommand = require('../commands/init/initcommand');
+const PageScaffolder = require('./page/add/pagescaffolder');
+const PageCommand = require('./page/add/pagecommand');
+const OverrideCommand = require('./override/overridecommand');
+const SitesGenerator = require('./build/sitesgenerator');
+const BuildCommand = require('./build/buildcommand');
 const DescribeCommand = require('../commands/describe/describecommand');
-const DescribeCommandRepoReader = require('../commands/describe/describecommandreporeader');
 const JamboTranslationExtractor = require('./extract-translations/jambotranslationextractor');
+const ThemeImporter = require('./import/themeimporter');
+const ThemeUpgrader = require('./upgrade/themeupgrader');
 
 /**
  * A registry that maintains the built-in and custom commands for the Jambo CLI.
@@ -43,13 +50,25 @@ class CommandRegistry {
    * @returns {Map<string, Command>} The built-in commmands, keyed by name.
    */
   _initialize() {
-    // TODO: Add built-in commands as they are cut over to the new pattern.
-    const describeRepoReader = new DescribeCommandRepoReader(this._jamboConfig);
+    const initCommand = new InitCommand();
+    const importCommand = new ThemeImporter(this._jamboConfig);
+    const pageScaffolder = new PageScaffolder(this._jamboConfig);
+    const pageCommand = new PageCommand(this._jamboConfig, pageScaffolder);
+    const overrideCommand = new OverrideCommand(this._jamboConfig);
+    const sitesGenerator = new SitesGenerator(this._jamboConfig);
+    const buildCommand = new BuildCommand(sitesGenerator);
+    const upgradeCommand = new ThemeUpgrader(this._jamboConfig);
     const describeCommand =
-      new DescribeCommand(() => this.getCommands(), describeRepoReader);
+      new DescribeCommand(() => this.getCommands());
     const extractTranslationsCommand =
       new JamboTranslationExtractor(this._jamboConfig);
     return {
+      [ initCommand.getAlias() ]: initCommand,
+      [ importCommand.getAlias() ]: importCommand,
+      [ pageCommand.getAlias() ]: pageCommand,
+      [ overrideCommand.getAlias() ]: overrideCommand,
+      [ buildCommand.getAlias() ]: buildCommand,
+      [ upgradeCommand.getAlias() ]: upgradeCommand,
       [ describeCommand.getAlias() ]: describeCommand,
       [ extractTranslationsCommand.getAlias() ]: extractTranslationsCommand
     };
