@@ -18,7 +18,7 @@ const git = simpleGit();
  * then handles the upgrade accordingly.
  */
 class ThemeUpgrader {
-  constructor(jamboConfig) {
+  constructor(jamboConfig = {}) {
     this.jamboConfig = jamboConfig;
     this._themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.upgradeScript = 'upgrade.js';
@@ -43,6 +43,11 @@ class ThemeUpgrader {
         type: ArgumentType.BOOLEAN,
         description: 'whether to pass the --isLegacy flag to ./upgrade.js',
         isRequired: false
+      }),
+      branch: new ArgumentMetadata({
+        type: ArgumentType.STRING,
+        description: 'the branch of the theme to upgrade to',
+        isRequired: false
       })
     }
   }
@@ -58,13 +63,20 @@ class ThemeUpgrader {
         disableScript: {
           displayName: 'Disable Upgrade Script',
           type: 'boolean'
+        },
+        branch: {
+          displayName: 'Branch of theme to upgrade to',
+          type: 'string'
         }
       }
     }
   }
 
   execute(args) {
-    this._upgrade(this.jamboConfig.defaultTheme, args.disableScript, args.isLegacy)
+    this._upgrade(this.jamboConfig.defaultTheme,
+      args.disableScript,
+      args.isLegacy,
+      args.branch)
       .catch(err => {
         if (isCustomError(err)) {
           throw err;
@@ -78,16 +90,18 @@ class ThemeUpgrader {
    * @param {string} themeName
    * @param {boolean} disableScript
    * @param {booolean} isLegacy
+   * @param {string} branch
    */
-  async _upgrade(themeName, disableScript, isLegacy) {
+  async _upgrade(themeName, disableScript, isLegacy, branch) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
       throw new UserError(
         `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
+    const updateBranch = branch ? branch : 'master';
     await this._isGitSubmodule(themePath)
-      ? await this._upgradeSubmodule(themePath)
-      : await this._recloneTheme(themeName, themePath);
+      ? await this._upgradeSubmodule(themePath, updateBranch)
+      : await this._recloneTheme(themeName, themePath, updateBranch);
     const upgradeScriptPath = path.join(themePath, this.upgradeScript);
     if (!disableScript) {
       this._executePostUpgradeScript(upgradeScriptPath, isLegacy);
@@ -128,21 +142,25 @@ class ThemeUpgrader {
   /**
    * Calls "git update --remote" on the given submodule path, which
    * updates the given submodule to the most recent version of the branch
-   * it is set to track (defaults to master).
+   * it is set to track (defaults to master). If a branch is specified,
+   * the given submodule will be updated to the provided branch.
    * @param {string} submodulePath
+   * @param {string} updateBranch
    */
-  async _upgradeSubmodule(submodulePath) {
-    await git.submoduleUpdate(['--remote', submodulePath])
+  async _upgradeSubmodule(submodulePath, updateBranch) {
+    await git.subModule(['set-branch', '--branch', updateBranch]);
+    await git.submoduleUpdate(['--remote', submodulePath]);
   }
 
   /**
    * @param {string} themeName
    * @param {string} themePath
+   * @param {string} updateBranch
    */
-  async _recloneTheme(themeName, themePath) {
+  async _recloneTheme(themeName, themePath, updateBranch) {
     await fs.remove(themePath);
     const themeRepoURL = getRepoForTheme(themeName);
-    await git.clone(themeRepoURL, themePath);
+    await git.clone(themeRepoURL, themePath, ['--branch', updateBranch]);
   }
 
   /**
