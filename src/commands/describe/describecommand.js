@@ -30,9 +30,7 @@ module.exports = class DescribeCommand {
   }
 
   execute() {
-    const commandModuleDescriptions = this._getCommandDescriptions();
-    const descriptions = {...commandModuleDescriptions};
-    console.dir(descriptions, {
+    console.dir(this._getCommandDescriptions(), {
       depth: null,
       maxArrayLength: null
     });
