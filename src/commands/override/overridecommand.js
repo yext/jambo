@@ -8,7 +8,7 @@ const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argume
  */
 class OverrideCommand {
   constructor(jamboConfig = {}) {
-    this.jamboConfig = jamboConfig
+    this.jamboConfig = jamboConfig;
     this.themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.defaultTheme = jamboConfig.defaultTheme;
   }
