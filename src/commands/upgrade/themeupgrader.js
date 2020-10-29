@@ -100,7 +100,7 @@ class ThemeUpgrader {
    * @param {string} themeName The name of the theme
    * @param {boolean} disableScript Whether to run the upgrade script
    * @param {boolean} isLegacy Whether to use the isLegacy flag in the upgrade script
-   * @param {string} branch The nameo of the branch to upgrade to
+   * @param {string} branch The name of the branch to upgrade to
    */
   async _upgrade({ themeName, disableScript, isLegacy, branch }) {
     const themePath = path.join(this._themesDir, themeName);
