@@ -34,12 +34,19 @@ class PageCommand {
         type: ArgumentType.STRING,
         description: 'template to use within theme',
         isRequired: false
+      }),
+      locales: new ArgumentMetadata({
+        type: ArgumentType.ARRAY,
+        itemType: ArgumentType.STRING,
+        description: 'locales the page should support',
+        isRequired: false
       })
     }
   }
 
   describe() {
     const pageTemplates = this._getPageTemplates();
+    const pageLocales = this._getPageLocales();
     return {
       displayName: 'Add Page',
       params: {
@@ -52,13 +59,18 @@ class PageCommand {
           displayName: 'Page Template',
           type: 'singleoption',
           options: pageTemplates
+        },
+        locales: {
+          displayName: 'Page Locales',
+          type: 'multioption',
+          options: pageLocales
         }
       }
     }
   }
 
   /**
-   * @returns {Array<string>}
+   * @returns {Array<string>} The page templates available in the theme
    */
   _getPageTemplates() {
     if (!this.defaultTheme || !this.themesDir) {
@@ -66,6 +78,28 @@ class PageCommand {
     }
     const pageTemplatesDir = path.resolve(this.themesDir, this.defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
+  }
+  
+  /**
+   * @returns {Array<string>} The locales that are configured in locale_configs.json
+   */
+  _getPageLocales() {
+    const configDir = this.jamboConfig.dirs.config;
+    const localeConfig = path.resolve(configDir, 'locale_config.json');
+    if (!configDir || ! localeConfig) {
+      return [];
+    }
+
+    const pageLocales = [];
+    const localeContentsRaw = fs.readFileSync(localeConfig);
+    const localeContentsJson = JSON.parse(localeContentsRaw);
+    for (const locale in localeContentsJson.localeConfig) {
+      // a page has 'en' locale by default, so it won't be listed as an option
+      if (locale !== 'en') {
+        pageLocales.push(locale);
+      }
+    }
+    return pageLocales;
   }
 
   execute(args) {
