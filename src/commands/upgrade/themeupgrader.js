@@ -76,40 +76,46 @@ class ThemeUpgrader {
 
   async _getThemeBranches() {
     const branchesGit = simpleGit(
-      path.join(this._themesDir, this.jamboConfig.defaultTheme),
-      { binary: 'git' });
+      path.join(this._themesDir, this.jamboConfig.defaultTheme));
     const branches = await branchesGit.branch(['--remote']);
     return branches.all.map(branch => branch.replace('origin/', ''))
   }
 
   execute(args) {
-    this._upgrade(this.jamboConfig.defaultTheme, args)
-      .catch(err => {
-        if (isCustomError(err)) {
-          throw err;
-        }
-        throw new SystemError(err.message, err.stack);
-      });
+    this._upgrade({
+      themeName: this.jamboConfig.defaultTheme,
+      disableScript: args.disableScript,
+      isLegacy: args.isLegacy,
+      branch: args.branch
+    }).catch(err => {
+      if (isCustomError(err)) {
+        throw err;
+      }
+      throw new SystemError(err.message, err.stack);
+    });
   }
 
   /**
    * Upgrades the given theme to the latest version.
-   * @param {any} args The arguments provided to the upgrade command.
+   * @param {string} themeName The name of the theme
+   * @param {boolean} disableScript Whether to run the upgrade script
+   * @param {boolean} isLegacy Whether to use the isLegacy flag in the upgrade script
+   * @param {string} branch The nameo of the branch to upgrade to
    */
-  async _upgrade(themeName, args) {
+  async _upgrade({ themeName, disableScript, isLegacy, branch }) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
       throw new UserError(
         `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
     await this._isGitSubmodule(themePath)
-      ? await this._upgradeSubmodule(themePath, args.branch)
-      : await this._recloneTheme(themeName, themePath, args.branch);
+      ? await this._upgradeSubmodule(themePath, branch)
+      : await this._recloneTheme(themeName, themePath, branch);
     const upgradeScriptPath = path.join(themePath, this.upgradeScript);
-    if (!args.disableScript) {
-      this._executePostUpgradeScript(upgradeScriptPath, args.isLegacy);
+    if (!disableScript) {
+      this._executePostUpgradeScript(upgradeScriptPath, isLegacy);
     }
-    if (args.isLegacy) {
+    if (isLegacy) {
       console.log(
         'Legacy theme upgrade complete. \n' +
         'You may need to manually reinstall dependencies (e.g. an npm install).');
