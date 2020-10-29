@@ -151,8 +151,8 @@ class ThemeUpgrader {
   /**
    * Calls "git update --remote" on the given submodule path, which
    * updates the given submodule to the most recent version of the branch
-   * it is set to track (defaults to master). If a branch is specified,
-   * the given submodule will be updated to the provided branch.
+   * it is set to track. If a branch is specified, the given submodule 
+   * will be updated to the provided branch.
    * @param {string} submodulePath
    * @param {string} branch
    */
