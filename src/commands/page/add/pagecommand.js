@@ -38,7 +38,7 @@ class PageCommand {
       locales: new ArgumentMetadata({
         type: ArgumentType.ARRAY,
         itemType: ArgumentType.STRING,
-        description: 'locales the page should support',
+        description: 'locales to generate the page for',
         isRequired: false
       })
     }
@@ -81,7 +81,7 @@ class PageCommand {
   }
   
   /**
-   * @returns {Array<string>} The locales that are configured in locale_configs.json
+   * @returns {Array<string>} The locales that are configured in locale_config.json
    */
   _getPageLocales() {
     const configDir = this.jamboConfig.dirs.config;
