@@ -55,8 +55,6 @@ module.exports = class DescribeCommand {
         }
       }
     );
-    return Promise.all(describePromises).then(
-      () => descriptions
-    );
+    return Promise.all(describePromises).then(() => descriptions);
   }
 }

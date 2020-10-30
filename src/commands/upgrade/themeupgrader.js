@@ -78,7 +78,10 @@ class ThemeUpgrader {
     const branchesGit = simpleGit(
       path.join(this._themesDir, this.jamboConfig.defaultTheme));
     const branches = await branchesGit.branch(['--remote']);
-    return branches.all.map(branch => branch.replace('origin/', ''))
+    return branches.all.map(branch => 
+      // regex replaces 'origin/' only at the beginning of a string
+      branch.replace(/^(origin\/)/, '')
+    );
   }
 
   execute(args) {
