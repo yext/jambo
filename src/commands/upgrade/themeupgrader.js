@@ -18,7 +18,7 @@ const git = simpleGit();
  * then handles the upgrade accordingly.
  */
 class ThemeUpgrader {
-  constructor(jamboConfig) {
+  constructor(jamboConfig = {}) {
     this.jamboConfig = jamboConfig;
     this._themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.upgradeScript = 'upgrade.js';
@@ -43,11 +43,17 @@ class ThemeUpgrader {
         type: ArgumentType.BOOLEAN,
         description: 'whether to pass the --isLegacy flag to ./upgrade.js',
         isRequired: false
+      }),
+      branch: new ArgumentMetadata({
+        type: ArgumentType.STRING,
+        description: 'the branch of the theme to upgrade to',
+        isRequired: false
       })
     }
   }
 
-  describe() {
+  async describe() {
+    const branches = await this._getThemeBranches();
     return {
       displayName: 'Upgrade Theme',
       params: {
@@ -58,36 +64,56 @@ class ThemeUpgrader {
         disableScript: {
           displayName: 'Disable Upgrade Script',
           type: 'boolean'
+        },
+        branch: {
+          displayName: 'Branch of theme to upgrade to',
+          type: 'singleoption',
+          options: branches
         }
       }
     }
   }
 
+  async _getThemeBranches() {
+    const branchesGit = simpleGit(
+      path.join(this._themesDir, this.jamboConfig.defaultTheme));
+    const branches = await branchesGit.branch(['--remote']);
+    return branches.all.map(branch => 
+      // regex replaces 'origin/' only at the beginning of a string
+      branch.replace(/^(origin\/)/, '')
+    );
+  }
+
   execute(args) {
-    this._upgrade(this.jamboConfig.defaultTheme, args.disableScript, args.isLegacy)
-      .catch(err => {
-        if (isCustomError(err)) {
-          throw err;
-        }
-        throw new SystemError(err.message, err.stack);
-      });
+    this._upgrade({
+      themeName: this.jamboConfig.defaultTheme,
+      disableScript: args.disableScript,
+      isLegacy: args.isLegacy,
+      branch: args.branch
+    }).catch(err => {
+      if (isCustomError(err)) {
+        throw err;
+      }
+      throw new SystemError(err.message, err.stack);
+    });
   }
 
   /**
    * Upgrades the given theme to the latest version.
-   * @param {string} themeName
-   * @param {boolean} disableScript
-   * @param {booolean} isLegacy
+   * @param {string} themeName The name of the theme
+   * @param {boolean} disableScript Whether to run the upgrade script
+   * @param {boolean} isLegacy Whether to use the isLegacy flag in the upgrade script
+   * @param {string} branch The name of the branch to upgrade to
    */
-  async _upgrade(themeName, disableScript, isLegacy) {
+  async _upgrade({ themeName, disableScript, isLegacy, branch }) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
       throw new UserError(
         `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
     await this._isGitSubmodule(themePath)
-      ? await this._upgradeSubmodule(themePath)
-      : await this._recloneTheme(themeName, themePath);
+      ? await this._upgradeSubmodule(themePath, branch)
+      : await this._recloneTheme(themeName, themePath, branch);
     const upgradeScriptPath = path.join(themePath, this.upgradeScript);
     if (!disableScript) {
       this._executePostUpgradeScript(upgradeScriptPath, isLegacy);
@@ -128,21 +154,28 @@ class ThemeUpgrader {
   /**
    * Calls "git update --remote" on the given submodule path, which
    * updates the given submodule to the most recent version of the branch
-   * it is set to track (defaults to master).
+   * it is set to track. If a branch is specified, the given submodule 
+   * will be updated to the provided branch.
    * @param {string} submodulePath
+   * @param {string} branch
    */
-  async _upgradeSubmodule(submodulePath) {
-    await git.submoduleUpdate(['--remote', submodulePath])
+  async _upgradeSubmodule(submodulePath, branch) {
+    if (branch) {
+      await git.subModule(['set-branch', '--branch', branch]);
+    }
+    await git.submoduleUpdate(['--remote', submodulePath]);
   }
 
   /**
    * @param {string} themeName
    * @param {string} themePath
+   * @param {string} branch
    */
-  async _recloneTheme(themeName, themePath) {
+  async _recloneTheme(themeName, themePath, branch) {
     await fs.remove(themePath);
     const themeRepoURL = getRepoForTheme(themeName);
-    await git.clone(themeRepoURL, themePath);
+    const updateBranch = branch || 'master';
+    await git.clone(themeRepoURL, themePath, ['--branch', updateBranch]);
   }
 
   /**

@@ -29,8 +29,8 @@ module.exports = class DescribeCommand {
     return {};
   }
 
-  execute() {
-    console.dir(this._getCommandDescriptions(), {
+  async execute() {
+    console.dir(await this._getCommandDescriptions(), {
       depth: null,
       maxArrayLength: null
     });
@@ -41,11 +41,20 @@ module.exports = class DescribeCommand {
    */
   _getCommandDescriptions() {
     const descriptions = {};
-    for (const command of this.getCommands()) {
-      if (command.getAlias() !== 'describe') {
-        descriptions[command.getAlias()] = command.describe();
+    const describePromises = this.getCommands().map(
+      command => {
+        const describeValue = command.describe();
+        if (describeValue.then && typeof describeValue.then === 'function') {
+          return describeValue.then(
+            (value) => { descriptions[command.getAlias()] = value; }
+          );
+        } else {
+          if (command.getAlias() !== 'describe') {
+            descriptions[command.getAlias()] = describeValue;
+          }
+        }
       }
-    }
-    return descriptions;
+    );
+    return Promise.all(describePromises).then(() => descriptions);
   }
 }
