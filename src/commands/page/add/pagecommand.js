@@ -85,28 +85,36 @@ class PageCommand {
    *                          locale_config.json
    */
   _getAdditionalPageLocales() {
+    if (!this.jamboConfig) {
+      return [];
+    }
+
     const configDir = this.jamboConfig.dirs.config;
     if (!configDir) {
       return [];
     }
+
     const localeConfig = path.resolve(configDir, 'locale_config.json');
-    try {
-      if (fs.existsSync(localeConfig)) {
-        const pageLocales = [];
-        const localeContentsRaw = fs.readFileSync(localeConfig);
-        const localeContentsJson = JSON.parse(localeContentsRaw);
-        const defaultLocale = localeContentsJson.default;
-        for (const locale in localeContentsJson.localeConfig) {
-          // don't list the default locale as an option
-          if (locale !== defaultLocale) {
-            pageLocales.push(locale);
-          }
-        }
-        return pageLocales;
-      }
-    } catch(err) {
+    if (!fs.existsSync(localeConfig)) {
       return [];
     }
+
+    const pageLocales = [];
+    const localeContentsRaw = fs.readFileSync(localeConfig);
+    let localeContentsJson;
+    try {
+      localeContentsJson = JSON.parse(localeContentsRaw);
+    } catch(err) {
+      throw new UserError('locale_config.json is not formatted properly ', err.stack);
+    }
+    const defaultLocale = localeContentsJson.default;
+    for (const locale in localeContentsJson.localeConfig) {
+      // don't list the default locale as an option
+      if (locale !== defaultLocale) {
+        pageLocales.push(locale);
+      }
+    }
+    return pageLocales;
   }
 
   execute(args) {
