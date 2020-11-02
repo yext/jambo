@@ -38,7 +38,7 @@ class PageCommand {
       locales: new ArgumentMetadata({
         type: ArgumentType.ARRAY,
         itemType: ArgumentType.STRING,
-        description: 'locales to generate the page for',
+        description: 'additional locales to generate the page for',
         isRequired: false
       })
     }
@@ -61,7 +61,7 @@ class PageCommand {
           options: pageTemplates
         },
         locales: {
-          displayName: 'Page Locales',
+          displayName: 'Additional Page Locales',
           type: 'multioption',
           options: pageLocales
         }
