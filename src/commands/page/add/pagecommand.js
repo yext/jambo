@@ -85,17 +85,21 @@ class PageCommand {
    */
   _getPageLocales() {
     const configDir = this.jamboConfig.dirs.config;
+    if (!configDir) {
+      return [];
+    }
     const localeConfig = path.resolve(configDir, 'locale_config.json');
-    if (!configDir || ! localeConfig) {
+    if (!localeConfig) {
       return [];
     }
 
     const pageLocales = [];
     const localeContentsRaw = fs.readFileSync(localeConfig);
     const localeContentsJson = JSON.parse(localeContentsRaw);
+    const defaultLocale = localeContentsJson.default;
     for (const locale in localeContentsJson.localeConfig) {
-      // a page has 'en' locale by default, so it won't be listed as an option
-      if (locale !== 'en') {
+      // don't list the default locale as an option
+      if (locale !== defaultLocale) {
         pageLocales.push(locale);
       }
     }
