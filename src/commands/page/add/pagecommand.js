@@ -46,7 +46,7 @@ class PageCommand {
 
   describe() {
     const pageTemplates = this._getPageTemplates();
-    const pageLocales = this._getPageLocales();
+    const pageLocales = this._getAdditionalPageLocales();
     return {
       displayName: 'Add Page',
       params: {
@@ -81,29 +81,32 @@ class PageCommand {
   }
   
   /**
-   * @returns {Array<string>} The locales that are configured in locale_config.json
+   * @returns {Array<string>} The additional locales that are configured in 
+   *                          locale_config.json
    */
-  _getPageLocales() {
+  _getAdditionalPageLocales() {
     const configDir = this.jamboConfig.dirs.config;
     if (!configDir) {
       return [];
     }
     const localeConfig = path.resolve(configDir, 'locale_config.json');
-    if (!localeConfig) {
+    try {
+      if (fs.existsSync(localeConfig)) {
+        const pageLocales = [];
+        const localeContentsRaw = fs.readFileSync(localeConfig);
+        const localeContentsJson = JSON.parse(localeContentsRaw);
+        const defaultLocale = localeContentsJson.default;
+        for (const locale in localeContentsJson.localeConfig) {
+          // don't list the default locale as an option
+          if (locale !== defaultLocale) {
+            pageLocales.push(locale);
+          }
+        }
+        return pageLocales;
+      }
+    } catch(err) {
       return [];
     }
-
-    const pageLocales = [];
-    const localeContentsRaw = fs.readFileSync(localeConfig);
-    const localeContentsJson = JSON.parse(localeContentsRaw);
-    const defaultLocale = localeContentsJson.default;
-    for (const locale in localeContentsJson.localeConfig) {
-      // don't list the default locale as an option
-      if (locale !== defaultLocale) {
-        pageLocales.push(locale);
-      }
-    }
-    return pageLocales;
   }
 
   execute(args) {
