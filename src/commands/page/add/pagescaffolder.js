@@ -15,6 +15,7 @@ class PageScaffolder {
     const theme = pageConfiguration.getTheme();
     const template = pageConfiguration.getTemplate();
     const layout = pageConfiguration.getLayout();
+    const locales = pageConfiguration.getLocales();
 
     const htmlFilePath = `${this.config.dirs.pages}/${name}.html.hbs`;
     const configFilePath = `${this.config.dirs.config}/${name}.json`;
@@ -32,6 +33,15 @@ class PageScaffolder {
       fs.writeFileSync(htmlFilePath, '');
     }
     fs.writeFileSync(configFilePath, stringify(configContents, null, 2));
+
+    if (locales) {
+      locales.forEach(locale => this._createConfigForLocale(name, locale));
+    }
+  }
+
+  _createConfigForLocale(name, locale) {
+    const configFilePath = `${this.config.dirs.config}/${name}.${locale}.json`;
+    fs.writeFileSync(configFilePath, '{}');
   }
 }
 module.exports = PageScaffolder;
