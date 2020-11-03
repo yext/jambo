@@ -25,12 +25,15 @@ const mockInitCommand = {
 }
 
 describe('DescribeCommand works correctly', () => {
-  new DescribeCommand(
-    () => [
-      mockInitCommand,
-    ],
-  ).execute();
-  const descriptions = consoleSpy.mock.calls[0][0];
+  let descriptions;
+  beforeAll(async () => {
+    await new DescribeCommand(
+      () => [
+        mockInitCommand,
+      ],
+    ).execute();
+    descriptions = consoleSpy.mock.calls[0][0];
+  })
 
   it('describes all provided commands and nothing more', () => {
     const expectedCommandNames = [
