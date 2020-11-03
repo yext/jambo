@@ -105,7 +105,7 @@ class PageCommand {
     try {
       localeContentsJson = JSON.parse(localeContentsRaw);
     } catch(err) {
-      throw new UserError('locale_config.json is not formatted properly ', err.stack);
+      throw new UserError('Could not parse locale_config.json ', err.stack);
     }
     const defaultLocale = localeContentsJson.default;
     for (const locale in localeContentsJson.localeConfig) {
