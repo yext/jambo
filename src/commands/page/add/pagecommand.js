@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { parse } = require('comment-json');
 const PageConfiguration = require ('./pageconfiguration');
 const UserError = require('../../../errors/usererror');
 const { ArgumentMetadata, ArgumentType } = require('../../../models/commands/argumentmetadata');
@@ -34,12 +35,19 @@ class PageCommand {
         type: ArgumentType.STRING,
         description: 'template to use within theme',
         isRequired: false
+      }),
+      locales: new ArgumentMetadata({
+        type: ArgumentType.ARRAY,
+        itemType: ArgumentType.STRING,
+        description: 'additional locales to generate the page for',
+        isRequired: false
       })
     }
   }
 
   describe() {
     const pageTemplates = this._getPageTemplates();
+    const pageLocales = this._getAdditionalPageLocales();
     return {
       displayName: 'Add Page',
       params: {
@@ -52,13 +60,18 @@ class PageCommand {
           displayName: 'Page Template',
           type: 'singleoption',
           options: pageTemplates
+        },
+        locales: {
+          displayName: 'Additional Page Locales',
+          type: 'multioption',
+          options: pageLocales
         }
       }
     }
   }
 
   /**
-   * @returns {Array<string>}
+   * @returns {Array<string>} The page templates available in the theme
    */
   _getPageTemplates() {
     if (!this.defaultTheme || !this.themesDir) {
@@ -66,6 +79,43 @@ class PageCommand {
     }
     const pageTemplatesDir = path.resolve(this.themesDir, this.defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
+  }
+  
+  /**
+   * @returns {Array<string>} The additional locales that are configured in 
+   *                          locale_config.json
+   */
+  _getAdditionalPageLocales() {
+    if (!this.jamboConfig) {
+      return [];
+    }
+
+    const configDir = this.jamboConfig.dirs.config;
+    if (!configDir) {
+      return [];
+    }
+
+    const localeConfig = path.resolve(configDir, 'locale_config.json');
+    if (!fs.existsSync(localeConfig)) {
+      return [];
+    }
+
+    const pageLocales = [];
+    const localeContentsRaw = fs.readFileSync(localeConfig, 'utf-8');
+    let localeContentsJson;
+    try {
+      localeContentsJson = parse(localeContentsRaw);
+    } catch(err) {
+      throw new UserError('Could not parse locale_config.json ', err.stack);
+    }
+    const defaultLocale = localeContentsJson.default;
+    for (const locale in localeContentsJson.localeConfig) {
+      // don't list the default locale as an option
+      if (locale !== defaultLocale) {
+        pageLocales.push(locale);
+      }
+    }
+    return pageLocales;
   }
 
   execute(args) {

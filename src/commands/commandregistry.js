@@ -45,7 +45,7 @@ class CommandRegistry {
 
   /**
    * Initializes the registry with the built-in Jambo commands: init, import, page,
-   * override, build, and upgrade.
+   * override, build, upgrade, describe, and extract-tranlations.
    *
    * @returns {Map<string, Command>} The built-in commmands, keyed by name.
    */

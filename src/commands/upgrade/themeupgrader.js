@@ -75,6 +75,9 @@ class ThemeUpgrader {
   }
 
   async _getThemeBranches() {
+    if (!this._themesDir) {
+      return [];
+    }
     const branchesGit = simpleGit(
       path.join(this._themesDir, this.jamboConfig.defaultTheme));
     const branches = await branchesGit.branch(['--remote']);
