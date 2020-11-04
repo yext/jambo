@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { parse } = require('comment-json');
 const PageConfiguration = require ('./pageconfiguration');
 const UserError = require('../../../errors/usererror');
 const { ArgumentMetadata, ArgumentType } = require('../../../models/commands/argumentmetadata');
@@ -100,10 +101,10 @@ class PageCommand {
     }
 
     const pageLocales = [];
-    const localeContentsRaw = fs.readFileSync(localeConfig);
+    const localeContentsRaw = fs.readFileSync(localeConfig, 'utf-8');
     let localeContentsJson;
     try {
-      localeContentsJson = JSON.parse(localeContentsRaw);
+      localeContentsJson = parse(localeContentsRaw);
     } catch(err) {
       throw new UserError('Could not parse locale_config.json ', err.stack);
     }
