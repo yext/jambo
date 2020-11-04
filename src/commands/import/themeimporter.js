@@ -158,6 +158,16 @@ class ThemeImporter{
           `${siteStaticDir}/scss/${fileName}`);
       });
 
+      const jsFiles = [
+        'formatters-custom.js'
+      ];
+
+      jsFiles.forEach(fileName => {
+        copyFileIfExists(
+          `${staticAssetsPath}/js/${fileName}`,
+          `${siteStaticDir}/js/${fileName}`);
+      });
+
       const topLevelStaticFiles = [
         'Gruntfile.js',
         'webpack-config.js',
