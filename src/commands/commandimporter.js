@@ -31,7 +31,6 @@ class CommandImporter {
         .map(directoryPath => path.resolve(mergedDirectory, directoryPath))
         .filter(directoryPath => fs.lstatSync(directoryPath).isFile())
         .map(require)
-        .map(commandFn => commandFn(this._jamboConfig));
 
       // Remove the merged commands directory from 'public' as it is no longer needed.
       fs.removeSync(mergedDirectory);

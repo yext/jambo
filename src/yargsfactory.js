@@ -4,8 +4,9 @@ const yargs = require('yargs');
  * Creates the {@link yargs} instance that powers the Jambo CLI.
  */
 class YargsFactory {
-  constructor(commandRegistry) {
+  constructor(commandRegistry, jamboConfig) {
     this._commandRegistry = commandRegistry;
+    this._jamboConfig = jamboConfig;
   }
 
   /**
@@ -28,11 +29,13 @@ class YargsFactory {
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
   _createCommandModule(command) {
+    const commandClass = command.obj;
+    const commandInstance = command.constructor(this._jamboConfig);
     return {
-      command: command.getAlias(),
-      desc: command.getShortDescription(),
+      command: commandClass.getAlias(),
+      desc: commandClass.getShortDescription(),
       builder: yargs => {
-        Object.entries(command.args()).forEach(([name, metadata]) => {
+        Object.entries(commandClass.args()).forEach(([name, metadata]) => {
           yargs.option(
             name,
             {
@@ -43,7 +46,9 @@ class YargsFactory {
             });
         });
       },
-      handler: argv => command.execute(argv)
+      handler: argv => {
+        commandInstance.execute(argv);
+      }
     }
   }
 }

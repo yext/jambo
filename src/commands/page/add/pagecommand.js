@@ -11,20 +11,19 @@ const { ArgumentMetadata, ArgumentType } = require('../../../models/commands/arg
 class PageCommand {
   constructor(jamboConfig = {}, pageScaffolder) {
     this.jamboConfig = jamboConfig;
-    this.themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.defaultTheme = jamboConfig.defaultTheme;
     this.pageScaffolder = pageScaffolder;
   }
 
-  getAlias() {
+  static getAlias() {
     return 'page';
   }
 
-  getShortDescription() {
+  static getShortDescription() {
     return 'add a new page to the site';
   }
 
-  args() {
+  static args() {
     return {
       name: new ArgumentMetadata({
         type: ArgumentType.STRING,
@@ -45,9 +44,9 @@ class PageCommand {
     }
   }
 
-  describe() {
-    const pageTemplates = this._getPageTemplates();
-    const pageLocales = this._getAdditionalPageLocales();
+  static describe(jamboConfig) {
+    const pageTemplates = this._getPageTemplates(jamboConfig);
+    const pageLocales = this._getAdditionalPageLocales(jamboConfig);
     return {
       displayName: 'Add Page',
       params: {
@@ -73,11 +72,13 @@ class PageCommand {
   /**
    * @returns {Array<string>} The page templates available in the theme
    */
-  _getPageTemplates() {
-    if (!this.defaultTheme || !this.themesDir) {
+  static _getPageTemplates(jamboConfig) {
+    const defaultTheme = jamboConfig.defaultTheme;
+    const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
+    if (!defaultTheme || !themesDir) {
       return [];
     }
-    const pageTemplatesDir = path.resolve(this.themesDir, this.defaultTheme, 'templates');
+    const pageTemplatesDir = path.resolve(themesDir, defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
   }
   
@@ -85,12 +86,12 @@ class PageCommand {
    * @returns {Array<string>} The additional locales that are configured in 
    *                          locale_config.json
    */
-  _getAdditionalPageLocales() {
-    if (!this.jamboConfig) {
+  static _getAdditionalPageLocales(jamboConfig) {
+    if (!jamboConfig) {
       return [];
     }
 
-    const configDir = this.jamboConfig.dirs.config;
+    const configDir = jamboConfig.dirs.config;
     if (!configDir) {
       return [];
     }

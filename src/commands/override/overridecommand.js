@@ -9,19 +9,18 @@ const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argume
 class OverrideCommand {
   constructor(jamboConfig = {}) {
     this.jamboConfig = jamboConfig;
-    this.themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.defaultTheme = jamboConfig.defaultTheme;
   }
 
-  getAlias() {
+  static getAlias() {
     return 'override';
   }
 
-  getShortDescription() {
+  static getShortDescription() {
     return 'override a path within the theme';
   }
 
-  args() {
+  static args() {
     return{
       path: new ArgumentMetadata({
         type: ArgumentType.STRING,
@@ -31,8 +30,8 @@ class OverrideCommand {
     }
   }
 
-  describe() {
-    const themeFiles = this._getThemeFiles();
+  static describe(jamboConfig) {
+    const themeFiles = this._getThemeFiles(jamboConfig);
     return {
       displayName: 'Override Theme',
       params: {
@@ -49,12 +48,13 @@ class OverrideCommand {
   /**
    * @returns {Array<string>} all theme files that can be overridden
    */
-  _getThemeFiles() {
-    if (!this.themesDir) {
+  static _getThemeFiles(jamboConfig) {
+    const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
+    if (!themesDir) {
       return [];
     }
     const themeFiles = []
-    fileSystem.recurseSync(this.themesDir, function(filepath) {
+    fileSystem.recurseSync(themesDir, function(filepath) {
       if (fs.statSync(filepath).isFile()) {
         themeFiles.push(filepath);
       }

@@ -22,15 +22,15 @@ class ThemeImporter{
     this._themeShadower = new ThemeShadower(jamboConfig);
   }
 
-  getAlias() {
+  static getAlias() {
     return 'import';
   }
 
-  getShortDescription() {
+  static getShortDescription() {
     return 'import a theme';
   }
 
-  args() {
+  static args() {
     return {
       theme: new ArgumentMetadata({
         type: ArgumentType.STRING,
@@ -45,7 +45,7 @@ class ThemeImporter{
     }
   }
 
-  describe() {
+  static describe() {
     const importableThemes = this._getImportableThemes();
     return {
       displayName: 'Import Theme',
@@ -68,7 +68,7 @@ class ThemeImporter{
   /**
    * @returns {Array<string>} the names of the available themes to be imported
    */
-  _getImportableThemes() {
+  static _getImportableThemes() {
     return ['answers-hitchhiker-theme'];
   }
 

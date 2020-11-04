@@ -20,19 +20,18 @@ const git = simpleGit();
 class ThemeUpgrader {
   constructor(jamboConfig = {}) {
     this.jamboConfig = jamboConfig;
-    this._themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.upgradeScript = 'upgrade.js';
   }
 
-  getAlias() {
+  static getAlias() {
     return 'upgrade';
   }
 
-  getShortDescription() {
+  static getShortDescription() {
     return 'upgrade the default theme to the latest version';
   }
 
-  args() {
+  static args() {
     return {
       disableScript: new ArgumentMetadata({
         type: ArgumentType.BOOLEAN,
@@ -52,8 +51,8 @@ class ThemeUpgrader {
     }
   }
 
-  async describe() {
-    const branches = await this._getThemeBranches();
+  static async describe(jamboConfig) {
+    const branches = await this._getThemeBranches(jamboConfig);
     return {
       displayName: 'Upgrade Theme',
       params: {
@@ -74,12 +73,14 @@ class ThemeUpgrader {
     }
   }
 
-  async _getThemeBranches() {
-    if (!this._themesDir) {
+  static async _getThemeBranches(jamboConfig) {
+    const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
+    const defaultTheme = jamboConfig.defaultTheme;
+    if (!themesDir || !defaultTheme) {
       return [];
     }
     const branchesGit = simpleGit(
-      path.join(this._themesDir, this.jamboConfig.defaultTheme));
+      path.join(themesDir, defaultTheme));
     const branches = await branchesGit.branch(['--remote']);
     return branches.all.map(branch => 
       // regex replaces 'origin/' only at the beginning of a string

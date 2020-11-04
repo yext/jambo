@@ -33,6 +33,6 @@ if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
   });
 }
 
-const yargsFactory = new YargsFactory(commandRegistry);
+const yargsFactory = new YargsFactory(commandRegistry, jamboConfig);
 const options = yargsFactory.createCLI();
 options.argv;

@@ -25,7 +25,7 @@ class CommandRegistry {
    * @param {Command} command
    */
   addCommand(command) {
-    this._commandsByName[command.getAlias()] = command;
+    this._commandsByName[command.obj.getAlias()] = command;
   }
 
   /**
@@ -50,27 +50,43 @@ class CommandRegistry {
    * @returns {Map<string, Command>} The built-in commmands, keyed by name.
    */
   _initialize() {
-    const initCommand = new InitCommand();
-    const importCommand = new ThemeImporter(this._jamboConfig);
     const pageScaffolder = new PageScaffolder(this._jamboConfig);
-    const pageCommand = new PageCommand(this._jamboConfig, pageScaffolder);
-    const overrideCommand = new OverrideCommand(this._jamboConfig);
     const sitesGenerator = new SitesGenerator(this._jamboConfig);
-    const buildCommand = new BuildCommand(sitesGenerator);
-    const upgradeCommand = new ThemeUpgrader(this._jamboConfig);
-    const describeCommand =
-      new DescribeCommand(() => this.getCommands());
-    const extractTranslationsCommand =
-      new JamboTranslationExtractor(this._jamboConfig);
     return {
-      [ initCommand.getAlias() ]: initCommand,
-      [ importCommand.getAlias() ]: importCommand,
-      [ pageCommand.getAlias() ]: pageCommand,
-      [ overrideCommand.getAlias() ]: overrideCommand,
-      [ buildCommand.getAlias() ]: buildCommand,
-      [ upgradeCommand.getAlias() ]: upgradeCommand,
-      [ describeCommand.getAlias() ]: describeCommand,
-      [ extractTranslationsCommand.getAlias() ]: extractTranslationsCommand
+      [ InitCommand.getAlias() ]: {
+        obj: InitCommand, 
+        constructor: () => new InitCommand()
+      },
+      [ ThemeImporter.getAlias() ]: {
+        obj: ThemeImporter, 
+        constructor: jamboConfig => new ThemeImporter(jamboConfig)
+      },
+      [ PageCommand.getAlias() ]: {
+        obj: PageCommand, 
+        constructor: jamboConfig => new PageCommand(jamboConfig, pageScaffolder)
+      },
+      [ OverrideCommand.getAlias() ]: {
+        obj: OverrideCommand, 
+        constructor: jamboConfig => new OverrideCommand(jamboConfig)
+      },
+      [ BuildCommand.getAlias() ]: {
+        obj: BuildCommand, 
+        constructor: () => new BuildCommand(sitesGenerator)
+      },
+      [ ThemeUpgrader.getAlias() ]: {
+        obj: ThemeUpgrader, 
+        constructor: jamboConfig => new ThemeUpgrader(jamboConfig)
+      },
+      [ DescribeCommand.getAlias() ]: {
+        obj: DescribeCommand, 
+        constructor: jamboConfig => new DescribeCommand(
+          jamboConfig, 
+          () => this.getCommands())
+      },
+      [ JamboTranslationExtractor.getAlias() ]: {
+        obj: JamboTranslationExtractor, 
+        constructor: jamboConfig => new JamboTranslationExtractor(jamboConfig)
+      }
     };
   }
 }
