@@ -44,7 +44,7 @@ module.exports = class DescribeCommand {
     const descriptions = {};
     const describePromises = this.getCommands().map(
       command => {
-        const commandClass = command.obj;
+        const commandClass = command.clazz;
         const describeValue = commandClass.describe(this._jamboConfig);
         if (describeValue.then && typeof describeValue.then === 'function') {
           return describeValue.then(

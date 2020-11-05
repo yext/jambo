@@ -3,7 +3,7 @@ const DescribeCommand = require('../../../src/commands/describe/describecommand'
 const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
 const mockJamboConfig = {};
 const mockInitCommand = {
-  obj: {
+  clazz: {
     getAlias() {
       return 'init';
     },

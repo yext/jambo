@@ -5,10 +5,9 @@ const fs = require('fs-extra');
  * Imports all custom {@link Command}s within a Jambo repository.
  */
 class CommandImporter {
-  constructor(outputDir, jamboConfig, themeDir) {
+  constructor(outputDir, themeDir) {
     this._outputDir = outputDir;
     this._themeDir = themeDir;
-    this._jamboConfig = jamboConfig;
   }
 
   /**

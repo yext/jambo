@@ -29,8 +29,7 @@ class YargsFactory {
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
   _createCommandModule(command) {
-    const commandClass = command.obj;
-    const commandInstance = command.constructor(this._jamboConfig);
+    const commandClass = command.clazz;
     return {
       command: commandClass.getAlias(),
       desc: commandClass.getShortDescription(),
@@ -47,6 +46,7 @@ class YargsFactory {
         });
       },
       handler: argv => {
+        const commandInstance = command.factory(this._jamboConfig);
         commandInstance.execute(argv);
       }
     }

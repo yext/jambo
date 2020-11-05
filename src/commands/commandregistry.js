@@ -21,11 +21,11 @@ class CommandRegistry {
   /**
    * Registers a new {@link Command} with the CLI.
    *
-   * @param {string} name
-   * @param {Command} command
+   * @param {Object} command an object containing a command's class and a way
+   *                         to instantiate the class
    */
   addCommand(command) {
-    this._commandsByName[command.obj.getAlias()] = command;
+    this._commandsByName[command.clazz.getAlias()] = command;
   }
 
   /**
@@ -54,38 +54,38 @@ class CommandRegistry {
     const sitesGenerator = new SitesGenerator(this._jamboConfig);
     return {
       [ InitCommand.getAlias() ]: {
-        obj: InitCommand, 
-        constructor: () => new InitCommand()
+        clazz: InitCommand, 
+        factory: () => new InitCommand()
       },
       [ ThemeImporter.getAlias() ]: {
-        obj: ThemeImporter, 
-        constructor: jamboConfig => new ThemeImporter(jamboConfig)
+        clazz: ThemeImporter, 
+        factory: jamboConfig => new ThemeImporter(jamboConfig)
       },
       [ PageCommand.getAlias() ]: {
-        obj: PageCommand, 
-        constructor: jamboConfig => new PageCommand(jamboConfig, pageScaffolder)
+        clazz: PageCommand, 
+        factory: jamboConfig => new PageCommand(jamboConfig, pageScaffolder)
       },
       [ OverrideCommand.getAlias() ]: {
-        obj: OverrideCommand, 
-        constructor: jamboConfig => new OverrideCommand(jamboConfig)
+        clazz: OverrideCommand, 
+        factory: jamboConfig => new OverrideCommand(jamboConfig)
       },
       [ BuildCommand.getAlias() ]: {
-        obj: BuildCommand, 
-        constructor: () => new BuildCommand(sitesGenerator)
+        clazz: BuildCommand, 
+        factory: () => new BuildCommand(sitesGenerator)
       },
       [ ThemeUpgrader.getAlias() ]: {
-        obj: ThemeUpgrader, 
-        constructor: jamboConfig => new ThemeUpgrader(jamboConfig)
+        clazz: ThemeUpgrader, 
+        factory: jamboConfig => new ThemeUpgrader(jamboConfig)
       },
       [ DescribeCommand.getAlias() ]: {
-        obj: DescribeCommand, 
-        constructor: jamboConfig => new DescribeCommand(
+        clazz: DescribeCommand, 
+        factory: jamboConfig => new DescribeCommand(
           jamboConfig, 
           () => this.getCommands())
       },
       [ JamboTranslationExtractor.getAlias() ]: {
-        obj: JamboTranslationExtractor, 
-        constructor: jamboConfig => new JamboTranslationExtractor(jamboConfig)
+        clazz: JamboTranslationExtractor, 
+        factory: jamboConfig => new JamboTranslationExtractor(jamboConfig)
       }
     };
   }
