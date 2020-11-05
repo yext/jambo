@@ -1,6 +1,6 @@
-const { SitesGenerator } = require('./sitesgenerator');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
 const UserError = require('../../errors/usererror');
+const { isCustomError } = require('../../utils/errorutils');
 
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the

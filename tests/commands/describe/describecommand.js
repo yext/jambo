@@ -3,24 +3,22 @@ const DescribeCommand = require('../../../src/commands/describe/describecommand'
 const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
 const mockJamboConfig = {};
 const mockInitCommand = {
-  clazz: {
-    getAlias() {
-      return 'init';
-    },
-    describe() {
-      return {
-        displayName: 'Initialize Jambo',
-        params: {
-          theme: {
-            displayName: 'Theme',
-            type: 'singleoption',
-            options: ['answers-hitchhiker-theme']
-          },
-          addThemeAsSubmodule: {
-            displayName: 'Add Theme as Submodule',
-            type: 'boolean',
-            default: true
-          }
+  getAlias() {
+    return 'init';
+  },
+  describe() {
+    return {
+      displayName: 'Initialize Jambo',
+      params: {
+        theme: {
+          displayName: 'Theme',
+          type: 'singleoption',
+          options: ['answers-hitchhiker-theme']
+        },
+        addThemeAsSubmodule: {
+          displayName: 'Add Theme as Submodule',
+          type: 'boolean',
+          default: true
         }
       }
     }

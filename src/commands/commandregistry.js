@@ -1,8 +1,6 @@
 const InitCommand = require('../commands/init/initcommand');
-const PageScaffolder = require('./page/add/pagescaffolder');
 const PageCommand = require('./page/add/pagecommand');
 const OverrideCommand = require('./override/overridecommand');
-const SitesGenerator = require('./build/sitesgenerator');
 const BuildCommand = require('./build/buildcommand');
 const DescribeCommand = require('../commands/describe/describecommand');
 const JamboTranslationExtractor = require('./extract-translations/jambotranslationextractor');
@@ -21,11 +19,10 @@ class CommandRegistry {
   /**
    * Registers a new {@link Command} with the CLI.
    *
-   * @param {Object} command an object containing a command's class and a way
-   *                         to instantiate the class
+   * @param {Command} command 
    */
   addCommand(command) {
-    this._commandsByName[command.clazz.getAlias()] = command;
+    this._commandsByName[command.getAlias()] = command;
   }
 
   /**
@@ -50,43 +47,15 @@ class CommandRegistry {
    * @returns {Map<string, Command>} The built-in commmands, keyed by name.
    */
   _initialize() {
-    const pageScaffolder = new PageScaffolder(this._jamboConfig);
-    const sitesGenerator = new SitesGenerator(this._jamboConfig);
     return {
-      [ InitCommand.getAlias() ]: {
-        clazz: InitCommand, 
-        factory: () => new InitCommand()
-      },
-      [ ThemeImporter.getAlias() ]: {
-        clazz: ThemeImporter, 
-        factory: jamboConfig => new ThemeImporter(jamboConfig)
-      },
-      [ PageCommand.getAlias() ]: {
-        clazz: PageCommand, 
-        factory: jamboConfig => new PageCommand(jamboConfig, pageScaffolder)
-      },
-      [ OverrideCommand.getAlias() ]: {
-        clazz: OverrideCommand, 
-        factory: jamboConfig => new OverrideCommand(jamboConfig)
-      },
-      [ BuildCommand.getAlias() ]: {
-        clazz: BuildCommand, 
-        factory: () => new BuildCommand(sitesGenerator)
-      },
-      [ ThemeUpgrader.getAlias() ]: {
-        clazz: ThemeUpgrader, 
-        factory: jamboConfig => new ThemeUpgrader(jamboConfig)
-      },
-      [ DescribeCommand.getAlias() ]: {
-        clazz: DescribeCommand, 
-        factory: jamboConfig => new DescribeCommand(
-          jamboConfig, 
-          () => this.getCommands())
-      },
-      [ JamboTranslationExtractor.getAlias() ]: {
-        clazz: JamboTranslationExtractor, 
-        factory: jamboConfig => new JamboTranslationExtractor(jamboConfig)
-      }
+      [ InitCommand.getAlias() ]: InitCommand,
+      [ ThemeImporter.getAlias() ]: ThemeImporter,
+      [ PageCommand.getAlias() ]: PageCommand,
+      [ OverrideCommand.getAlias() ]: OverrideCommand,
+      [ BuildCommand.getAlias() ]: BuildCommand,
+      [ ThemeUpgrader.getAlias() ]: ThemeUpgrader,
+      [ DescribeCommand.getAlias() ]: DescribeCommand,
+      [ JamboTranslationExtractor.getAlias() ]: JamboTranslationExtractor
     };
   }
 }

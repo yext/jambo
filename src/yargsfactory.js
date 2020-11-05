@@ -1,4 +1,7 @@
 const yargs = require('yargs');
+const PageScaffolder = require('./commands/page/add/pagescaffolder');
+const SitesGenerator = require('./commands/build/sitesgenerator');
+
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
@@ -15,7 +18,7 @@ class YargsFactory {
    */
   createCLI() {
     const cli = yargs.usage('Usage: $0 <cmd> <operation> [options]');
-    
+
     this._commandRegistry.getCommands().forEach(command => {
       cli.command(this._createCommandModule(command));
     });
@@ -29,12 +32,11 @@ class YargsFactory {
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
   _createCommandModule(command) {
-    const commandClass = command.clazz;
     return {
-      command: commandClass.getAlias(),
-      desc: commandClass.getShortDescription(),
+      command: command.getAlias(),
+      desc: command.getShortDescription(),
       builder: yargs => {
-        Object.entries(commandClass.args()).forEach(([name, metadata]) => {
+        Object.entries(command.args()).forEach(([name, metadata]) => {
           yargs.option(
             name,
             {
@@ -46,7 +48,26 @@ class YargsFactory {
         });
       },
       handler: argv => {
-        const commandInstance = command.factory(this._jamboConfig);
+        const commandName = command.name;
+        let commandInstance;
+        switch (commandName) {
+          case 'DescribeCommand':
+            commandInstance = new command(
+              this._jamboConfig, 
+              () => this._commandRegistry.getCommands()
+            );
+            break;
+          case 'PageCommand':
+            const pageScaffolder = new PageScaffolder(this._jamboConfig);
+            commandInstance = new command(this._jamboConfig, pageScaffolder);
+            break;
+          case 'BuildCommand':
+            const sitesGenerator = new SitesGenerator(this._jamboConfig);
+            commandInstance = new command(sitesGenerator);
+            break;
+          default:
+            commandInstance = new command(this._jamboConfig);
+        }
         commandInstance.execute(argv);
       }
     }
