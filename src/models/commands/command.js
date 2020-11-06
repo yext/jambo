@@ -6,13 +6,13 @@ class Command {
   /**
    * @returns {string} The alias for the command.
    */
-  getAlias() { }
+  static getAlias() { }
 
   /**
    * @returns {string} A short, one sentence description of the command. This
    *                   description appears as part of the help text in the CLI. 
    */
-  getShortDescription() { }
+  static getShortDescription() { }
 
   /**
    * Executes the command with the provided arguments.
@@ -25,12 +25,13 @@ class Command {
    * @returns {Object<string, ArgumentMetadata>} Descriptions of each argument,
    *                                             keyed by name.
    */
-  args() { }
+  static args() { }
 
   /**
+   * @param {Object} jamboConfig the config of the jambo repository
    * @returns {Object} description of the card command, including paths to 
    *                   all available cards
    */
-  describe() { }
+  static describe(jamboConfig) { }
 }
 module.exports = Command;

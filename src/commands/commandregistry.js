@@ -1,8 +1,6 @@
 const InitCommand = require('../commands/init/initcommand');
-const PageScaffolder = require('./page/add/pagescaffolder');
 const PageCommand = require('./page/add/pagecommand');
 const OverrideCommand = require('./override/overridecommand');
-const SitesGenerator = require('./build/sitesgenerator');
 const BuildCommand = require('./build/buildcommand');
 const DescribeCommand = require('../commands/describe/describecommand');
 const JamboTranslationExtractor = require('./extract-translations/jambotranslationextractor');
@@ -19,58 +17,45 @@ class CommandRegistry {
   }
 
   /**
-   * Registers a new {@link Command} with the CLI.
+   * Registers a new {@link Command} class with the CLI.
    *
-   * @param {string} name
-   * @param {Command} command
+   * @param {Class} commandClass 
    */
-  addCommand(command) {
-    this._commandsByName[command.getAlias()] = command;
+  addCommand(commandClass) {
+    this._commandsByName[commandClass.getAlias()] = commandClass;
   }
 
   /**
    * @param {string} name The command's alias.
-   * @returns {Command} The {@link Command} with the provided alias.
+   * @returns {Class} The {@link Command} class with the provided alias.
    */
   getCommand(name) {
     return this._commandsByName[name];
   }
 
   /**
-   * @returns {Array<Command>} All {@link Command}s registered with Jambo.
+   * @returns {Array<Class>} All {@link Command} classes registered with Jambo.
    */
   getCommands() {
     return Object.values(this._commandsByName);
   }
 
   /**
-   * Initializes the registry with the built-in Jambo commands: init, import, page,
+   * Initializes the registry with classes of built-in Jambo commands: init, import, page,
    * override, build, upgrade, describe, and extract-tranlations.
    *
-   * @returns {Map<string, Command>} The built-in commmands, keyed by name.
+   * @returns {Map<string, Command>} The built-in commmands' classes, keyed by name.
    */
   _initialize() {
-    const initCommand = new InitCommand();
-    const importCommand = new ThemeImporter(this._jamboConfig);
-    const pageScaffolder = new PageScaffolder(this._jamboConfig);
-    const pageCommand = new PageCommand(this._jamboConfig, pageScaffolder);
-    const overrideCommand = new OverrideCommand(this._jamboConfig);
-    const sitesGenerator = new SitesGenerator(this._jamboConfig);
-    const buildCommand = new BuildCommand(sitesGenerator);
-    const upgradeCommand = new ThemeUpgrader(this._jamboConfig);
-    const describeCommand =
-      new DescribeCommand(() => this.getCommands());
-    const extractTranslationsCommand =
-      new JamboTranslationExtractor(this._jamboConfig);
     return {
-      [ initCommand.getAlias() ]: initCommand,
-      [ importCommand.getAlias() ]: importCommand,
-      [ pageCommand.getAlias() ]: pageCommand,
-      [ overrideCommand.getAlias() ]: overrideCommand,
-      [ buildCommand.getAlias() ]: buildCommand,
-      [ upgradeCommand.getAlias() ]: upgradeCommand,
-      [ describeCommand.getAlias() ]: describeCommand,
-      [ extractTranslationsCommand.getAlias() ]: extractTranslationsCommand
+      [ InitCommand.getAlias() ]: InitCommand,
+      [ ThemeImporter.getAlias() ]: ThemeImporter,
+      [ PageCommand.getAlias() ]: PageCommand,
+      [ OverrideCommand.getAlias() ]: OverrideCommand,
+      [ BuildCommand.getAlias() ]: BuildCommand,
+      [ ThemeUpgrader.getAlias() ]: ThemeUpgrader,
+      [ DescribeCommand.getAlias() ]: DescribeCommand,
+      [ JamboTranslationExtractor.getAlias() ]: JamboTranslationExtractor
     };
   }
 }

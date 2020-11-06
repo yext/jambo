@@ -1,6 +1,7 @@
 const DescribeCommand = require('../../../src/commands/describe/describecommand');
 
 const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
+const mockJamboConfig = {};
 const mockInitCommand = {
   getAlias() {
     return 'init';
@@ -28,6 +29,7 @@ describe('DescribeCommand works correctly', () => {
   let descriptions;
   beforeAll(async () => {
     await new DescribeCommand(
+      mockJamboConfig,
       () => [
         mockInitCommand,
       ],

@@ -1,6 +1,6 @@
-const { SitesGenerator } = require('./sitesgenerator');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
 const UserError = require('../../errors/usererror');
+const { isCustomError } = require('../../utils/errorutils');
 
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the
@@ -11,15 +11,15 @@ class BuildCommand {
     this.sitesGenerator = sitesGenerator;
   }
 
-  getAlias() {
+  static getAlias() {
     return 'build';
   }
 
-  getShortDescription() {
+  static getShortDescription() {
     return 'build the static pages for the site';
   }
 
-  args() {
+  static args() {
     return {
       jsonEnvVars: new ArgumentMetadata({
         type: ArgumentType.ARRAY,
@@ -30,7 +30,7 @@ class BuildCommand {
     }
   }
 
-  describe() {
+  static describe() {
     return {
       displayName: 'Build Pages'
     }

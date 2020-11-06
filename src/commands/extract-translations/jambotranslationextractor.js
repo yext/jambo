@@ -12,15 +12,15 @@ class JamboTranslationExtractor {
     this.extractor = new TranslationExtractor();
   }
 
-  getAlias() {
+  static getAlias() {
     return 'extract-translations';
   }
 
-  getShortDescription() {
+  static getShortDescription() {
     return 'extract translated strings from .hbs and .js files';
   }
 
-  args() {
+  static args() {
     return {
       output: new ArgumentMetadata({
         displayName: 'Output Path',
@@ -32,7 +32,7 @@ class JamboTranslationExtractor {
     };
   }
 
-  describe() {
+  static describe() {
     const args = this.args();
     return {
       displayName: 'Extract Translations',

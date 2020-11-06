@@ -5,15 +5,15 @@ const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argume
  * InitCommand initializes the current directory as a Jambo repository.
  */
 class InitCommand {
-  getAlias() {
+  static getAlias() {
     return 'init';
   }
 
-  getShortDescription() {
+  static getShortDescription() {
     return 'initialize the repository';
   }
 
-  args() {
+  static args() {
     return {
       theme: new ArgumentMetadata({
         type: ArgumentType.STRING,
@@ -28,7 +28,7 @@ class InitCommand {
     }
   }
 
-  describe() {
+  static describe() {
     const importableThemes = this._getImportableThemes();
     return {
       displayName: 'Initialize Jambo',
@@ -50,7 +50,7 @@ class InitCommand {
   /**
    * @returns {Array<string>} the names of the available themes to be imported
    */
-  _getImportableThemes() {
+  static _getImportableThemes() {
     return ['answers-hitchhiker-theme'];
   }
 
