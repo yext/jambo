@@ -19,8 +19,8 @@ class YargsFactory {
   createCLI() {
     const cli = yargs.usage('Usage: $0 <cmd> <operation> [options]');
 
-    this._commandRegistry.getCommands().forEach(command => {
-      cli.command(this._createCommandModule(command));
+    this._commandRegistry.getCommands().forEach(commandClazz => {
+      cli.command(this._createCommandModule(commandClazz));
     });
     cli.strict()
 
@@ -28,15 +28,15 @@ class YargsFactory {
   }
 
   /**
-   * @param {Command} command A Jambo {@link Command}.
+   * @param {Class} commandClazz A Jambo {@link Command}'s class'.
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
-  _createCommandModule(command) {
+  _createCommandModule(commandClazz) {
     return {
-      command: command.getAlias(),
-      desc: command.getShortDescription(),
+      command: commandClazz.getAlias(),
+      desc: commandClazz.getShortDescription(),
       builder: yargs => {
-        Object.entries(command.args()).forEach(([name, metadata]) => {
+        Object.entries(commandClazz.args()).forEach(([name, metadata]) => {
           yargs.option(
             name,
             {
@@ -48,29 +48,39 @@ class YargsFactory {
         });
       },
       handler: argv => {
-        const commandName = command.name;
-        let commandInstance;
-        switch (commandName) {
-          case 'DescribeCommand':
-            commandInstance = new command(
-              this._jamboConfig, 
-              () => this._commandRegistry.getCommands()
-            );
-            break;
-          case 'PageCommand':
-            const pageScaffolder = new PageScaffolder(this._jamboConfig);
-            commandInstance = new command(this._jamboConfig, pageScaffolder);
-            break;
-          case 'BuildCommand':
-            const sitesGenerator = new SitesGenerator(this._jamboConfig);
-            commandInstance = new command(sitesGenerator);
-            break;
-          default:
-            commandInstance = new command(this._jamboConfig);
-        }
+        const commandName = commandClazz.name;
+        const commandInstance = this._getCommandInstance(commandName, commandClazz);
         commandInstance.execute(argv);
       }
     }
+  }
+
+  /**
+   * @param {String} commandName the name of the Jambo command's class
+   * @param {Class} commandCLazz the class of the Jambo command
+   * @returns {Command} the instantiated Jambo command
+   */
+  _getCommandInstance(commandName, commandClazz) {
+    let commandInstance;
+    switch (commandName) {
+      case 'DescribeCommand':
+        commandInstance = new commandClazz(
+          this._jamboConfig, 
+          () => this._commandRegistry.getCommands()
+        );
+        break;
+      case 'PageCommand':
+        const pageScaffolder = new PageScaffolder(this._jamboConfig);
+        commandInstance = new commandClazz(this._jamboConfig, pageScaffolder);
+        break;
+      case 'BuildCommand':
+        const sitesGenerator = new SitesGenerator(this._jamboConfig);
+        commandInstance = new commandClazz(sitesGenerator);
+        break;
+      default:
+        commandInstance = new commandClazz(this._jamboConfig);
+    }
+    return commandInstance;
   }
 }
 module.exports = YargsFactory;

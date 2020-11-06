@@ -17,34 +17,34 @@ class CommandRegistry {
   }
 
   /**
-   * Registers a new {@link Command} with the CLI.
+   * Registers a new {@link Command} class with the CLI.
    *
-   * @param {Command} command 
+   * @param {Class} commandClazz 
    */
-  addCommand(command) {
-    this._commandsByName[command.getAlias()] = command;
+  addCommand(commandClazz) {
+    this._commandsByName[commandClazz.getAlias()] = commandClazz;
   }
 
   /**
    * @param {string} name The command's alias.
-   * @returns {Command} The {@link Command} with the provided alias.
+   * @returns {Class} The {@link Command} class with the provided alias.
    */
   getCommand(name) {
     return this._commandsByName[name];
   }
 
   /**
-   * @returns {Array<Command>} All {@link Command}s registered with Jambo.
+   * @returns {Array<Class>} All {@link Command} classes registered with Jambo.
    */
   getCommands() {
     return Object.values(this._commandsByName);
   }
 
   /**
-   * Initializes the registry with the built-in Jambo commands: init, import, page,
+   * Initializes the registry with classes of built-in Jambo commands: init, import, page,
    * override, build, upgrade, describe, and extract-tranlations.
    *
-   * @returns {Map<string, Command>} The built-in commmands, keyed by name.
+   * @returns {Map<string, Command>} The built-in commmands' classes, keyed by name.
    */
   _initialize() {
     return {
