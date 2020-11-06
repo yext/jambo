@@ -19,8 +19,8 @@ class YargsFactory {
   createCLI() {
     const cli = yargs.usage('Usage: $0 <cmd> <operation> [options]');
 
-    this._commandRegistry.getCommands().forEach(commandClazz => {
-      cli.command(this._createCommandModule(commandClazz));
+    this._commandRegistry.getCommands().forEach(commandClass => {
+      cli.command(this._createCommandModule(commandClass));
     });
     cli.strict()
 
@@ -28,15 +28,15 @@ class YargsFactory {
   }
 
   /**
-   * @param {Class} commandClazz A Jambo {@link Command}'s class'.
+   * @param {Class} commandClass A Jambo {@link Command}'s class.
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
-  _createCommandModule(commandClazz) {
+  _createCommandModule(commandClass) {
     return {
-      command: commandClazz.getAlias(),
-      desc: commandClazz.getShortDescription(),
+      command: commandClass.getAlias(),
+      desc: commandClass.getShortDescription(),
       builder: yargs => {
-        Object.entries(commandClazz.args()).forEach(([name, metadata]) => {
+        Object.entries(commandClass.args()).forEach(([name, metadata]) => {
           yargs.option(
             name,
             {
@@ -48,37 +48,36 @@ class YargsFactory {
         });
       },
       handler: argv => {
-        const commandName = commandClazz.name;
-        const commandInstance = this._getCommandInstance(commandName, commandClazz);
+        const commandInstance = this._createCommandInstance(commandClass);
         commandInstance.execute(argv);
       }
     }
   }
 
   /**
-   * @param {String} commandName the name of the Jambo command's class
-   * @param {Class} commandCLazz the class of the Jambo command
+   * @param {Class} commandCLass the class of the Jambo command
    * @returns {Command} the instantiated Jambo command
    */
-  _getCommandInstance(commandName, commandClazz) {
+  _createCommandInstance(commandClass) {
+    const className = commandClass.name;
     let commandInstance;
-    switch (commandName) {
+    switch (className) {
       case 'DescribeCommand':
-        commandInstance = new commandClazz(
+        commandInstance = new commandClass(
           this._jamboConfig, 
           () => this._commandRegistry.getCommands()
         );
         break;
       case 'PageCommand':
         const pageScaffolder = new PageScaffolder(this._jamboConfig);
-        commandInstance = new commandClazz(this._jamboConfig, pageScaffolder);
+        commandInstance = new commandClass(this._jamboConfig, pageScaffolder);
         break;
       case 'BuildCommand':
         const sitesGenerator = new SitesGenerator(this._jamboConfig);
-        commandInstance = new commandClazz(sitesGenerator);
+        commandInstance = new commandClass(sitesGenerator);
         break;
       default:
-        commandInstance = new commandClazz(this._jamboConfig);
+        commandInstance = new commandClass(this._jamboConfig);
     }
     return commandInstance;
   }

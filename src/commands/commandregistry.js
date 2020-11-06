@@ -19,10 +19,10 @@ class CommandRegistry {
   /**
    * Registers a new {@link Command} class with the CLI.
    *
-   * @param {Class} commandClazz 
+   * @param {Class} commandClass 
    */
-  addCommand(commandClazz) {
-    this._commandsByName[commandClazz.getAlias()] = commandClazz;
+  addCommand(commandClass) {
+    this._commandsByName[commandClass.getAlias()] = commandClass;
   }
 
   /**
