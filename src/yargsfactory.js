@@ -55,7 +55,7 @@ class YargsFactory {
   }
 
   /**
-   * @param {Class} commandCLass the class of the Jambo command
+   * @param {Class} commandClass the class of the Jambo command
    * @returns {Command} the instantiated Jambo command
    */
   _createCommandInstance(commandClass) {
