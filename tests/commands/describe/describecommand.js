@@ -1,6 +1,6 @@
 const DescribeCommand = require('../../../src/commands/describe/describecommand');
 
-const consoleSpy = jest.spyOn(console, 'dir').mockImplementation();
+const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 const mockJamboConfig = {};
 const mockInitCommand = {
   getAlias() {
@@ -34,7 +34,7 @@ describe('DescribeCommand works correctly', () => {
         mockInitCommand,
       ],
     ).execute();
-    descriptions = consoleSpy.mock.calls[0][0];
+    descriptions = JSON.parse(consoleSpy.mock.calls[0][0]);
   })
 
   it('describes all provided commands and nothing more', () => {
