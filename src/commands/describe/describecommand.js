@@ -31,10 +31,8 @@ class DescribeCommand {
   }
 
   async execute() {
-    console.dir(await this._getCommandDescriptions(), {
-      depth: null,
-      maxArrayLength: null
-    });
+    const descriptions = await this._getCommandDescriptions();
+    console.log(JSON.stringify(descriptions));
   }
 
   /**
