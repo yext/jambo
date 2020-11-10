@@ -32,11 +32,7 @@ class DescribeCommand {
 
   async execute() {
     const descriptions = await this._getCommandDescriptions();
-<<<<<<< Updated upstream
-    console.log(JSON.stringify(descriptions));
-=======
     console.log(JSON.stringify(descriptions, null, 2));
->>>>>>> Stashed changes
   }
 
   /**
