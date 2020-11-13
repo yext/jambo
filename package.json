@@ -14,7 +14,7 @@
     "jambo": "src/cli.js"
   },
   "author": "nbramblett@yext.com",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/yext/jambo/issues"
   },
