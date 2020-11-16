@@ -315,7 +315,7 @@ class SitesGenerator {
      * Common examples: "mailto:slapshot@gmail.com", "//yext.com", "https://yext.com"
      */
     hbs.registerHelper('isAbsoluteUrl', function(str) {
-      const absoluteURLRegex = /(^\/\/|^[a-zA-Z]+:)/;
+      const absoluteURLRegex = /^(\/\/|[a-zA-Z]+:)/;
       return str && str.match(absoluteURLRegex);
     });
 
