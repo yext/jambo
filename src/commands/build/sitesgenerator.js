@@ -310,6 +310,15 @@ class SitesGenerator {
       return str && str.match(regex);
     });
 
+    /**
+     * Determine whether a URL is absolute or not.
+     * Common examples: "mailto:slapshot@gmail.com", "//yext.com", "https://yext.com"
+     */
+    hbs.registerHelper('isAbsoluteUrl', function(str) {
+      const absoluteURLRegex = /(\/\/|^[a-zA-Z]+:)/;
+      return str && str.match(absoluteURLRegex);
+    });
+
     hbs.registerHelper('all', function(...args) {
       return args.filter(item => item).length === args.length;
     });
