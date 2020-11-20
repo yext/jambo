@@ -13,7 +13,7 @@ const mockInitCommand = {
         theme: {
           displayName: 'Theme',
           type: 'singleoption',
-          options: ['answers-hitchhiker-theme']
+          options: ['answers-hitchhiker-theme', 'answers-custom-theme']
         },
         addThemeAsSubmodule: {
           displayName: 'Add Theme as Submodule',
@@ -52,7 +52,7 @@ describe('DescribeCommand works correctly', () => {
         theme: {
           displayName: 'Theme',
           type: 'singleoption',
-          options: ['answers-hitchhiker-theme']
+          options: ['answers-hitchhiker-theme', 'answers-custom-theme']
         },
         addThemeAsSubmodule: {
           displayName: 'Add Theme as Submodule',

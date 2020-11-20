@@ -38,7 +38,7 @@ class ThemeImporter{
         isRequired: true
       }),
       addThemeAsSubmodule: new ArgumentMetadata({
-        type: ArgumentType.BOOLEAN, 
+        type: ArgumentType.BOOLEAN,
         description: 'import the theme as a submodule',
         defaultValue: true
       }),
@@ -69,7 +69,7 @@ class ThemeImporter{
    * @returns {Array<string>} the names of the available themes to be imported
    */
   static _getImportableThemes() {
-    return ['answers-hitchhiker-theme'];
+    return ['answers-hitchhiker-theme', 'answers-custom-theme'];
   }
 
   execute(args) {

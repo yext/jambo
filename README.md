@@ -24,7 +24,7 @@ npx jambo init
 Initiailizes the current directory as a Jambo repository.
 
 The init command initializes a Jambo repo, and also imports the designated theme.
-Currently, only answers-hitchhiker-theme is supported.
+Currently, answers-hitchhiker-theme and answers-custom-theme are supported.
 
 ###### Optional Arguments
 
