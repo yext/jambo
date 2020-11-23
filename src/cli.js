@@ -17,10 +17,56 @@ process.on('uncaughtException', err => {
   exitWithError(err);
 });
 
-const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
+buildJamboCLI();
 
-const commandRegistry = new CommandRegistry(jamboConfig);
-if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
+/**
+ * @returns {Object} A fully built Jambo CLI instance.
+ */
+function buildJamboCLI() {
+  const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
+  const commandRegistry = new CommandRegistry();
+
+  if (process.argv.length < 3) {
+    console.error('You must provide Jambo with a command.');
+    return;
+  }
+
+  const shouldParseCustomCommands = 
+    shouldImportCustomCommands(process.argv[2], commandRegistry);
+  const canParseCustomCommands = 
+    jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output;
+  
+  if (shouldParseCustomCommands && canParseCustomCommands) {
+    importCustomCommands(jamboConfig, commandRegistry);
+  }
+  
+  const yargsFactory = new YargsFactory(commandRegistry, jamboConfig);
+  const options = yargsFactory.createCLI();
+  return options.argv;
+}
+
+/**
+ * Determines if custom {@link Command}s should be imported and added to the CLI instance.
+ * 
+ * @param {string} invokedCommand The Jambo command that was invoked from the 
+ *                                command line.
+ * @param {CommandRegistry} commandRegistry The registry containing all built-in commands.
+ * @returns {boolean} If custom {@link Command}s need to be added to the CLI instance.    
+ */
+function shouldImportCustomCommands(invokedCommand, commandRegistry) {
+  return invokedCommand === '--help' ||
+    invokedCommand === 'describe' ||
+    !commandRegistry.getAliases().includes(invokedCommand);
+}
+
+/**
+ * Imports custom commands from the Theme and the top-level of the site repository.
+ * The imported commands are added to the provided {@link CommandRegistry}.
+ * 
+ * @param {Object} jamboConfig The site's parsed Jambo configuration.
+ * @param {CommandRegistry} commandRegistry The existing registry of built-in commands.
+ */
+function importCustomCommands(jamboConfig, commandRegistry) {
   const commandImporter = jamboConfig.defaultTheme ?
     new CommandImporter(
       jamboConfig.dirs.output,
@@ -31,7 +77,3 @@ if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
     commandRegistry.addCommand(customCommand)
   });
 }
-
-const yargsFactory = new YargsFactory(commandRegistry, jamboConfig);
-const options = yargsFactory.createCLI();
-options.argv;
