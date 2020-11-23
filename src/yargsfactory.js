@@ -1,6 +1,7 @@
 const yargs = require('yargs');
 const PageScaffolder = require('./commands/page/add/pagescaffolder');
 const SitesGenerator = require('./commands/build/sitesgenerator');
+const { ArgumentMetadata, ArgumentType } = require('./models/commands/argumentmetadata');
 
 
 /**
@@ -37,14 +38,18 @@ class YargsFactory {
       desc: commandClass.getShortDescription(),
       builder: yargs => {
         Object.entries(commandClass.args()).forEach(([name, metadata]) => {
-          yargs.option(
-            name,
-            {
-              type: metadata.getType(),
-              description: metadata.getDescription(),
-              demandOption: metadata.isRequired(),
-              default: metadata.defaultValue()
-            });
+          if (metadata.getType() === ArgumentType.ARRAY) {
+            this._addListOption(name, metadata, yargs);
+          } else {
+            yargs.option(
+              name,
+              {
+                type: metadata.getType(),
+                description: metadata.getDescription(),
+                demandOption: metadata.isRequired(),
+                default: metadata.defaultValue()
+              });
+          }
         });
       },
       handler: argv => {
@@ -52,6 +57,23 @@ class YargsFactory {
         commandInstance.execute(argv);
       }
     }
+  }
+
+  /**
+   * Adds an Array-type option to the provided Yargs instance. Note that this type of
+   * option cannot be added with 'yargs.option'.
+   * 
+   * @param {string} name The name of the option.
+   * @param {ArgumentMetadata} metadata The option's {@link ArgumentMetadata}.
+   * @param {Object} yargs The Yargs instance to modify.
+   */
+  _addListOption(name, metadata, yargs) {
+    yargs.array(name);
+    const defaultValue = metadata.defaultValue() || [];
+
+    metadata.isRequired() && yargs.demandOption(name);
+    yargs.default(name, defaultValue);
+    yargs.describe(name, metadata.getDescription());
   }
 
   /**
