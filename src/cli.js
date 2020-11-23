@@ -54,9 +54,13 @@ function buildJamboCLI() {
  * @returns {boolean} If custom {@link Command}s need to be added to the CLI instance.    
  */
 function shouldImportCustomCommands(invokedCommand, commandRegistry) {
+  const isCustomCommand = 
+    !commandRegistry.getAliases().includes(invokedCommand) &&
+    !invokedCommand.startsWith('--');
+
   return invokedCommand === '--help' ||
     invokedCommand === 'describe' ||
-    !commandRegistry.getAliases().includes(invokedCommand);
+    isCustomCommand;
 }
 
 /**
