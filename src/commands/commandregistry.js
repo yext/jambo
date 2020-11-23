@@ -11,8 +11,7 @@ const ThemeUpgrader = require('./upgrade/themeupgrader');
  * A registry that maintains the built-in and custom commands for the Jambo CLI.
  */
 class CommandRegistry {
-  constructor(jamboConfig) {
-    this._jamboConfig = jamboConfig;
+  constructor() {
     this._commandsByName = this._initialize();
   }
 
@@ -38,6 +37,13 @@ class CommandRegistry {
    */
   getCommands() {
     return Object.values(this._commandsByName);
+  }
+
+  /**
+   * @returns {Array<string>} The alias of each registered {@link Command}.
+   */
+  getAliases() {
+    return Object.keys(this._commandsByName);
   }
 
   /**
