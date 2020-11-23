@@ -27,7 +27,6 @@ if (jamboConfig && jamboConfig.dirs && jamboConfig.dirs.output) {
       path.join(jamboConfig.dirs.themes, jamboConfig.defaultTheme)) :
     new CommandImporter(jamboConfig.dirs.output);
   commandImporter.import().forEach(customCommand => {
-    console.log(customCommand);
     commandRegistry.addCommand(customCommand)
   });
 }
