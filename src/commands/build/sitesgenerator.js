@@ -2,9 +2,8 @@ const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
 const { parse } = require('comment-json');
-const babel = require('@babel/core');
 const globToRegExp = require('glob-to-regexp');
-const _ = require('lodash');
+const lodash = require('lodash');
 
 const ConfigurationRegistry = require('../../models/configurationregistry');
 const { EnvironmentVariableParser } = require('../../utils/envvarparser');
@@ -17,6 +16,7 @@ const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
 const { stripExtension, isValidFile, getPageName } = require('../../utils/fileutils');
+const registerHbsHelpers = require('../../handlebars/registerhbshelpers');
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
@@ -133,7 +133,7 @@ class SitesGenerator {
     // Register needed Handlebars helpers.
     console.log('Registering Jambo Handlebars helpers');
     try {
-      this._registerHelpers();
+      registerHbsHelpers(hbs);
     } catch (err) {
       throw new SystemError('Failed to register jambo handlebars helpers', err.stack);
     }
@@ -261,107 +261,6 @@ class SitesGenerator {
     }
   }
 
-  _registerHelpers() {
-    hbs.registerHelper('json', function(context) {
-      return JSON.stringify(context || {});
-    });
-
-    hbs.registerHelper('ifeq', function(arg1, arg2, options) {
-      return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
-    });
-
-    hbs.registerHelper({
-      eq: function(v1, v2) {
-        return v1 === v2;
-      },
-      ne: function(v1, v2) {
-        return v1 !== v2;
-      },
-      lt: function(v1, v2) {
-        return v1 < v2;
-      },
-      gt: function(v1, v2) {
-        return v1 > v2;
-      },
-      lte: function(v1, v2) {
-        return v1 <= v2;
-      },
-      gte: function(v1, v2) {
-        return v1 >= v2;
-      },
-      and: function() {
-        return Array.prototype.slice.call(arguments).every(Boolean);
-      },
-      or: function() {
-        return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
-      }
-    });
-
-    hbs.registerHelper('read', function(fileName) {
-      return hbs.partials[fileName];
-    });
-
-    hbs.registerHelper('concat', function(prefix, id) {
-      return (prefix + id);
-    });
-
-    hbs.registerHelper('matches', function(str, regexPattern) {
-      const regex = new RegExp(regexPattern);
-      return str && str.match(regex);
-    });
-
-    /**
-     * Determine whether a URL is a non relative url, like an absolute, root relative,
-     * or data url.
-     * Common examples: "mailto:slapshot@gmail.com", "//yext.com", "https://yext.com",
-     * "/my-img.svg"
-     */
-    hbs.registerHelper('isNonRelativeUrl', function(str) {
-      const absoluteURLRegex = /^(\/|[a-zA-Z]+:)/;
-      return str && str.match(absoluteURLRegex);
-    });
-
-    hbs.registerHelper('all', function(...args) {
-      return args.filter(item => item).length === args.length;
-    });
-
-    hbs.registerHelper('any', function(...args) {
-      return args.filter(item => item).length > 1;
-    });
-
-    hbs.registerHelper('babel', function(options) {
-      const srcCode = options.fn(this);
-      return babel.transformSync(srcCode, {
-        compact: true,
-        minified: true,
-        sourceType: 'script',
-        presets: ['@babel/preset-env'],
-        plugins: [
-          '@babel/syntax-dynamic-import',
-          '@babel/plugin-transform-arrow-functions',
-          '@babel/plugin-proposal-object-rest-spread',
-          '@babel/plugin-transform-object-assign',
-        ]
-        }).code;
-    })
-
-    hbs.registerHelper('partialPattern', function(cardPath, opt) {
-      let result = '';
-      Object.keys(hbs.partials)
-        .filter(key => key.match(new RegExp(cardPath)))
-        .map(key => {return {key}})
-        .forEach(key => result += opt.fn(key));
-      return result;
-    });
-
-    /**
-     * Performs a deep merge of the given objects.
-     */
-    hbs.registerHelper('deepMerge', function(...args) {
-      return _.merge({}, ...args.slice(0, args.length - 1));
-    });
-  }
-
   /**
    * Parses the local translation files for the provided locales.
    * Parses both custom and theme translations.
@@ -375,7 +274,7 @@ class SitesGenerator {
     const customTranslations = await this._extractCustomTranslations(
       locales, localizationConfig);
     const themeTranslations = await this._extractThemeTranslations(locales);
-    const mergedTranslations = _.merge(themeTranslations, customTranslations);
+    const mergedTranslations = lodash.merge(themeTranslations, customTranslations);
 
     return mergedTranslations;
   }
