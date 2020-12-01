@@ -37,7 +37,7 @@ class ThemeImporter{
         description: 'theme to import',
         isRequired: true
       }),
-      addThemeAsSubmodule: new ArgumentMetadata({
+      addAsSubmodule: new ArgumentMetadata({
         type: ArgumentType.BOOLEAN, 
         description: 'import the theme as a submodule',
         defaultValue: true
