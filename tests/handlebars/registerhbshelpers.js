@@ -120,9 +120,9 @@ describe('deepMerge', () => {
   });
 });
 
-describe('isAbsoluteUrl', () => {
+describe('isNonRelativeUrl', () => {
   it('works for https://yext.com', () => {
-    const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
+    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
     const data = {
       url: 'https://yext.com'
     };
@@ -130,7 +130,7 @@ describe('isAbsoluteUrl', () => {
   });
 
   it('works for //yext.com', () => {
-    const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
+    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
     const data = {
       url: '//yext.com'
     };
@@ -138,7 +138,7 @@ describe('isAbsoluteUrl', () => {
   });
 
   it('works for /index.html', () => {
-    const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
+    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
     const data = {
       url: '/index.html'
     };
@@ -146,7 +146,7 @@ describe('isAbsoluteUrl', () => {
   });
 
   it('works for data: urls', () => {
-    const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
+    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
     const data = {
       url: 'data:image/gif;base64,R0l'
     };
@@ -154,7 +154,7 @@ describe('isAbsoluteUrl', () => {
   });
 
   it('works for mailto: urls', () => {
-    const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
+    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
     const data = {
       url: 'mailto:slapshot@gmail.com'
     };
@@ -162,7 +162,7 @@ describe('isAbsoluteUrl', () => {
   });
 
   it('works for tel: urls', () => {
-    const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
+    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
     const data = {
       url: 'tel:1-555-555-5555'
     };
@@ -171,7 +171,7 @@ describe('isAbsoluteUrl', () => {
 
   it('works for relative urls', () => {
     const template =
-      hbs.compile('{{#unless (isAbsoluteUrl url)}}is NOT absolute{{/unless}}');
+      hbs.compile('{{#unless (isNonRelativeUrl url)}}is NOT absolute{{/unless}}');
     const data = {
       url: './index.html'
     };
