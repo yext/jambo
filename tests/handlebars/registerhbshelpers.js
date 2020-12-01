@@ -15,8 +15,7 @@ it('json', () => {
     aNumber: 5,
     anArray: [1, 2, 'a']
   };
-  const expectedResult = '{"aNumber":5,"anArray":[1,2,"a"]}';
-  expect(template(data)).toEqual(expectedResult);
+  expect(template(data)).toEqual(JSON.stringify(data));
 });
 
 describe('ifeq', () => {
@@ -165,7 +164,7 @@ describe('isAbsoluteUrl', () => {
   it('works for tel: urls', () => {
     const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
     const data = {
-      url: 'tel:slapshot@gmail.com'
+      url: 'tel:1-555-555-5555'
     };
     expect(template(data)).toEqual('is absolute!');
   });
