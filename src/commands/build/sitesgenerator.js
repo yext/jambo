@@ -18,7 +18,6 @@ const { stripExtension, isValidFile, getPageName } = require('../../utils/fileut
 const { parseConfigFile } = require('../../utils/configutils');
 const { ConfigKeys } = require('../../constants');
 const registerHbsHelpers = require('../../handlebars/registerhbshelpers');
-const registerCustomHbsHelpers = require('../../handlebars/registercustomhbshelpers');
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
