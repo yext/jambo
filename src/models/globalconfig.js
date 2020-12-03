@@ -1,5 +1,5 @@
 /**
- * GlobalConfig is a representation of the a global_config file.
+ * GlobalConfig is a representation of the global_config file.
  */
 module.exports = class GlobalConfig {
 	/**

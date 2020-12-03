@@ -1,7 +1,6 @@
 const fs = require('file-system');
 const hbs = require('handlebars');
 const path = require('path');
-const { parse } = require('comment-json');
 const globToRegExp = require('glob-to-regexp');
 const lodash = require('lodash');
 
@@ -16,7 +15,10 @@ const PageWriter = require('./pagewriter');
 const PartialsRegistry = require('../../models/partialsregistry');
 const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
 const { stripExtension, isValidFile, getPageName } = require('../../utils/fileutils');
+const { parseConfigFile } = require('../../utils/configutils');
+const { ConfigKeys } = require('../../constants');
 const registerHbsHelpers = require('../../handlebars/registerhbshelpers');
+const registerCustomHbsHelpers = require('../../handlebars/registercustomhbshelpers');
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
@@ -50,24 +52,19 @@ class SitesGenerator {
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (isValidFile(filename)) {
         let configName = stripExtension(relative);
-        try {
-          configNameToRawConfig[configName] = parse(
-            fs.readFileSync(path, 'utf8'),
-            null,
-            true
-          );
-        } catch (err) {
-          if (err instanceof SyntaxError) {
-            throw new UserError(
-              `JSON SyntaxError: could not parse file ${path}`, err.stack);
-          } else {
-            throw err;
-          }
-        }
+        configNameToRawConfig[configName] = parseConfigFile(path, relative);
       }
     });
 
-    const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
+    let rawThemeConfig = {}
+    const themeConfigPath = path.resolve(
+      config.dirs.themes, config.defaultTheme, `${ConfigKeys.THEME_CONFIG}.json`);
+    if (fs.existsSync(themeConfigPath)) {
+      rawThemeConfig = parseConfigFile(themeConfigPath)
+    }
+
+    const configRegistry =
+      ConfigurationRegistry.from(configNameToRawConfig, rawThemeConfig);
     const hasLocalizationConfig = configRegistry.getLocalizationConfig().hasConfig();
 
     let pageTemplates = [];

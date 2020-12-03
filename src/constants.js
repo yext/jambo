@@ -8,4 +8,5 @@ exports.FileNames = {
 exports.ConfigKeys = {
   GLOBAL_CONFIG: 'global_config',
   LOCALE_CONFIG: 'locale_config',
+  THEME_CONFIG: 'jambo_theme'
 }

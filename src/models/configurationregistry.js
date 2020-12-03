@@ -3,6 +3,7 @@ const { parseLocale } = require('../utils/configutils');
 const GlobalConfig = require('./globalconfig');
 const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
+const ThemeConfig = require('./themeconfig');
 const { FileNames, ConfigKeys } = require('../constants');
 const RawConfigValidator = require('../validation/rawconfigvalidator');
 
@@ -16,8 +17,9 @@ module.exports = class ConfigurationRegistry {
    * @param {GlobalConfig} globalConfig
    * @param {LocalizationConfig} localizationConfig
    * @param {Array<PageConfig>} pageConfigs
+   * @param {ThemeConfig} themeConfig
    */
-  constructor({ globalConfig, localizationConfig, pageConfigs }) {
+  constructor({ globalConfig, localizationConfig, pageConfigs, themeConfig }) {
     /**
      * @type {GlobalConfig}
      */
@@ -32,6 +34,11 @@ module.exports = class ConfigurationRegistry {
      * @type {Array<PageConfig>}
      */
     this._pageConfigs = pageConfigs;
+
+    /**
+     * @type {ThemeConfig}
+     */
+    this._themeConfig = themeConfig;
   }
 
   /**
@@ -51,6 +58,16 @@ module.exports = class ConfigurationRegistry {
   getLocalizationConfig() {
     return this._localizationConfig;
   }
+
+  /**
+   * Returns the theme config
+   *
+   * @returns {ThemeConfig}
+   */
+  getThemeConfig() {
+    return this._themeConfig;
+  }
+
 
   /**
    * Returns the page configs
@@ -78,10 +95,11 @@ module.exports = class ConfigurationRegistry {
    * configuration in any way.
    *
    * @param {Object<String, Object>} configNameToRawConfig
+   * @param {Object} rawThemeConfig
    * @returns {ConfigurationRegistry}
    * @throws {UserError} Thrown if configNameToRawConfig is invalid
    */
-  static from(configNameToRawConfig) {
+  static from(configNameToRawConfig, rawThemeConfig = {}) {
     this.validate(configNameToRawConfig);
 
     const rawGlobalConfig = configNameToRawConfig[ConfigKeys.GLOBAL_CONFIG];
@@ -115,6 +133,7 @@ module.exports = class ConfigurationRegistry {
       globalConfig: new GlobalConfig(rawGlobalConfig),
       localizationConfig: localizationConfig,
       pageConfigs: pageConfigs,
+      themeConfig: new ThemeConfig(rawThemeConfig)
     });
   }
 }

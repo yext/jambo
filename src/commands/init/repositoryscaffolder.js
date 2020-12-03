@@ -94,6 +94,9 @@ exports.RepositoryScaffolder = class {
         pages: 'pages',
         partials: ['partials'],
         preservedFiles: []
+      },
+      build: {
+        customHbsHelpersFile: ''
       }
     };
     if (includeTranslations) {
