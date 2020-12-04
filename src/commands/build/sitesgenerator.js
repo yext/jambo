@@ -17,6 +17,7 @@ const PartialsRegistry = require('../../models/partialsregistry');
 const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
 const { stripExtension, isValidFile, getPageName } = require('../../utils/fileutils');
 const registerHbsHelpers = require('../../handlebars/registerhbshelpers');
+const registerCustomHbsHelpers = require('../../handlebars/registercustomhbshelpers');
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
@@ -130,12 +131,24 @@ class SitesGenerator {
     const translations = 
       await this._extractTranslations(locales, configRegistry.getLocalizationConfig());
 
-    // Register needed Handlebars helpers.
+    // Register built-in Jambo Handlebars helpers.
     console.log('Registering Jambo Handlebars helpers');
     try {
       registerHbsHelpers(hbs);
     } catch (err) {
       throw new SystemError('Failed to register jambo handlebars helpers', err.stack);
+    }
+
+    // Register the default theme's Handlebars helpers from the hbshelpers folder.
+    const customHbsHelpersDir =
+      path.resolve(config.dirs.themes, config.defaultTheme, 'hbshelpers')
+    if (fs.existsSync(customHbsHelpersDir)) {
+      try {
+        console.log('Registering custom Handlebars helpers from the default theme');
+        registerCustomHbsHelpers(hbs, customHbsHelpersDir);
+      } catch (err) {
+        throw new UserError('Failed to register custom handlebars helpers', err.stack);
+      }
     }
 
     const pageSets = GENERATED_DATA.getPageSets();

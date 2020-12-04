@@ -1,4 +1,3 @@
-const babel = require('@babel/core');
 const lodash = require('lodash');
 
 /**
@@ -54,16 +53,6 @@ module.exports = function registerHbsHelpers(hbs) {
     return str && str.match(regex);
   });
 
-  /**
-   * Determine whether a URL is absolute or not.
-   * Common examples: "mailto:slapshot@gmail.com", "//yext.com", "https://yext.com",
-   * "/my-img.svg"
-   */
-  hbs.registerHelper('isNonRelativeUrl', function(str) {
-    const absoluteURLRegex = /^(\/|[a-zA-Z]+:)/;
-    return str && str.match(absoluteURLRegex);
-  });
-
   hbs.registerHelper('all', function(...args) {
     return args.filter(item => item).length === args.length;
   });
@@ -71,22 +60,6 @@ module.exports = function registerHbsHelpers(hbs) {
   hbs.registerHelper('any', function(...args) {
     return args.filter(item => item).length > 1;
   });
-
-  hbs.registerHelper('babel', function(options) {
-    const srcCode = options.fn(this);
-    return babel.transformSync(srcCode, {
-      compact: true,
-      minified: true,
-      sourceType: 'script',
-      presets: ['@babel/preset-env'],
-      plugins: [
-        '@babel/syntax-dynamic-import',
-        '@babel/plugin-transform-arrow-functions',
-        '@babel/plugin-proposal-object-rest-spread',
-        '@babel/plugin-transform-object-assign',
-      ]
-      }).code;
-  })
 
   hbs.registerHelper('partialPattern', function(cardPath, opt) {
     let result = '';

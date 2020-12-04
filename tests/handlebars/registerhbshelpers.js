@@ -1,13 +1,9 @@
 const registerHbsHelpers = require('../../src/handlebars/registerhbshelpers');
-let hbs;
-
-beforeEach(() => {
-  hbs = require('handlebars');
-  hbs.registerPartial('testPartial', 'this is a {{#if 1}}test{{/if}} partial');
-  hbs.registerPartial('cards/standard/component', 'I am a standard card');
-  hbs.registerPartial('cards/location/component', 'I am a location card');
-  registerHbsHelpers(hbs);
-});
+const hbs = require('handlebars');
+registerHbsHelpers(hbs);
+hbs.registerPartial('testPartial', 'this is a {{#if 1}}test{{/if}} partial');
+hbs.registerPartial('cards/standard/component', 'I am a standard card');
+hbs.registerPartial('cards/location/component', 'I am a location card');
 
 it('json', () => {
   const template = hbs.compile('{{{json this}}}');
@@ -75,14 +71,6 @@ describe('matches', () => {
   });
 });
 
-describe('babel', () => {
-  it('transpiles arrow functions', () => {
-    const template =
-      hbs.compile('{{#babel}}const a = () => {};{{/babel}}');
-    expect(template()).toEqual('var a=function a(){};');
-  });
-});
-
 describe('partialPattern', () => {
   it('can register cards', () => {
     const template = hbs.compile(`
@@ -117,65 +105,6 @@ describe('deepMerge', () => {
       letter: 'b',
       third: 'c'
     }));
-  });
-});
-
-describe('isNonRelativeUrl', () => {
-  it('works for https://yext.com', () => {
-    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
-    const data = {
-      url: 'https://yext.com'
-    };
-    expect(template(data)).toEqual('is absolute!');
-  });
-
-  it('works for //yext.com', () => {
-    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
-    const data = {
-      url: '//yext.com'
-    };
-    expect(template(data)).toEqual('is absolute!');
-  });
-
-  it('works for /index.html', () => {
-    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
-    const data = {
-      url: '/index.html'
-    };
-    expect(template(data)).toEqual('is absolute!');
-  });
-
-  it('works for data: urls', () => {
-    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
-    const data = {
-      url: 'data:image/gif;base64,R0l'
-    };
-    expect(template(data)).toEqual('is absolute!');
-  });
-
-  it('works for mailto: urls', () => {
-    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
-    const data = {
-      url: 'mailto:slapshot@gmail.com'
-    };
-    expect(template(data)).toEqual('is absolute!');
-  });
-
-  it('works for tel: urls', () => {
-    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
-    const data = {
-      url: 'tel:1-555-555-5555'
-    };
-    expect(template(data)).toEqual('is absolute!');
-  });
-
-  it('works for relative urls', () => {
-    const template =
-      hbs.compile('{{#unless (isNonRelativeUrl url)}}is NOT absolute{{/unless}}');
-    const data = {
-      url: './index.html'
-    };
-    expect(template(data)).toEqual('is NOT absolute');
   });
 });
 
