@@ -20,6 +20,7 @@ const git = simpleGit();
 class ThemeUpgrader {
   constructor(jamboConfig = {}) {
     this.jamboConfig = jamboConfig;
+    this._themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.upgradeScript = 'upgrade.js';
   }
 
