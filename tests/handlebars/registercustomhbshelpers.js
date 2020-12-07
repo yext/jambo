@@ -1,11 +1,11 @@
 const registerCustomHbsHelpers = require('../../src/handlebars/registercustomhbshelpers');
 const path = require('path');
 
-describe('can register a custom hbs helper', () => {
-  const hbs = require('handlebars');
-  const pathToHelpers = path.resolve(__dirname, '../fixtures/handlebars/customhelpers');
-  registerCustomHbsHelpers(hbs, pathToHelpers)
+const hbs = require('handlebars');
+const pathToHelpers = path.resolve(__dirname, '../fixtures/handlebars/customhelpers');
+registerCustomHbsHelpers(hbs, pathToHelpers)
 
+describe('can register a custom hbs helper', () => {
   it('recognizes https://yext.com as absolute', () => {
     const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
     const data = {
@@ -22,4 +22,9 @@ describe('can register a custom hbs helper', () => {
     };
     expect(template(data)).toEqual('is NOT absolute');
   });
+});
+
+it('does not register helpers in subfolders', () => {
+  expect(Object.keys(hbs.helpers)).toEqual(
+    expect.not.arrayContaining(['dontRegisterMe']));
 });
