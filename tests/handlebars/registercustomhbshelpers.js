@@ -24,6 +24,21 @@ describe('can register a custom hbs helper', () => {
   });
 });
 
+it('registers baked-in hbs helpers + isNonRelativeUrl', () => {
+  const expectedHelpers = [
+    'blockHelperMissing',
+    'each',
+    'helperMissing',
+    'if',
+    'unless',
+    'log',
+    'lookup',
+    'with',
+    'isNonRelativeUrl'
+  ];
+  expect(Object.keys(hbs.helpers)).toEqual(expectedHelpers);
+})
+
 it('does not register helpers in subfolders', () => {
   expect(Object.keys(hbs.helpers)).toEqual(
     expect.not.arrayContaining(['dontRegisterMe']));
