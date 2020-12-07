@@ -1,13 +1,9 @@
 const registerHbsHelpers = require('../../src/handlebars/registerhbshelpers');
-let hbs;
-
-beforeEach(() => {
-  hbs = require('handlebars');
-  hbs.registerPartial('testPartial', 'this is a {{#if 1}}test{{/if}} partial');
-  hbs.registerPartial('cards/standard/component', 'I am a standard card');
-  hbs.registerPartial('cards/location/component', 'I am a location card');
-  registerHbsHelpers(hbs);
-});
+const hbs = require('handlebars');
+registerHbsHelpers(hbs);
+hbs.registerPartial('testPartial', 'this is a {{#if 1}}test{{/if}} partial');
+hbs.registerPartial('cards/standard/component', 'I am a standard card');
+hbs.registerPartial('cards/location/component', 'I am a location card');
 
 it('json', () => {
   const template = hbs.compile('{{{json this}}}');
