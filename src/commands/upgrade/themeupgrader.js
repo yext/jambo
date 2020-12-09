@@ -166,7 +166,7 @@ class ThemeUpgrader {
    */
   async _upgradeSubmodule(submodulePath, branch) {
     if (branch) {
-      await git.subModule(['set-branch', '--branch', branch]);
+      await git.subModule(['set-branch', '--branch', branch, submodulePath]);
     }
     await git.submoduleUpdate(['--remote', submodulePath]);
   }
