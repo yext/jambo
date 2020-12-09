@@ -59,10 +59,14 @@ module.exports = function registerHbsHelpers(hbs) {
    * Common examples: "mailto:slapshot@gmail.com", "//yext.com", "https://yext.com",
    * "/my-img.svg"
    */
-  hbs.registerHelper('isNonRelativeUrl', function(str) {
+  function isNonRelativeUrl(str) {
     const absoluteURLRegex = /^(\/|[a-zA-Z]+:)/;
     return str && str.match(absoluteURLRegex);
-  });
+  }
+
+  hbs.registerHelper('isNonRelativeUrl', isNonRelativeUrl);
+
+  hbs.registerHelper('isAbsoluteUrl', isNonRelativeUrl);
 
   hbs.registerHelper('all', function(...args) {
     return args.filter(item => item).length === args.length;
