@@ -175,6 +175,25 @@ describe('isNonRelativeUrl', () => {
   });
 });
 
+describe('isAbsoluteUrl (alias of isNonRelativeUrl)', () => {
+  it('works for https://yext.com', () => {
+    const template = hbs.compile('{{#if (isAbsoluteUrl url)}}is absolute!{{/if}}');
+    const data = {
+      url: 'https://yext.com'
+    };
+    expect(template(data)).toEqual('is absolute!');
+  });
+
+  it('works for relative urls', () => {
+    const template =
+      hbs.compile('{{#unless (isAbsoluteUrl url)}}is NOT absolute{{/unless}}');
+    const data = {
+      url: './index.html'
+    };
+    expect(template(data)).toEqual('is NOT absolute');
+  });
+});
+
 describe('simple hbs expressions', () => {
   describe('eq', () => {
     it('works for 1 === 1', () => {
