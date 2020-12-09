@@ -1,5 +1,4 @@
 const fs = require('file-system');
-const path = require('path');
 const { addToPartials } = require('../../utils/jamboconfigutils');
 const UserError = require('../../errors/usererror');
 

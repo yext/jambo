@@ -1,5 +1,6 @@
 const path = require('path');
 const { spawnSync } = require('child_process');
+const SystemError = require('../../errors/systemerror');
 
 /**
  * This class is responsible for executing a {@link CustomCommand}.
@@ -22,11 +23,22 @@ exports.CustomCommandExecuter = class {
      */
     execute(command) {
         command.addArgs(this._jamboFlags);
-        return spawnSync(
+        const processInfo = spawnSync(
             command.getExecutable(),
             command.getArgs(),
             { cwd: command.getCwd(), shell: true },
         );
+        const { stdout, stderr, error } = processInfo;
+        const stdoutString = stdout.toString().trim();
+        stdoutString && console.log(stdoutString);
+        const stderrString = stderr.toString().trim();
+        stderrString && console.error(stderrString);
+        if (error) {
+            const errMsg =
+                `Error executing script ${command.getExecutable()}: ${error.message}`;
+            throw new SystemError(errMsg, error.stack);
+        }
+        return processInfo;
     }
 
     /**
