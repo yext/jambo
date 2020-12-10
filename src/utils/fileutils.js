@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 /**
  * Returns the given filename without its extension
  *
@@ -32,3 +35,27 @@ isValidFile = function(fileName) {
   return fileName && !fileName.startsWith('.');
 }
 exports.isValidFile = isValidFile;
+
+/**
+ * Search for file with the given name, ignoring extensions.
+ * For example, given a desiredFile 'upgrade', will look for
+ * files like upgrade.js and upgrade.sh, and return the filename
+ * of the first found.
+ * 
+ * @param {string} desiredFile
+ * @param {string} directoryPath
+ * @returns {string|undefined} the fileName, if it exists, otherwise undefined.
+ */
+searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
+  const dirEntries = fs.readdirSync(directoryPath);
+  for (const dirEntry of dirEntries) {
+    if (desiredFile === stripExtension(dirEntry)) {
+      const filePath = path.resolve(directoryPath, dirEntry);
+      if (fs.lstatSync(filePath).isFile()) {
+        return dirEntry;
+      }
+    }
+  }
+  return undefined;
+}
+exports.searchDirectoryIgnoringExtensions = searchDirectoryIgnoringExtensions;

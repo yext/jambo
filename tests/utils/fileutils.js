@@ -1,4 +1,9 @@
-const { stripExtension, getPageName, isValidFile } = require('../../src/utils/fileutils');
+const {
+  stripExtension,
+  getPageName,
+  isValidFile,
+  searchDirectoryIgnoringExtensions
+} = require('../../src/utils/fileutils');
 
 describe('stripExtension correctly strips extension from filename', () => {
   it('strips extension when present', () => {
@@ -46,5 +51,17 @@ describe('isValidFile properly determines if files are valid', () => {
     let filename = 'example.html.hbs';
     let isValid = isValidFile(filename);
     expect(isValid).toEqual(true);
+  });
+});
+
+describe('searchDirectoryIgnoringExtensions', () => {
+  it('can find "fileutils.js" when looking for "fileutils"', () => {
+    const fileUtilsFileName = searchDirectoryIgnoringExtensions('fileutils', __dirname);
+    expect(fileUtilsFileName).toEqual('fileutils.js');
+  });
+
+  it('will return undefined when it cannot find the file', () => {
+    const cannotFindFile = searchDirectoryIgnoringExtensions('asdf', __dirname);
+    expect(cannotFindFile).toEqual(undefined);
   });
 });
