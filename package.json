@@ -1,6 +1,6 @@
 {
   "name": "jambo",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
