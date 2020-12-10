@@ -79,11 +79,11 @@ module.exports = class PageConfigsValidator {
   _throwErrorForLocalesMissingConfigs(locales) {
     if (locales.length == 1) {
       throw new UserError(
-        `The locale '${locales}' is referenced but is not configured` +
+        `The locale '${locales}' is referenced but is not configured ` +
         `inside ${FileNames.LOCALE_CONFIG}`);
     } else if (locales.length > 1) {
       throw new UserError(
-        `The locales '${locales}' are referenced but are not defined` +
+        `The locales '${locales}' are referenced but are not defined ` +
         `inside ${FileNames.LOCALE_CONFIG}`);
     }
   }
