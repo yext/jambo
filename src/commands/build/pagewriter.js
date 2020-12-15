@@ -74,7 +74,8 @@ module.exports = class PageWriter {
    * major jambo version.
    *
    * @param {Object} pageConfig the configuration for the current page
-   * @param {String} relativePath
+   * @param {String} relativePath the relativePath from page to the static assets,
+   *                              e.g. ".", "..", "../.."
    * @param {Object} params the params object in config for the current locale
    * @param {Object} globalConfig
    * @param {Object} pageNameToConfig
@@ -107,7 +108,8 @@ module.exports = class PageWriter {
    * transformation on it.
    *
    * @param {Object} pageConfig the configuration for the current page
-   * @param {String} relativePath
+   * @param {String} relativePath the relativePath from page to the static assets,
+   *                              e.g. ".", "..", "../.."
    * @param {Object} params the params object in config for the current locale
    * @param {Object} globalConfig
    * @param {Object} pageNameToConfig
@@ -116,16 +118,21 @@ module.exports = class PageWriter {
   _getTemplateDataFromHook(
     { pageConfig, relativePath, params, globalConfig, pageNameToConfig }
   ) {
-    const hookFunction = require(this._templateDataHookPath);
-    const hookArgs = {
-      env: this._env,
-      globalConfig: globalConfig,
-      pageConfig,
-      pageNameToConfig,
-      relativePath,
-      params
+    try {
+      const hookFunction = require(this._templateDataHookPath);
+      const hookArgs = {
+        env: this._env,
+        globalConfig: globalConfig,
+        pageConfig,
+        pageNameToConfig,
+        relativePath,
+        params
+      }
+      return hookFunction(hookArgs);
+    } catch (err) {
+      const msg = `Could not load template data hook from ${this._templateDataHookPath}:`;
+      throw new UserError(msg, err.stack);
     }
-    return hookFunction(hookArgs);
   }
 
   /**
