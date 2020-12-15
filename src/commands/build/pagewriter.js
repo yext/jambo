@@ -21,6 +21,13 @@ module.exports = class PageWriter {
      * @type {String}
      */
     this._outputDirectory = config.outputDirectory;
+
+    /**
+     * Absolute path to the template data hook, if one is given.
+     * 
+     * @type {String|undefined}
+     */
+    this._templateDataHookPath = config.templateDataHookPath;
   }
 
   /**
@@ -63,17 +70,25 @@ module.exports = class PageWriter {
 
   /**
    * Creates the Object that will be passed in as arguments to the templates
+   * note: verticalConfigs is deprecated and will be removed in the next
+   * major jambo version.
    *
    * @param {Object} pageConfig the configuration for the current page
    * @param {String} relativePath
-   * @param {String} params
+   * @param {Object} params the params object in config for the current locale
    * @param {Object} globalConfig
    * @param {Object} pageNameToConfig
    * @returns {Object}
    */
   _buildArgsForTemplate(
     { pageConfig, relativePath, params, globalConfig, pageNameToConfig }
-  ){
+  ) {
+    const hookArgs = {
+      pageConfig, relativePath, params, globalConfig, pageNameToConfig
+    };
+    if (this._templateDataHookPath && fs.existsSync(this._templateDataHookPath)) {
+      return this._getTemplateDataFromHook(hookArgs);
+    }
     return Object.assign(
       {},
       pageConfig,
@@ -83,8 +98,34 @@ module.exports = class PageWriter {
         relativePath: relativePath,
         params: params,
         env: this._env
-     }
+      }
     );
+  }
+
+  /**
+   * Returns the data after performing the given template data hook 
+   * transformation on it.
+   *
+   * @param {Object} pageConfig the configuration for the current page
+   * @param {String} relativePath
+   * @param {Object} params the params object in config for the current locale
+   * @param {Object} globalConfig
+   * @param {Object} pageNameToConfig
+   * @returns {Object} the additional params to add to the template data
+   */
+  _getTemplateDataFromHook(
+    { pageConfig, relativePath, params, globalConfig, pageNameToConfig }
+  ) {
+    const hookFunction = require(this._templateDataHookPath);
+    const hookArgs = {
+      env: this._env,
+      globalConfig: globalConfig,
+      pageConfig,
+      pageNameToConfig,
+      relativePath,
+      params
+    }
+    return hookFunction(hookArgs);
   }
 
   /**
