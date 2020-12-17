@@ -1,7 +1,7 @@
-const PageWriter = require('../../../src/commands/build/pagewriter');
+const TemplateArgsFormatter = require('../../../src/commands/build/templateargsformatter');
 const path = require('path');
 
-describe('PageWriter builds args for Handlebars Templates properly', () => {
+describe('TemplateArgsFormatter builds args for Handlebars Templates properly', () => {
   const env = {
     envVar: 'envVar',
   };
@@ -33,16 +33,16 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
     }
   };
 
-  it('builds args as expected when all are present', () => {
-    const args = new PageWriter({
-      env: env
-    })._buildArgsForTemplate({
+  it('will use the default template data formatter when no custom one is given', () => {
+    const templateArgsFormatter = new TemplateArgsFormatter(undefined);
+    const args = templateArgsFormatter.formatArgs({
       relativePath,
+      pageName: 'page1',
       currentLocaleConfig,
       globalConfig,
-      pageNameToConfig,
       locale: 'en',
-      pageName: 'page1'
+      pageNameToConfig,
+      env
     });
 
     expect(args).toEqual({
@@ -62,17 +62,17 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
   });
 
   it('can use the templatedata hook in the theme for custom args', () => {
-    const args = new PageWriter({
-      env: env,
-      templateDataFormatter:
-        path.resolve(__dirname, '../../fixtures/hooks/templatedataformatter.js')
-    })._buildArgsForTemplate({
+    const templateDataFormatterPath = 
+      path.resolve(__dirname, '../../fixtures/hooks/templatedataformatter.js');
+    const templateArgsFormatter = new TemplateArgsFormatter(templateDataFormatterPath);
+    const args = templateArgsFormatter.formatArgs({
       relativePath,
       pageName: 'page2',
-      globalConfig,
       currentLocaleConfig,
+      globalConfig,
       locale: 'en',
-      pageNameToConfig
+      pageNameToConfig,
+      env
     });
 
     const pageMetadata = {
