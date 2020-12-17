@@ -73,7 +73,7 @@ class ThemeImporter{
   }
 
   execute(args) {
-    this._import(args.theme, args.addAsSubmodule)
+    this.import(args.theme, args.addAsSubmodule)
       .then(console.log);
   }
 
