@@ -214,7 +214,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
           }),
         ],
         globalConfig: globalConfig,
-        localizationConfig: localizationConfig
+        currentLocaleConfig: {}
       }),
       new PageSet({
         locale: 'es',
@@ -260,7 +260,11 @@ describe('GeneratedData is correctly formed using with static from', () => {
           })
         ],
         globalConfig: globalConfig,
-        localizationConfig: localizationConfig
+        currentLocaleConfig: {
+          fallback: [
+            'en'
+          ]
+        }
       }),
       new PageSet({
         locale: 'fr',
@@ -280,7 +284,11 @@ describe('GeneratedData is correctly formed using with static from', () => {
           })
         ],
         globalConfig: globalConfig,
-        localizationConfig: localizationConfig
+        currentLocaleConfig: {
+          fallback: [
+            'en'
+          ]
+        }
       }),
     ]);
 

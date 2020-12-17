@@ -13,9 +13,9 @@ module.exports = class PageSet {
    * @param {String} locale
    * @param {Array<Page>} pages
    * @param {GlobalConfig} globalConfig
-   * @param {LocalizationConfig} localizationConfig
+   * @param {Object} currentLocaleConfig
    */
-  constructor({ locale, pages, globalConfig, localizationConfig }) {
+  constructor({ locale, pages, globalConfig, currentLocaleConfig }) {
     /**
      * @type {String}
      */
@@ -42,9 +42,11 @@ module.exports = class PageSet {
       : {};
 
     /**
-     * @type {LocalizationConfig}
+     * The chunk of the locale config pertaining the this PageSet's locale
+     * 
+     * @type {Object}
      */
-    this.localizationConfig = localizationConfig;
+    this.currentLocaleConfig = currentLocaleConfig || {};
   }
 
   /**
@@ -66,12 +68,12 @@ module.exports = class PageSet {
   }
 
   /**
-   * Returns the localization config
+   * Returns the localization config chunk for the current locale
    *
-   * @returns {LocalizationConfig}
+   * @returns {Object}
    */
-  getLocalizationConfig() {
-    return this.localizationConfig;
+  getCurrentLocaleConfig() {
+    return this.currentLocaleConfig;
   }
 
   /**

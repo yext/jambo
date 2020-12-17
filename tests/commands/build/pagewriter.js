@@ -1,5 +1,4 @@
 const PageWriter = require('../../../src/commands/build/pagewriter');
-const LocalizationConfig = require('../../../src/models/localizationconfig');
 const path = require('path');
 
 describe('PageWriter builds args for Handlebars Templates properly', () => {
@@ -7,23 +6,15 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
     envVar: 'envVar',
   };
   const relativePath = '..';
-  const localizationConfig = new LocalizationConfig({
-    default: 'es',
-    localeConfig: {
-      en: {
-        experienceKey: 'experienceKey',
-        params: {
-          example: 'param'
-        },
-        urlOverride: '{pageName}',
-        translationFile: 'path/to/file.po',
-        fallback: ['es']
-      },
-      es: {
-        experienceKey: 'en should not fallback to this'
-      }
-    }
-  });
+  const currentLocaleConfig = {
+    experienceKey: 'experienceKey',
+    params: {
+      example: 'param'
+    },
+    urlOverride: '{pageName}',
+    translationFile: 'path/to/file.po',
+    fallback: ['es']
+  };
 
   const globalConfig = {
     apiKey: 'apiKey'
@@ -47,7 +38,7 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
       env: env
     })._buildArgsForTemplate({
       relativePath,
-      localizationConfig,
+      currentLocaleConfig,
       globalConfig,
       pageNameToConfig,
       locale: 'en',
@@ -74,13 +65,13 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
     const args = new PageWriter({
       env: env,
       templateDataFormatter:
-        path.resolve(__dirname, '../../fixtures/hooks/templatedata.js')
+        path.resolve(__dirname, '../../fixtures/hooks/templatedataformatter.js')
     })._buildArgsForTemplate({
       relativePath,
       pageName: 'page2',
       globalConfig,
-      localizationConfig,
-      locale: 'es',
+      currentLocaleConfig,
+      locale: 'en',
       pageNameToConfig
     });
 
@@ -91,8 +82,8 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
 
     const siteLevelAttributes = {
       globalConfig,
-      currentLocaleConfig: localizationConfig.getConfigForLocale('es'),
-      locale: 'es',
+      currentLocaleConfig,
+      locale: 'en',
       env: env
     };
 

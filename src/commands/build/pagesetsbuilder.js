@@ -57,7 +57,7 @@ module.exports = class PageSetsBuilder {
         locale: locale,
         pages: this._buildPages(pageConfigs, templates),
         globalConfig: this._globalConfig,
-        localizationConfig: this._localizationConfig
+        currentLocaleConfig: this._localizationConfig.getConfigForLocale(locale)
       }));
     }
     return pageSets;

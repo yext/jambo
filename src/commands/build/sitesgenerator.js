@@ -175,8 +175,8 @@ class SitesGenerator {
         page.setTemplateContents(processedTemplate);
       }
 
-      const templateDataFormatter =
-        path.resolve(config.dirs.themes, config.defaultTheme, 'hooks', 'templatedata.js');
+      const templateDataFormatter = path.resolve(
+        config.dirs.themes, config.defaultTheme, 'hooks', 'templatedataformatter.js');
       // Write pages
       new PageWriter({
         outputDirectory: config.dirs.output,

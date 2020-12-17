@@ -46,7 +46,7 @@ module.exports = class PageWriter {
     console.log(`Writing files${localeMessage}`);
 
     const pageSetData = {
-      localizationConfig: pageSet.getLocalizationConfig(),
+      currentLocaleConfig: pageSet.getCurrentLocaleConfig(),
       globalConfig: pageSet.getGlobalConfig().getConfig(),
       pageNameToConfig: pageSet.getPageNameToConfig(),
       locale: pageSet.getLocale()
@@ -82,7 +82,7 @@ module.exports = class PageWriter {
    *
    * @param {string} relativePath the relativePath from page to the static assets,
    *                              e.g. ".", "..", "../.."
-   * @param {LocalizationConfig} localizationConfig
+   * @param {Object} currentLocaleConfig the chunk of localeConfig for the current locale
    * @param {Object} globalConfig
    * @param {Object<string, Object>} pageNameToConfig
    * @param {string} locale the locale for the page being built
@@ -92,13 +92,12 @@ module.exports = class PageWriter {
    */
   _buildArgsForTemplate({
     relativePath,
-    localizationConfig,
+    currentLocaleConfig,
     globalConfig,
     pageNameToConfig,
     locale,
     pageName
   }) {
-    const currentLocaleConfig = localizationConfig.getConfigForLocale(locale);
     if (fs.existsSync(this._templateDataFormatter)) {
       return this._getTemplateDataFromFormatter({
         relativePath,
@@ -167,7 +166,7 @@ module.exports = class PageWriter {
     pageNameToConfig
   }) {
     try {
-      const hookFunction = require(this._templateDataFormatter);
+      const formatterFunction = require(this._templateDataFormatter);
       const pageMetadata = {
         relativePath,
         pageName
@@ -178,7 +177,7 @@ module.exports = class PageWriter {
         locale,
         env: this._env
       };
-      return hookFunction(pageMetadata, siteLevelAttributes, pageNameToConfig);
+      return formatterFunction(pageMetadata, siteLevelAttributes, pageNameToConfig);
     } catch (err) {
       const msg =
         `Could not load template data hook from ${this._templateDataFormatter}: `;
