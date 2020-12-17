@@ -1,5 +1,5 @@
 /**
- * A test data formatter hook hook.
+ * A test data formatter hook.
  *
  * @param {string} pageMetadata.relativePath relativePath from the page to the output dir
  * @param {string} pageMetadata.pageName name of the page being build
