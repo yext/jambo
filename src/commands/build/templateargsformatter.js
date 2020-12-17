@@ -27,8 +27,8 @@ module.exports = class TemplateArgsFormatter {
    * @param {Object} currentLocaleConfig the chunk of localeConfig for the current locale
    * @param {Object} globalConfig
    * @param {string} locale the locale for the page being built
-   * @param {Object<string, Object>} pageNameToConfig
    * @param {Object} env environment variables
+   * @param {Object<string, Object>} pageNameToConfig
    * @returns {Object}
    */
   formatArgs({
@@ -37,8 +37,8 @@ module.exports = class TemplateArgsFormatter {
     currentLocaleConfig,
     globalConfig,
     locale,
-    pageNameToConfig,
-    env
+    env,
+    pageNameToConfig
   }) {
     const pageMetadata = {
       relativePath,
