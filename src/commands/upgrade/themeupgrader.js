@@ -48,13 +48,24 @@ class ThemeUpgrader {
       branch: new ArgumentMetadata({
         type: ArgumentType.STRING,
         description: 'the branch of the theme to upgrade to',
-        isRequired: false
+        isRequired: false,
+        defaultValue: 'master'
       })
     }
   }
 
   static async describe(jamboConfig) {
     const branches = await this._getThemeBranches(jamboConfig);
+
+    const branchParam = {
+      displayName: 'Branch of theme to upgrade to',
+      type: 'singleoption',
+      options: branches
+    }
+    if (branches.length) {
+      branchParam.default = 'master';
+    }
+
     return {
       displayName: 'Upgrade Theme',
       params: {
@@ -66,11 +77,7 @@ class ThemeUpgrader {
           displayName: 'Disable Upgrade Script',
           type: 'boolean'
         },
-        branch: {
-          displayName: 'Branch of theme to upgrade to',
-          type: 'singleoption',
-          options: branches
-        }
+        branch: branchParam
       }
     }
   }
