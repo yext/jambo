@@ -1,4 +1,4 @@
-const themeCommand = require('../import/themeimporter');
+const ThemeImporter = require('../import/themeimporter');
 
 const fs = require('file-system');
 const simpleGit = require('simple-git/promise');
@@ -51,7 +51,7 @@ exports.RepositoryScaffolder = class {
 
       const theme = repositorySettings.getTheme();
       if (theme) {
-        const themeImporter = new themeCommand.ThemeImporter(jamboConfig);
+        const themeImporter = new ThemeImporter(jamboConfig);
         await themeImporter.import(
           theme, 
           repositorySettings.shouldAddThemeAsSubmodule());
