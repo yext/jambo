@@ -1,4 +1,3 @@
-const GlobalConfigLocalizer = require('./globalconfiglocalizer');
 const LocalizationConfig = require('../../models/localizationconfig');
 const Page = require('../../models/page');
 const PageConfig = require('../../models/pageconfig');
@@ -54,14 +53,11 @@ module.exports = class PageSetsBuilder {
         continue;
       }
 
-      const localizedGlobalConfig = new GlobalConfigLocalizer(this._localizationConfig)
-        .localize(this._globalConfig, locale);
-
       pageSets.push(new PageSet({
         locale: locale,
         pages: this._buildPages(pageConfigs, templates),
-        globalConfig: localizedGlobalConfig,
-        params: this._localizationConfig.getParams(locale)
+        globalConfig: this._globalConfig,
+        localizationConfig: this._localizationConfig
       }));
     }
     return pageSets;

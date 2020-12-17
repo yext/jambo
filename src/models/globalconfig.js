@@ -13,33 +13,6 @@ module.exports = class GlobalConfig {
   }
 
 	/**
-	 * Returns the locale
-	 *
-	 * @returns {String}
-	 */
-  getLocale() {
-    return this.rawConfig.locale;
-  }
-
-	/**
-	 * Returns the experienceKey
-	 *
-	 * @returns {String}
-	 */
-  getExperienceKey() {
-    return this.rawConfig.experienceKey;
-  }
-
-	/**
-	 * Returns the apiKey
-	 *
-	 * @returns {String}
-	 */
-  getApiKey() {
-    return this.rawConfig.apiKey;
-  }
-
-	/**
 	 * Returns the raw config
 	 *
 	 * @returns {Object}

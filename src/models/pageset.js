@@ -1,4 +1,5 @@
 const GlobalConfig = require('./globalconfig');
+const LocalizationConfig = require('./localizationconfig');
 const Page = require('./page');
 const PageConfig = require('./pageconfig');
 
@@ -12,9 +13,9 @@ module.exports = class PageSet {
    * @param {String} locale
    * @param {Array<Page>} pages
    * @param {GlobalConfig} globalConfig
-   * @param {Object} params
+   * @param {LocalizationConfig} localizationConfig
    */
-  constructor({ locale, pages, globalConfig, params }) {
+  constructor({ locale, pages, globalConfig, localizationConfig }) {
     /**
      * @type {String}
      */
@@ -41,9 +42,9 @@ module.exports = class PageSet {
       : {};
 
     /**
-     * @type {Object}
+     * @type {LocalizationConfig}
      */
-    this.params = params || {};
+    this.localizationConfig = localizationConfig;
   }
 
   /**
@@ -65,12 +66,12 @@ module.exports = class PageSet {
   }
 
   /**
-   * Returns the params
+   * Returns the localization config
    *
-   * @returns {Object} params
+   * @returns {LocalizationConfig}
    */
-  getParams() {
-    return this.params;
+  getLocalizationConfig() {
+    return this.localizationConfig;
   }
 
   /**

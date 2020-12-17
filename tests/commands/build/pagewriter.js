@@ -1,20 +1,34 @@
 const PageWriter = require('../../../src/commands/build/pagewriter');
+const LocalizationConfig = require('../../../src/models/localizationconfig');
 const path = require('path');
 
 describe('PageWriter builds args for Handlebars Templates properly', () => {
   const env = {
     envVar: 'envVar',
   };
-  const pageConfig = {
-    pageConfigParam: 'param',
-  };
-  const relativePath = 'relativePath';
-  const params = {
-    param: 'test'
-  };
+  const relativePath = '..';
+  const localizationConfig = new LocalizationConfig({
+    default: 'es',
+    localeConfig: {
+      en: {
+        experienceKey: 'experienceKey',
+        params: {
+          example: 'param'
+        },
+        urlOverride: '{pageName}',
+        translationFile: 'path/to/file.po',
+        fallback: ['es']
+      },
+      es: {
+        experienceKey: 'en should not fallback to this'
+      }
+    }
+  });
+
   const globalConfig = {
     apiKey: 'apiKey'
   };
+
   const pageNameToConfig = {
     page1: {
       config: {
@@ -32,19 +46,26 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
     const args = new PageWriter({
       env: env
     })._buildArgsForTemplate({
-      pageConfig,
-      params,
       relativePath,
+      localizationConfig,
       globalConfig,
-      pageNameToConfig
+      pageNameToConfig,
+      locale: 'en',
+      pageName: 'page1'
     });
 
     expect(args).toEqual({
-      ...pageConfig,
+      ...pageNameToConfig.page1,
       verticalConfigs: pageNameToConfig,
-      global_config: globalConfig,
-      relativePath,
-      params,
+      global_config: {
+        apiKey: 'apiKey',
+        experienceKey: 'experienceKey',
+        locale: 'en'
+      },
+      relativePath: '..',
+      params: {
+        example: 'param'
+      },
       env
     });
   });
@@ -52,23 +73,33 @@ describe('PageWriter builds args for Handlebars Templates properly', () => {
   it('can use the templatedata hook in the theme for custom args', () => {
     const args = new PageWriter({
       env: env,
-      templateDataHookPath:
+      templateDataFormatter:
         path.resolve(__dirname, '../../fixtures/hooks/templatedata.js')
     })._buildArgsForTemplate({
-      pageConfig,
-      params,
       relativePath,
+      pageName: 'page2',
       globalConfig,
+      localizationConfig,
+      locale: 'es',
       pageNameToConfig
     });
 
+    const pageMetadata = {
+      relativePath,
+      pageName: 'page2'
+    };
+
+    const siteLevelAttributes = {
+      globalConfig,
+      currentLocaleConfig: localizationConfig.getConfigForLocale('es'),
+      locale: 'es',
+      env: env
+    };
+
     expect(args).toEqual({
-      aPageConfig: pageConfig,
-      aRelativePath: relativePath,
-      aParams: params,
-      aGlobalConfig: globalConfig,
-      aPageNameToConfig: pageNameToConfig,
-      anEnv: env
+      aPageMetadata: pageMetadata,
+      someSiteLevelAttributes: siteLevelAttributes,
+      aPageNameToConfig: pageNameToConfig
     });
   });
 });

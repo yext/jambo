@@ -5,6 +5,7 @@ const path = require('path');
 const PageSet = require('../../models/pageset');
 const UserError = require('../../errors/usererror');
 const { NO_LOCALE } = require('../../constants');
+const LocalizationConfig = require('../../models/localizationconfig');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
@@ -27,7 +28,7 @@ module.exports = class PageWriter {
      * 
      * @type {String|undefined}
      */
-    this._templateDataHookPath = config.templateDataHookPath;
+    this._templateDataFormatter = config.templateDataFormatter;
   }
 
   /**
@@ -44,6 +45,13 @@ module.exports = class PageWriter {
       : '';
     console.log(`Writing files${localeMessage}`);
 
+    const pageSetData = {
+      localizationConfig: pageSet.getLocalizationConfig(),
+      globalConfig: pageSet.getGlobalConfig().getConfig(),
+      pageNameToConfig: pageSet.getPageNameToConfig(),
+      locale: pageSet.getLocale()
+    };
+
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
         throw new UserError(`Error: No config found for page: ${page.getName()}`);
@@ -53,9 +61,8 @@ module.exports = class PageWriter {
       const templateArguments = this._buildArgsForTemplate({
         pageConfig: page.getConfig(),
         relativePath: this._calculateRelativePath(page.getOutputPath()),
-        params: pageSet.getParams(),
-        globalConfig: pageSet.getGlobalConfig().getConfig(),
-        pageNameToConfig: pageSet.getPageNameToConfig(),
+        pageName: page.getName(),
+        ...pageSetData
       });
 
       const template = hbs.compile(page.getTemplateContents());
@@ -73,64 +80,108 @@ module.exports = class PageWriter {
    * note: verticalConfigs is deprecated and will be removed in the next
    * major jambo version.
    *
-   * @param {Object} pageConfig the configuration for the current page
-   * @param {String} relativePath the relativePath from page to the static assets,
+   * @param {string} relativePath the relativePath from page to the static assets,
    *                              e.g. ".", "..", "../.."
-   * @param {Object} params the params object in config for the current locale
+   * @param {LocalizationConfig} localizationConfig
    * @param {Object} globalConfig
-   * @param {Object} pageNameToConfig
+   * @param {Object<string, Object>} pageNameToConfig
+   * @param {string} locale the locale for the page being built
+   * @param {string} pageName the name of the current page,
+   *                          e.g. index for index.html or index.fr.html
    * @returns {Object}
    */
-  _buildArgsForTemplate(
-    { pageConfig, relativePath, params, globalConfig, pageNameToConfig }
-  ) {
-    const hookArgs = {
-      pageConfig, relativePath, params, globalConfig, pageNameToConfig
-    };
-    if (this._templateDataHookPath && fs.existsSync(this._templateDataHookPath)) {
-      return this._getTemplateDataFromHook(hookArgs);
+  _buildArgsForTemplate({
+    relativePath,
+    localizationConfig,
+    globalConfig,
+    pageNameToConfig,
+    locale,
+    pageName
+  }) {
+    const currentLocaleConfig = localizationConfig.getConfigForLocale(locale);
+    if (fs.existsSync(this._templateDataFormatter)) {
+      return this._getTemplateDataFromFormatter({
+        relativePath,
+        currentLocaleConfig,
+        globalConfig,
+        pageNameToConfig,
+        locale,
+        pageName
+      });
     }
+    const localizedGlobalConfig =
+      this._getLocalizedGlobalConfig(globalConfig, currentLocaleConfig, locale);
     return Object.assign(
       {},
-      pageConfig,
+      pageNameToConfig[pageName],
       {
         verticalConfigs: pageNameToConfig,
-        global_config: globalConfig,
+        global_config: localizedGlobalConfig,
         relativePath: relativePath,
-        params: params,
+        params: currentLocaleConfig.params,
         env: this._env
       }
     );
   }
 
   /**
+   * Gets the global config, with experienceKey and locale added
+   * to it from the currentLocaleConfig.
+   * 
+   * @param {Object} globalConfig 
+   * @param {string} currentLocaleConfig chunk of locale config for the current locale
+   */
+  _getLocalizedGlobalConfig(globalConfig, currentLocaleConfig, locale) {
+    const localizedGlobalConfig = {
+      ...globalConfig
+    };
+    const { experienceKey } = currentLocaleConfig;
+    if (experienceKey) {
+      localizedGlobalConfig.experienceKey = experienceKey;
+    }
+    if (locale) {
+      localizedGlobalConfig.locale = locale;
+    }
+    return localizedGlobalConfig;
+  }
+
+  /**
    * Returns the data after performing the given template data hook 
    * transformation on it.
    *
-   * @param {Object} pageConfig the configuration for the current page
-   * @param {String} relativePath the relativePath from page to the static assets,
+   * @param {string} relativePath the relativePath from page to the static assets,
    *                              e.g. ".", "..", "../.."
-   * @param {Object} params the params object in config for the current locale
+   * @param {string} locale the locale for the page being built
+   * @param {string} pageName the name of the current page,
+   *                          e.g. index for index.html or index.fr.html
    * @param {Object} globalConfig
-   * @param {Object} pageNameToConfig
-   * @returns {Object} the additional params to add to the template data
+   * @param {Object} currentLocaleConfig the chunk of locale config for the current locale
+   * @param {Object<string, Object>} pageNameToConfig
    */
-  _getTemplateDataFromHook(
-    { pageConfig, relativePath, params, globalConfig, pageNameToConfig }
-  ) {
+  _getTemplateDataFromFormatter({
+    relativePath,
+    locale,
+    pageName,
+    globalConfig,
+    currentLocaleConfig,
+    pageNameToConfig
+  }) {
     try {
-      const hookFunction = require(this._templateDataHookPath);
-      const hookArgs = {
-        env: this._env,
-        globalConfig: globalConfig,
-        pageConfig,
-        pageNameToConfig,
+      const hookFunction = require(this._templateDataFormatter);
+      const pageMetadata = {
         relativePath,
-        params
-      }
-      return hookFunction(hookArgs);
+        pageName
+      };
+      const siteLevelAttributes = {
+        globalConfig,
+        currentLocaleConfig,
+        locale,
+        env: this._env
+      };
+      return hookFunction(pageMetadata, siteLevelAttributes, pageNameToConfig);
     } catch (err) {
-      const msg = `Could not load template data hook from ${this._templateDataHookPath}:`;
+      const msg =
+        `Could not load template data hook from ${this._templateDataFormatter}: `;
       throw new UserError(msg, err.stack);
     }
   }
