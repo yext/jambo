@@ -118,7 +118,7 @@ module.exports = class PageWriter {
         verticalConfigs: pageNameToConfig,
         global_config: localizedGlobalConfig,
         relativePath: relativePath,
-        params: currentLocaleConfig.params,
+        params: currentLocaleConfig.params || {},
         env: this._env
       }
     );
