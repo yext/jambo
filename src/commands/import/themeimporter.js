@@ -87,7 +87,7 @@ class ThemeImporter{
    *                            containing the new submodule's local path. If the addition
    *                            failed, a Promise containing the error.
    */
-  async _import(themeName, addAsSubmodule) {
+  async import(themeName, addAsSubmodule) {
     if (!this.config) {
       throw new UserError('No jambo.json found. Did you `jambo init` yet?');
     }
