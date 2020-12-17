@@ -1,6 +1,6 @@
 /**
- * Returns the data after performing the given template data hook 
- * transformation on it.
+ * This is the default data formatting for the data passed into the
+ * handlebars templates Jambo builds.
  *
  * @param {Object} pageMetadata contents below
  * @param {string} relativePath relativePath from the page to the output dir
