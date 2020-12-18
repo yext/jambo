@@ -5,6 +5,8 @@ const path = require('path');
 const PageSet = require('../../models/pageset');
 const UserError = require('../../errors/usererror');
 const { NO_LOCALE } = require('../../constants');
+const LocalizationConfig = require('../../models/localizationconfig');
+const TemplateArgsBuilder = require('./templateargsbuilder');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
@@ -21,6 +23,12 @@ module.exports = class PageWriter {
      * @type {String}
      */
     this._outputDirectory = config.outputDirectory;
+
+    /**
+     * @type {TemplateArgsBuilder}
+     */
+    this._templateArgsBuilder =
+      new TemplateArgsBuilder(config.templateDataFormatterHook);
   }
 
   /**
@@ -43,12 +51,14 @@ module.exports = class PageWriter {
       }
 
       console.log(`Writing output file for the '${page.getName()}' page`);
-      const templateArguments = this._buildArgsForTemplate({
-        pageConfig: page.getConfig(),
+      const templateArguments = this._templateArgsBuilder.buildArgs({
         relativePath: this._calculateRelativePath(page.getOutputPath()),
-        params: pageSet.getParams(),
+        pageName: page.getName(),
+        currentLocaleConfig: pageSet.getCurrentLocaleConfig(),
         globalConfig: pageSet.getGlobalConfig().getConfig(),
         pageNameToConfig: pageSet.getPageNameToConfig(),
+        locale: pageSet.getLocale(),
+        env: this._env
       });
 
       const template = hbs.compile(page.getTemplateContents());
@@ -59,32 +69,6 @@ module.exports = class PageWriter {
         outputHTML
       );
     }
-  }
-
-  /**
-   * Creates the Object that will be passed in as arguments to the templates
-   *
-   * @param {Object} pageConfig the configuration for the current page
-   * @param {String} relativePath
-   * @param {String} params
-   * @param {Object} globalConfig
-   * @param {Object} pageNameToConfig
-   * @returns {Object}
-   */
-  _buildArgsForTemplate(
-    { pageConfig, relativePath, params, globalConfig, pageNameToConfig }
-  ){
-    return Object.assign(
-      {},
-      pageConfig,
-      {
-        verticalConfigs: pageNameToConfig,
-        global_config: globalConfig,
-        relativePath: relativePath,
-        params: params,
-        env: this._env
-     }
-    );
   }
 
   /**

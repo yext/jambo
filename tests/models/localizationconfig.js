@@ -23,10 +23,6 @@ describe('LocalizationConfig is properly built from raw object', () => {
     const locale = 'en';
 
     expect(localizationConfig.getLocales()).toEqual(['en', 'es']);
-    expect(localizationConfig.getExperienceKey(locale))
-      .toEqual(rawLocalizationConfig.localeConfig[locale].experienceKey);
-    expect(localizationConfig.getParams(locale))
-      .toEqual(rawLocalizationConfig.localeConfig[locale].params);
     expect(localizationConfig.getTranslationFile(locale))
       .toEqual(rawLocalizationConfig.localeConfig[locale].translationFile);
     expect(localizationConfig.getFallbacks(locale))
