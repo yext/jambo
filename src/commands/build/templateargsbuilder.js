@@ -59,8 +59,8 @@ module.exports = class TemplateArgsBuilder {
   }
 
   /**
-   * Returns the data after performing the given template data hook 
-   * transformation on it.
+   * Returns the data after applying the template data hook 
+   * formatter on it.
    *
    * @param {Object} pageMetadata
    * @param {Object} siteLevelAttributes
