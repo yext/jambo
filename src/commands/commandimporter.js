@@ -30,7 +30,12 @@ class CommandImporter {
         .map(directoryPath => path.resolve(mergedDirectory, directoryPath))
         .filter(directoryPath => fs.lstatSync(directoryPath).isFile())
         .forEach(filePath => {
-          const commandClass = require(filePath);
+          const requiredModule = require(filePath);
+
+          const commandClass = this._isLegacyImport(requiredModule) ?
+            this._handleLegacyImport(requiredModule) :
+            requiredModule;
+
           if (this._validateCustomCommand(commandClass)) {
             customCommands.push(commandClass);
           } else {
@@ -94,6 +99,51 @@ class CommandImporter {
     }
 
     return isValidCommand;
+  }
+  
+  /**
+   * Verifies if the require'd module corresponds to a legacy command import.
+   * 
+   * @param {any} requiredModule The require'd module.
+   * @return {boolean} Boolean indicating if this is a legacy command import.
+   */
+  _isLegacyImport(requiredModule) {
+    return requiredModule.toString().startsWith('jamboConfig =>');
+  }
+
+  /**
+   * Creates an implementation of the current {@link Command} interface that wraps the
+   * result of a legacy command import.
+   * 
+   * @param {Function} commandCreator The function provided by a legacy command import.
+   * @returns {class} An implemenation of the current {@link Command} interface.
+   */
+  _handleLegacyImport(commandCreator) {
+    return class {
+      constructor(jamboConfig) {
+        this._wrappedInstance = commandCreator(jamboConfig);
+      }
+
+      static getAlias() {
+        return commandCreator({}).getAlias();
+      }
+
+      static getShortDescription() {
+        return commandCreator({}).getShortDescription();
+      }
+
+      static args() {
+        return commandCreator({}).args();
+      }
+
+      static describe(jamboConfig) {
+        return commandCreator(jamboConfig).describe();
+      }
+
+      execute(args) {
+        return this._wrappedInstance.execute(args);
+      }
+    }
   }
 }
 module.exports = CommandImporter;
