@@ -2,10 +2,10 @@ const defaultTemplateDataFormatter = require('./defaulttemplatedataformatter');
 const fs = require('fs');
 
 /**
- * TemplateArgsFormatter is responsible for building the arguments that are
+ * TemplateArgsBuilder is responsible for building the arguments that are
  * sent to the handlebars templates.
  */
-module.exports = class TemplateArgsFormatter {
+module.exports = class TemplateArgsBuilder {
   constructor(templateDataFormatterHook) {
     /**
      * The path to the template data formatter hook.
@@ -18,7 +18,7 @@ module.exports = class TemplateArgsFormatter {
   }
 
   /**
-   * Formats the template arguments for a given page
+   * Builds the template arguments for a given page.
    * 
    * @param {string} relativePath the relativePath from page to the static assets,
    *                              e.g. ".", "..", "../.."
@@ -31,7 +31,7 @@ module.exports = class TemplateArgsFormatter {
    * @param {Object<string, Object>} pageNameToConfig
    * @returns {Object}
    */
-  formatArgs({
+  buildArgs({
     relativePath,
     pageName,
     currentLocaleConfig,
@@ -65,6 +65,7 @@ module.exports = class TemplateArgsFormatter {
    * @param {Object} pageMetadata
    * @param {Object} siteLevelAttributes
    * @param {Object<string, Object>} pageNameToConfig
+   * @returns {Object}
    */
   _getTemplateDataFromFormatter(pageMetadata, siteLevelAttributes, pageNameToConfig) {
     try {

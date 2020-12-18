@@ -1,18 +1,19 @@
 /**
- * This is the default data formatting for the data passed into the
- * handlebars templates Jambo builds.
+ * This is the default data formatting for the data passed into handlebars
+ * templates during Jambo builds.
  *
- * @param {Object} pageMetadata contents below
- * @param {string} relativePath relativePath from the page to the output dir
- * @param {string} pageName name of the page being build
+ * @param {string} pageMetadata.relativePath relativePath from the page to the output dir
+ * @param {string} pageMetadata.pageName name of the page being built
  *
- * @param {Object} siteLevelAttributes contents below
- * @param {Object} globalConfig global_config.json
- * @param {Object} currentLocaleConfig the chunk of locale config for the current locale
- * @param {string} locale the current locale
- * @param {Object} env all environment variables, like JAMBO_INJECTED_DATA
+ * @param {Object} siteLevelAttributesglobalConfig global_config.json
+ * @param {Object} siteLevelAttributes.currentLocaleConfig
+ *                 the chunk of locale config for the current locale
+ * @param {string} siteLevelAttributes.locale the current locale
+ * @param {Object} siteLevelAttributes.env
+ *                 all environment variables, like JAMBO_INJECTED_DATA
  * 
- * @param {Object} pageNameToConfig object of pageName to pageConfig
+ * @param {Object} pageNameToConfig
+ *                 object of pageName to pageConfig, for all pages in localized page set
  */
 module.exports = function defaultTemplateDataFormatter(
   pageMetadata,
