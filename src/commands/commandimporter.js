@@ -108,7 +108,7 @@ class CommandImporter {
    * @return {boolean} Boolean indicating if this is a legacy command import.
    */
   _isLegacyImport(requiredModule) {
-    return requiredModule.toString().startsWith('jamboConfig =>');
+    return !('prototype' in requiredModule);
   }
 
   /**
