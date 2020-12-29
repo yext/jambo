@@ -58,7 +58,7 @@ module.exports = class PartialsRegistry {
     const pathExists = fs.existsSync(partialsPath);
     if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
       fs.recurseSync(partialsPath, (path, relative, filename) => {
-        if (isValidFile(filename)) {
+        if (isValidFile(filename) && !path.includes('node_modules')) {
           const partialPath = useFullyQualifiedName
             ? path
             : relative;
