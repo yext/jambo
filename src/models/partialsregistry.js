@@ -1,6 +1,6 @@
 const fs = require('file-system');
 
-const { isValidFile } = require('../utils/fileutils');
+const { isValidFile, isValidPartialPath } = require('../utils/fileutils');
 const Partial = require('./partial');
 
 /**
@@ -44,7 +44,7 @@ module.exports = class PartialsRegistry {
   }
 
   /**
-   * Builds all partials in the provided path. If the path is a directory,
+   * Builds all valid partials in the provided path. If the path is a directory,
    * the useFullyQualifiedName parameter dictates if the path's root will be
    * included in the partial naming scheme.
    *
@@ -58,7 +58,7 @@ module.exports = class PartialsRegistry {
     const pathExists = fs.existsSync(partialsPath);
     if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
       fs.recurseSync(partialsPath, (path, relative, filename) => {
-        if (isValidFile(filename) && !path.includes('node_modules')) {
+        if (isValidFile(filename) && isValidPartialPath(path)) {
           const partialPath = useFullyQualifiedName
             ? path
             : relative;

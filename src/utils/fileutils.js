@@ -29,12 +29,23 @@ exports.getPageName = getPageName;
  * Determines whether a filename is valid
  *
  * @param {string} filename the file name
- * @returns {string}
+ * @returns {boolean}
  */
 isValidFile = function(fileName) {
   return fileName && !fileName.startsWith('.');
 }
 exports.isValidFile = isValidFile;
+
+/**
+ * Determines whether a path is valid for registering it as a partial
+ *
+ * @param {string} path the path to the file
+ * @returns {boolean}
+ */
+isValidPartialPath = function(path) {
+  return path && !path.includes('/node_modules/');
+}
+exports.isValidPartialPath = isValidPartialPath;
 
 /**
  * Search for file with the given name, ignoring extensions.
