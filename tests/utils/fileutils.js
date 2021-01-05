@@ -2,6 +2,7 @@ const {
   stripExtension,
   getPageName,
   isValidFile,
+  isValidPartialPath,
   searchDirectoryIgnoringExtensions
 } = require('../../src/utils/fileutils');
 
@@ -51,6 +52,26 @@ describe('isValidFile properly determines if files are valid', () => {
     let filename = 'example.html.hbs';
     let isValid = isValidFile(filename);
     expect(isValid).toEqual(true);
+  });
+});
+
+describe('isValidPartialPath properly determines if paths are valid', () => {
+  it('returns true when a path does not contain /node_modules/', () => {
+    let path = '../answers-hitchhiker-theme/partials/index.hbs';
+    let isValid = isValidPartialPath(path);
+    expect(isValid).toEqual(true);
+  });
+
+  it('returns false when a path contains /node_modules/', () => {
+    let path = '../../answers-hitchhiker-theme/test-site/node_modules/yargs/index.js';
+    let isValid = isValidPartialPath(path);
+    expect(isValid).toEqual(false);
+  });
+
+  it('returns false when a path starts with node_modules/', () => {
+    let path = 'node_modules/handlebars/index.js';
+    let isValid = isValidPartialPath(path);
+    expect(isValid).toEqual(false);
   });
 });
 
