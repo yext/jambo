@@ -67,6 +67,12 @@ describe('isValidPartialPath properly determines if paths are valid', () => {
     let isValid = isValidPartialPath(path);
     expect(isValid).toEqual(false);
   });
+
+  it('returns false when a path starts with node_modules/', () => {
+    let path = 'node_modules/handlebars/index.js';
+    let isValid = isValidPartialPath(path);
+    expect(isValid).toEqual(false);
+  });
 });
 
 describe('searchDirectoryIgnoringExtensions', () => {
