@@ -43,7 +43,7 @@ exports.isValidFile = isValidFile;
  * @returns {boolean}
  */
 isValidPartialPath = function(path) {
-  return path && !path.includes('/node_modules/');
+  return path && !path.startsWith('node_modules/') && !path.includes('/node_modules/');
 }
 exports.isValidPartialPath = isValidPartialPath;
 

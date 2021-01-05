@@ -55,7 +55,7 @@ describe('isValidFile properly determines if files are valid', () => {
   });
 });
 
-describe('isValidPartialPath properly determines if pathes are valid', () => {
+describe('isValidPartialPath properly determines if paths are valid', () => {
   it('returns true when a path does not contain /node_modules/', () => {
     let path = '../answers-hitchhiker-theme/partials/index.hbs';
     let isValid = isValidPartialPath(path);
