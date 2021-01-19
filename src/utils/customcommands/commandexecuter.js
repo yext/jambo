@@ -1,5 +1,6 @@
 const path = require('path');
 const { spawnSync } = require('child_process');
+const SystemError = require('../../errors/systemerror');
 
 /**
  * This class is responsible for executing a {@link CustomCommand}.
@@ -25,7 +26,11 @@ exports.CustomCommandExecuter = class {
         return spawnSync(
             command.getExecutable(),
             command.getArgs(),
-            { cwd: command.getCwd(), shell: true },
+            {
+                cwd: command.getCwd(),
+                shell: true,
+                stdio: 'inherit'
+            }
         );
     }
 

@@ -3,6 +3,7 @@ const LocaleConfigValidator = require('./localeconfigvalidator');
 const PageConfigsValidator = require('./pageconfigsvalidator');
 const { ConfigKeys } = require('../constants');
 const cloneDeep = require('lodash/cloneDeep');
+const { canonicalizeLocale } = require('../utils/i18nutils');
 
 /**
  * Performs validation on the raw configuration files
@@ -66,11 +67,13 @@ module.exports = class RawConfigValidator {
   }
 
   /**
-   * Gets the locale keys inside localeConfig of locale_config.json
+   * Gets the locale keys inside localeConfig of locale_config.json,
+   * and canonicalizes them.
    *
    * @type {string[]}
    */
   _getConfiguredLocales() {
-    return Object.keys(this._getLocaleConfig()['localeConfig']);
+    return Object.keys(this._getLocaleConfig()['localeConfig'])
+      .map(canonicalizeLocale);
   }
 }

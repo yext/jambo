@@ -61,20 +61,12 @@ module.exports = class LocalizationConfig {
     return Object.keys(this._localeToConfig);
   }
 
-  getExperienceKey(locale) {
-    return this._getConfigForLocale(locale).experienceKey;
-  }
-
-  getParams(locale) {
-    return this._getConfigForLocale(locale).params || {};
-  }
-
   getTranslationFile(locale) {
-    return this._getConfigForLocale(locale).translationFile;
+    return this.getConfigForLocale(locale).translationFile;
   }
 
   getFallbacks(locale) {
-    return this._getConfigForLocale(locale).fallback || [];
+    return this.getConfigForLocale(locale).fallback || [];
   }
 
   /**
@@ -106,7 +98,7 @@ module.exports = class LocalizationConfig {
    * @param {Object} locale
    * @returns {Object}
    */
-  _getConfigForLocale(locale) {
+  getConfigForLocale(locale) {
     return this._localeToConfig[locale] || {};
   }
 
@@ -117,6 +109,6 @@ module.exports = class LocalizationConfig {
    * @returns {string}
    */
   _getUrlOverride(locale) {
-    return this._getConfigForLocale(locale).urlOverride;
+    return this.getConfigForLocale(locale).urlOverride;
   }
 }

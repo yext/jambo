@@ -94,7 +94,7 @@ describe('GeneratedData is correctly formed using with static from', () => {
           }),
         ],
         globalConfig: globalConfig,
-        params: {}
+        localizationConfig: new LocalizationConfig()
       })
     ]);
     expect(generatedData.getLocaleFallbacks(locale)).toEqual([]);
@@ -213,11 +213,8 @@ describe('GeneratedData is correctly formed using with static from', () => {
             outputPath: '/en/home.html'
           }),
         ],
-        globalConfig: new GlobalConfig({
-          ...globalConfig.getConfig(),
-          locale: 'en'
-        }),
-        params: {}
+        globalConfig: globalConfig,
+        currentLocaleConfig: {}
       }),
       new PageSet({
         locale: 'es',
@@ -262,11 +259,12 @@ describe('GeneratedData is correctly formed using with static from', () => {
             outputPath: 'locations.html'
           })
         ],
-        globalConfig: new GlobalConfig({
-          ...globalConfig.getConfig(),
-          locale: 'es'
-        }),
-        params: {}
+        globalConfig: globalConfig,
+        currentLocaleConfig: {
+          fallback: [
+            'en'
+          ]
+        }
       }),
       new PageSet({
         locale: 'fr',
@@ -285,11 +283,12 @@ describe('GeneratedData is correctly formed using with static from', () => {
             outputPath: 'faqs.html'
           })
         ],
-        globalConfig: new GlobalConfig({
-          ...globalConfig.getConfig(),
-          locale: 'fr'
-        }),
-        params: {}
+        globalConfig: globalConfig,
+        currentLocaleConfig: {
+          fallback: [
+            'en'
+          ]
+        }
       }),
     ]);
 

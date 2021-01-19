@@ -9,6 +9,7 @@ const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argume
 const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/systemerror');
 const { isCustomError } = require('../../utils/errorutils');
+const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
 
 const git = simpleGit();
 
@@ -21,7 +22,7 @@ class ThemeUpgrader {
   constructor(jamboConfig = {}) {
     this.jamboConfig = jamboConfig;
     this._themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
-    this.upgradeScript = 'upgrade.js';
+    this.postUpgradeFileName = 'upgrade';
   }
 
   static getAlias() {
@@ -47,13 +48,24 @@ class ThemeUpgrader {
       branch: new ArgumentMetadata({
         type: ArgumentType.STRING,
         description: 'the branch of the theme to upgrade to',
-        isRequired: false
+        isRequired: false,
+        defaultValue: 'master'
       })
     }
   }
 
   static async describe(jamboConfig) {
     const branches = await this._getThemeBranches(jamboConfig);
+
+    const branchParam = {
+      displayName: 'Branch of theme to upgrade to',
+      type: 'singleoption',
+      options: branches
+    }
+    if (branches.length) {
+      branchParam.default = 'master';
+    }
+
     return {
       displayName: 'Upgrade Theme',
       params: {
@@ -65,11 +77,7 @@ class ThemeUpgrader {
           displayName: 'Disable Upgrade Script',
           type: 'boolean'
         },
-        branch: {
-          displayName: 'Branch of theme to upgrade to',
-          type: 'singleoption',
-          options: branches
-        }
+        branch: branchParam
       }
     }
   }
@@ -119,9 +127,8 @@ class ThemeUpgrader {
     await this._isGitSubmodule(themePath)
       ? await this._upgradeSubmodule(themePath, branch)
       : await this._recloneTheme(themeName, themePath, branch);
-    const upgradeScriptPath = path.join(themePath, this.upgradeScript);
     if (!disableScript) {
-      this._executePostUpgradeScript(upgradeScriptPath, isLegacy);
+      this._executePostUpgradeScript(themePath, isLegacy);
     }
     if (isLegacy) {
       console.log(
@@ -136,24 +143,20 @@ class ThemeUpgrader {
 
   /**
    * Executes the upgrade script, and outputs its stdout and stderr.
-   * @param {string} upgradeScriptPath
+   * @param {string} themePath path to the default theme
    * @param {boolean} isLegacy
    */
-  _executePostUpgradeScript(upgradeScriptPath, isLegacy) {
+  _executePostUpgradeScript(themePath, isLegacy) {
+    const upgradeScriptName =
+      searchDirectoryIgnoringExtensions(this.postUpgradeFileName, themePath)
+    const upgradeScriptPath = path.join(themePath, upgradeScriptName);
     const customCommand = new CustomCommand({
       executable: `./${upgradeScriptPath}`
     });
     if (isLegacy) {
       customCommand.addArgs(['--isLegacy'])
     }
-    const { stdout, stderr } =
-      new CustomCommandExecuter(this.jamboConfig).execute(customCommand);
-    const stdoutString = stdout.toString().trim();
-    const stderrString = stderr.toString().trim();
-    stdoutString && console.log(stdoutString);
-    if (stderrString) {
-      throw new SystemError('Error executing theme post upgrade script', stderrString);
-    }
+    new CustomCommandExecuter(this.jamboConfig).execute(customCommand);
   }
 
   /**
@@ -166,7 +169,7 @@ class ThemeUpgrader {
    */
   async _upgradeSubmodule(submodulePath, branch) {
     if (branch) {
-      await git.subModule(['set-branch', '--branch', branch]);
+      await git.subModule(['set-branch', '--branch', branch, submodulePath]);
     }
     await git.submoduleUpdate(['--remote', submodulePath]);
   }

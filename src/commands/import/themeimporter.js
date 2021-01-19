@@ -1,25 +1,24 @@
-const fs = require('file-system');
+const path = require('path');
 const simpleGit = require('simple-git/promise');
 const git = simpleGit();
-const {
-  stringify,
-  assign
-} = require('comment-json');
-const { ShadowConfiguration, ThemeShadower } = require('../override/themeshadower');
+const { ThemeShadower } = require('../override/themeshadower');
 const { getRepoForTheme } = require('../../utils/gitutils');
 const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/usererror');
 const { isCustomError } = require('../../utils/errorutils');
-const { FileNames } = require('../../constants');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
+const { CustomCommand } = require('../../utils/customcommands/command');
+const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
+const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
  */
-class ThemeImporter{
+class ThemeImporter {
   constructor(jamboConfig) {
     this.config = jamboConfig;
     this._themeShadower = new ThemeShadower(jamboConfig);
+    this._postImportHook = 'postimport';
   }
 
   static getAlias() {
@@ -38,7 +37,7 @@ class ThemeImporter{
         isRequired: true
       }),
       addAsSubmodule: new ArgumentMetadata({
-        type: ArgumentType.BOOLEAN, 
+        type: ArgumentType.BOOLEAN,
         description: 'import the theme as a submodule',
         defaultValue: true
       }),
@@ -73,7 +72,7 @@ class ThemeImporter{
   }
 
   execute(args) {
-    this._import(args.theme, args.addAsSubmodule)
+    this.import(args.theme, args.addAsSubmodule)
       .then(console.log);
   }
 
@@ -87,33 +86,22 @@ class ThemeImporter{
    *                            containing the new submodule's local path. If the addition
    *                            failed, a Promise containing the error.
    */
-  async _import(themeName, addAsSubmodule) {
+  async import(themeName, addAsSubmodule) {
     if (!this.config) {
       throw new UserError('No jambo.json found. Did you `jambo init` yet?');
     }
     try {
       const themeRepo = getRepoForTheme(themeName);
-      const localPath = `${this.config.dirs.themes}/${themeName}`;
+      const themePath = path.join(this.config.dirs.themes, themeName);
 
       if (addAsSubmodule) {
-        await git.submoduleAdd(themeRepo, localPath);
+        await git.submoduleAdd(themeRepo, themePath);
       } else {
-        await git.clone(themeRepo, localPath);
+        await git.clone(themeRepo, themePath);
       }
+      this._postImport(themePath);
 
-      if (fs.existsSync(`${localPath}/${FileNames.LOCALE_CONFIG}`)) {
-        fs.copyFileSync(
-          `${localPath}/${FileNames.LOCALE_CONFIG}`,
-          `${this.config.dirs.config}/${FileNames.LOCALE_CONFIG}`);
-      }
-      fs.copyFileSync(
-        `${localPath}/${FileNames.GLOBAL_CONFIG}`,
-        `${this.config.dirs.config}/${FileNames.GLOBAL_CONFIG}`);
-      this._copyStaticAssets(localPath);
-      this._updateDefaultTheme(themeName);
-      this._copyLayoutFiles(themeName);
-
-      return localPath;
+      return themePath;
     } catch (err) {
       if (isCustomError(err)) {
         throw err;
@@ -123,89 +111,20 @@ class ThemeImporter{
   }
 
   /**
-   * Copies the static assets from the Theme to the repository, if they exist. If a
-   * Gruntfile, webpack-config, or package.json are included among the assets, those are
-   * moved to the top-level of the repository. If scss/answers.scss,
-   * scss/answers-variables.scss, scss/fonts.scss, scss/header.scss, scss/footer.scss, or
-   * scss/page.scss are included among the assets, those are moved under the static dir
-   * of the repository.
-   *
-   * @param {string} localPath The path of the imported theme in the repository.
+   * Run the post import hook, if one exists.
+   * 
+   * @param {string} themePath path to the default theme
    */
-  _copyStaticAssets(localPath) {
-    const siteStaticDir = 'static';
-
-    const staticAssetsPath = `${localPath}/static`;
-    if (fs.existsSync(staticAssetsPath)) {
-      const copyFileIfExists = (file, destPath) => {
-        if (fs.existsSync(file)) {
-          fs.copyFileSync(file, destPath);
-        }
-      };
-
-      const scssFiles = [
-        'answers.scss',
-        'answers-variables.scss',
-        'fonts.scss',
-        'header.scss',
-        'footer.scss',
-        'page.scss'
-      ];
-
-      scssFiles.forEach(fileName => {
-        copyFileIfExists(
-          `${staticAssetsPath}/scss/${fileName}`,
-          `${siteStaticDir}/scss/${fileName}`);
-      });
-
-      const jsFiles = [
-        'formatters-custom.js'
-      ];
-
-      jsFiles.forEach(fileName => {
-        copyFileIfExists(
-          `${staticAssetsPath}/js/${fileName}`,
-          `${siteStaticDir}/js/${fileName}`);
-      });
-
-      const topLevelStaticFiles = [
-        'Gruntfile.js',
-        'webpack-config.js',
-        'package.json',
-        'package-lock.json'
-      ];
-
-      topLevelStaticFiles.forEach(fileName => {
-        copyFileIfExists(`${staticAssetsPath}/${fileName}`, `${fileName}`);
-      });
+  _postImport(themePath) {
+    const postImportHookFile =
+      searchDirectoryIgnoringExtensions(this._postImportHook, themePath);
+    if (!postImportHookFile) {
+      return;
     }
-  }
-
-  _copyLayoutFiles(themeName) {
-    console.log('importing header');
-    this._themeShadower.createShadow(new ShadowConfiguration({
-      theme: themeName,
-      path: 'layouts/header.hbs',
-    }));
-
-    console.log('importing footer');
-    this._themeShadower.createShadow(new ShadowConfiguration({
-      theme: themeName,
-      path: 'layouts/footer.hbs',
-    }));
-
-    console.log('importing headincludes');
-    this._themeShadower.createShadow(new ShadowConfiguration({
-      theme: themeName,
-      path: 'layouts/headincludes.hbs',
-    }));
-  }
-
-  _updateDefaultTheme(themeName) {
-    if (this.config.defaultTheme !== themeName) {
-      const updatedConfig = assign({ defaultTheme: themeName }, this.config);
-      fs.writeFileSync('jambo.json', stringify(updatedConfig, null, 2));
-    }
+    const customCommand = new CustomCommand({
+      executable: './' + path.join(themePath, postImportHookFile)
+    });
+    new CustomCommandExecuter(this.config).execute(customCommand);
   }
 }
 
