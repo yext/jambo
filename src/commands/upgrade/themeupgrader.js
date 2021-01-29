@@ -55,17 +55,6 @@ class ThemeUpgrader {
   }
 
   static async describe(jamboConfig) {
-    const branches = await this._getThemeBranches(jamboConfig);
-
-    const branchParam = {
-      displayName: 'Branch of theme to upgrade to',
-      type: 'singleoption',
-      options: branches
-    }
-    if (branches.length) {
-      branchParam.default = 'master';
-    }
-
     return {
       displayName: 'Upgrade Theme',
       params: {
@@ -77,24 +66,13 @@ class ThemeUpgrader {
           displayName: 'Disable Upgrade Script',
           type: 'boolean'
         },
-        branch: branchParam
+        branch: {
+          displayName: 'Branch of theme to upgrade to',
+          type: 'string',
+          default: 'master'
+        }
       }
     }
-  }
-
-  static async _getThemeBranches(jamboConfig) {
-    const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
-    const defaultTheme = jamboConfig.defaultTheme;
-    if (!themesDir || !defaultTheme) {
-      return [];
-    }
-    const branchesGit = simpleGit(
-      path.join(themesDir, defaultTheme));
-    const branches = await branchesGit.branch(['--remote']);
-    return branches.all.map(branch => 
-      // regex replaces 'origin/' only at the beginning of a string
-      branch.replace(/^(origin\/)/, '')
-    );
   }
 
   execute(args) {
