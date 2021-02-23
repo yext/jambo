@@ -80,10 +80,10 @@ class JamboTranslationExtractor {
    * @returns {{files: Array.<string>, directories: Array.<string>}}
    */
   _getFilesAndDirsFromJamboConfig() {
-    const { pages, partials } = this.config.dirs;
+    const { themes } = this.config.dirs;
     const files = [];
     const directories = [];
-    for (const pathname of [pages, ...partials]) {
+    for (const pathname of [themes]) {
       const isFile = fs.existsSync(pathname) && fs.lstatSync(pathname).isFile();
       isFile ? files.push(pathname) : directories.push(pathname);
     }

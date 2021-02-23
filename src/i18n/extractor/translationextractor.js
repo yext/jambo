@@ -76,6 +76,9 @@ class TranslationExtractor {
   }
 
   _extractMessagesFromTemplate(template, filepath) {
+    if (filepath.includes('static')) {
+      return;
+    }
     const tree = Handlebars.parseWithoutProcessing(template);
     const visitor = new Handlebars.Visitor();
     visitor.MustacheStatement =
