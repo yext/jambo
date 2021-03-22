@@ -79,6 +79,10 @@ class TranslationExtractor {
     if (filepath.includes('static')) {
       return;
     }
+    if (filepath.includes('node_modules')) {
+      return;
+    }
+
     const tree = Handlebars.parseWithoutProcessing(template);
     const visitor = new Handlebars.Visitor();
     visitor.MustacheStatement =
