@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const fileSystem = require('file-system');
 const { ShadowConfiguration, ThemeShadower } = require('./themeshadower');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
@@ -50,15 +51,20 @@ class OverrideCommand {
    */
   static _getThemeFiles(jamboConfig) {
     const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
-    if (!themesDir) {
+    const defaultTheme = jamboConfig.defaultTheme;
+
+    if (!themesDir || !defaultTheme) {
       return [];
     }
     const themeFiles = []
-    fileSystem.recurseSync(themesDir, function(filepath) {
-      if (fs.statSync(filepath).isFile()) {
-        themeFiles.push(filepath);
+    fileSystem.recurseSync(
+      path.join(themesDir, defaultTheme), 
+      function(filepath, relative) {
+        if (fs.statSync(filepath).isFile()) {
+          themeFiles.push(relative);
+        }
       }
-    });
+    );
     return themeFiles;
   }
 
