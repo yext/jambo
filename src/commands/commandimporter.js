@@ -29,6 +29,7 @@ class CommandImporter {
       fs.readdirSync(mergedDirectory)
         .map(directoryPath => path.resolve(mergedDirectory, directoryPath))
         .filter(directoryPath => directoryPath.endsWith('.js'))
+        .filter(directoryPath => fs.lstatSync(directoryPath).isFile())
         .forEach(filePath => {
           const requiredModule = require(filePath);
 
