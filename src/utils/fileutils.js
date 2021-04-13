@@ -6,13 +6,12 @@ const path = require('path');
  *
  * @returns {string} filename
  */
-stripExtension = function(filename) {
+exports.stripExtension = function(filename) {
   if (filename.indexOf('.') === -1) {
     return filename;
   }
   return filename.substring(0, filename.lastIndexOf('.'));
 }
-exports.stripExtension = stripExtension;
 
 /**
  * Extracts the pageName from a given file name
@@ -20,10 +19,9 @@ exports.stripExtension = stripExtension;
  * @param {string} filename the file name of the page handlebars template
  * @returns {string}
  */
-getPageName = function(filename) {
+exports.getPageName = function(filename) {
   return filename.split('.')[0];
 }
-exports.getPageName = getPageName;
 
 /**
  * Determines whether a filename is valid
@@ -31,10 +29,9 @@ exports.getPageName = getPageName;
  * @param {string} filename the file name
  * @returns {boolean}
  */
-isValidFile = function(fileName) {
+exports.isValidFile = function(fileName) {
   return fileName && !fileName.startsWith('.');
 }
-exports.isValidFile = isValidFile;
 
 /**
  * Determines whether a path is valid for registering it as a partial
@@ -42,10 +39,15 @@ exports.isValidFile = isValidFile;
  * @param {string} path the path to the file
  * @returns {boolean}
  */
-isValidPartialPath = function(path) {
-  return path && !path.startsWith('node_modules/') && !path.includes('/node_modules/');
+exports.isValidPartialPath = function(path) {
+  if (!path) {
+    return false;
+  }
+  const invalidPaths = ['node_modules', '.git'];
+  return invalidPaths.every(invalidPath => {
+    return !path.startsWith(`${invalidPath}/`) && !path.includes(`/${invalidPath}/`);
+  });
 }
-exports.isValidPartialPath = isValidPartialPath;
 
 /**
  * Search for file with the given name, ignoring extensions.
@@ -57,7 +59,7 @@ exports.isValidPartialPath = isValidPartialPath;
  * @param {string} directoryPath
  * @returns {string|undefined} the fileName, if it exists, otherwise undefined.
  */
-searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
+exports.searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
   const dirEntries = fs.readdirSync(directoryPath);
   for (const dirEntry of dirEntries) {
     if (desiredFile === stripExtension(dirEntry)) {
@@ -69,4 +71,3 @@ searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
   }
   return undefined;
 }
-exports.searchDirectoryIgnoringExtensions = searchDirectoryIgnoringExtensions;
