@@ -1,6 +1,7 @@
 const TranslateInvocation = require('./models/translateinvocation');
 const InvocationTranspiler = require('./invocationtranspiler');
 const HbsHelperParser = require('./hbshelperparser');
+
 /**
  * This class performs preprocessing on Handlebars content before it is registered
  * with Handlebars. The preprocessing is applicable to any type of Handlebars content
