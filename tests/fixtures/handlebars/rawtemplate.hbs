@@ -14,7 +14,8 @@
         {{ translate phrase='The [[count]] person went on a walk' pluralForm='The [[count]] people went on a walk' context='female' count=myCount}}
     </div>
     <button>{{ translate phrase='The man' }}</button>
-    {{!-- {{ translate phrase='singular' pluralForm='plural' count=mycount}} --}}
+    <!-- {{ translate phrase='singular' pluralForm='plural' count=mycount}} -->
+    {{!-- {{ translate phrase="handlebars comments should be ignored"}} --}}
     {{ translate phrase='Person' context="male" escapeHTML=true}}
     {{ translate phrase='Person' context="male" escapeHTML=false}}
     {{ translate phrase='<span class="yext">The dog\'s bone</span>' escapeHTML=true}}
@@ -25,5 +26,10 @@
     {{ translate phrase='<a href="https://www.yext.com">View our website [[name]]</a>' name=name}}
     {{ translate phrase='<a href="https://www.yext.com">View our website [[name]]</a>' pluralForm='<a href="https://www.yext.com">View our websites [[name]]</a>' count=2 name=name escapeHTML=false}}
     {{ translate phrase='<a href="https://www.yext.com">View our website [[name]]</a>' pluralForm='<a href="https://www.yext.com">View our websites [[name]]</a>' count=2 name=name}}
-    {{ translate phrase='<a href="https://www.yext.com">View our website [[name]]</a>' pluralForm='<a href="https://www.yext.com">View our websites [[name]]</a>' count=2 name=name context='internet web, not spider web' escapeHTML=false}}
+    {{ translate
+        phrase='<a href="https://www.yext.com">View our website [[name]]</a>'
+        pluralForm='<a href="https://www.yext.com">View our websites [[name]]</a>'
+        count=2 name=name context='internet web, not spider web'
+        escapeHTML=false
+    }}
 </div>

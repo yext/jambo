@@ -1,3 +1,4 @@
+{{!-- {{ translate phrase="handlebars comments should be ignored"}} --}}
 {{> cards/card_component componentName='standard' }}
 
 class standardCardComponent extends BaseCard['standard'] {
@@ -18,7 +19,12 @@ class standardCardComponent extends BaseCard['standard'] {
       target: '_top', // If the title's URL should open in a new tab, etc.
       titleEventOptions: this.addDefaultEventOptions(),
       details: {{ translateJS phrase='Some item [[name]]' pluralForm='Some items [[name]]' name=profile.name count=profile.count }}, // The text in the body of the card
-      intermixed: {{ translateJS phrase='<a href="https://www.yext.com">View our website [[name]]</a>' pluralForm='<a href="https://www.yext.com">View our websites [[name]]</a>' count=2 name=name}},
+      intermixed: {{ translateJS
+        phrase='<a href="https://www.yext.com">View our website [[name]]</a>'
+        pluralForm='<a href="https://www.yext.com">View our websites [[name]]</a>'
+        count=2
+        name=name
+      }},
       singleQuote: {{ translateJS phrase='The dog\'s bone' }},
       pluralizedSingleQuote: {{ translateJS phrase='The person' pluralForm='The people' context='male' count=myCount}},
       showMoreDetails: {
@@ -27,7 +33,11 @@ class standardCardComponent extends BaseCard['standard'] {
         showLessText: 'Show less' // Label when toggle will hide truncated text
       },
       CTA1: {
-        label: {{translateJS phrase='Mail now [[id1]]' context='Mail is a verb' id1=profile.name}}, // The CTA's label
+        label: {{translateJS
+          phrase='Mail now [[id1]]'
+          context='Mail is a verb'
+          id1=profile.name
+        }}, // The CTA's label
         label2: {{translateJS phrase='[[name]]\'s mail' name=myName}},
         iconName: 'chevron', // The icon to use for the CTA
         url: Formatter.generateCTAFieldTypeLink(profile.c_primaryCTA), // The URL a user will be directed to when clicking

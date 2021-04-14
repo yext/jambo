@@ -1,3 +1,4 @@
+{{!-- {{ translate phrase="handlebars comments should be ignored"}} --}}
 {{> cards/card_component componentName='standard' }}
 
 class standardCardComponent extends BaseCard['standard'] {
