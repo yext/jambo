@@ -6,12 +6,12 @@ const Handlebars = require('handlebars');
  * hbs helpers found of the requested types.
  */
 class HbsHelperParser {
-  constructor(requestedHelpers) {
+  constructor(helpersToParse) {
     /**
      * The helpers that should be parsed out.
      * @type {string[]}
      */
-    this.requestedHelpers = requestedHelpers;
+    this.helpersToParse = helpersToParse;
 
     /**
      * @type {Handlebars.Visitor}
@@ -25,14 +25,14 @@ class HbsHelperParser {
     this.vistor.MustacheStatement = this._handleMustacheStatement.bind(this);
 
     /**
-     * An accumulator for helper statements found in a template.
+     * Helper statements found in a template.
      * @type {hbs.AST.MustacheStatement[]}
      */
     this.helperStatements = [];
   }
 
   /**
-   * Parses all translate invocation strings from a handlebars template.
+   * Parses requested hbs helpers from a handlebars template.
    *
    * @param {string} template a handlebars template
    * @return {string[]}
@@ -54,7 +54,7 @@ class HbsHelperParser {
    * @param {hbs.AST.MustacheStatement} statement
    */
   _handleMustacheStatement(statement) {
-    const isRequestedHelper = this.requestedHelpers.includes(statement.path.original);
+    const isRequestedHelper = this.helpersToParse.includes(statement.path.original);
     if (!isRequestedHelper) {
       return;
     }
