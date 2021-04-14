@@ -43,7 +43,13 @@ exports.isValidFile = isValidFile;
  * @returns {boolean}
  */
 isValidPartialPath = function(path) {
-  return path && !path.startsWith('node_modules/') && !path.includes('/node_modules/');
+  if (!path) {
+    return false;
+  }
+  const invalidPaths = ['node_modules', '.git'];
+  return invalidPaths.every(invalidPath => {
+    return !path.startsWith(`${invalidPath}/`) && !path.includes(`/${invalidPath}/`);
+  });
 }
 exports.isValidPartialPath = isValidPartialPath;
 

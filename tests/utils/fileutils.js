@@ -56,22 +56,26 @@ describe('isValidFile properly determines if files are valid', () => {
 });
 
 describe('isValidPartialPath properly determines if paths are valid', () => {
-  it('returns true when a path does not contain /node_modules/', () => {
-    let path = '../answers-hitchhiker-theme/partials/index.hbs';
-    let isValid = isValidPartialPath(path);
-    expect(isValid).toEqual(true);
-  });
-
-  it('returns false when a path contains /node_modules/', () => {
-    let path = '../../answers-hitchhiker-theme/test-site/node_modules/yargs/index.js';
-    let isValid = isValidPartialPath(path);
-    expect(isValid).toEqual(false);
-  });
-
-  it('returns false when a path starts with node_modules/', () => {
-    let path = 'node_modules/handlebars/index.js';
-    let isValid = isValidPartialPath(path);
-    expect(isValid).toEqual(false);
+  const blacklistedPaths = ['.git', 'node_modules'];
+  blacklistedPaths.forEach(blacklistedPath => {
+    it(`returns true when a path does not contain /${blacklistedPath}/`, () => {
+      let path = '../answers-hitchhiker-theme/partials/index.hbs';
+      let isValid = isValidPartialPath(path);
+      expect(isValid).toEqual(true);
+    });
+  
+    it(`returns false when a path contains /${blacklistedPath}/`, () => {
+      let path =
+        `../../answers-hitchhiker-theme/test-site/${blacklistedPath}/yargs/index.js`;
+      let isValid = isValidPartialPath(path);
+      expect(isValid).toEqual(false);
+    });
+  
+    it(`returns false when a path starts with ${blacklistedPath}/`, () => {
+      let path = `${blacklistedPath}/handlebars/index.js`;
+      let isValid = isValidPartialPath(path);
+      expect(isValid).toEqual(false);
+    });
   });
 });
 
