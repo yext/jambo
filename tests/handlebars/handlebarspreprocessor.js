@@ -108,4 +108,12 @@ describe('HandlebarsPreprocessor works correctly', () => {
     expect(handlebarsPreprocessor.process(rawHbsHandlebarsContent))
       .toEqual(processedHbsHandlebarsContent);
   });
+
+  it('fails gracefully when trying to process .woff files', () => {
+    const woffPath = 
+      path.join(__dirname, '../fixtures/handlebars/opensans-regular-webfont.woff');
+    const woffContent = readFileSync(woffPath, 'utf8');
+    expect(handlebarsPreprocessor.process(woffContent))
+      .toEqual(woffContent);
+  });
 });
