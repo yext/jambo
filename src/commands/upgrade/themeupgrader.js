@@ -158,11 +158,6 @@ class ThemeUpgrader {
    * @param {string} branch
    */
   async _recloneTheme(themeName, themePath, branch) {
-    if (!ThemeManager.isThemeKnown(themeName)) {
-      throw new UserError(
-        `The theme ${themeName} cannot be upgraded because it is not a known theme.`
-      );
-    }
     await fs.remove(themePath);
     const themeRepoURL = ThemeManager.getRepoForTheme(themeName);
     const updateBranch = branch || 'master';

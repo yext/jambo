@@ -81,8 +81,8 @@ class ThemeImporter {
    * Imports the requested theme into Jambo's Themes directory. Note that the theme can
    * either be cloned directly into this directory or added there as a submodule.
    *
-   * @param {string} url The URL of the theme to import. Takes precedence over the 'theme'
-   *                     param.
+   * @param {string} url The URL of the theme to import. Takes precedence over the
+   *                     'themeName' param.
    * @param {string} themeName The name of a known theme.
    * @param {boolean} addAsSubmodule If the theme should be imported as a submodule.
    * @returns {Promise<string>} If the addition of the submodule was successful, a Promise
