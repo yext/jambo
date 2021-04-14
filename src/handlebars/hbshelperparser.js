@@ -43,7 +43,7 @@ class HbsHelperParser {
     this.vistor.accept(ast);
     const lineEndIndices = this._getLineEndIndices(template);
     return this.helperStatements.map(statement =>
-      this._getOriginalValue(statement, lineEndIndices, template));
+      this._getOriginalHelperCall(statement, lineEndIndices, template));
   }
 
   /**
@@ -89,7 +89,7 @@ class HbsHelperParser {
    * @param {number[]} lineEndIndices the line end indices of the original template
    * @param {string} template the original template
    */
-  _getOriginalValue(statement, lineEndIndices, template) {
+  _getOriginalHelperCall(statement, lineEndIndices, template) {
     const getIndex = ({ line, column }) => {
       const lineStart = line === 1 ? 0 : lineEndIndices[line - 2];
       return lineStart + column;
