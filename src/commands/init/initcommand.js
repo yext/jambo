@@ -1,5 +1,6 @@
 const { RepositorySettings, RepositoryScaffolder } = require('./repositoryscaffolder');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
+const ThemeManager = require('../../utils/thememanager');
 
 /**
  * InitCommand initializes the current directory as a Jambo repository.
@@ -15,9 +16,14 @@ class InitCommand {
 
   static args() {
     return {
+      themeUrl: new ArgumentMetadata({
+        type: ArgumentType.STRING,
+        description: 'url of a theme\'s git repo to import during the init',
+      }),
       theme: new ArgumentMetadata({
         type: ArgumentType.STRING,
-        description: 'a starter theme',
+        description: '(deprecated: specify the themeUrl instead)'
+          + ' the name of a theme to import during the init',
         isRequired: false
       }),
       addThemeAsSubmodule: new ArgumentMetadata({
@@ -29,10 +35,14 @@ class InitCommand {
   }
 
   static describe() {
-    const importableThemes = this._getImportableThemes();
+    const importableThemes = ThemeManager.getKnownThemes();
     return {
       displayName: 'Initialize Jambo',
       params: {
+        themeUrl: {
+          displayName: 'URL',
+          type: 'string',
+        },
         theme: {
           displayName: 'Theme',
           type: 'singleoption',
@@ -45,13 +55,6 @@ class InitCommand {
         }
       }
     }
-  }
-
-  /**
-   * @returns {Array<string>} the names of the available themes to be imported
-   */
-  static _getImportableThemes() {
-    return ['answers-hitchhiker-theme'];
   }
 
   execute(args) {
