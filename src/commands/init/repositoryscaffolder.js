@@ -7,14 +7,19 @@ const git = simpleGit();
 
 /**
  * RepositorySettings contains the information needed by Jambo to scaffold a new site
- * repository. Currently, these settings include an optional theme and whether or not
- * the theme should be imported as a submodule.
+ * repository. Currently, these settings include an optional themeUrl, theme name, and
+ * whether or not the theme should be imported as a submodule.
  */
 exports.RepositorySettings = class {
-  constructor({ theme, addThemeAsSubmodule, includeTranslations }) {
+  constructor({ themeUrl, theme, addThemeAsSubmodule, includeTranslations }) {
+    this._themeUrl = themeUrl;
     this._theme = theme;
     this._addThemeAsSubmodule = addThemeAsSubmodule;
     this._includeTranslations = includeTranslations;
+  }
+
+  getThemeUrl() {
+    return this._themeUrl;
   }
 
   getTheme() {
@@ -49,11 +54,12 @@ exports.RepositoryScaffolder = class {
       this._createDirectorySkeleton(includeTranslations);
       const jamboConfig = this._createJamboConfig(includeTranslations);
 
+      const themeUrl = repositorySettings.getThemeUrl();
       const theme = repositorySettings.getTheme();
-      if (theme) {
+      if (themeUrl || theme) {
         const themeImporter = new ThemeImporter(jamboConfig);
         await themeImporter.import(
-          null,
+          themeUrl,
           theme, 
           repositorySettings.shouldAddThemeAsSubmodule());
       }
