@@ -1,6 +1,6 @@
 const UserError = require('../errors/usererror')
 
-const themeRepos = {
+const ThemeRepos = {
   'answers-hitchhiker-theme': 'https://github.com/yext/answers-hitchhiker-theme.git'
 }
 
@@ -15,7 +15,7 @@ class ThemeManager {
    * @returns {boolean}
    */
   static isThemeKnown(themeName) {
-    return (themeName in themeRepos);
+    return (themeName in ThemeRepos);
   }
 
   /**
@@ -23,7 +23,7 @@ class ThemeManager {
    * @returns {string[]}
    */
   static getKnownThemes() {
-    return Object.keys(themeRepos);
+    return Object.keys(ThemeRepos);
   }
 
   /**
@@ -36,7 +36,7 @@ class ThemeManager {
     if (!this.isThemeKnown(themeName)) {
       throw new UserError(`The theme ${themeName} is not known by Jambo.`);
     }
-    return themeRepos[themeName];
+    return ThemeRepos[themeName];
   }
 }
 
