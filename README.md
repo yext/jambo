@@ -46,9 +46,9 @@ The URL of the theme to import.
 
 ###### Optional Arguments
 
---addAsSubmodule _true/false_
+--useSubmodules _true/false_
 
-Whether to import the theme as a submodule, defaults to true.
+Whether to import the theme as a submodule, as opposed to regular files. Defaults to false.
 
 #### Override
 

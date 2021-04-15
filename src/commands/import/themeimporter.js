@@ -11,6 +11,7 @@ const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argume
 const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
 const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
+const fsExtra = require('fs-extra');
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
@@ -41,10 +42,9 @@ class ThemeImporter {
         description: '(deprecated: specify the themeUrl instead)'
           + ' the name of the theme to import',
       }),
-      addAsSubmodule: new ArgumentMetadata({
+      useSubmodules: new ArgumentMetadata({
         type: ArgumentType.BOOLEAN,
-        description: 'import the theme as a submodule',
-        defaultValue: true
+        description: 'import the theme as a submodule'
       }),
     }
   }
@@ -63,17 +63,16 @@ class ThemeImporter {
           type: 'singleoption',
           options: importableThemes
         },
-        addAsSubmodule: {
-          displayName: 'Add as Submodule',
-          type: 'boolean',
-          default: true
+        useSubmodules: {
+          displayName: 'Use Submodules',
+          type: 'boolean'
         }
       }
     }
   }
 
   execute(args) {
-    this.import(args.themeUrl, args.theme, args.addAsSubmodule)
+    this.import(args.themeUrl, args.theme, args.useSubmodules)
       .then(console.log);
   }
 
@@ -84,12 +83,12 @@ class ThemeImporter {
    * @param {string} themeUrl The URL of the theme to import. Takes precedence over the
    *                     'themeName' param.
    * @param {string} themeName The name of a known theme.
-   * @param {boolean} addAsSubmodule If the theme should be imported as a submodule.
+   * @param {boolean} useSubmodules If the theme should be imported as a submodule.
    * @returns {Promise<string>} If the addition of the submodule was successful, a Promise
    *                            containing the new submodule's local path. If the addition
    *                            failed, a Promise containing the error.
    */
-  async import(themeUrl, themeName, addAsSubmodule) {
+  async import(themeUrl, themeName, useSubmodules) {
     if (!this.config) {
       throw new UserError('No jambo.json found. Did you `jambo init` yet?');
     }
@@ -101,10 +100,11 @@ class ThemeImporter {
       const themeRepoName = themeUrl ? getRepoNameFromURL(themeUrl) : themeName;
       const themePath = path.join(this.config.dirs.themes, themeRepoName);
 
-      if (addAsSubmodule) {
+      if (useSubmodules) {
         await git.submoduleAdd(themeRepo, themePath);
       } else {
         await git.clone(themeRepo, themePath);
+        this._removeGitFolder(themePath);
       }
       this._postImport(themePath);
 
@@ -115,6 +115,15 @@ class ThemeImporter {
       }
       throw new SystemError(err.message, err.stack);
     }
+  }
+
+  /**
+   * Removes the .git folder from the theme.
+   *
+   * @param {string} themePath 
+   */
+  _removeGitFolder(themePath) {
+    fsExtra.removeSync(path.join(themePath, '.git'));
   }
 
   /**
