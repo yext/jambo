@@ -9,6 +9,7 @@ Install jambo from npm, and save it to your package.json as a dev-dependency.
 ```bash
 npm install -D jambo
 ```
+
 ___
 
 ## Usage
@@ -28,9 +29,13 @@ Currently, only answers-hitchhiker-theme is supported.
 
 ###### Optional Arguments
 
---theme _theme_name_
+--themeUrl _theme_url_
 
-Import a theme after initializing the repo.
+The git URL of the theme to import, if a theme should be imported on init.
+
+--useSubmodules _true/false_
+
+If importing a theme on init, whether to import it as a git submodule as opposed to regular files. Defaults to false.
 
 #### Import
 
@@ -42,13 +47,13 @@ The import command imports the designated theme into the 'themes' folder.
 
 **--themeUrl** _theme_url_
 
-The URL of the theme to import.
+The git URL of the theme to import.
 
 ###### Optional Arguments
 
 --useSubmodules _true/false_
 
-Whether to import the theme as a submodule, as opposed to regular files. Defaults to false.
+Whether to import the theme as a git submodule, as opposed to regular files. Defaults to false.
 
 #### Override
 

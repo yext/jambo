@@ -11,10 +11,10 @@ const git = simpleGit();
  * whether or not the theme should be imported as a submodule.
  */
 exports.RepositorySettings = class {
-  constructor({ themeUrl, theme, addThemeAsSubmodule, includeTranslations }) {
+  constructor({ themeUrl, theme, useSubmodules, includeTranslations }) {
     this._themeUrl = themeUrl;
     this._theme = theme;
-    this._addThemeAsSubmodule = addThemeAsSubmodule;
+    this._useSubmodules = useSubmodules;
     this._includeTranslations = includeTranslations;
   }
 
@@ -26,8 +26,8 @@ exports.RepositorySettings = class {
     return this._theme;
   }
 
-  shouldAddThemeAsSubmodule() {
-    return this._addThemeAsSubmodule;
+  shouldUseSubmodules() {
+    return this._useSubmodules;
   }
 
   shouldIncludeTranslations() {
@@ -61,7 +61,7 @@ exports.RepositoryScaffolder = class {
         await themeImporter.import(
           themeUrl,
           theme, 
-          repositorySettings.shouldAddThemeAsSubmodule());
+          repositorySettings.shouldUseSubmodules());
       }
     } catch (err) {
       throw new SystemError(err.message, err.stack);

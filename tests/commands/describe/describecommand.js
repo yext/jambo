@@ -15,10 +15,9 @@ const mockInitCommand = {
           type: 'singleoption',
           options: ['answers-hitchhiker-theme']
         },
-        addThemeAsSubmodule: {
-          displayName: 'Add Theme as Submodule',
-          type: 'boolean',
-          default: true
+        useSubmodules: {
+          displayName: 'Use Submodules',
+          type: 'boolean'
         }
       }
     }
@@ -54,10 +53,9 @@ describe('DescribeCommand works correctly', () => {
           type: 'singleoption',
           options: ['answers-hitchhiker-theme']
         },
-        addThemeAsSubmodule: {
-          displayName: 'Add Theme as Submodule',
-          type: 'boolean',
-          default: true
+        useSubmodules: {
+          displayName: 'Use Submodules',
+          type: 'boolean'
         }
       }
     });
