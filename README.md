@@ -35,14 +35,14 @@ Import a theme after initializing the repo.
 #### Import
 
 ```bash
-npx jambo import --theme answers-hitchhiker-theme
+npx jambo import --themeUrl https://github.com/yext/answers-hitchhiker-theme.git
 ```
 
 The import command imports the designated theme into the 'themes' folder.
 
-**--theme** _theme_name_
+**--themeUrl** _theme_url_
 
-The name of the theme to import.
+The URL of the theme to import.
 
 ###### Optional Arguments
 

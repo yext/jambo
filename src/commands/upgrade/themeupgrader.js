@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const simpleGit = require('simple-git/promise');
 
-const { getRepoForTheme } = require('../../utils/gitutils');
+const { ThemeManager } = require('../../utils/thememanager');
 const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
@@ -159,7 +159,7 @@ class ThemeUpgrader {
    */
   async _recloneTheme(themeName, themePath, branch) {
     await fs.remove(themePath);
-    const themeRepoURL = getRepoForTheme(themeName);
+    const themeRepoURL = ThemeManager.getRepoForTheme(themeName);
     const updateBranch = branch || 'master';
     await git.clone(themeRepoURL, themePath, ['--branch', updateBranch]);
   }

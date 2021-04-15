@@ -2,7 +2,8 @@ const path = require('path');
 const simpleGit = require('simple-git/promise');
 const git = simpleGit();
 const { ThemeShadower } = require('../override/themeshadower');
-const { getRepoForTheme } = require('../../utils/gitutils');
+const ThemeManager = require('../../utils/thememanager');
+const { getRepoNameFromURL } = require('../../utils/gitutils');
 const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/usererror');
 const { isCustomError } = require('../../utils/errorutils');
@@ -31,10 +32,14 @@ class ThemeImporter {
 
   static args() {
     return {
+      themeUrl: new ArgumentMetadata({
+        type: ArgumentType.STRING,
+        description: 'url of the theme\'s git repo',
+      }),
       theme: new ArgumentMetadata({
         type: ArgumentType.STRING,
-        description: 'theme to import',
-        isRequired: true
+        description: '(deprecated: specify the themeUrl instead)'
+          + ' the name of the theme to import',
       }),
       addAsSubmodule: new ArgumentMetadata({
         type: ArgumentType.BOOLEAN,
@@ -45,14 +50,17 @@ class ThemeImporter {
   }
 
   static describe() {
-    const importableThemes = this._getImportableThemes();
+    const importableThemes = ThemeManager.getKnownThemes();
     return {
       displayName: 'Import Theme',
       params: {
+        themeUrl: {
+          displayName: 'URL',
+          type: 'string',
+        },
         theme: {
           displayName: 'Theme',
           type: 'singleoption',
-          required: true,
           options: importableThemes
         },
         addAsSubmodule: {
@@ -64,15 +72,8 @@ class ThemeImporter {
     }
   }
 
-  /**
-   * @returns {Array<string>} the names of the available themes to be imported
-   */
-  static _getImportableThemes() {
-    return ['answers-hitchhiker-theme'];
-  }
-
   execute(args) {
-    this.import(args.theme, args.addAsSubmodule)
+    this.import(args.themeUrl, args.theme, args.addAsSubmodule)
       .then(console.log);
   }
 
@@ -80,19 +81,25 @@ class ThemeImporter {
    * Imports the requested theme into Jambo's Themes directory. Note that the theme can
    * either be cloned directly into this directory or added there as a submodule.
    *
-   * @param {string} themeName The name of the theme
+   * @param {string} themeUrl The URL of the theme to import. Takes precedence over the
+   *                     'themeName' param.
+   * @param {string} themeName The name of a known theme.
    * @param {boolean} addAsSubmodule If the theme should be imported as a submodule.
    * @returns {Promise<string>} If the addition of the submodule was successful, a Promise
    *                            containing the new submodule's local path. If the addition
    *                            failed, a Promise containing the error.
    */
-  async import(themeName, addAsSubmodule) {
+  async import(themeUrl, themeName, addAsSubmodule) {
     if (!this.config) {
       throw new UserError('No jambo.json found. Did you `jambo init` yet?');
     }
+    if (!themeUrl && !themeName) {
+      throw new UserError('A URL or a theme must be specifed for an import');
+    }
     try {
-      const themeRepo = getRepoForTheme(themeName);
-      const themePath = path.join(this.config.dirs.themes, themeName);
+      const themeRepo = themeUrl || ThemeManager.getRepoForTheme(themeName);
+      const themeRepoName = themeUrl ? getRepoNameFromURL(themeUrl) : themeName;
+      const themePath = path.join(this.config.dirs.themes, themeRepoName);
 
       if (addAsSubmodule) {
         await git.submoduleAdd(themeRepo, themePath);

@@ -53,6 +53,7 @@ exports.RepositoryScaffolder = class {
       if (theme) {
         const themeImporter = new ThemeImporter(jamboConfig);
         await themeImporter.import(
+          null,
           theme, 
           repositorySettings.shouldAddThemeAsSubmodule());
       }
