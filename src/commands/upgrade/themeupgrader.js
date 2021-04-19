@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const simpleGit = require('simple-git/promise');
 
-const { ThemeManager } = require('../../utils/thememanager');
+const ThemeManager = require('../../utils/thememanager');
 const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
@@ -10,6 +10,7 @@ const SystemError = require('../../errors/systemerror');
 const UserError = require('../../errors/systemerror');
 const { isCustomError } = require('../../utils/errorutils');
 const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
+const fsExtra = require('fs-extra');
 
 const git = simpleGit();
 
@@ -102,9 +103,13 @@ class ThemeUpgrader {
       throw new UserError(
         `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
-    await this._isGitSubmodule(themePath)
-      ? await this._upgradeSubmodule(themePath, branch)
-      : await this._recloneTheme(themeName, themePath, branch);
+    
+    if (await this._isGitSubmodule(themePath))  {
+      await this._upgradeSubmodule(themePath, branch)
+    } else {
+      await this._recloneTheme(themeName, themePath, branch);
+      this._removeGitFolder(themePath);
+    }
     if (!disableScript) {
       this._executePostUpgradeScript(themePath, isLegacy);
     }
@@ -117,6 +122,15 @@ class ThemeUpgrader {
         'Theme upgrade complete. \n' +
         'You may need to manually reinstall dependencies (e.g. an npm install).');
     }
+  }
+
+  /**
+   * Removes the .git folder from the theme.
+   *
+   * @param {string} themePath 
+   */
+  _removeGitFolder(themePath) {
+    fsExtra.removeSync(path.join(themePath, '.git'));
   }
 
   /**
