@@ -28,8 +28,7 @@ class InitCommand {
       }),
       useSubmodules: new ArgumentMetadata({
         type: ArgumentType.BOOLEAN, 
-        description: 'if starter theme should be imported as submodule',
-        defaultValue: true
+        description: 'if starter theme should be imported as submodule'
       }),
     }
   }
@@ -50,8 +49,7 @@ class InitCommand {
         },
         useSubmodules: {
           displayName: 'Use Submodules',
-          type: 'boolean',
-          default: true
+          type: 'boolean'
         }
       }
     }
