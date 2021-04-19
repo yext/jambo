@@ -26,10 +26,9 @@ class InitCommand {
           + ' the name of a theme to import during the init',
         isRequired: false
       }),
-      addThemeAsSubmodule: new ArgumentMetadata({
+      useSubmodules: new ArgumentMetadata({
         type: ArgumentType.BOOLEAN, 
-        description: 'if starter theme should be imported as submodule',
-        defaultValue: true
+        description: 'if starter theme should be imported as submodule'
       }),
     }
   }
@@ -48,10 +47,9 @@ class InitCommand {
           type: 'singleoption',
           options: importableThemes
         },
-        addThemeAsSubmodule: {
-          displayName: 'Add Theme as Submodule',
-          type: 'boolean',
-          default: true
+        useSubmodules: {
+          displayName: 'Use Submodules',
+          type: 'boolean'
         }
       }
     }
