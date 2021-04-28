@@ -36,9 +36,9 @@ class BuildCommand {
     }
   }
 
-  execute(args) {
+  async execute(args) {
     try {
-      this.sitesGenerator.generate(args.jsonEnvVars);
+      await this.sitesGenerator.generate(args.jsonEnvVars);
     } catch (err) {
       if (isCustomError(err)) {
         throw err;

@@ -55,10 +55,10 @@ class InitCommand {
     }
   }
 
-  execute(args) {
+  async execute(args) {
     const repositorySettings = new RepositorySettings(args);
     const repositoryScaffolder = new RepositoryScaffolder();
-    repositoryScaffolder.create(repositorySettings);
+    await repositoryScaffolder.create(repositorySettings);
   }
 }
 

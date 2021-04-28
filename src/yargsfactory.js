@@ -16,6 +16,8 @@ class YargsFactory {
   /**
    * Generates a {@link yargs} instance with all of the built-in and custom
    * commands known to Jambo. 
+   * 
+   * @returns {import('yargs').Argv}
    */
   createCLI() {
     const cli = yargs.usage('Usage: $0 <cmd> <operation> [options]');
@@ -23,7 +25,7 @@ class YargsFactory {
     this._commandRegistry.getCommands().forEach(commandClass => {
       cli.command(this._createCommandModule(commandClass));
     });
-    cli.strict()
+    cli.strict();
 
     return cli;
   }
@@ -52,9 +54,9 @@ class YargsFactory {
           }
         });
       },
-      handler: argv => {
+      handler: async argv => {
         const commandInstance = this._createCommandInstance(commandClass);
-        commandInstance.execute(argv);
+        await commandInstance.execute(argv);
       }
     }
   }

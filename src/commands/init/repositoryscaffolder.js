@@ -1,6 +1,7 @@
 const ThemeImporter = require('../import/themeimporter');
 
 const fs = require('file-system');
+const process = require('process');
 const simpleGit = require('simple-git/promise');
 const SystemError = require('../../errors/systemerror');
 const git = simpleGit();
@@ -46,6 +47,8 @@ exports.RepositoryScaffolder = class {
    */
   async create(repositorySettings) {
     try {
+      const cwd = process.cwd();
+      await git.cwd(cwd);
       await git.init();
       fs.writeFileSync('.gitignore', 'public/\nnode_modules/\n');
 
