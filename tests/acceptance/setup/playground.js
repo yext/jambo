@@ -30,7 +30,7 @@ function setupTestThemes() {
 function cleanupTestThemes() {
   const testThemesDir = path.resolve(__dirname, '../test-themes');
   const testThemes = fs.readdirSync(testThemesDir);
-  testThemes.forEach(themeName =>{
+  testThemes.forEach(themeName => {
     const themeGitFolder = path.resolve(testThemesDir, themeName, '.git');
     fsExtra.removeSync(themeGitFolder);
   });
