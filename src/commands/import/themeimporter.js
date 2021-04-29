@@ -12,6 +12,7 @@ const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
 const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
 const fsExtra = require('fs-extra');
+const process = require('process');
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
@@ -71,8 +72,8 @@ class ThemeImporter {
     }
   }
 
-  execute(args) {
-    this.import(args.themeUrl, args.theme, args.useSubmodules)
+  async execute(args) {
+    await this.import(args.themeUrl, args.theme, args.useSubmodules)
       .then(console.log);
   }
 
@@ -99,7 +100,7 @@ class ThemeImporter {
       const themeRepo = themeUrl || ThemeManager.getRepoForTheme(themeName);
       const themeRepoName = themeUrl ? getRepoNameFromURL(themeUrl) : themeName;
       const themePath = path.join(this.config.dirs.themes, themeRepoName);
-
+      await git.cwd(process.cwd());
       if (useSubmodules) {
         await git.submoduleAdd(themeRepo, themePath);
       } else {
