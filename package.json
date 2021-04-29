@@ -48,7 +48,8 @@
       "**/tests/**/*.js"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/tests/fixtures/"
+      "<rootDir>/tests/fixtures/",
+      "<rootDir>/tests/acceptance/"
     ]
   }
 }
