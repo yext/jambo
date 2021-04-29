@@ -67,7 +67,7 @@ class YargsFactory {
    * 
    * @param {string} name The name of the option.
    * @param {ArgumentMetadata} metadata The option's {@link ArgumentMetadata}.
-   * @param {Object} yargs The Yargs instance to modify.
+   * @param {import('yargs').Argv} yargs The Yargs instance to modify.
    */
   _addListOption(name, metadata, yargs) {
     yargs.array(name);
