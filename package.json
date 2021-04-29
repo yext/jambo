@@ -45,7 +45,8 @@
   "jest": {
     "verbose": true,
     "testMatch": [
-      "**/tests/**/*.js"
+      "**/tests/**/*.js",
+      "!**/tests/acceptance/**"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/tests/fixtures/"
