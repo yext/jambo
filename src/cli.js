@@ -11,4 +11,4 @@ process.on('uncaughtException', err => {
 });
 
 const jambo = buildJamboCLI(process.argv)
-jambo && jambo.argv;
+jambo && jambo.parse();
