@@ -1,5 +1,5 @@
 const buildJamboCLI = require('../../../src/buildJamboCLI');
-const parse = require('shell-quote').parse;
+const { parse } = require('shell-quote');
 
 /**
  * TestInstance gives Jambo acceptance tests different ways

@@ -3,25 +3,26 @@ const fs = require('fs');
 const fsExtra = require('fs-extra');
 const { chdir, cwd } = require('process');
 const TestInstance = require('./TestInstance');
-const { runCommand } = require('./utils');
+const simpleGit = require('simple-git/promise');
 
 /**
  * Transform all theme folders under test-themes/ into git repos.
  */
-function setupTestThemes() {
-  function initGitRepo(dir) {
+async function setupTestThemes() {
+  async function initGitRepo(dir) {
     const originalDir = cwd();
     chdir(dir);
-    runCommand('git init');
-    runCommand('git add -A');
-    runCommand('git commit -m "test theme"');
+    const git = simpleGit(dir)
+    await git.init();
+    await git.add('-A');
+    await git.commit('init test theme');
     chdir(originalDir);
   }
   const testThemesDir = path.resolve(__dirname, '../test-themes');
   const testThemes = fs.readdirSync(testThemesDir);
-  testThemes.forEach(themeName => {
-    initGitRepo(path.resolve(testThemesDir, themeName));
-  });
+  for (const themeName of testThemes) {
+    await initGitRepo(path.resolve(testThemesDir, themeName));
+  }
 }
 
 /**
@@ -55,7 +56,7 @@ exports.runInPlayground = async function(testFunction) {
 
   try {
     fsExtra.mkdirpSync(playgroundDir);
-    setupTestThemes();
+    await setupTestThemes();
     chdir(playgroundDir);
     await testFunction(new TestInstance());
   } catch (err) {
