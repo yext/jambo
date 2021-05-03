@@ -10,12 +10,5 @@ process.on('uncaughtException', err => {
   exitWithError(err);
 });
 
-const jambo = buildJamboCLI(process.argv)
-  .fail(function(msg, err, yargs) {
-    if (err) throw err // preserve stack
-    console.error('You broke it!')
-    console.error(msg)
-    console.error('You should be doing', yargs.help())
-    process.exit(1)
-  })
+const jambo = buildJamboCLI(process.argv);
 jambo && jambo.parse();

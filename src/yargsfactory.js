@@ -25,7 +25,6 @@ class YargsFactory {
       cli.command(this._createCommandModule(commandClass));
     });
     cli.strict();
-    console.log(cli)
 
     return cli;
   }

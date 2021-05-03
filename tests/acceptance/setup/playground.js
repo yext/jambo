@@ -51,7 +51,7 @@ exports.runInPlayground = async function(testFunction) {
   function cleanup() {
     chdir(originalDir);
     cleanupTestThemes();
-    // fsExtra.removeSync(playgroundDir);
+    fsExtra.removeSync(playgroundDir);
   }
 
   try {

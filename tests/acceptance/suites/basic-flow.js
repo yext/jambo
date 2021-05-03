@@ -1,9 +1,15 @@
 const fs = require('fs');
-const asserts = require('../asserts/asserts');
+const path = require('path');
 
-exports['init -> build flow'] = async t => {
+const { runInPlayground } = require('../setup/playground');
+
+// silence jambo's noisy output
+console.log = jest.fn();
+
+it('works', () => runInPlayground(async t => {
   await t.jambo('init');
-  await t.jambo('import --themeUrl ../test-themes/basic');
+  const themePath = path.resolve(__dirname, '../test-themes/basic');
+  await t.jambo(`import --themeUrl ${themePath}`);
   await t.jambo('page --name index --template universal-standard');
   await t.jambo('build');
   const indexPage = fs.readFileSync('public/index.html', 'utf-8');
@@ -18,5 +24,5 @@ exports['init -> build flow'] = async t => {
       js-answersDirectAnswer"
       id="js-answersDirectAnswer">
     </div>`
-  asserts.isEqualHtml(indexPage, expectedPage)
-};
+  expect(indexPage).toEqualHtml(expectedPage);
+}));

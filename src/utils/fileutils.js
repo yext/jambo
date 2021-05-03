@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const process = require('process');
 
 /**
  * Returns the given filename without its extension
@@ -67,7 +68,7 @@ searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
   const dirEntries = fs.readdirSync(directoryPath);
   for (const dirEntry of dirEntries) {
     if (desiredFile === stripExtension(dirEntry)) {
-      const filePath = path.resolve(directoryPath, dirEntry);
+      const filePath = path.resolve(process.cwd(), directoryPath, dirEntry);
       if (fs.lstatSync(filePath).isFile()) {
         return dirEntry;
       }

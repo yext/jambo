@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-object-assign": "^7.12.1",
+    "@types/jest": "^26.0.23",
     "colors": "^1.4.0",
     "eslint": "^7.8.1",
     "figures": "^3.2.0",
@@ -54,10 +55,13 @@
       "./tests/setup/setup.js"
     ],
     "testMatch": [
-      "**/tests/**/*.js"
+      "**/tests/**/*.js",
+      "!**/tests/acceptance/**/*.js",
+      "**/tests/acceptance/suites/**/*.js"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/tests/fixtures/"
+      "<rootDir>/tests/fixtures/",
+      "<rootDir>/tests/setup/"
     ]
   }
 }
