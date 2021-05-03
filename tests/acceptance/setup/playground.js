@@ -13,6 +13,8 @@ async function setupTestThemes() {
     const originalDir = cwd();
     chdir(dir);
     const git = simpleGit(dir)
+    await git.addConfig('user.name', 'jambo-acceptance-tests');
+    await git.addConfig('user.email', 'slapshot@yext.com');
     await git.init();
     await git.add('-A');
     await git.commit('init test theme');
