@@ -8,8 +8,7 @@ console.log = jest.fn();
 
 it('works', () => runInPlayground(async t => {
   await t.jambo('init');
-  const themePath = path.resolve(__dirname, '../test-themes/basic');
-  await t.jambo(`import --themeUrl ${themePath}`);
+  await t.jambo('import --themeUrl ../test-themes/basic');
   await t.jambo('page --name index --template universal-standard');
   await t.jambo('build');
   const indexPage = fs.readFileSync('public/index.html', 'utf-8');
@@ -23,6 +22,6 @@ it('works', () => runInPlayground(async t => {
       class="Answers-directAnswer
       js-answersDirectAnswer"
       id="js-answersDirectAnswer">
-    </div>`
+    </div>`;
   expect(indexPage).toEqualHtml(expectedPage);
 }));
