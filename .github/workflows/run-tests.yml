@@ -21,4 +21,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: npm test
+    - run: git config --global user.email "slapshot@yext.com"
+    - run: git config --global user.name "Jambo run-tests.yml"
+    - run: npx jest tests/acceptance
