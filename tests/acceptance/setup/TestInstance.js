@@ -11,16 +11,11 @@ module.exports = class TestInstance {
   async jambo(command) {
     const commandArgs = parse(command);
     const argv = [process.argv[0], process.argv[1], ...commandArgs];
-    return new Promise((resolve, reject) => {
-      try {
-        buildJamboCLI(argv)
-          .scriptName('jambo')
-          .onFinishCommand(async (r) => resolve(r))
-          .exitProcess(false)
-          .parse(commandArgs);
-      } catch (err) {
-        reject(err);
-      }
-    });
+    console.log('argv', argv)
+
+    return buildJamboCLI(argv)
+      .scriptName('jambo')
+      .exitProcess(false)
+      .parseAsync(commandArgs);
   }
 }

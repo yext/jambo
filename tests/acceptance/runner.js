@@ -5,7 +5,7 @@ const path = require('path');
 const process = require('process');
 require('colors');
 
-runTests(process.argv[2]);
+runTests(process.argv[2]).then();
 
 /**
  * Runs acceptance test suites from tne suites/ folder.
@@ -20,6 +20,8 @@ async function runTests(testsStartWith) {
     }
     suitePaths.push('./suites/' + relative);
   });
+
+  const results = {};
   
   for (const suitePath of suitePaths) {
     const suiteModule = require(`./${suitePath}`);

@@ -4,7 +4,7 @@
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
-    "test": "eslint . && jest && npm run acceptance",
+    "test": "eslint . && jest",
     "acceptance": "node tests/acceptance/runner"
   },
   "repository": {
@@ -36,7 +36,7 @@
     "merge-options": "^2.0.0",
     "prompts": "^2.3.1",
     "simple-git": "^1.131.0",
-    "yargs": "^15.1.0"
+    "yargs": "^17.0.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-object-assign": "^7.12.1",
@@ -50,12 +50,14 @@
   },
   "jest": {
     "verbose": true,
+    "setupFilesAfterEnv": [
+      "./tests/setup/setup.js"
+    ],
     "testMatch": [
       "**/tests/**/*.js"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/tests/fixtures/",
-      "<rootDir>/tests/acceptance/"
+      "<rootDir>/tests/fixtures/"
     ]
   }
 }
