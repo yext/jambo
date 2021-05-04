@@ -48,16 +48,24 @@ exports.runInPlayground = async function(testFunction) {
   const id = parseInt(Math.random() * 99999999);
   const playgroundDir = path.resolve(__dirname, '../playground-' + id )
 
-  try {
+  async function setup() {
     fsExtra.mkdirpSync(playgroundDir);
     await setupTestThemes();
     chdir(playgroundDir);
+  }
+
+  function cleanup() {
+    chdir(originalDir);
+    cleanupTestThemes();
+    fsExtra.removeSync(playgroundDir);
+  }
+
+  try {
+    await setup();
     await testFunction(new TestInstance());
   } catch (err) {
     throw err;
   } finally {
-    chdir(originalDir);
-    cleanupTestThemes();
-    fsExtra.removeSync(playgroundDir);
+    cleanup();
   }
 }
