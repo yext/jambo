@@ -10,6 +10,7 @@
     },
     "ignorePatterns": ["tests/fixtures/**/*.js"],
     "rules": {
+        "indent": ["error", 2],
         "arrow-spacing": "error",
         "quotes": ["error", "single"],
         "space-before-function-paren": ["error", {
