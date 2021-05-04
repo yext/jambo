@@ -16,6 +16,6 @@ function updateDefaultTheme(themeName) {
   }
 }
 
-updateDefaultTheme('basic');
+updateDefaultTheme('basic-flow');
 fs.writeFileSync('config/global_config.json', '{}');
-fsExtra.copySync('themes/basic/static', 'static');
+fsExtra.copySync('themes/basic-flow/static', 'static');

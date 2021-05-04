@@ -3,7 +3,6 @@ const PageScaffolder = require('./commands/page/add/pagescaffolder');
 const SitesGenerator = require('./commands/build/sitesgenerator');
 const { ArgumentMetadata, ArgumentType } = require('./models/commands/argumentmetadata');
 
-
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
  */

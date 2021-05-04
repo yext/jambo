@@ -10,5 +10,5 @@ process.on('uncaughtException', err => {
   exitWithError(err);
 });
 
-const jambo = buildJamboCLI(process.argv)
+const jambo = buildJamboCLI(process.argv);
 jambo && jambo.parse();
