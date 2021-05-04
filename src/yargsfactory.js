@@ -3,7 +3,6 @@ const PageScaffolder = require('./commands/page/add/pagescaffolder');
 const SitesGenerator = require('./commands/build/sitesgenerator');
 const { ArgumentMetadata, ArgumentType } = require('./models/commands/argumentmetadata');
 
-
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
  */
@@ -16,6 +15,8 @@ class YargsFactory {
   /**
    * Generates a {@link yargs} instance with all of the built-in and custom
    * commands known to Jambo. 
+   * 
+   * @returns {import('yargs').Argv}
    */
   createCLI() {
     const cli = yargs.usage('Usage: $0 <cmd> <operation> [options]');
@@ -23,7 +24,7 @@ class YargsFactory {
     this._commandRegistry.getCommands().forEach(commandClass => {
       cli.command(this._createCommandModule(commandClass));
     });
-    cli.strict()
+    cli.strict();
 
     return cli;
   }
@@ -52,9 +53,9 @@ class YargsFactory {
           }
         });
       },
-      handler: argv => {
+      handler: async argv => {
         const commandInstance = this._createCommandInstance(commandClass);
-        commandInstance.execute(argv);
+        await commandInstance.execute(argv);
       }
     }
   }
@@ -65,7 +66,7 @@ class YargsFactory {
    * 
    * @param {string} name The name of the option.
    * @param {ArgumentMetadata} metadata The option's {@link ArgumentMetadata}.
-   * @param {Object} yargs The Yargs instance to modify.
+   * @param {import('yargs').Argv} yargs The Yargs instance to modify.
    */
   _addListOption(name, metadata, yargs) {
     yargs.array(name);
