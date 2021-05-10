@@ -26,7 +26,6 @@ jobs:
     - run: git config --global user.email "slapshot@yext.com"
     - run: git config --global user.name "Jambo run-tests.yml"
     - run: npx jest --config=jest-coverage.json
-    - run: ls
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
