@@ -1,5 +1,11 @@
 # Jambo
 
+<div>
+  <a href='https://coveralls.io/github/yext/jambo?branch=master'>
+    <img src='https://coveralls.io/repos/github/yext/jambo/badge.svg?branch=master' alt='Coverage Status' />
+  </a>
+</div>
+
 Jambo is a JAMStack implementation using Handlebars.
 
 ## Installation
