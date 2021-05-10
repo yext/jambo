@@ -1,0 +1,15 @@
+{
+  "collectCoverage": true,
+  "collectCoverageFrom": ["src/**"],
+  "setupFilesAfterEnv": [
+    "./tests/setup/setup.js"
+  ],
+  "testMatch": [
+    "**/tests/**/*.js"
+  ],
+  "testPathIgnorePatterns": [
+    "<rootDir>/tests/fixtures/",
+    "<rootDir>/tests/setup/",
+    "<rootDir>/tests/acceptance/"
+  ]
+}
