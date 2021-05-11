@@ -1,5 +1,11 @@
 # Jambo
 
+<div>
+  <a href='https://coveralls.io/github/yext/jambo?branch=master'>
+    <img src='https://coveralls.io/repos/github/yext/jambo/badge.svg?branch=master' alt='Coverage Status' />
+  </a>
+</div>
+
 Jambo is a JAMStack implementation using Handlebars.
 
 ## Installation
@@ -9,6 +15,7 @@ Install jambo from npm, and save it to your package.json as a dev-dependency.
 ```bash
 npm install -D jambo
 ```
+
 ___
 
 ## Usage
@@ -28,27 +35,31 @@ Currently, only answers-hitchhiker-theme is supported.
 
 ###### Optional Arguments
 
---theme _theme_name_
+--themeUrl _theme_url_
 
-Import a theme after initializing the repo.
+The git URL of the theme to import, if a theme should be imported on init.
+
+--useSubmodules _true/false_
+
+If importing a theme on init, whether to import it as a git submodule as opposed to regular files. Defaults to false.
 
 #### Import
 
 ```bash
-npx jambo import --theme answers-hitchhiker-theme
+npx jambo import --themeUrl https://github.com/yext/answers-hitchhiker-theme.git
 ```
 
 The import command imports the designated theme into the 'themes' folder.
 
-**--theme** _theme_name_
+**--themeUrl** _theme_url_
 
-The name of the theme to import.
+The git URL of the theme to import.
 
 ###### Optional Arguments
 
---addAsSubmodule _true/false_
+--useSubmodules _true/false_
 
-Whether to import the theme as a submodule, defaults to true.
+Whether to import the theme as a git submodule, as opposed to regular files. Defaults to false.
 
 #### Override
 

@@ -1,28 +1,34 @@
 const ThemeImporter = require('../import/themeimporter');
 
 const fs = require('file-system');
+const process = require('process');
 const simpleGit = require('simple-git/promise');
 const SystemError = require('../../errors/systemerror');
 const git = simpleGit();
 
 /**
  * RepositorySettings contains the information needed by Jambo to scaffold a new site
- * repository. Currently, these settings include an optional theme and whether or not
- * the theme should be imported as a submodule.
+ * repository. Currently, these settings include an optional themeUrl, theme name, and
+ * whether or not the theme should be imported as a submodule.
  */
 exports.RepositorySettings = class {
-  constructor({ theme, addThemeAsSubmodule, includeTranslations }) {
+  constructor({ themeUrl, theme, useSubmodules, includeTranslations }) {
+    this._themeUrl = themeUrl;
     this._theme = theme;
-    this._addThemeAsSubmodule = addThemeAsSubmodule;
+    this._useSubmodules = useSubmodules;
     this._includeTranslations = includeTranslations;
+  }
+
+  getThemeUrl() {
+    return this._themeUrl;
   }
 
   getTheme() {
     return this._theme;
   }
 
-  shouldAddThemeAsSubmodule() {
-    return this._addThemeAsSubmodule;
+  shouldUseSubmodules() {
+    return this._useSubmodules;
   }
 
   shouldIncludeTranslations() {
@@ -41,6 +47,8 @@ exports.RepositoryScaffolder = class {
    */
   async create(repositorySettings) {
     try {
+      const cwd = process.cwd();
+      await git.cwd(cwd);
       await git.init();
       fs.writeFileSync('.gitignore', 'public/\nnode_modules/\n');
 
@@ -49,12 +57,14 @@ exports.RepositoryScaffolder = class {
       this._createDirectorySkeleton(includeTranslations);
       const jamboConfig = this._createJamboConfig(includeTranslations);
 
+      const themeUrl = repositorySettings.getThemeUrl();
       const theme = repositorySettings.getTheme();
-      if (theme) {
+      if (themeUrl || theme) {
         const themeImporter = new ThemeImporter(jamboConfig);
         await themeImporter.import(
+          themeUrl,
           theme, 
-          repositorySettings.shouldAddThemeAsSubmodule());
+          repositorySettings.shouldUseSubmodules());
       }
     } catch (err) {
       throw new SystemError(err.message, err.stack);

@@ -1,6 +1,6 @@
 {
   "name": "jambo",
-  "version": "1.10.4",
+  "version": "1.11.0",
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
@@ -38,20 +38,32 @@
     "merge-options": "^2.0.0",
     "prompts": "^2.3.1",
     "simple-git": "^1.131.0",
-    "yargs": "^15.1.0"
+    "yargs": "^17.0.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-object-assign": "^7.12.1",
+    "@types/jest": "^26.0.23",
     "eslint": "^7.8.1",
-    "jest": "^25.4.0"
+    "jest": "^25.4.0",
+    "prettier": "^2.2.1",
+    "shell-quote": "^1.7.2"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "src/**"
+    ],
     "verbose": true,
+    "setupFilesAfterEnv": [
+      "./tests/setup/setup.js"
+    ],
     "testMatch": [
-      "**/tests/**/*.js"
+      "**/tests/**/*.js",
+      "!**/tests/acceptance/**/*.js",
+      "**/tests/acceptance/suites/**/*.js"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/tests/fixtures/"
+      "<rootDir>/tests/fixtures/",
+      "<rootDir>/tests/setup/"
     ]
   }
 }

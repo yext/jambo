@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const process = require('process');
 
 /**
  * Returns the given filename without its extension
@@ -43,7 +44,13 @@ exports.isValidFile = isValidFile;
  * @returns {boolean}
  */
 isValidPartialPath = function(path) {
-  return path && !path.startsWith('node_modules/') && !path.includes('/node_modules/');
+  if (!path) {
+    return false;
+  }
+  const invalidPaths = ['node_modules', '.git'];
+  return invalidPaths.every(invalidPath => {
+    return !path.startsWith(`${invalidPath}/`) && !path.includes(`/${invalidPath}/`);
+  });
 }
 exports.isValidPartialPath = isValidPartialPath;
 
@@ -61,7 +68,7 @@ searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
   const dirEntries = fs.readdirSync(directoryPath);
   for (const dirEntry of dirEntries) {
     if (desiredFile === stripExtension(dirEntry)) {
-      const filePath = path.resolve(directoryPath, dirEntry);
+      const filePath = path.resolve(process.cwd(), directoryPath, dirEntry);
       if (fs.lstatSync(filePath).isFile()) {
         return dirEntry;
       }
