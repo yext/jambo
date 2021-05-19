@@ -83,7 +83,7 @@ module.exports = function registerHbsHelpers(hbs) {
     if (process.env.IS_DEVELOPMENT_PREVIEW === 'true' ) {
       return srcCode;
     } else {
-      return transformSync(srcCode, {
+      return babel.transformSync(srcCode, {
         compact: true,
         minified: true,
         comments: false,
