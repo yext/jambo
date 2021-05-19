@@ -79,19 +79,25 @@ module.exports = function registerHbsHelpers(hbs) {
 
   hbs.registerHelper('babel', function(options) {
     const srcCode = options.fn(this);
-    return babel.transformSync(srcCode, {
-      compact: true,
-      minified: true,
-      sourceType: 'script',
-      presets: ['@babel/preset-env'],
-      plugins: [
-        '@babel/syntax-dynamic-import',
-        '@babel/plugin-transform-arrow-functions',
-        '@babel/plugin-proposal-object-rest-spread',
-        '@babel/plugin-transform-object-assign',
-      ]
+    
+    if (process.env.IS_DEVELOPMENT_PREVIEW === 'true' ) {
+      return srcCode;
+    } else {
+      return babel.transformSync(srcCode, {
+        compact: true,
+        minified: true,
+        comments: false,
+        sourceType: 'script',
+        presets: ['@babel/preset-env'],
+        plugins: [
+          '@babel/syntax-dynamic-import',
+          '@babel/plugin-transform-arrow-functions',
+          '@babel/plugin-proposal-object-rest-spread',
+          '@babel/plugin-transform-object-assign',
+        ]
       }).code;
-  })
+    }
+  });
 
   hbs.registerHelper('partialPattern', function(cardPath, opt) {
     let result = '';
