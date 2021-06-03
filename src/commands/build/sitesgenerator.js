@@ -21,6 +21,7 @@ const registerCustomHbsHelpers = require('../../handlebars/registercustomhbshelp
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
+const { info } = require('../../utils/logger');
 
 class SitesGenerator {
   constructor(jamboConfig) {
@@ -44,9 +45,9 @@ class SitesGenerator {
     // Pull all data from environment variables.
     const envVarParser = EnvironmentVariableParser.create();
     const env = envVarParser.parse(['JAMBO_INJECTED_DATA'].concat(jsonEnvVars));
-    console.log('Jambo Injected Data:', env['JAMBO_INJECTED_DATA']);
+    info('Jambo Injected Data:', env['JAMBO_INJECTED_DATA']);
 
-    console.log('Reading config files');
+    info('Reading config files');
     const configNameToRawConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (isValidFile(filename)) {
@@ -86,7 +87,7 @@ class SitesGenerator {
       }
     });
 
-    console.log('Reading partial files');
+    info('Reading partial files');
     let partialRegistry;
     try {
       partialRegistry = PartialsRegistry.build({
@@ -111,7 +112,7 @@ class SitesGenerator {
     new PageUniquenessValidator().validate(allPages);
 
     // Clear the output directory but keep preserved files before writing new files
-    console.log('Cleaning output directory');
+    info('Cleaning output directory');
     const shouldCleanOutput =
       fs.existsSync(config.dirs.output) &&
       !(this._isPreserved(config.dirs.output, config.dirs.preservedFiles));
@@ -119,20 +120,20 @@ class SitesGenerator {
       this._clearDirectory(config.dirs.output, config.dirs.preservedFiles);
     }
 
-    console.log('Creating static output directory');
+    info('Creating static output directory');
     let staticDirs = [
       `${config.dirs.themes}/${config.defaultTheme}/static`,
       'static'
     ];
     this._createStaticOutput(staticDirs, config.dirs.output);
 
-    console.log('Extracting translations');
+    info('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
     const translations = 
       await this._extractTranslations(locales, configRegistry.getLocalizationConfig());
 
     // Register built-in Jambo Handlebars helpers.
-    console.log('Registering Jambo Handlebars helpers');
+    info('Registering Jambo Handlebars helpers');
     try {
       registerHbsHelpers(hbs);
     } catch (err) {
@@ -144,7 +145,7 @@ class SitesGenerator {
       path.resolve(config.dirs.themes, config.defaultTheme, 'hbshelpers')
     if (fs.existsSync(customHbsHelpersDir)) {
       try {
-        console.log('Registering custom Handlebars helpers from the default theme');
+        info('Registering custom Handlebars helpers from the default theme');
         registerCustomHbsHelpers(hbs, customHbsHelpersDir);
       } catch (err) {
         throw new UserError('Failed to register custom handlebars helpers', err.stack);
@@ -159,7 +160,7 @@ class SitesGenerator {
         .create(locale, GENERATED_DATA.getLocaleFallbacks(locale), translations);
       const handlebarsPreprocessor = new HandlebarsPreprocessor(translator);
 
-      console.log(`Registering Handlebars partials for locale ${locale}`);
+      info(`Registering Handlebars partials for locale ${locale}`);
       for (const partial of partialRegistry.getPartials()) {
         hbs.registerPartial(
           partial.getName(),
@@ -185,7 +186,7 @@ class SitesGenerator {
       }).writePages(pageSet);
     }
 
-    console.log('Done.');
+    info('Done.');
   }
 
   /**

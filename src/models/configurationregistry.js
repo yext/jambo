@@ -5,6 +5,7 @@ const LocalizationConfig = require('./localizationconfig');
 const PageConfig = require('./pageconfig');
 const { FileNames, ConfigKeys } = require('../constants');
 const RawConfigValidator = require('../validation/rawconfigvalidator');
+const { info } = require('../utils/logger');
 
 /**
  * ConfigurationRegistry is a registry of the configuration files provided to Jambo.
@@ -88,7 +89,7 @@ module.exports = class ConfigurationRegistry {
     const rawLocaleConfig = configNameToRawConfig[ConfigKeys.LOCALE_CONFIG];
 
     if (!rawLocaleConfig) {
-      console.log(
+      info(
         `Cannot find '${FileNames.LOCALE_CONFIG}', using locale information ` +
         `from ${FileNames.GLOBAL_CONFIG}.`);
     }

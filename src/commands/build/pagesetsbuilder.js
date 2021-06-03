@@ -6,6 +6,7 @@ const PageSet = require('../../models/pageset');
 const PageTemplate = require('../../models/pagetemplate');
 const PageTemplateDirector = require('./pagetemplatedirector');
 const { NO_LOCALE } = require('../../constants');
+const { warn } = require('../../utils/logger');
 
 /**
  * PageSetsBuilder is responsible for matching {@link PageConfigs} and
@@ -47,7 +48,7 @@ module.exports = class PageSetsBuilder {
         const localeMessage = locale !== NO_LOCALE
           ? ` for '${locale}' locale`
           : '';
-        console.log(
+        warn(
           `Warning: No page templates found${localeMessage}, not generating a ` +
           `page set${localeMessage}`);
         continue;
@@ -80,7 +81,7 @@ module.exports = class PageSetsBuilder {
         const localeMessage = config.getLocale() !== NO_LOCALE
           ? ` found for '${config.getLocale()}' locale`
           : '';
-        console.log(
+        warn(
           `Warning: No page template '${config.getPageName()}'${localeMessage}, ` +
           `not generating a '${config.getPageName()}' page${localeMessage}`);
         continue;

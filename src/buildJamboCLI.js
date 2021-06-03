@@ -4,6 +4,7 @@ const { parseJamboConfig } = require('./utils/jamboconfigutils');
 const CommandRegistry = require('./commands/commandregistry');
 const YargsFactory = require('./yargsfactory');
 const CommandImporter = require('./commands/commandimporter');
+const { error } = require('./utils/logger');
 
 /**
  * @param {string[]} argv the argv for the current process
@@ -14,7 +15,7 @@ module.exports = function buildJamboCLI(argv) {
   const commandRegistry = new CommandRegistry();
 
   if (argv.length < 3) {
-    console.error('You must provide Jambo with a command.');
+    error('You must provide Jambo with a command.');
     return;
   }
 
