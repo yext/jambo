@@ -49,7 +49,7 @@ module.exports = class PageSetsBuilder {
           ? ` for '${locale}' locale`
           : '';
         warn(
-          `Warning: No page templates found${localeMessage}, not generating a ` +
+          `No page templates found${localeMessage}, not generating a ` +
           `page set${localeMessage}`);
         continue;
       }
@@ -82,7 +82,7 @@ module.exports = class PageSetsBuilder {
           ? ` found for '${config.getLocale()}' locale`
           : '';
         warn(
-          `Warning: No page template '${config.getPageName()}'${localeMessage}, ` +
+          `No page template '${config.getPageName()}'${localeMessage}, ` +
           `not generating a '${config.getPageName()}' page${localeMessage}`);
         continue;
       }
