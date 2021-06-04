@@ -27,7 +27,8 @@ class YargsFactory {
         info(yargs.help());
         if (msg) error(msg);
         exitWithError(err);
-      });
+      })
+      .showHelp(help => info(help));
 
     this._commandRegistry.getCommands().forEach(commandClass => {
       cli.command(this._createCommandModule(commandClass));
