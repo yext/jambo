@@ -10,14 +10,14 @@ const { info } = require('../../utils/logger');
 module.exports = class TemplateDataValidator {
   constructor(templateDataValidationHook) {
     /**
-     *  The path to template data validation hook.
+     * The path to template data validation hook.
      * @type {string}
      */
     this._templateDataValidationHook = templateDataValidationHook;
   }
   
   /**
-   *  Execute validation hook's function if file exists
+   * Execute validation hook's function if file exists
    * @param {string} pageName name of the current page
    * @param {Object} pageData template arguments for the current page
    */
