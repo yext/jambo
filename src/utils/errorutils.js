@@ -1,6 +1,6 @@
-const fs = require('fs');
 const UserError = require('../errors/usererror');
 const SystemError = require('../errors/systemerror');
+const { error } = require('./logger');
 
 /**
  * Print the error, and then forcefully end the 
@@ -8,11 +8,8 @@ const SystemError = require('../errors/systemerror');
  * async operations will be lost.
  * @param {Error} error
  */
-exports.exitWithError = (err) => {
-  fs.writeSync(process.stderr.fd,
-    `${err.message}\n` +
-    `${err.stack}`
-  );
+exports.exitWithError = (err = {}) => {
+  err.stack && error(err.stack);
   const exitCode = err.exitCode || 1;
   process.exit(exitCode);
 }

@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
+const { warn } = require('../utils/logger');
 
 /**
  * Imports all custom {@link Command}s within a Jambo repository.
@@ -40,8 +41,7 @@ class CommandImporter {
           if (this._validateCustomCommand(commandClass)) {
             customCommands.push(commandClass);
           } else {
-            console.warn(
-              `Command in ${path.basename(filePath)} was not formatted properly`);
+            warn(`Command in ${path.basename(filePath)} was not formatted properly`);
           }
         });
 

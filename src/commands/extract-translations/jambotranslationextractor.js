@@ -2,6 +2,7 @@ const TranslationExtractor = require('../../i18n/extractor/translationextractor'
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
 const fsExtra = require('fs-extra');
 const fs = require('fs');
+const { info } = require('../../utils/logger');
 
 /**
  * JamboTranslationExtractor extracts translations from a jambo repo.
@@ -54,7 +55,7 @@ class JamboTranslationExtractor {
   async _extract(outputPath) {
     const { files, directories } = this._getFilesAndDirsFromJamboConfig();
     const gitignorePaths = this._parseGitignorePaths();
-    console.log(`Extracting translations to ${outputPath}`);
+    info(`Extracting translations to ${outputPath}`);
     this.extractor.extract({
       specificFiles: files,
       directories: directories,

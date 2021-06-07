@@ -2,6 +2,8 @@ const yargs = require('yargs');
 const PageScaffolder = require('./commands/page/add/pagescaffolder');
 const SitesGenerator = require('./commands/build/sitesgenerator');
 const { ArgumentMetadata, ArgumentType } = require('./models/commands/argumentmetadata');
+const { info, error } = require('./utils/logger');
+const { exitWithError } = require('./utils/errorutils');
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
@@ -19,7 +21,13 @@ class YargsFactory {
    * @returns {import('yargs').Argv}
    */
   createCLI() {
-    const cli = yargs.usage('Usage: $0 <cmd> <operation> [options]');
+    const cli = yargs
+      .usage('Usage: $0 <cmd> <operation> [options]')
+      .fail((msg, err, yargs) => {
+        info(yargs.help());
+        if (msg) error(msg);
+        exitWithError(err);
+      });
 
     this._commandRegistry.getCommands().forEach(commandClass => {
       cli.command(this._createCommandModule(commandClass));
