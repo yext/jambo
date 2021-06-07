@@ -7,6 +7,7 @@ const UserError = require('../../errors/usererror');
 const { NO_LOCALE } = require('../../constants');
 const LocalizationConfig = require('../../models/localizationconfig');
 const TemplateArgsBuilder = require('./templateargsbuilder');
+const TemplateDataValidator = require('./templatedatavalidator');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
@@ -29,6 +30,12 @@ module.exports = class PageWriter {
      */
     this._templateArgsBuilder =
       new TemplateArgsBuilder(config.templateDataFormatterHook);
+
+    /**
+     * @type {TemplateDataValidator}
+     */
+     this._templateDataValidator =
+      new TemplateDataValidator(config.templateDataValidationHook);
   }
 
   /**
@@ -50,7 +57,6 @@ module.exports = class PageWriter {
         throw new UserError(`Error: No config found for page: ${page.getName()}`);
       }
 
-      console.log(`Writing output file for the '${page.getName()}' page`);
       const templateArguments = this._templateArgsBuilder.buildArgs({
         relativePath: this._calculateRelativePath(page.getOutputPath()),
         pageName: page.getName(),
@@ -60,7 +66,13 @@ module.exports = class PageWriter {
         locale: pageSet.getLocale(),
         env: this._env
       });
+      
+      this._templateDataValidator.validate({
+        pageName: page.getName(),
+        pageData: templateArguments
+      });
 
+      console.log(`Writing output file for the '${page.getName()}' page`);
       const template = hbs.compile(page.getTemplateContents());
       const outputHTML = template(templateArguments);
 

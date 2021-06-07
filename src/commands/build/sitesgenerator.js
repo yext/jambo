@@ -177,10 +177,13 @@ class SitesGenerator {
 
       const templateDataFormatterHook = path.resolve(
         config.dirs.themes, config.defaultTheme, 'hooks', 'templatedataformatter.js');
+      const templateDataValidationHook = path.resolve(
+        config.dirs.themes, config.defaultTheme, 'hooks', 'templatedatavalidator.js');
       // Write pages
       new PageWriter({
         outputDirectory: config.dirs.output,
         templateDataFormatterHook: templateDataFormatterHook,
+        templateDataValidationHook: templateDataValidationHook,
         env: env,
       }).writePages(pageSet);
     }
