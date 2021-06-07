@@ -1,6 +1,7 @@
 const fs = require('file-system');
 const UserError = require('../../errors/usererror');
 const { isCustomError } = require('../../utils/errorutils');
+const { info } = require('../../utils/logger');
 
 /**
  * TemplateDataValidator is reponsible for checking data supplied to a page
@@ -25,7 +26,7 @@ module.exports = class TemplateDataValidator {
         return;
     }
     try {
-        console.log(`Validating configuration for page "${pageName}".`);
+        info(`Validating configuration for page "${pageName}".`);
         const validatorFunction = require(this._templateDataValidationHook);
         validatorFunction(pageData);
     } catch (err) {
