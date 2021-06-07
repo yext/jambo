@@ -58,7 +58,7 @@ describe('TemplateDataValidator validates config data using hook properly', () =
     expect(() => new TemplateDataValidator(templateDataValidationHook).validate({
         pageName: 'examplePage',
         pageData: templateData
-    })).not.toThrow(UserError);
+    })).not.toThrow();
   });
 
   it('throws an error when a field in config is missing', () => {

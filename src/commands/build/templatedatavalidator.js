@@ -18,8 +18,9 @@ module.exports = class TemplateDataValidator {
   
   /**
    * Execute validation hook's function if file exists
-   * @param {string} pageName name of the current page
-   * @param {Object} pageData template arguments for the current page
+   * @param {Object} page
+   * @param {string} page.pageName name of the current page
+   * @param {Object} page.pageData template arguments for the current page
    */
   validate({ pageName, pageData }) {
     if (!fs.existsSync(this._templateDataValidationHook)) {
