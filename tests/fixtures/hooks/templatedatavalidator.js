@@ -1,4 +1,4 @@
-
+const { warn } = require('../../../src/utils/logger');
 /**
  * A test data validator hook.
  *
@@ -7,11 +7,11 @@
  */
  module.exports = function (pageData) {
     if(!pageData["params"]["example"]) {
-        console.log('Missing Info: param example in config file(s)');
+        warn('Missing Info: param example in config file(s)');
         return true; //gracefully ignore missing param on page
     }
     if(!pageData["global_config"]["experienceKey"]) {
-        console.log('Missing Info: experienceKey in config file(s)');
+        warn('Missing Info: experienceKey in config file(s)');
         return false;
     }
     return true;
