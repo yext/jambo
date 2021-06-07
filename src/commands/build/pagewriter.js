@@ -43,6 +43,7 @@ module.exports = class PageWriter {
    * Writes a file to the output directory per page in the given PageSet.
    *
    * @param {PageSet} pageSet the collection of pages to generate
+   * @throws {UserError} on missing config(s)
    */
   writePages(pageSet) {
     if (!pageSet || pageSet.getPages().length < 1) {
@@ -68,10 +69,12 @@ module.exports = class PageWriter {
         env: this._env
       });
       
-      this._templateDataValidator.validate({
+      if(!this._templateDataValidator.validate({
         pageName: page.getName(),
         pageData: templateArguments
-      });
+      })) {
+        throw new UserError('Invalid page template configuration(s).');
+      }
 
       info(`Writing output file for the '${page.getName()}' page`);
       const template = hbs.compile(page.getTemplateContents());

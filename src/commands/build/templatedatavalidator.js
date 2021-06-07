@@ -14,6 +14,12 @@ module.exports = class TemplateDataValidator {
      * @type {string}
      */
     this._templateDataValidationHook = templateDataValidationHook;
+
+    /**
+     * Whether or not the file for template data validation hook exists
+     * @type {boolean}
+     */
+    this._hasHook = fs.existsSync(this._templateDataValidationHook);
   }
   
   /**
@@ -21,19 +27,18 @@ module.exports = class TemplateDataValidator {
    * @param {Object} page
    * @param {string} page.pageName name of the current page
    * @param {Object} page.pageData template arguments for the current page
+   * @throws {UserError} on failure to execute hook
+   * @returns {boolean} whether or not to throw an exception on bad template arguments
    */
   validate({ pageName, pageData }) {
-    if (!fs.existsSync(this._templateDataValidationHook)) {
-        return;
+    if (!this._hasHook) {
+        return true;
     }
     try {
         info(`Validating configuration for page "${pageName}".`);
         const validatorFunction = require(this._templateDataValidationHook);
-        validatorFunction(pageData);
+        return validatorFunction(pageData);
     } catch (err) {
-        if(isCustomError(err)) {
-            throw err;
-        }
         const msg = 
             `Error executing validation hook from ${this._templateDataValidationHook}: `;
         throw new UserError(msg, err.stack);
