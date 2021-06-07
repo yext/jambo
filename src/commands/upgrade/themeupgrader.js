@@ -11,6 +11,7 @@ const UserError = require('../../errors/systemerror');
 const { isCustomError } = require('../../utils/errorutils');
 const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
 const fsExtra = require('fs-extra');
+const { info } = require('../../utils/logger');
 
 const git = simpleGit();
 
@@ -114,11 +115,11 @@ class ThemeUpgrader {
       this._executePostUpgradeScript(themePath, isLegacy);
     }
     if (isLegacy) {
-      console.log(
+      info(
         'Legacy theme upgrade complete. \n' +
         'You may need to manually reinstall dependencies (e.g. an npm install).');
     } else {
-      console.log(
+      info(
         'Theme upgrade complete. \n' +
         'You may need to manually reinstall dependencies (e.g. an npm install).');
     }

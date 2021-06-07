@@ -8,6 +8,7 @@ const { NO_LOCALE } = require('../../constants');
 const LocalizationConfig = require('../../models/localizationconfig');
 const TemplateArgsBuilder = require('./templateargsbuilder');
 const TemplateDataValidator = require('./templatedatavalidator');
+const { info } = require('../../utils/logger');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
@@ -50,7 +51,7 @@ module.exports = class PageWriter {
     const localeMessage = pageSet.getLocale() !== NO_LOCALE
       ? ` for '${pageSet.getLocale()}' locale`
       : '';
-    console.log(`Writing files${localeMessage}`);
+    info(`Writing files${localeMessage}`);
 
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
@@ -72,7 +73,7 @@ module.exports = class PageWriter {
         pageData: templateArguments
       });
 
-      console.log(`Writing output file for the '${page.getName()}' page`);
+      info(`Writing output file for the '${page.getName()}' page`);
       const template = hbs.compile(page.getTemplateContents());
       const outputHTML = template(templateArguments);
 

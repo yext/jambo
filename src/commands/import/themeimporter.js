@@ -73,8 +73,7 @@ class ThemeImporter {
   }
 
   async execute(args) {
-    await this.import(args.themeUrl, args.theme, args.useSubmodules)
-      .then(console.log);
+    await this.import(args.themeUrl, args.theme, args.useSubmodules);
   }
 
   /**

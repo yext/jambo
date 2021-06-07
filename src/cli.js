@@ -3,12 +3,8 @@ const { exitWithError } = require('./utils/errorutils');
 const buildJamboCLI = require('./buildJamboCLI');
 
 // Exit with a non-zero exit code for unhandled rejections and uncaught exceptions
-process.on('unhandledRejection', err => {
-  exitWithError(err);
-});
-process.on('uncaughtException', err => {
-  exitWithError(err);
-});
+process.on('unhandledRejection', exitWithError);
+process.on('uncaughtException', exitWithError);
 
 const jambo = buildJamboCLI(process.argv);
-jambo && jambo.parse();
+jambo && jambo.parseAsync().catch(exitWithError);

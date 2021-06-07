@@ -10,8 +10,8 @@ class SystemError extends Error {
     this.exitCode = 14;
 
     if (stack) {
-      this.stack = stack;
       this.message = `${this.name}: ${message}`;
+      this.stack = `${this.message}\n${stack}`;
     } else {
       Error.captureStackTrace(this, this.constructor);
     }
