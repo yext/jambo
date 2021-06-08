@@ -35,7 +35,7 @@ module.exports = class PageWriter {
     /**
      * @type {TemplateDataValidator}
      */
-     this._templateDataValidator =
+    this._templateDataValidator =
       new TemplateDataValidator(config.templateDataValidationHook);
   }
 
@@ -43,7 +43,8 @@ module.exports = class PageWriter {
    * Writes a file to the output directory per page in the given PageSet.
    *
    * @param {PageSet} pageSet the collection of pages to generate
-   * @throws {UserError} on missing config(s)
+   * @throws {UserError} on missing page config(s), validation hook execution 
+   * failure, and invalid template data using Theme's validation hook
    */
   writePages(pageSet) {
     if (!pageSet || pageSet.getPages().length < 1) {
