@@ -79,17 +79,11 @@ class VerticalAdder {
     };
   }
 
-    /**
-   * Executes the add vertical command with the provided arguments.
-   * 
-   * @param {Object<string, string>} args The arguments, keyed by name 
-   */
-     execute(args) {
-        this._validateArgs(args);
-        this._createVerticalPage(args.name, args.template, args.locales);
-        const cardName = args.cardName || this._getCardDefault(args.template);
-        this._configureVerticalPage(args.name, args.verticalKey, cardName);
-      }
-
+/**
+ * Executes the add vertical command with the provided arguments.
+ * 
+ * @param {Object<string, string>} args The arguments, keyed by name 
+ */
+  execute(args) {}
 }
 module.exports = VerticalAdder;
