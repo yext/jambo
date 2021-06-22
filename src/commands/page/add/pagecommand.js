@@ -78,7 +78,8 @@ class PageCommand {
     if (!defaultTheme || !themesDir) {
       return [];
     }
-    const pageTemplatesDir = path.resolve(themesDir, defaultTheme, 'templates');
+    const currDirectory = process.cwd();
+    const pageTemplatesDir = path.resolve(currDirectory, themesDir, defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
   }
   
