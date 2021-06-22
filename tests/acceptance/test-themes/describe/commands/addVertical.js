@@ -1,4 +1,4 @@
-const { ArgumentMetadata, ArgumentType } = require("../../../../../src/models/commands/argumentmetadata");
+const { ArgumentMetadata, ArgumentType } = require('../../../../../src/models/commands/argumentmetadata');
 
 /**
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
@@ -29,7 +29,8 @@ class VerticalAdder {
    */
   static args() {
     return {
-      name: new ArgumentMetadata(ArgumentType.STRING, 'name of the vertical\'s page', true),
+      name: new ArgumentMetadata(
+        ArgumentType.STRING, 'name of the vertical\'s page', true),
       verticalKey: new ArgumentMetadata(ArgumentType.STRING, 'the vertical\'s key', true),
       cardName: new ArgumentMetadata(
         ArgumentType.STRING, 'card to use with vertical', false),
