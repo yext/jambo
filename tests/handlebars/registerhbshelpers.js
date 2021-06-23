@@ -73,7 +73,6 @@ describe('matches', () => {
 
 describe('babel', () => {
   it('transpiles arrow functions', () => {
-    process.env.IS_DEVELOPMENT_PREVIEW = 'false';
     const template =
       hbs.compile('{{#babel}}const a = () => {};{{/babel}}');
     expect(template()).toEqual('var a=function a(){};');

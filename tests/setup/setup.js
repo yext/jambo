@@ -1,4 +1,5 @@
 const prettier = require('prettier');
+process.env.IS_DEVELOPMENT_PREVIEW = 'false';
 
 expect.extend({
   toEqualHtml: function(received, expected) {

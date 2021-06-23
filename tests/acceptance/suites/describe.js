@@ -4,7 +4,7 @@ const { runInPlayground } = require('../setup/playground');
 
 console.log = jest.fn();
 
-it('can init -> import -> describe', () => runInPlayground(async t => {
+it('describe on default and custom commands', () => runInPlayground(async t => {
   await t.jambo('init');
   await t.jambo('import --themeUrl ../test-themes/describe');
   await t.jambo('describe');
