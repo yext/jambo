@@ -29,19 +29,28 @@ class VerticalAdder {
    */
   static args() {
     return {
-      name: new ArgumentMetadata(
-        ArgumentType.STRING, 'name of the vertical\'s page', true),
-      verticalKey: new ArgumentMetadata(ArgumentType.STRING, 'the vertical\'s key', true),
-      cardName: new ArgumentMetadata(
-        ArgumentType.STRING, 'card to use with vertical', false),
-      template: new ArgumentMetadata(
-        ArgumentType.STRING, 'page template to use within theme', true),
-      locales: new ArgumentMetadata(
-        ArgumentType.ARRAY,
-        'additional locales to generate the page for',
-        false,
-        [],
-        ArgumentType.STRING)
+      name: new ArgumentMetadata({
+        itemType: ArgumentType.STRING, 
+        description: 'name of the vertical\'s page', 
+        isRequired: true}),
+      verticalKey: new ArgumentMetadata({
+        itemType: ArgumentType.STRING, 
+        description: 'the vertical\'s key', 
+        isRequired: true}),
+      cardName: new ArgumentMetadata({
+        itemType: ArgumentType.STRING, 
+        description: 'card to use with vertical', 
+        isRequired: false}),
+      template: new ArgumentMetadata({
+        itemType: ArgumentType.STRING,
+        description: 'page template to use within theme',
+        isRequired: true}),
+      locales: new ArgumentMetadata({
+        type: ArgumentType.ARRAY,
+        description: 'additional locales to generate the page for',
+        isRequired: false,
+        defaultValue: [],
+        itemType: ArgumentType.STRING})
     };
   }
 
@@ -80,10 +89,20 @@ class VerticalAdder {
   }
 
 /**
- * Executes the add vertical command with the provided arguments.
+ * Executes a command that creates an html.
  * 
  * @param {Object<string, string>} args The arguments, keyed by name 
  */
-  execute(args) {}
+  execute(args) {
+    const fs = require('fs');
+    const content = args.name + args.template + args.verticalKey;
+    fs.writeFileSync('index.html', content, err => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+  //file written successfully
+    })
+  }
 }
 module.exports = VerticalAdder;
