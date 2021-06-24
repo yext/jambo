@@ -54,6 +54,8 @@
       "src/**"
     ],
     "verbose": true,
+    "globalSetup": "./tests/setup/globalsetup.js",
+    "globalTeardown": "./tests/setup/globalteardown.js",
     "setupFilesAfterEnv": [
       "./tests/setup/setup.js"
     ],

@@ -7,6 +7,13 @@ log.headingStyle = { fg: 'magenta' };
 const PREFIX = '';
 
 /**
+ * Sets the global logging level.
+ */
+exports.setLogLevel = function(level) {
+  log.level = level;
+}
+
+/**
  * Logs an error.
  *
  * @param  {...any} args 
