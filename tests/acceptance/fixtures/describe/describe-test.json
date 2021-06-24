@@ -83,6 +83,11 @@
   "extract-translations": {
     "displayName": "Extract Translations",
     "params": {
+      "globs": {
+        "displayName": "Globs to Scan",
+        "required": false,
+        "type": "array"
+      },
       "output": {
         "displayName": "Output Path",
         "type": "string",

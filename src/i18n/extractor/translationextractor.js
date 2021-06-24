@@ -5,6 +5,7 @@ const TranslateInvocation = require('../../handlebars/models/translateinvocation
 const fs = require('fs');
 const path = require('path');
 const fsExtra = require('fs-extra');
+const { error } = require('../../utils/logger');
 
 /**
  * TranslationExtractor is a class that extracts handlebars translation invocations
@@ -13,7 +14,6 @@ const fsExtra = require('fs-extra');
 class TranslationExtractor {
   constructor(options) {
     this._options = {
-      extensions: ['.hbs', '.js'], // only extract from files with these extensions
       translateMethods: [ 'translate', 'translateJS' ], // method names to search for
       baseDirectory: process.cwd(), // the root directory when adding a reference to
                                     // the filepath:linenumber of a translation
@@ -24,15 +24,13 @@ class TranslationExtractor {
 
    /**
     * Extracts messages from all of the input files into the extractor.
-    * @param {Object} input
-    * @param {Array<string>} input.directories directories to recursively extract from
-    * @param {Array<string>} input.specificFiles specific files to extract from
-    * @param {Array<string>} input.ignoredPaths paths to recursively ignore
+    *
+    * @param {Array<string>} globs
     */
-  extract(input) {
-    const { directories, specificFiles, ignoredPaths} = input;
-    const filepaths = this._globInputFilePaths(
-      directories || [], specificFiles || [], ignoredPaths || []);
+  extract(globs) {
+    const filepaths = globby.sync(globs).map(fp => {
+      return path.resolve(this._options.baseDirectory, fp)
+    });
     for (const filepath of filepaths) {
       const template = fs.readFileSync(filepath).toString();
       const filepathForReference = path.relative(this._options.baseDirectory, filepath);
@@ -60,27 +58,17 @@ class TranslationExtractor {
     this._extractor.savePotFile(outputPath);
   }
 
-   /**
-    * Globs together an array of files to extract from.
-    * @param {Array<string>} directories directories to recursively extract from
-    * @param {Array<string>} specificFiles specific files to extract from
-    * @param {Array<string>} ignoredPaths paths to recursively ignore
-    * @returns {Array<string>}
-    */
-  _globInputFilePaths(directories, specificFiles, ignoredPaths) {
-    const extensions = this._options.extensions.join(',');
-    const directoryGlobs = directories.map(dirpath => `${dirpath}/**/*{${extensions}}`);
-    const ignoreGlobs = ignoredPaths.map(dirpath => `!${dirpath}`);
-    const files = globby.sync([...directoryGlobs, ...specificFiles, ...ignoreGlobs]);
-    return files;
-  }
-
   _extractMessagesFromTemplate(template, filepath) {
-    const tree = Handlebars.parseWithoutProcessing(template);
-    const visitor = new Handlebars.Visitor();
-    visitor.MustacheStatement =
-      mustacheStatement => this._handleMustacheStatement(mustacheStatement, filepath);
-    visitor.accept(tree);
+    try {
+      const tree = Handlebars.parseWithoutProcessing(template);
+      const visitor = new Handlebars.Visitor();
+      visitor.MustacheStatement =
+        mustacheStatement => this._handleMustacheStatement(mustacheStatement, filepath);
+      visitor.accept(tree);
+    } catch (err) {
+      error(`Unable to extract translations from ${filepath}`)
+      error(err.message);
+    }
   }
 
   _handleMustacheStatement(mustacheStatement, filepath) {
