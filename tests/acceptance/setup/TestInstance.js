@@ -1,4 +1,5 @@
 const buildJamboCLI = require('../../../src/buildJamboCLI');
+const { parse } = require('shell-quote');
 const { error } = require('../../../src/utils/logger');
 
 /**
@@ -7,7 +8,7 @@ const { error } = require('../../../src/utils/logger');
  */
 module.exports = class TestInstance {
   async jambo(command) {
-    const commandArgs = command.split(/\s/);
+    const commandArgs = parse(command);
     const argv = [process.argv[0], process.argv[1], ...commandArgs];
     return buildJamboCLI(argv)
       .scriptName('jambo')
