@@ -2,8 +2,6 @@ const fs = require('fs');
 
 const { runInPlayground } = require('../setup/playground');
 
-console.log = jest.fn();
-
 it('import and execute custom commands', () => runInPlayground(async t => {
   await t.jambo('init');
   await t.jambo('import --themeUrl ../test-themes/customcommand');
