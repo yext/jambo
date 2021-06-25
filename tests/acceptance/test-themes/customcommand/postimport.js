@@ -15,4 +15,4 @@ function updateDefaultTheme(themeName) {
   }
 }
 
-updateDefaultTheme('describe');
+updateDefaultTheme('customcommand');
