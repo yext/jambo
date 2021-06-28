@@ -77,8 +77,8 @@ class ThemeUpgrader {
     }
   }
 
-  execute(args) {
-    this._upgrade({
+  async execute(args) {
+    await this._upgrade({
       themeName: this.jamboConfig.defaultTheme,
       disableScript: args.disableScript,
       isLegacy: args.isLegacy,
@@ -104,12 +104,20 @@ class ThemeUpgrader {
       throw new UserError(
         `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
-    
-    if (await this._isGitSubmodule(themePath))  {
+    if (await this._isGitSubmodule(themePath)) {
       await this._upgradeSubmodule(themePath, branch)
     } else {
-      await this._recloneTheme(themeName, themePath, branch);
-      this._removeGitFolder(themePath);
+      const tempDir = fs.mkdtempSync('./');
+      try { 
+        fs.copySync(themePath, tempDir);
+        await this._recloneTheme(themeName, themePath, branch);
+        this._removeGitFolder(themePath);
+        fs.removeSync(tempDir);
+      }
+      catch (error) {
+        fs.moveSync(tempDir, themePath);
+        throw error;
+      }
     }
     if (!disableScript) {
       this._executePostUpgradeScript(themePath, isLegacy);
@@ -125,71 +133,72 @@ class ThemeUpgrader {
     }
   }
 
-  /**
-   * Removes the .git folder from the theme.
-   *
-   * @param {string} themePath 
-   */
-  _removeGitFolder(themePath) {
-    fsExtra.removeSync(path.join(themePath, '.git'));
-  }
 
-  /**
-   * Executes the upgrade script, and outputs its stdout and stderr.
-   * @param {string} themePath path to the default theme
-   * @param {boolean} isLegacy
-   */
-  _executePostUpgradeScript(themePath, isLegacy) {
-    const upgradeScriptName =
-      searchDirectoryIgnoringExtensions(this.postUpgradeFileName, themePath)
-    const upgradeScriptPath = path.join(themePath, upgradeScriptName);
-    const customCommand = new CustomCommand({
-      executable: `./${upgradeScriptPath}`
-    });
-    if (isLegacy) {
-      customCommand.addArgs(['--isLegacy'])
-    }
-    new CustomCommandExecuter(this.jamboConfig).execute(customCommand);
-  }
+/**
+ * Removes the .git folder from the theme.
+ *
+ * @param {string} themePath 
+ */
+_removeGitFolder(themePath) {
+  fsExtra.removeSync(path.join(themePath, '.git'));
+}
 
-  /**
-   * Calls "git update --remote" on the given submodule path, which
-   * updates the given submodule to the most recent version of the branch
-   * it is set to track. If a branch is specified, the given submodule 
-   * will be updated to the provided branch.
-   * @param {string} submodulePath
-   * @param {string} branch
-   */
-  async _upgradeSubmodule(submodulePath, branch) {
-    if (branch) {
-      await git.subModule(['set-branch', '--branch', branch, submodulePath]);
-    }
-    await git.submoduleUpdate(['--remote', submodulePath]);
+/**
+ * Executes the upgrade script, and outputs its stdout and stderr.
+ * @param {string} themePath path to the default theme
+ * @param {boolean} isLegacy
+ */
+_executePostUpgradeScript(themePath, isLegacy) {
+  const upgradeScriptName =
+    searchDirectoryIgnoringExtensions(this.postUpgradeFileName, themePath)
+  const upgradeScriptPath = path.join(themePath, upgradeScriptName);
+  const customCommand = new CustomCommand({
+    executable: `./${upgradeScriptPath}`
+  });
+  if (isLegacy) {
+    customCommand.addArgs(['--isLegacy'])
   }
+  new CustomCommandExecuter(this.jamboConfig).execute(customCommand);
+}
 
-  /**
-   * @param {string} themeName
-   * @param {string} themePath
-   * @param {string} branch
-   */
-  async _recloneTheme(themeName, themePath, branch) {
-    await fs.remove(themePath);
-    const themeRepoURL = ThemeManager.getRepoForTheme(themeName);
-    const updateBranch = branch || 'master';
-    await git.clone(themeRepoURL, themePath, ['--branch', updateBranch]);
+/**
+ * Calls "git update --remote" on the given submodule path, which
+ * updates the given submodule to the most recent version of the branch
+ * it is set to track. If a branch is specified, the given submodule 
+ * will be updated to the provided branch.
+ * @param {string} submodulePath
+ * @param {string} branch
+ */
+async _upgradeSubmodule(submodulePath, branch) {
+  if (branch) {
+    await git.subModule(['set-branch', '--branch', branch, submodulePath]);
   }
+  await git.submoduleUpdate(['--remote', submodulePath]);
+}
 
-  /**
-   * Returns whether the given file path is registered as a git submodule.
-   * @param {string} submodulePath
-   * @returns {boolean}
-   */
-  async _isGitSubmodule(submodulePath) {
-    const submodulePaths = await git.subModule(['foreach', '--quiet', 'echo $sm_path']);
-    return !!submodulePaths
-      .split('\n')
-      .find(p => p === submodulePath)
-  }
+/**
+ * @param {string} themeName
+ * @param {string} themePath
+ * @param {string} branch
+ */
+async _recloneTheme(themeName, themePath, branch) {
+  await fs.remove(themePath);
+  const themeRepoURL = ThemeManager.getRepoForTheme(themeName);
+  const updateBranch = branch || 'master';
+  await git.clone(themeRepoURL, themePath, ['--branch', updateBranch]);
+}
+
+/**
+ * Returns whether the given file path is registered as a git submodule.
+ * @param {string} submodulePath
+ * @returns {boolean}
+ */
+async _isGitSubmodule(submodulePath) {
+  const submodulePaths = await git.subModule(['foreach', '--quiet', 'echo $sm_path']);
+  return !!submodulePaths
+    .split('\n')
+    .find(p => p === submodulePath)
+}
 }
 
 module.exports = ThemeUpgrader;

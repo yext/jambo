@@ -1,7 +1,9 @@
-const UserError = require('../errors/usererror')
+const UserError = require('../errors/usererror');
+const path = require('path');
 
 const ThemeRepos = {
-  'answers-hitchhiker-theme': 'https://github.com/yext/answers-hitchhiker-theme.git'
+  'answers-hitchhiker-theme': 'https://github.com/yext/answers-hitchhiker-theme.git',
+  'basic-flow': path.resolve(__dirname, '../../tests/acceptance/test-themes/basic-flow')
 }
 
 /**
