@@ -2,9 +2,11 @@ const TranslationExtractor = require('../../../src/i18n/extractor/translationext
 const path = require('path');
 const fs = require('fs');
 
-
 describe('TranslationExtractor', () => {
-  const fixturesDir = path.resolve(__dirname, '../../fixtures/extractions');
+  const rootDir = path.resolve(__dirname, '../../..');
+  const fixturesAbsPath = path.resolve(__dirname, '../../fixtures/extractions');
+  const fixturesDir = path.relative(rootDir, fixturesAbsPath);
+
   const rawcomponentPot = readExpectedPot('rawcomponent.pot');
   const combinedPot = readExpectedPot('combined.pot');
   const rawtemplatePot = readExpectedPot('rawtemplate.pot');
@@ -24,9 +26,7 @@ describe('TranslationExtractor', () => {
   it('can extract from just an hbs file', () => {
     const rawtemplate =
       path.relative(process.cwd(), path.join(fixturesDir, 'rawtemplate.hbs'));
-    extractor.extract({
-      specificFiles: [ rawtemplate ]
-    });
+    extractor.extract([ rawtemplate ]);
     const potString = extractor.getPotString();
     expect(potString).toEqual(rawtemplatePot);
   });
@@ -34,36 +34,26 @@ describe('TranslationExtractor', () => {
   it('can extract from just a js file', () => {
     const rawcomponent =
       path.relative(process.cwd(), path.join(fixturesDir, 'rawcomponent.js'));
-    extractor.extract({
-      specificFiles: [ rawcomponent ]
-    });
+    extractor.extract([ rawcomponent ]);
     const potString = extractor.getPotString();
     expect(potString).toEqual(rawcomponentPot);
   });
 
   it('can extract all translations from a folder', () => {
-    extractor.extract({
-      directories: [ fixturesDir ]
-    });
+    extractor.extract([ fixturesDir ]);
     const potString = extractor.getPotString();
     expect(potString).toEqual(combinedPot);
   });
 
   it('can ignore an entire folder', async () => {
-    extractor.extract({
-      directories: [ fixturesDir ],
-      ignoredPaths: [ fixturesDir ]
-    });
+    extractor.extract([ fixturesDir, `!${fixturesDir}` ]);
     const potString = extractor.getPotString();
     expect(potString).toEqual(emptyPot);
   });
 
   it('can ignore a specific file when specifying a directory', () => {
     const rawcomponent = path.join(fixturesDir, 'rawcomponent.js');
-    extractor.extract({
-      directories: [ fixturesDir ],
-      ignoredPaths: [ rawcomponent ]
-    });
+    extractor.extract([ fixturesDir, `!${rawcomponent}` ]);
     const potString = extractor.getPotString();
     expect(potString).toEqual(rawtemplatePot);
   });
@@ -71,10 +61,7 @@ describe('TranslationExtractor', () => {
   it('ignoring a specific file takes priority over specifying that file', async () => {
     const rawcomponent =
       path.relative(process.cwd(), path.join(fixturesDir, 'rawcomponent.js'));
-    extractor.extract({
-      specificFiles: [ rawcomponent ],
-      ignoredPaths: [ rawcomponent ]
-    });
+    extractor.extract([ rawcomponent, `!${rawcomponent}` ]);
     const potString = extractor.getPotString();
     expect(potString).toEqual(emptyPot);
   });
