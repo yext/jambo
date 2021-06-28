@@ -1,5 +1,9 @@
 const fs = require('fs');
 
+/**
+ * DefaultTranslationGlobber contains the default logic for determining
+ * which files are scanned by the extract-translations command.
+ */
 module.exports = class DefaultTranslationGlobber {
   constructor(dirs = {}, ignoredPaths = []) {
     this.pages = dirs.pages || '';
@@ -8,28 +12,35 @@ module.exports = class DefaultTranslationGlobber {
     this.extensions = ['.js', '.hbs']; // only extract from files with these extensions
   }
 
+  /**
+   * Returns the default globs to be scanned, using the given
+   * site specific templates and partials, as well as any ignored paths.
+   *
+   * @returns {Array<string>}
+   */
   getGlobs() {
     const { files, directories } = this._getFilesAndDirsFromJamboConfig();
     return this._globInputFilePaths(directories, files, this.ignoredPaths);
   }
 
   /**
-   * Globs together an array of files to extract from.
+   * Globs together the given directories, files, and ignored paths.
    *
    * @param {Array<string>} directories directories to recursively extract from
-   * @param {Array<string>} specificFiles specific files to extract from
+   * @param {Array<string>} files any individual files to extract from
    * @param {Array<string>} ignoredPaths paths to recursively ignore
    * @returns {Array<string>}
    */
-   _globInputFilePaths(directories, specificFiles, ignoredPaths) {
+   _globInputFilePaths(directories, files, ignoredPaths) {
     const extensions = this.extensions.join(',');
     const directoryGlobs = directories.map(dirpath => `${dirpath}/**/*{${extensions}}`);
     const ignoreGlobs = ignoredPaths.map(dirpath => `!${dirpath}`);
-    return [...directoryGlobs, ...specificFiles, ...ignoreGlobs];
+    return [...directoryGlobs, ...files, ...ignoreGlobs];
   }
 
   /**
-   * Returns an array of files and array of directories contained in the jamboConfig.
+   * Returns the site-specific partials/templates in a jambo config,
+   * separating them based on whether they are files or directories.
    *
    * @returns {{files: Array.<string>, directories: Array.<string>}}
    */
