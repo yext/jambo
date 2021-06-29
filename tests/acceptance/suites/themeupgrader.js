@@ -8,6 +8,7 @@ ThemeManager.getRepoForTheme = () => {
     return path.resolve(__dirname, '../test-themes/basic-flow');
 };
 
+//Silence error logs
 const error = console.error;
 console.error = jest.fn();
 afterAll(() => console.error = error);
