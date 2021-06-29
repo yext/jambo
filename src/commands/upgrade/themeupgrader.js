@@ -1,7 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
 const simpleGit = require('simple-git/promise');
-
 const ThemeManager = require('../../utils/thememanager');
 const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
@@ -77,8 +76,8 @@ class ThemeUpgrader {
     }
   }
 
-  execute(args) {
-    this._upgrade({
+  async execute(args) {
+    await this._upgrade({
       themeName: this.jamboConfig.defaultTheme,
       disableScript: args.disableScript,
       isLegacy: args.isLegacy,
@@ -104,12 +103,20 @@ class ThemeUpgrader {
       throw new UserError(
         `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
-    
-    if (await this._isGitSubmodule(themePath))  {
+    if (await this._isGitSubmodule(themePath)) {
       await this._upgradeSubmodule(themePath, branch)
     } else {
-      await this._recloneTheme(themeName, themePath, branch);
-      this._removeGitFolder(themePath);
+      const tempDir = fs.mkdtempSync('./');
+      try { 
+        fs.copySync(themePath, tempDir);
+        await this._recloneTheme(themeName, themePath, branch);
+        this._removeGitFolder(themePath);
+        fs.removeSync(tempDir);
+      }
+      catch (error) {
+        fs.moveSync(tempDir, themePath);
+        throw error;
+      }
     }
     if (!disableScript) {
       this._executePostUpgradeScript(themePath, isLegacy);
