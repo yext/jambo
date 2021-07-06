@@ -33,16 +33,16 @@ module.exports = class TemplateDataValidator {
    */
   validate({ pageName, pageData }) {
     if (!this._hasHook) {
-        return true;
+      return true;
     }
     try {
-        info(`Validating configuration for page "${pageName}".`);
-        const validatorFunction = require(this._templateDataValidationHook);
-        return validatorFunction(pageData);
+      info(`Validating configuration for page "${pageName}".`);
+      const validatorFunction = require(this._templateDataValidationHook);
+      return validatorFunction(pageData);
     } catch (err) {
-        const msg = 
+      const msg = 
             `Error executing validation hook from ${this._templateDataValidationHook}: `;
-        throw new UserError(msg, err.stack);
+      throw new UserError(msg, err.stack);
     }
   }
 }

@@ -126,7 +126,7 @@ describe('translations with one plural form (French)', () => {
 
     it('Pluralization and interpolation works as expected', () => {
       const translationWithMaleContext = translator.translatePluralWithContext(
-      'The [[count]] person went on a walk',
+        'The [[count]] person went on a walk',
         'The [[count]] people went on a walk',
         'male');
       const translationWithFemaleContext = translator.translatePluralWithContext(

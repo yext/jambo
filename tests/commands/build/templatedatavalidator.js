@@ -45,39 +45,39 @@ describe('TemplateDataValidator validates config data using hook properly', () =
 
   it('does not throw an error with a correct config', () => {
     const templateDataValidationHook = path.resolve(
-        __dirname, '../../fixtures/hooks/templatedatavalidator.js');
+      __dirname, '../../fixtures/hooks/templatedatavalidator.js');
     const templateData = {
-        currentPageConfig,
-        verticalConfigs : verticalConfigs,
-        global_config : global_config,
-        params : params,
-        relativePath: relativePath,
-        env: env
+      currentPageConfig,
+      verticalConfigs : verticalConfigs,
+      global_config : global_config,
+      params : params,
+      relativePath: relativePath,
+      env: env
     };
 
     const isValid = new TemplateDataValidator(templateDataValidationHook).validate({
-        pageName: 'examplePage',
-        pageData: templateData
+      pageName: 'examplePage',
+      pageData: templateData
     });
     expect(isValid).toEqual(true);
   });
 
   it('throws an error when a field in config is missing', () => {
     const templateDataValidationHook = path.resolve(
-        __dirname, '../../fixtures/hooks/templatedatavalidator.js');
+      __dirname, '../../fixtures/hooks/templatedatavalidator.js');
     const global_config_missing_key = {};
     const templateData = {
-        currentPageConfig,
-        verticalConfigs : verticalConfigs,
-        global_config : global_config_missing_key,
-        params : params,
-        relativePath: relativePath,
-        env: env
+      currentPageConfig,
+      verticalConfigs : verticalConfigs,
+      global_config : global_config_missing_key,
+      params : params,
+      relativePath: relativePath,
+      env: env
     }; 
 
     const isValid = new TemplateDataValidator(templateDataValidationHook).validate({
-        pageName: 'examplePage',
-        pageData: templateData
+      pageName: 'examplePage',
+      pageData: templateData
     });
     expect(isValid).toEqual(false);
 
@@ -86,20 +86,20 @@ describe('TemplateDataValidator validates config data using hook properly', () =
 
   it('does not throw error, gracefully ignore missing config field in bad pages', () => {
     const templateDataValidationHook = path.resolve(
-        __dirname, '../../fixtures/hooks/templatedatavalidator.js');
+      __dirname, '../../fixtures/hooks/templatedatavalidator.js');
     const params_missing_field = {};
     const templateData = {
-        currentPageConfig,
-        verticalConfigs : verticalConfigs,
-        global_config : global_config,
-        params : params_missing_field,
-        relativePath: relativePath,
-        env: env
+      currentPageConfig,
+      verticalConfigs : verticalConfigs,
+      global_config : global_config,
+      params : params_missing_field,
+      relativePath: relativePath,
+      env: env
     };
 
     const isValid = new TemplateDataValidator(templateDataValidationHook).validate({
-        pageName: 'examplePage',
-        pageData: templateData
+      pageName: 'examplePage',
+      pageData: templateData
     });
     expect(isValid).toEqual(true);
   });

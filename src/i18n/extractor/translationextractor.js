@@ -16,13 +16,13 @@ class TranslationExtractor {
     this._options = {
       translateMethods: [ 'translate', 'translateJS' ], // method names to search for
       baseDirectory: process.cwd(), // the root directory when adding a reference to
-                                    // the filepath:linenumber of a translation
+      // the filepath:linenumber of a translation
       ...options,
     };
     this._extractor = new GettextExtractor();
   }
 
-   /**
+  /**
     * Extracts messages from all of the input files into the extractor.
     *
     * @param {Array<string>} globs

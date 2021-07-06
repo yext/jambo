@@ -157,7 +157,7 @@ describe('Merges the internals of multiple PageConfigs', () => {
         verticalKey1: 'default'
       },
       {
-         verticalKey: 'FR'
+        verticalKey: 'FR'
       },
     ];
     const decoratedConfig = new PageConfigDecorator({})._merge(configs);

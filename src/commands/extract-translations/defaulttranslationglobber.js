@@ -31,7 +31,7 @@ module.exports = class DefaultTranslationGlobber {
    * @param {Array<string>} ignoredPaths paths to recursively ignore
    * @returns {Array<string>}
    */
-   _globInputFilePaths(directories, files, ignoredPaths) {
+  _globInputFilePaths(directories, files, ignoredPaths) {
     const extensions = this.extensions.join(',');
     const directoryGlobs = directories.map(dirpath => `${dirpath}/**/*{${extensions}}`);
     const ignoreGlobs = ignoredPaths.map(dirpath => `!${dirpath}`);
@@ -44,7 +44,7 @@ module.exports = class DefaultTranslationGlobber {
    *
    * @returns {{files: Array.<string>, directories: Array.<string>}}
    */
-   _getFilesAndDirsFromJamboConfig() {
+  _getFilesAndDirsFromJamboConfig() {
     const files = [];
     const directories = [];
     const pathsThatExist = [this.pages, ...this.partials].filter(p => fs.existsSync(p));

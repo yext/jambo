@@ -63,9 +63,9 @@ module.exports = class Page {
    */
   getConfig() {
     return Object.assign({}, {
-        url: this.outputPath,
-      },
-      this.pageConfig.getConfig(),
+      url: this.outputPath,
+    },
+    this.pageConfig.getConfig(),
     );
   }
 

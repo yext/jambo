@@ -88,7 +88,7 @@ class VerticalAdder {
     };
   }
 
-/**
+  /**
  * Executes a command that creates an html file.
  * 
  * @param {Object<string, string>} args The arguments, keyed by name 
@@ -101,7 +101,7 @@ class VerticalAdder {
         console.error(err);
         return;
       }
-  //file written successfully
+      //file written successfully
     })
   }
 }

@@ -4,7 +4,7 @@
  */
 class PageConfiguration {
   
-constructor({ name, layout, theme, template, locales }) {
+  constructor({ name, layout, theme, template, locales }) {
     this._name = name;
     this._layout = layout;
     this._theme = theme;

@@ -79,7 +79,7 @@ class InvocationTranspiler {
    * @param {boolean} needsPluralization If pluralization is required when translating.
    * @returns {string} The call to ANSWERS.processTranslation.
    */
-   _createRuntimeCallForJS(translatorResult, interpolationParams, needsPluralization) {
+  _createRuntimeCallForJS(translatorResult, interpolationParams, needsPluralization) {
     let parsedParams = JSON.stringify(interpolationParams);
     parsedParams = parsedParams.replace(/[\'\"]/g, '');
 
@@ -103,19 +103,19 @@ class InvocationTranspiler {
    * @param {Object<number,string>} translatorResult 
    * @returns {string}
    */
-   _getFormattedPluralForms(translatorResult) {
+  _getFormattedPluralForms(translatorResult) {
     const pluralFormPairs = Object.entries(translatorResult)
-        .reduce((params, [pluralFormIndex, pluralForm], index, array) => {
-          const escapedPluralForm = this._escapeSingleQuotes(pluralForm);
-          const accumulatedParams = params + `${pluralFormIndex}:'${escapedPluralForm}'`;
-          const isLastParam = (index === array.length-1);
+      .reduce((params, [pluralFormIndex, pluralForm], index, array) => {
+        const escapedPluralForm = this._escapeSingleQuotes(pluralForm);
+        const accumulatedParams = params + `${pluralFormIndex}:'${escapedPluralForm}'`;
+        const isLastParam = (index === array.length-1);
 
-          return isLastParam ?
-            accumulatedParams :
-            accumulatedParams + ',';
-        }, '');
+        return isLastParam ?
+          accumulatedParams :
+          accumulatedParams + ',';
+      }, '');
 
-      return '{' + pluralFormPairs + '}';
+    return '{' + pluralFormPairs + '}';
   }
 
   /**
@@ -132,7 +132,7 @@ class InvocationTranspiler {
    *                                   double curly braces.
    * @returns {string} The call to the 'processTranslation' helper.
    */
-   _createRuntimeCallForHBS(
+  _createRuntimeCallForHBS(
     translatorResult, 
     interpolationValues, 
     needsPluralization, 
@@ -142,7 +142,7 @@ class InvocationTranspiler {
       Object.entries(translatorResult)
         .reduce((params, [paramName, paramValue]) => {
           paramValue = this._escapeSingleQuotes(paramValue);
-            return params + `pluralForm${paramName}='${paramValue}' `;
+          return params + `pluralForm${paramName}='${paramValue}' `;
         }, '') :
       `phrase='${this._escapeSingleQuotes(translatorResult)}'`;
 
@@ -162,7 +162,7 @@ class InvocationTranspiler {
    *
    * @returns {string}
    */
-   _escapeSingleQuotes(str) {
+  _escapeSingleQuotes(str) {
     const regex = new RegExp('\'', 'g');
     return str.replace(regex, '\\\'');
   }
