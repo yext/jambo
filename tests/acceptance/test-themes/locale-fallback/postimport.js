@@ -11,7 +11,7 @@ const { assign, stringify } = require('comment-json');
 function updateDefaultTheme(themeName) {
   const jamboConfig = JSON.parse(fs.readFileSync('jambo.json', 'utf-8'));
   if (jamboConfig.defaultTheme !== themeName) {
-    const updatedConfig = assign({ defaultTheme: themeName }, jamboConfig);
+    const updatedConfig = assign(jamboConfig, { defaultTheme: themeName });
     fs.writeFileSync('jambo.json', stringify(updatedConfig, null, 2));
   }
 }
