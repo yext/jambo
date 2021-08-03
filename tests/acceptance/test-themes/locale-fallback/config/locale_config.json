@@ -1,0 +1,27 @@
+{
+  "default": "en",
+  "localeConfig": {
+    "en": {
+      // "fallback": [""], // allows you to specify locale fallbacks for this locale
+      // "translationFile": "<filepath>.po", // the filepath for the translation file
+      // "urlOverride": "", // provide an override for the url path for this locale if you want it to be different than specified in the urlFormat object
+      "experienceKey": "testkey" //  the unique key of your search configuration for this locale
+    },
+    "fr": {
+      // "fallback": [""], // allows you to specify locale fallbacks for this locale
+      // "translationFile": "../../translation/es.po", // the filepath for the translation file
+      // "urlOverride": "", // provide an override for the url path for this locale if you want it to be different than specified in the urlFormat object
+      "experienceKey": "testkey-fr" //  the unique key of your search configuration for this locale
+    },
+    "es": {
+      "fallback": ["fr"], // allows you to specify locale fallbacks for this locale
+      // "translationFile": "../../translation/es.po", // the filepath for the translation file
+      // "urlOverride": "", // provide an override for the url path for this locale if you want it to be different than specified in the urlFormat object
+      "experienceKey": "testkey-es" //  the unique key of your search configuration for this locale
+    }
+  },
+  "urlFormat": {
+    "baseLocale": "{locale}/{pageName}.{pageExt}",
+    "default": "{pageName}.{pageExt}"
+  }
+}

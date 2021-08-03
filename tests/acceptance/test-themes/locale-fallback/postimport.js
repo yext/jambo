@@ -16,6 +16,8 @@ function updateDefaultTheme(themeName) {
   }
 }
 
-updateDefaultTheme('basic-flow');
+updateDefaultTheme('locale-fallback');
 fs.writeFileSync('config/global_config.json', '{}');
-fsExtra.copySync('themes/basic-flow/static', 'static');
+fsExtra.copySync('themes/locale-fallback/config/locale_config.json', 
+  'config/locale_config.json');
+fsExtra.copySync('themes/locale-fallback/static', 'static');
