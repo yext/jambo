@@ -72,7 +72,8 @@ module.exports = class PageWriter {
       
       if(!this._templateDataValidator.validate({
         pageName: page.getName(),
-        pageData: templateArguments
+        pageData: templateArguments,
+        partials: hbs.partials
       })) {
         throw new UserError('Invalid page template configuration(s).');
       }
