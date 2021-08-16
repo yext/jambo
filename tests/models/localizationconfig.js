@@ -1,4 +1,4 @@
-const LocalizationConfig = require('../../src/models/localizationconfig');
+import LocalizationConfig from '../../src/models/localizationconfig';
 
 describe('LocalizationConfig is properly built from raw object', () => {
   it('Localization Object is built properly', () => {

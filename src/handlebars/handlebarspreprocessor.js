@@ -1,6 +1,6 @@
-const TranslateInvocation = require('./models/translateinvocation');
-const InvocationTranspiler = require('./invocationtranspiler');
-const HbsHelperParser = require('./hbshelperparser');
+import TranslateInvocation from './models/translateinvocation';
+import InvocationTranspiler from './invocationtranspiler';
+import HbsHelperParser from './hbshelperparser';
 
 /**
  * This class performs preprocessing on Handlebars content before it is registered
@@ -41,4 +41,4 @@ class HandlebarsPreprocessor {
     return processedHandlebarsContent;
   }
 }
-module.exports = HandlebarsPreprocessor;
+export default HandlebarsPreprocessor;

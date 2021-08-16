@@ -1,4 +1,4 @@
-const Handlebars = require('handlebars');
+import Handlebars from 'handlebars';
 
 /**
  * InvocationTranspiler is responsible for taking an instance of
@@ -167,4 +167,4 @@ class InvocationTranspiler {
     return str.replace(regex, '\\\'');
   }
 }
-module.exports = InvocationTranspiler;
+export default InvocationTranspiler;

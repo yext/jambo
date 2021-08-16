@@ -1,4 +1,4 @@
-const UserError = require('../errors/usererror');
+import UserError from '../errors/usererror'
 
 /**
  * Normalizes a locale code
@@ -6,7 +6,7 @@ const UserError = require('../errors/usererror');
  * @param {string} localeCode
  * @returns {string}
  */
-exports.canonicalizeLocale = function(localeCode) {
+export function canonicalizeLocale(localeCode) {
   if (!localeCode) {
     return;
   }
@@ -21,7 +21,7 @@ exports.canonicalizeLocale = function(localeCode) {
  * @param {string} localeCode 
  * @returns { language: string, modifier?: string, region?: string } 
  */
-function parseLocale(localeCode) {
+export function parseLocale(localeCode) {
   const localeCodeSections = localeCode.replace(/-/g, '_').split('_');
   const language = localeCodeSections[0].toLowerCase();
   const parseModifierAndRegion = () => {
@@ -65,7 +65,6 @@ function parseLocale(localeCode) {
 
   return parsedLocale;
 }
-exports.parseLocale = parseLocale;
 
 /**
  * Formats a locale code given its constituent parts.

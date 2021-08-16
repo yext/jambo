@@ -1,12 +1,12 @@
-const { stripExtension } = require('../utils/fileutils');
-const { canonicalizeLocale } = require('../utils/i18nutils');
-const { NO_LOCALE } = require('../constants');
+import { stripExtension } from '../utils/fileutils';
+import { canonicalizeLocale } from '../utils/i18nutils';
+import { NO_LOCALE } from '../constants';
 
 /**
  * PageTemplate represents a Handlebars template that is used to
  * generate a page.
  */
-module.exports = class PageTemplate {
+export default class PageTemplate {
   constructor({ path, fileContents, pageName, locale }) {
     /**
      * @type {String}

@@ -1,6 +1,6 @@
-const path = require('path');
-const fs = require('fs-extra');
-const { warn } = require('../utils/logger');
+import path from 'path';
+import fs from 'fs-extra';
+import { warn } from '../utils/logger';
 
 /**
  * Imports all custom {@link Command}s within a Jambo repository.
@@ -32,6 +32,7 @@ class CommandImporter {
         .filter(directoryPath => directoryPath.endsWith('.js'))
         .filter(directoryPath => fs.lstatSync(directoryPath).isFile())
         .forEach(filePath => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           const requiredModule = require(filePath);
           const commandClass = this._isLegacyImport(requiredModule) ?
             this._handleLegacyImport(requiredModule) :

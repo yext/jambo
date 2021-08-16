@@ -1,6 +1,6 @@
-const { RepositorySettings, RepositoryScaffolder } = require('./repositoryscaffolder');
-const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
-const ThemeManager = require('../../utils/thememanager');
+import { RepositorySettings, RepositoryScaffolder } from './repositoryscaffolder';
+import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import ThemeManager from '../../utils/thememanager';
 
 /**
  * InitCommand initializes the current directory as a Jambo repository.
@@ -62,4 +62,4 @@ class InitCommand {
   }
 }
 
-module.exports = InitCommand;
+export default InitCommand;

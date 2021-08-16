@@ -1,10 +1,10 @@
-const UserError = require('../errors/usererror');
-const { FileNames } = require('../constants');
+import UserError from '../errors/usererror';
+import { FileNames } from '../constants';
 
 /**
  * Performs validation on global_config.json
  */
-module.exports = class GlobalConfigValidator {
+export default class GlobalConfigValidator {
   constructor(globalConfig) {
     /**
      * @type {Object<string, string>}

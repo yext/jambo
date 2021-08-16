@@ -1,10 +1,10 @@
-const fs = require('fs');
+import fs from 'fs';
 
 /**
  * DefaultTranslationGlobber contains the default logic for determining
  * which files are scanned by the extract-translations command.
  */
-module.exports = class DefaultTranslationGlobber {
+export default class DefaultTranslationGlobber {
   constructor(dirs = {}, ignoredPaths = []) {
     this.pages = dirs.pages || '';
     this.partials = dirs.partials || [];

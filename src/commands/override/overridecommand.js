@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const fileSystem = require('file-system');
-const { ShadowConfiguration, ThemeShadower } = require('./themeshadower');
-const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
+import fs from 'fs';
+import path from 'path';
+import fileSystem from 'file-system';
+import { ShadowConfiguration, ThemeShadower } from './themeshadower';
+import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
 
 /**
  * OverrideCommand overrides a specific file in the theme.
@@ -76,4 +76,4 @@ class OverrideCommand {
   }
 }
 
-module.exports = OverrideCommand;
+export default OverrideCommand;

@@ -1,9 +1,5 @@
-const fs = require('file-system');
-const {
-  parse,
-  stringify,
-  assign 
-} = require('comment-json');
+import fs from 'file-system';
+import { parse, stringify, assign } from 'comment-json';
 
 class PageScaffolder {
   constructor(jamboConfig) {
@@ -44,4 +40,4 @@ class PageScaffolder {
     fs.writeFileSync(configFilePath, '{}');
   }
 }
-module.exports = PageScaffolder;
+export default PageScaffolder;

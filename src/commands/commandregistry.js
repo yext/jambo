@@ -1,11 +1,11 @@
-const InitCommand = require('../commands/init/initcommand');
-const PageCommand = require('./page/add/pagecommand');
-const OverrideCommand = require('./override/overridecommand');
-const BuildCommand = require('./build/buildcommand');
-const DescribeCommand = require('../commands/describe/describecommand');
-const JamboTranslationExtractor = require('./extract-translations/jambotranslationextractor');
-const ThemeImporter = require('./import/themeimporter');
-const ThemeUpgrader = require('./upgrade/themeupgrader');
+import InitCommand from '../commands/init/initcommand';
+import PageCommand from './page/add/pagecommand';
+import OverrideCommand from './override/overridecommand';
+import BuildCommand from './build/buildcommand';
+import DescribeCommand from '../commands/describe/describecommand';
+import JamboTranslationExtractor from './extract-translations/jambotranslationextractor';
+import ThemeImporter from './import/themeimporter';
+import ThemeUpgrader from './upgrade/themeupgrader';
 
 /**
  * A registry that maintains the built-in and custom commands for the Jambo CLI.
@@ -65,4 +65,4 @@ class CommandRegistry {
     };
   }
 }
-module.exports = CommandRegistry;
+export default CommandRegistry;

@@ -1,7 +1,7 @@
-const PageConfig = require('../../../src/models/pageconfig');
-const PageConfigDecorator = require('../../../src/commands/build/pageconfigdecorator');
-const LocalizationConfig = require('../../../src/models/localizationconfig');
-const { NO_LOCALE } = require('../../../src/constants');
+import PageConfig from '../../../src/models/pageconfig';
+import PageConfigDecorator from '../../../src/commands/build/pageconfigdecorator';
+import LocalizationConfig from '../../../src/models/localizationconfig';
+import { NO_LOCALE } from '../../../src/constants';
 
 describe('PageConfigDecorator adds proper attributes to PageConfigs', () => {
   it('builds decorated pages configs correctly when there is no locale config', () => {

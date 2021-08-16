@@ -1,4 +1,4 @@
-const TranslateInvocation = require('../../../src/handlebars/models/translateinvocation');
+import TranslateInvocation from '../../../src/handlebars/models/translateinvocation';
 
 describe('TranslateInvocation can parse translate helper calls', () => {
   it('works for the correct invoked helper', () => {

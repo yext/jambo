@@ -1,11 +1,11 @@
-const globby = require('globby');
-const { GettextExtractor} = require('gettext-extractor');
-const Handlebars = require('handlebars');
-const TranslateInvocation = require('../../handlebars/models/translateinvocation');
-const fs = require('fs');
-const path = require('path');
-const fsExtra = require('fs-extra');
-const { error } = require('../../utils/logger');
+import globby from 'globby';
+import { GettextExtractor } from 'gettext-extractor';
+import Handlebars from 'handlebars';
+import TranslateInvocation from '../../handlebars/models/translateinvocation';
+import fs from 'fs';
+import path from 'path';
+import fsExtra from 'fs-extra';
+import { error } from '../../utils/logger';
 
 /**
  * TranslationExtractor is a class that extracts handlebars translation invocations
@@ -90,4 +90,4 @@ class TranslationExtractor {
   }
 }
 
-module.exports = TranslationExtractor;
+export default TranslationExtractor;

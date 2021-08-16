@@ -1,18 +1,18 @@
-const path = require('path');
-const simpleGit = require('simple-git/promise');
+import path from 'path';
+import simpleGit from 'simple-git/promise';
 const git = simpleGit();
-const { ThemeShadower } = require('../override/themeshadower');
-const ThemeManager = require('../../utils/thememanager');
-const { getRepoNameFromURL } = require('../../utils/gitutils');
-const SystemError = require('../../errors/systemerror');
-const UserError = require('../../errors/usererror');
-const { isCustomError } = require('../../utils/errorutils');
-const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
-const { CustomCommand } = require('../../utils/customcommands/command');
-const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
-const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
-const fsExtra = require('fs-extra');
-const process = require('process');
+import { ThemeShadower } from '../override/themeshadower';
+import ThemeManager from '../../utils/thememanager';
+import { getRepoNameFromURL } from '../../utils/gitutils';
+import SystemError from '../../errors/systemerror';
+import UserError from '../../errors/usererror';
+import { isCustomError } from '../../utils/errorutils';
+import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { CustomCommand } from '../../utils/customcommands/command';
+import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
+import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
+import fsExtra from 'fs-extra';
+import process from 'process';
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
@@ -144,4 +144,4 @@ class ThemeImporter {
   }
 }
 
-module.exports = ThemeImporter;
+export default ThemeImporter;

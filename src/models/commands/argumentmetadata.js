@@ -79,4 +79,4 @@ class ArgumentMetadata {
     };
   }
 }
-module.exports = { ArgumentMetadata, ArgumentType };
+export default { ArgumentMetadata, ArgumentType };

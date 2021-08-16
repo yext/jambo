@@ -1,6 +1,6 @@
-const _ = require('lodash');
-const Handlebars = require('handlebars');
-const UserError = require('../../errors/usererror');
+import _ from 'lodash';
+import Handlebars from 'handlebars';
+import UserError from '../../errors/usererror';
 
 // An enum representing the different parameter types that can appear when the
 // 'translate' or 'translateJS' helpers are invoked.
@@ -176,4 +176,4 @@ class TranslateInvocation {
   }
 }
 
-module.exports = TranslateInvocation;
+export default TranslateInvocation;

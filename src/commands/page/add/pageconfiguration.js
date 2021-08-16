@@ -33,4 +33,4 @@ constructor({ name, layout, theme, template, locales }) {
   }
 }
 
-module.exports = PageConfiguration;
+export default PageConfiguration;

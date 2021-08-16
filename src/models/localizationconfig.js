@@ -1,12 +1,12 @@
-const { NO_LOCALE } = require('../constants');
-const { canonicalizeLocale } = require('../utils/i18nutils');
-const UserError = require('../errors/usererror');
+import { NO_LOCALE } from '../constants';
+import { canonicalizeLocale } from '../utils/i18nutils';
+import UserError from '../errors/usererror';
 
 /**
  * LocalizationConfig represents the configuration required to localize pages. It contains
  * configuration and URL formatting for each locale.
  */
-module.exports = class LocalizationConfig {
+export default class LocalizationConfig {
   /**
    * @param {Object} rawLocalizationConfig
    */
@@ -30,7 +30,7 @@ module.exports = class LocalizationConfig {
     for (const [localeCode, localeConfig] of Object.entries(config.localeConfig || {})) {
       const normalizedLocale = canonicalizeLocale(localeCode);
       this._localeToConfig[normalizedLocale] = localeConfig;
-    };
+    }
 
     if (this.hasConfig() && !this._localeToConfig[this._defaultLocale]) {
       throw new UserError(

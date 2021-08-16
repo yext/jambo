@@ -1,8 +1,8 @@
-const TranslationExtractor = require('../../i18n/extractor/translationextractor');
-const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
-const { info } = require('../../utils/logger');
-const DefaultTranslationGlobber = require('./defaulttranslationglobber');
-const { readGitignorePaths } = require('../../utils/gitutils');
+import TranslationExtractor from '../../i18n/extractor/translationextractor';
+import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { info } from '../../utils/logger';
+import DefaultTranslationGlobber from './defaulttranslationglobber';
+import { readGitignorePaths } from '../../utils/gitutils';
 
 /**
  * JamboTranslationExtractor extracts translations from a jambo repo.
@@ -76,4 +76,4 @@ class JamboTranslationExtractor {
   }
 }
 
-module.exports = JamboTranslationExtractor;
+export default JamboTranslationExtractor;

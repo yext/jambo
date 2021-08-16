@@ -1,16 +1,16 @@
-const GlobalConfigValidator = require('./globalconfigvalidator');
-const LocaleConfigValidator = require('./localeconfigvalidator');
-const PageConfigsValidator = require('./pageconfigsvalidator');
-const { ConfigKeys } = require('../constants');
-const cloneDeep = require('lodash/cloneDeep');
-const { canonicalizeLocale } = require('../utils/i18nutils');
+import GlobalConfigValidator from './globalconfigvalidator';
+import LocaleConfigValidator from './localeconfigvalidator';
+import PageConfigsValidator from './pageconfigsvalidator';
+import { ConfigKeys } from '../constants';
+import cloneDeep from 'lodash/cloneDeep';
+import { canonicalizeLocale } from '../utils/i18nutils';
 
 /**
  * Performs validation on the raw configuration files
  * including global_config.json, locale_config.json, and
  * the various page configurations
  */
-module.exports = class RawConfigValidator {
+export default class RawConfigValidator {
   constructor(configNameToRawConfig) {
     /**
      * @type {Object<string, Object>}

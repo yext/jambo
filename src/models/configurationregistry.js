@@ -1,18 +1,18 @@
-const { getPageName } = require('../utils/fileutils');
-const { parseLocale } = require('../utils/configutils');
-const GlobalConfig = require('./globalconfig');
-const LocalizationConfig = require('./localizationconfig');
-const PageConfig = require('./pageconfig');
-const { FileNames, ConfigKeys } = require('../constants');
-const RawConfigValidator = require('../validation/rawconfigvalidator');
-const { info } = require('../utils/logger');
+import { getPageName } from '../utils/fileutils';
+import { parseLocale } from '../utils/configutils';
+import GlobalConfig from './globalconfig';
+import LocalizationConfig from './localizationconfig';
+import PageConfig from './pageconfig';
+import { FileNames, ConfigKeys } from '../constants';
+import RawConfigValidator from '../validation/rawconfigvalidator';
+import { info } from '../utils/logger';
 
 /**
  * ConfigurationRegistry is a registry of the configuration files provided to Jambo.
  *
  * This class does not mutate or localize the configuration in any way.
  */
-module.exports = class ConfigurationRegistry {
+export default class ConfigurationRegistry {
   /**
    * @param {GlobalConfig} globalConfig
    * @param {LocalizationConfig} localizationConfig

@@ -1,7 +1,6 @@
-const registerCustomHbsHelpers = require('../../src/handlebars/registercustomhbshelpers');
-const path = require('path');
-
-const hbs = require('handlebars');
+import registerCustomHbsHelpers from '../../src/handlebars/registercustomhbshelpers';
+import path from 'path';
+import hbs from 'handlebars';
 const pathToHelpers = path.resolve(__dirname, '../fixtures/handlebars/customhelpers');
 registerCustomHbsHelpers(hbs, pathToHelpers)
 

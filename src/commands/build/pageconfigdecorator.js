@@ -1,12 +1,12 @@
-const PageConfig = require('../../models/pageconfig');
-const LocalizationConfig = require('../../models/localizationconfig');
+import PageConfig from '../../models/pageconfig';
+import LocalizationConfig from '../../models/localizationconfig';
 
 /**
  * PageConfigDecorator decorates {@link PageConfig}s, adding additional
  * localized config information to the given page configs based on the
  * information provided.
  */
-module.exports = class PageConfigDecorator {
+export default class PageConfigDecorator {
   constructor(localizationConfig) {
     /**
      * @type {LocalizationConfig}

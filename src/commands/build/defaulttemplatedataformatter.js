@@ -15,7 +15,7 @@
  * @param {Object} pageNameToConfig
  *                 object of pageName to pageConfig, for all pages in localized page set
  */
-module.exports = function defaultTemplateDataFormatter(
+export default function defaultTemplateDataFormatter(
   pageMetadata,
   siteLevelAttributes,
   pageNameToConfig

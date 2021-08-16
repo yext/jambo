@@ -1,10 +1,10 @@
-const UserError = require('../errors/usererror');
-const { FileNames } = require('../constants');
+import UserError from '../errors/usererror';
+import { FileNames } from '../constants';
 
 /**
  * Performs validation on locale_config.json
  */
-module.exports = class LocaleConfigValidator {
+export default class LocaleConfigValidator {
   constructor(localizationConfig) {
     /**
      * @type {Object<string, string|Object>}

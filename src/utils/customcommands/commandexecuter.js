@@ -1,13 +1,13 @@
-const path = require('path');
-const { spawnSync } = require('child_process');
-const SystemError = require('../../errors/systemerror');
+import path from 'path';
+import { spawnSync } from 'child_process';
+import SystemError from '../../errors/systemerror';
 
 /**
  * This class is responsible for executing a {@link CustomCommand}.
  * It makes the various Jambo directories available to the command as
  * flags.
  */
-exports.CustomCommandExecuter = class {
+export const CustomCommandExecuter = class {
     constructor(jamboConfig) {
         this._jamboFlags = this._generateJamboFlags(jamboConfig);
     }
@@ -63,4 +63,4 @@ exports.CustomCommandExecuter = class {
 
         return jamboFlags;
     }
-}
+};

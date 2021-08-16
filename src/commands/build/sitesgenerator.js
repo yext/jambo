@@ -1,27 +1,26 @@
-const fs = require('file-system');
-const hbs = require('handlebars');
-const path = require('path');
-const { parse } = require('comment-json');
-const globToRegExp = require('glob-to-regexp');
-const lodash = require('lodash');
-
-const ConfigurationRegistry = require('../../models/configurationregistry');
-const { EnvironmentVariableParser } = require('../../utils/envvarparser');
-const GeneratedData = require('../../models/generateddata');
-const LocalFileParser = require('../../i18n/translationfetchers/localfileparser');
-const LocalizationConfig = require('../../models/localizationconfig');
-const PageTemplate = require('../../models/pagetemplate');
-const PageUniquenessValidator = require('../../validation/pageuniquenessvalidator');
-const PageWriter = require('./pagewriter');
-const PartialsRegistry = require('../../models/partialsregistry');
-const HandlebarsPreprocessor = require('../../handlebars/handlebarspreprocessor');
-const { stripExtension, isValidFile, getPageName } = require('../../utils/fileutils');
-const registerHbsHelpers = require('../../handlebars/registerhbshelpers');
-const registerCustomHbsHelpers = require('../../handlebars/registercustomhbshelpers');
-const SystemError = require('../../errors/systemerror');
-const Translator = require('../../i18n/translator/translator');
-const UserError = require('../../errors/usererror');
-const { info } = require('../../utils/logger');
+import fs from 'file-system';
+import hbs from 'handlebars';
+import path from 'path';
+import { parse } from 'comment-json';
+import globToRegExp from 'glob-to-regexp';
+import lodash from 'lodash';
+import ConfigurationRegistry from '../../models/configurationregistry';
+import { EnvironmentVariableParser } from '../../utils/envvarparser';
+import GeneratedData from '../../models/generateddata';
+import LocalFileParser from '../../i18n/translationfetchers/localfileparser';
+import LocalizationConfig from '../../models/localizationconfig';
+import PageTemplate from '../../models/pagetemplate';
+import PageUniquenessValidator from '../../validation/pageuniquenessvalidator';
+import PageWriter from './pagewriter';
+import PartialsRegistry from '../../models/partialsregistry';
+import HandlebarsPreprocessor from '../../handlebars/handlebarspreprocessor';
+import { stripExtension, isValidFile, getPageName } from '../../utils/fileutils';
+import registerHbsHelpers from '../../handlebars/registerhbshelpers';
+import registerCustomHbsHelpers from '../../handlebars/registercustomhbshelpers';
+import SystemError from '../../errors/systemerror';
+import Translator from '../../i18n/translator/translator';
+import UserError from '../../errors/usererror';
+import { info } from '../../utils/logger';
 
 class SitesGenerator {
   constructor(jamboConfig) {
@@ -361,4 +360,4 @@ class SitesGenerator {
   }
 }
 
-module.exports = SitesGenerator;
+export default SitesGenerator;

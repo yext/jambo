@@ -1,12 +1,11 @@
-const fs = require('file-system');
-
-const { isValidFile, isValidPartialPath } = require('../utils/fileutils');
-const Partial = require('./partial');
+import fs from 'file-system';
+import { isValidFile, isValidPartialPath } from '../utils/fileutils';
+import Partial from './partial';
 
 /**
  * PartialsRegistry is a registry of the partials provided to Jambo.
  */
-module.exports = class PartialsRegistry {
+export default class PartialsRegistry {
   constructor(partials) {
     /**
      * @type {Array<Partial>}

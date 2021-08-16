@@ -1,11 +1,11 @@
-const GeneratedData = require('../../src/models/generateddata');
-const GlobalConfig = require('../../src/models/globalconfig');
-const LocalizationConfig = require('../../src/models/localizationconfig');
-const PageConfig = require('../../src/models/pageconfig');
-const PageTemplate = require('../../src/models/pagetemplate');
-const PageSet = require('../../src/models/pageset');
-const Page = require('../../src/models/page');
-const { NO_LOCALE } = require('../../src/constants');
+import GeneratedData from '../../src/models/generateddata';
+import GlobalConfig from '../../src/models/globalconfig';
+import LocalizationConfig from '../../src/models/localizationconfig';
+import PageConfig from '../../src/models/pageconfig';
+import PageTemplate from '../../src/models/pagetemplate';
+import PageSet from '../../src/models/pageset';
+import Page from '../../src/models/page';
+import { NO_LOCALE } from '../../src/constants';
 
 describe('GeneratedData is correctly formed using with static from', () => {
   it('works if no LocalizationConfig provided and no pages - initial repo state', () => {

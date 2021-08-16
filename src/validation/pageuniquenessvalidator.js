@@ -1,11 +1,11 @@
-const Page = require('../models/page');
-const UserError = require('../errors/usererror');
+import Page from '../models/page';
+import UserError from '../errors/usererror';
 
 /**
  * PageUniquenessValidator is responsible for validating whether the given pages
  * are unique.
  */
-module.exports = class PageUniquenessValidator {
+export default class PageUniquenessValidator {
   /**
    * Runs a set of validation tests on the given pages. Throws an error with a
    * description of the broken validation rule if present.
@@ -65,7 +65,7 @@ module.exports = class PageUniquenessValidator {
       brokenRuleDescription.push(
         `\tPages ${pageNameLocaleCombinations} are configured to ` +
         `use output path '${path}'`);
-    };
+    }
 
     throw new UserError(brokenRuleDescription.join('\n'));
   }

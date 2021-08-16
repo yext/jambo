@@ -1,5 +1,5 @@
-const i18next = require('i18next');
-const escapeRegExp = require('lodash/escapeRegExp');
+import i18next from 'i18next';
+import escapeRegExp from 'lodash/escapeRegExp';
 
 /**
  * This class wraps an instance of the i18next library and provides methods supporting
@@ -221,4 +221,4 @@ class Translator {
   }
 }
 
-module.exports = Translator;
+export default Translator;

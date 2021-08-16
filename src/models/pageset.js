@@ -1,14 +1,14 @@
-const GlobalConfig = require('./globalconfig');
-const LocalizationConfig = require('./localizationconfig');
-const Page = require('./page');
-const PageConfig = require('./pageconfig');
+import GlobalConfig from './globalconfig';
+import LocalizationConfig from './localizationconfig';
+import Page from './page';
+import PageConfig from './pageconfig';
 
 /**
  * PageSet represents a unit that Jambo uses to generate a set of pages.
  * The pages in a PageSet go together and have shared data - such as
  * the globalConfig, pageNameToConfig, and params.
  */
-module.exports = class PageSet {
+export default class PageSet {
   /**
    * @param {String} locale
    * @param {Array<Page>} pages

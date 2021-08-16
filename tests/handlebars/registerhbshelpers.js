@@ -1,5 +1,5 @@
-const registerHbsHelpers = require('../../src/handlebars/registerhbshelpers');
-const hbs = require('handlebars');
+import registerHbsHelpers from '../../src/handlebars/registerhbshelpers';
+import hbs from 'handlebars';
 registerHbsHelpers(hbs);
 hbs.registerPartial('testPartial', 'this is a {{#if 1}}test{{/if}} partial');
 hbs.registerPartial('cards/standard/component', 'I am a standard card');

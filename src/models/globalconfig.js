@@ -1,7 +1,7 @@
 /**
  * GlobalConfig is a representation of the a global_config file.
  */
-module.exports = class GlobalConfig {
+export default class GlobalConfig {
 	/**
 	 * @param {Object} rawConfig
 	 */

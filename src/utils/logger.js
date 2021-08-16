@@ -1,4 +1,4 @@
-const log = require('npmlog');
+import log from 'npmlog';
 
 log.heading = 'jambo';
 log.headingStyle = { fg: 'magenta' };
@@ -9,33 +9,33 @@ const PREFIX = '';
 /**
  * Sets the global logging level.
  */
-exports.setLogLevel = function(level) {
+export const setLogLevel = function(level) {
   log.level = level;
-}
+};
 
 /**
  * Logs an error.
  *
  * @param  {...any} args 
  */
-exports.error = function(...args) {
+export const error = function(...args) {
   log.error(PREFIX, ...args)
-}
+};
 
 /**
  * Logs a warning.
  *
  * @param  {...any} args 
  */
-exports.warn = function(...args) {
+export const warn = function(...args) {
   log.warn(PREFIX, ...args)
-}
+};
 
 /**
  * Logs info.
  *
  * @param  {...any} args 
  */
-exports.info = function(...args) {
+export const info = function(...args) {
   log.info(PREFIX, ...args)
-}
+};

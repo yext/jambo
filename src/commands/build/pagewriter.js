@@ -1,20 +1,19 @@
-const fs = require('file-system');
-const hbs = require('handlebars');
-const path = require('path');
-
-const PageSet = require('../../models/pageset');
-const UserError = require('../../errors/usererror');
-const { NO_LOCALE } = require('../../constants');
-const LocalizationConfig = require('../../models/localizationconfig');
-const TemplateArgsBuilder = require('./templateargsbuilder');
-const TemplateDataValidator = require('./templatedatavalidator');
-const { info } = require('../../utils/logger');
+import fs from 'file-system';
+import hbs from 'handlebars';
+import path from 'path';
+import PageSet from '../../models/pageset';
+import UserError from '../../errors/usererror';
+import { NO_LOCALE } from '../../constants';
+import LocalizationConfig from '../../models/localizationconfig';
+import TemplateArgsBuilder from './templateargsbuilder';
+import TemplateDataValidator from './templatedatavalidator';
+import { info } from '../../utils/logger';
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
  * the given output directory.
  */
-module.exports = class PageWriter {
+export default class PageWriter {
   constructor(config) {
     /**
      * @type {Object}

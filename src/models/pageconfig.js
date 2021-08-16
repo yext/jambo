@@ -1,10 +1,10 @@
-const { NO_LOCALE } = require('../constants');
+import { NO_LOCALE } from '../constants';
 
 /**
  * PageConfig is a representation of the configuration for the Page for
  * the given locale.
  */
-module.exports = class PageConfig {
+export default class PageConfig {
   /**
    * @param {String} pageName
    * @param {String} locale

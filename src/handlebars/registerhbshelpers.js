@@ -1,12 +1,12 @@
-const babel = require('@babel/core');
-const lodash = require('lodash');
+import babel from '@babel/core';
+import lodash from 'lodash';
 
 /**
  * Register's Jambo's built-in hbs helpers.
  *
  * @param {Handlebars} hbs the handlebars instance
  */
-module.exports = function registerHbsHelpers(hbs) {
+export default function registerHbsHelpers(hbs) {
   hbs.registerHelper('json', function(context) {
     return JSON.stringify(context || {});
   });

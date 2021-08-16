@@ -1,9 +1,8 @@
-const ThemeImporter = require('../import/themeimporter');
-
-const fs = require('file-system');
-const process = require('process');
-const simpleGit = require('simple-git/promise');
-const SystemError = require('../../errors/systemerror');
+import ThemeImporter from '../import/themeimporter';
+import fs from 'file-system';
+import process from 'process';
+import simpleGit from 'simple-git/promise';
+import SystemError from '../../errors/systemerror';
 const git = simpleGit();
 
 /**
@@ -11,7 +10,7 @@ const git = simpleGit();
  * repository. Currently, these settings include an optional themeUrl, theme name, and
  * whether or not the theme should be imported as a submodule.
  */
-exports.RepositorySettings = class {
+export const RepositorySettings = class {
   constructor({ themeUrl, theme, useSubmodules, includeTranslations }) {
     this._themeUrl = themeUrl;
     this._theme = theme;
@@ -34,9 +33,9 @@ exports.RepositorySettings = class {
   shouldIncludeTranslations() {
     return this._includeTranslations;
   }
-}
+};
 
-exports.RepositoryScaffolder = class {
+export const RepositoryScaffolder = class {
   /**
    * This method scaffolds a new site repository based on the provided RepositorySettings
    * object. The repository will include all directories needed by Jambo as well as the 

@@ -1,12 +1,12 @@
-const fs = require('file-system');
-const UserError = require('../../errors/usererror');
-const { info } = require('../../utils/logger');
+import fs from 'file-system';
+import UserError from '../../errors/usererror';
+import { info } from '../../utils/logger';
 
 /**
  * TemplateDataValidator is reponsible for checking data supplied to a page
  * using Theme's custom validation steps (if any).
  */
-module.exports = class TemplateDataValidator {
+export default class TemplateDataValidator {
   constructor(templateDataValidationHook) {
     /**
      * The path to template data validation hook.
@@ -39,6 +39,7 @@ module.exports = class TemplateDataValidator {
     }
     try {
       info(`Validating configuration for page "${pageName}".`);
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const validatorFunction = require(this._templateDataValidationHook);
       return validatorFunction(pageData, partials);
     } catch (err) {

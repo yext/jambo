@@ -1,19 +1,19 @@
-const LocalizationConfig = require('../../models/localizationconfig');
-const Page = require('../../models/page');
-const PageConfig = require('../../models/pageconfig');
-const PageConfigDecorator = require('./pageconfigdecorator');
-const PageSet = require('../../models/pageset');
-const PageTemplate = require('../../models/pagetemplate');
-const PageTemplateDirector = require('./pagetemplatedirector');
-const { NO_LOCALE } = require('../../constants');
-const { warn } = require('../../utils/logger');
+import LocalizationConfig from '../../models/localizationconfig';
+import Page from '../../models/page';
+import PageConfig from '../../models/pageconfig';
+import PageConfigDecorator from './pageconfigdecorator';
+import PageSet from '../../models/pageset';
+import PageTemplate from '../../models/pagetemplate';
+import PageTemplateDirector from './pagetemplatedirector';
+import { NO_LOCALE } from '../../constants';
+import { warn } from '../../utils/logger';
 
 /**
  * PageSetsBuilder is responsible for matching {@link PageConfigs} and
  * {@link PageTemplates} for each given locale and returning a group
  * of {@link PageSet}s.
  */
-module.exports = class PageSetsBuilder {
+export default class PageSetsBuilder {
   constructor({ globalConfig, localizationConfig }) {
     /**
      * @type {GlobalConfig}

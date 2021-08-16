@@ -1,7 +1,7 @@
-const path = require('path');
-const { readFileSync, existsSync } = require('fs');
-const { gettextToI18next } = require('i18next-conv');
-const UserError = require('../../errors/usererror');
+import path from 'path';
+import { readFileSync, existsSync } from 'fs';
+import { gettextToI18next } from 'i18next-conv';
+import UserError from '../../errors/usererror';
 
 /**
  * This class parses translations from a local .PO file. The i18next-conv
@@ -44,4 +44,4 @@ class LocalFileParser {
     return localeTranslations.then(data => JSON.parse(data));
   }
 }
-module.exports = LocalFileParser;
+export default LocalFileParser;

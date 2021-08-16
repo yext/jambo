@@ -1,11 +1,11 @@
-const PageTemplate = require('../../models/pagetemplate');
-const LocalizationConfig = require('../../models/localizationconfig');
+import PageTemplate from '../../models/pagetemplate';
+import LocalizationConfig from '../../models/localizationconfig';
 
 /**
  * PageTemplateDirector creates a new, localized {@link PageTemplate}
  * per (pageTemplate, locale) combination.
  */
-module.exports = class PageTemplateDirector {
+export default class PageTemplateDirector {
   constructor(localizationConfig) {
     /**
      * @type {LocalizationConfig}

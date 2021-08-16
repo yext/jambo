@@ -1,11 +1,11 @@
-const UserError = require('../errors/usererror');
-const { parseLocale, containsLocale } = require('../utils/configutils');
-const { FileNames } = require('../constants');
+import UserError from '../errors/usererror';
+import { parseLocale, containsLocale } from '../utils/configutils';
+import { FileNames } from '../constants';
 
 /**
  * Performs validation on page config files
  */
-module.exports = class PageConfigsValidator {
+export default class PageConfigsValidator {
   constructor(pageConfigs, configuredLocales) {
     /**
      * A mapping of pages to their configurations. Keys are the config

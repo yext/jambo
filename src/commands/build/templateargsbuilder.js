@@ -1,11 +1,11 @@
-const defaultTemplateDataFormatter = require('./defaulttemplatedataformatter');
-const fs = require('fs');
+import defaultTemplateDataFormatter from './defaulttemplatedataformatter';
+import fs from 'fs';
 
 /**
  * TemplateArgsBuilder is responsible for building the arguments that are
  * sent to the handlebars templates.
  */
-module.exports = class TemplateArgsBuilder {
+export default class TemplateArgsBuilder {
   constructor(templateDataFormatterHook) {
     /**
      * The path to the template data formatter hook.
@@ -69,6 +69,7 @@ module.exports = class TemplateArgsBuilder {
    */
   _getTemplateDataFromFormatter(pageMetadata, siteLevelAttributes, pageNameToConfig) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const formatterFunction = require(this.templateDataFormatterHook);
       return formatterFunction(pageMetadata, siteLevelAttributes, pageNameToConfig);
     } catch (err) {

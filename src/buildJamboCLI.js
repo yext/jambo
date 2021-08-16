@@ -1,16 +1,16 @@
-const fs = require('file-system');
-const path = require('path');
-const { parseJamboConfig } = require('./utils/jamboconfigutils');
-const CommandRegistry = require('./commands/commandregistry');
-const YargsFactory = require('./yargsfactory');
-const CommandImporter = require('./commands/commandimporter');
-const { error } = require('./utils/logger');
+import fs from 'file-system';
+import path from 'path';
+import { parseJamboConfig } from './utils/jamboconfigutils';
+import CommandRegistry from './commands/commandregistry';
+import YargsFactory from './yargsfactory';
+import CommandImporter from './commands/commandimporter';
+import { error } from './utils/logger';
 
 /**
  * @param {string[]} argv the argv for the current process
  * @returns {import('yargs').Argv} A fully built Jambo CLI instance.
  */
-module.exports = function buildJamboCLI(argv) {
+export default function buildJamboCLI(argv) {
   const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
   const commandRegistry = new CommandRegistry();
 

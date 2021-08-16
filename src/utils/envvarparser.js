@@ -1,4 +1,4 @@
-const { parse } = require('comment-json');
+import { parse } from 'comment-json';
 
 /**
  * This class stores a mapping of environment variable to serialized value.
@@ -41,4 +41,4 @@ class EnvironmentVariableParser {
         return new EnvironmentVariableParser(process.env);
     }
 }
-exports.EnvironmentVariableParser = EnvironmentVariableParser;
+export { EnvironmentVariableParser };

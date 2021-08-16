@@ -1,4 +1,4 @@
-const UserError = require('../errors/usererror');
+import UserError from '../errors/usererror';
 
 const ThemeRepos = {
   'answers-hitchhiker-theme': 'https://github.com/yext/answers-hitchhiker-theme.git'
@@ -40,4 +40,4 @@ class ThemeManager {
   }
 }
 
-module.exports = ThemeManager;
+export default ThemeManager;

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const { assign, stringify } = require('comment-json');
+import fs from 'fs';
+
+import { assign, stringify } from 'comment-json';
 
 /**
  * Updates the defaultTheme field in the jambo.json.

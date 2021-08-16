@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const { parse } = require('comment-json');
-const PageConfiguration = require ('./pageconfiguration');
-const UserError = require('../../../errors/usererror');
-const { ArgumentMetadata, ArgumentType } = require('../../../models/commands/argumentmetadata');
+import fs from 'fs';
+import path from 'path';
+import { parse } from 'comment-json';
+import PageConfiguration from './pageconfiguration';
+import UserError from '../../../errors/usererror';
+import { ArgumentMetadata, ArgumentType } from '../../../models/commands/argumentmetadata';
 
 /**
  * PageCommand registers a new page with the specified name to be built by Jambo.
@@ -132,4 +132,4 @@ class PageCommand {
   }
 }
 
-module.exports = PageCommand;
+export default PageCommand;

@@ -1,16 +1,16 @@
-const fs = require('fs-extra');
-const path = require('path');
-const simpleGit = require('simple-git/promise');
-const ThemeManager = require('../../utils/thememanager');
-const { CustomCommand } = require('../../utils/customcommands/command');
-const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
-const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
-const SystemError = require('../../errors/systemerror');
-const UserError = require('../../errors/systemerror');
-const { isCustomError } = require('../../utils/errorutils');
-const { searchDirectoryIgnoringExtensions } = require('../../utils/fileutils');
-const fsExtra = require('fs-extra');
-const { info } = require('../../utils/logger');
+import fs from 'fs-extra';
+import path from 'path';
+import simpleGit from 'simple-git/promise';
+import ThemeManager from '../../utils/thememanager';
+import { CustomCommand } from '../../utils/customcommands/command';
+import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
+import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import SystemError from '../../errors/systemerror';
+import UserError from '../../errors/systemerror';
+import { isCustomError } from '../../utils/errorutils';
+import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
+import fsExtra from 'fs-extra';
+import { info } from '../../utils/logger';
 
 const git = simpleGit();
 
@@ -199,4 +199,4 @@ class ThemeUpgrader {
   }
 }
 
-module.exports = ThemeUpgrader;
+export default ThemeUpgrader;

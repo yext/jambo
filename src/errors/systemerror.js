@@ -18,4 +18,4 @@ class SystemError extends Error {
   }
 }
 
-module.exports = SystemError;
+export default SystemError;

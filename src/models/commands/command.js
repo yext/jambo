@@ -34,4 +34,4 @@ class Command {
    */
   static describe(jamboConfig) { }
 }
-module.exports = Command;
+export default Command;

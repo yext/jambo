@@ -1,5 +1,5 @@
-const TemplateArgsBuilder = require('../../../src/commands/build/templateargsbuilder');
-const path = require('path');
+import TemplateArgsBuilder from '../../../src/commands/build/templateargsbuilder';
+import path from 'path';
 
 describe('TemplateArgsBuilder builds args for Handlebars Templates properly', () => {
   const env = {

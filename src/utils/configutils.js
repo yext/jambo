@@ -1,4 +1,4 @@
-const { canonicalizeLocale } = require('./i18nutils');
+import { canonicalizeLocale } from './i18nutils';
 /**
  * Parses the locale from a given configName
  *
@@ -10,7 +10,6 @@ parseLocale = function(configName) {
   const locale = configNameParts.length > 1 && configNameParts[1];
   return canonicalizeLocale(locale);
 }
-exports.parseLocale = parseLocale;
 
 /**
  * Returns true if the provided configName contains a locale
@@ -22,4 +21,4 @@ containsLocale = function(configName) {
   const configNameParts = configName.split('.');
   return configNameParts.length > 1;
 }
-exports.containsLocale = containsLocale;
+export { parseLocale, containsLocale };

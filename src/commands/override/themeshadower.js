@@ -1,13 +1,13 @@
-const fs = require('file-system');
-const { addToPartials } = require('../../utils/jamboconfigutils');
-const UserError = require('../../errors/usererror');
+import fs from 'file-system';
+import { addToPartials } from '../../utils/jamboconfigutils';
+import UserError from '../../errors/usererror';
 
 /**
  * The ShadowConfiguration specifies what file(s) should be shadowed for a particular
  * theme. The configuration consists of a theme and a path within the theme. The path 
  * indicates which file(s) in the Theme should have local shadows.
  */
-exports.ShadowConfiguration = class {
+export const ShadowConfiguration = class {
   constructor({ theme, path }) {
     if (!theme || !path) {
       throw new UserError('Theme and path must be specified when shadowing');
@@ -32,7 +32,7 @@ exports.ShadowConfiguration = class {
  * when registering partials. This allows the convenient override of bits and 
  * pieces of a theme.
  */
-exports.ThemeShadower = class {
+export const ThemeShadower = class {
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }

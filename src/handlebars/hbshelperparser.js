@@ -1,4 +1,4 @@
-const Handlebars = require('handlebars');
+import Handlebars from 'handlebars';
 
 /**
  * InvocationExtractor takes a handlebars template, and an array of
@@ -101,4 +101,4 @@ class HbsHelperParser {
   }
 }
 
-module.exports = HbsHelperParser;
+export default HbsHelperParser;

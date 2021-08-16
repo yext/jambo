@@ -1,9 +1,9 @@
-const { stripExtension } = require('../utils/fileutils');
+import { stripExtension } from '../utils/fileutils';
 
 /**
  * A data model representing a partial that registered with Jambo.
  */
-module.exports = class Partial {
+export default class Partial {
   /**
    * @param {String} path
    * @param {String} fileContents

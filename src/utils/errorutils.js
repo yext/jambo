@@ -1,6 +1,6 @@
-const UserError = require('../errors/usererror');
-const SystemError = require('../errors/systemerror');
-const { error } = require('./logger');
+import UserError from '../errors/usererror';
+import SystemError from '../errors/systemerror';
+import { error } from './logger';
 
 /**
  * Print the error, and then forcefully end the 
@@ -8,17 +8,17 @@ const { error } = require('./logger');
  * async operations will be lost.
  * @param {Error} error
  */
-exports.exitWithError = (err = {}) => {
+export const exitWithError = (err = {}) => {
   err.stack && error(err.stack);
   const exitCode = err.exitCode || 1;
   process.exit(exitCode);
-}
+};
 
 /**
  * Returns true if the error is a custom error
  * (Either UserError or SystemError)
  * @param {Error} err The error to evaluate
  */
-exports.isCustomError = (err) => {
+export const isCustomError = (err) => {
   return (err instanceof UserError || err instanceof SystemError);
-}
+};

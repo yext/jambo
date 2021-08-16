@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const process = require('process');
+import fs from 'fs';
+import path from 'path';
+import process from 'process';
 
 /**
  * Returns the given filename without its extension
@@ -13,7 +13,6 @@ stripExtension = function(filename) {
   }
   return filename.substring(0, filename.lastIndexOf('.'));
 }
-exports.stripExtension = stripExtension;
 
 /**
  * Extracts the pageName from a given file name
@@ -24,7 +23,6 @@ exports.stripExtension = stripExtension;
 getPageName = function(filename) {
   return filename.split('.')[0];
 }
-exports.getPageName = getPageName;
 
 /**
  * Determines whether a filename is valid
@@ -35,7 +33,6 @@ exports.getPageName = getPageName;
 isValidFile = function(fileName) {
   return fileName && !fileName.startsWith('.');
 }
-exports.isValidFile = isValidFile;
 
 /**
  * Determines whether a path is valid for registering it as a partial
@@ -52,7 +49,6 @@ isValidPartialPath = function(path) {
     return !path.startsWith(`${invalidPath}/`) && !path.includes(`/${invalidPath}/`);
   });
 }
-exports.isValidPartialPath = isValidPartialPath;
 
 /**
  * Search for file with the given name, ignoring extensions.
@@ -76,4 +72,4 @@ searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
   }
   return undefined;
 }
-exports.searchDirectoryIgnoringExtensions = searchDirectoryIgnoringExtensions;
+export { stripExtension, getPageName, isValidFile, isValidPartialPath, searchDirectoryIgnoringExtensions };

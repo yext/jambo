@@ -1,12 +1,12 @@
-const PageConfig = require('./pageconfig');
-const PageTemplate = require('./pagetemplate');
-const { stripExtension } = require('../utils/fileutils');
+import PageConfig from './pageconfig';
+import PageTemplate from './pagetemplate';
+import { stripExtension } from '../utils/fileutils';
 
 /**
  * Page is a representation of the a Page that Jambo will generate. It contains all of the
  * page-specific information necessary to write an output HTML file for a given page.
  */
-module.exports = class Page {
+export default class Page {
   /**
    * @param {PageConfig} pageConfig
    * @param {String} templateContents

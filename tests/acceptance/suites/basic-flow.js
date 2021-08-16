@@ -1,6 +1,5 @@
-const fs = require('fs');
-
-const { runInPlayground } = require('../setup/playground');
+import fs from 'fs';
+import { runInPlayground } from '../setup/playground';
 
 it('can init -> import -> create page -> build', () => runInPlayground(async t => {
   await t.jambo('init');

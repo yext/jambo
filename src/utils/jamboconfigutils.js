@@ -1,11 +1,8 @@
-const fs = require('file-system');
-const path = require('path');
-const mergeOptions = require('merge-options');
-const {
-  parse,
-  stringify
-} = require('comment-json');
-const UserError = require('../errors/usererror');
+import fs from 'file-system';
+import path from 'path';
+import mergeOptions from 'merge-options';
+import { parse, stringify } from 'comment-json';
+import UserError from '../errors/usererror';
 
 /**
  * Parses the repository's Jambo config file. If certain attributes are not
@@ -33,7 +30,7 @@ parseJamboConfig = function() {
   }
 
 }
-exports.parseJamboConfig = parseJamboConfig;
+export { parseJamboConfig };
 
 /**
  * Registers a new set of Handlebars partials in the Jambo configuration
@@ -42,7 +39,7 @@ exports.parseJamboConfig = parseJamboConfig;
  *
  * @param {string} partialsPath The local path to the set of partials.
  */
-exports.addToPartials = function(partialsPath) {
+export const addToPartials = function(partialsPath) {
   const jamboConfig = parseJamboConfig();
   const existingPartials = jamboConfig.dirs.partials;
 
@@ -54,4 +51,4 @@ exports.addToPartials = function(partialsPath) {
     existingPartials.push(partialsPath);
     fs.writeFileSync('jambo.json', stringify(jamboConfig, null, 2));
   }
-}
+};

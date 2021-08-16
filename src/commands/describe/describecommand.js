@@ -58,4 +58,4 @@ class DescribeCommand {
   }
 }
 
-module.exports = DescribeCommand;
+export default DescribeCommand;

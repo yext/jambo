@@ -1,6 +1,6 @@
-const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
-const UserError = require('../../errors/usererror');
-const { isCustomError } = require('../../utils/errorutils');
+import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import UserError from '../../errors/usererror';
+import { isCustomError } from '../../utils/errorutils';
 
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the
@@ -48,4 +48,4 @@ class BuildCommand {
   }
 }
 
-module.exports = BuildCommand;
+export default BuildCommand;
