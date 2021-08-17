@@ -2,7 +2,7 @@
  * A domain model representation of a custom shell command to be run as part
  * of a built-in Jambo command. These shell commands are supplied by Themes.
  */
-export const CustomCommand = class {
+export class CustomCommand {
     _executable: string
     _args: string[]
     _cwd: string
@@ -49,4 +49,4 @@ export const CustomCommand = class {
     getCwd() {
         return this._cwd;
     }
-};
+}

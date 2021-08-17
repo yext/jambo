@@ -11,7 +11,7 @@ const git = simpleGit();
  * repository. Currently, these settings include an optional themeUrl, theme name, and
  * whether or not the theme should be imported as a submodule.
  */
-export const RepositorySettings = class {
+export class RepositorySettings {
   _themeUrl: string
   _theme: string
   _useSubmodules: boolean
@@ -39,9 +39,9 @@ export const RepositorySettings = class {
   shouldIncludeTranslations() {
     return this._includeTranslations;
   }
-};
+}
 
-export const RepositoryScaffolder = class {
+export class RepositoryScaffolder {
   /**
    * This method scaffolds a new site repository based on the provided RepositorySettings
    * object. The repository will include all directories needed by Jambo as well as the 
@@ -119,4 +119,4 @@ export const RepositoryScaffolder = class {
 
     return jamboConfig;
   }
-};
+}

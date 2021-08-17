@@ -8,7 +8,7 @@ import { JamboConfig } from '../../models/JamboConfig';
  * theme. The configuration consists of a theme and a path within the theme. The path 
  * indicates which file(s) in the Theme should have local shadows.
  */
-export const ShadowConfiguration = class {
+export class ShadowConfiguration {
   _theme: string
   _path: string
 
@@ -28,7 +28,7 @@ export const ShadowConfiguration = class {
   getPath() {
     return this._path;
   }
-};
+}
 
 /**
  * The ThemeShadower takes a ShadowConfiguration and produces the necessary shadows. 
