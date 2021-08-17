@@ -7,6 +7,9 @@ import { info } from '../../utils/logger';
  * using Theme's custom validation steps (if any).
  */
 export default class TemplateDataValidator {
+  _templateDataValidationHook: string
+  _hasHook: string
+
   constructor(templateDataValidationHook) {
     /**
      * The path to template data validation hook.

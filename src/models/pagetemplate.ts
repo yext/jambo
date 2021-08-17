@@ -7,7 +7,12 @@ import { NO_LOCALE } from '../constants';
  * generate a page.
  */
 export default class PageTemplate {
-  constructor({ path, fileContents, pageName, locale }) {
+  path: string
+  fileContents: string
+  pageName: string
+  locale: string
+
+  constructor({ path, fileContents, pageName, locale }: any) {
     /**
      * @type {String}
      */
@@ -70,7 +75,7 @@ export default class PageTemplate {
    *
    * @param {String} locale
    */
-  setLocale(locale) {
+  setLocale(locale: string) {
     this.locale = locale;
     return this;
   }
@@ -95,7 +100,7 @@ export default class PageTemplate {
    * @param {String} filename the file name of the page handlebars template
    * @returns {String}
    */
-  static parseLocale(filename) {
+  static parseLocale(filename: string) {
     const pageParts = stripExtension(stripExtension(filename)).split('.');
     const locale = pageParts.length > 1 && pageParts[1];
     return canonicalizeLocale(locale);

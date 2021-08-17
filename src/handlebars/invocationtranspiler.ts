@@ -1,4 +1,6 @@
 import Handlebars from 'handlebars';
+import Translator from '../i18n/translator/translator';
+import TranslateInvocation from './models/translateinvocation';
 
 /**
  * InvocationTranspiler is responsible for taking an instance of
@@ -6,6 +8,8 @@ import Handlebars from 'handlebars';
  * if possible, or a runtime translation helper if not.
  */
 class InvocationTranspiler {
+  _translator: Translator;
+
   constructor(translator) {
     /**
      * @type {Translator}
@@ -23,7 +27,7 @@ class InvocationTranspiler {
    *                                         representaiton of the usage.
    * @returns {string} The transpiled result.
    */
-  transpile(invocation) {
+  transpile(invocation: TranslateInvocation) {
     let translatorResult;
     const translationContext = invocation.getContext();
     if (invocation.isUsingPluralization()) {
@@ -79,7 +83,11 @@ class InvocationTranspiler {
    * @param {boolean} needsPluralization If pluralization is required when translating.
    * @returns {string} The call to ANSWERS.processTranslation.
    */
-   _createRuntimeCallForJS(translatorResult, interpolationParams, needsPluralization) {
+   _createRuntimeCallForJS(
+    translatorResult: any,
+    interpolationParams: Record<string, unknown>,
+    needsPluralization: boolean)
+  {
     let parsedParams = JSON.stringify(interpolationParams);
     parsedParams = parsedParams.replace(/[\'\"]/g, '');
 
@@ -103,7 +111,7 @@ class InvocationTranspiler {
    * @param {Object<number,string>} translatorResult 
    * @returns {string}
    */
-   _getFormattedPluralForms(translatorResult) {
+   _getFormattedPluralForms(translatorResult: { [n: number]: string; }) {
     const pluralFormPairs = Object.entries(translatorResult)
         .reduce((params, [pluralFormIndex, pluralForm], index, array) => {
           const escapedPluralForm = this._escapeSingleQuotes(pluralForm);
@@ -133,15 +141,15 @@ class InvocationTranspiler {
    * @returns {string} The call to the 'processTranslation' helper.
    */
    _createRuntimeCallForHBS(
-    translatorResult, 
-    interpolationValues, 
-    needsPluralization, 
-    shouldEscapeHTML) 
+    translatorResult: any,
+    interpolationValues: Record<string, unknown>,
+    needsPluralization: boolean,
+    shouldEscapeHTML: boolean) 
   {
     const translationParams = needsPluralization ?
       Object.entries(translatorResult)
         .reduce((params, [paramName, paramValue]) => {
-          paramValue = this._escapeSingleQuotes(paramValue);
+          paramValue = this._escapeSingleQuotes(paramValue as string);
             return params + `pluralForm${paramName}='${paramValue}' `;
         }, '') :
       `phrase='${this._escapeSingleQuotes(translatorResult)}'`;
@@ -162,7 +170,7 @@ class InvocationTranspiler {
    *
    * @returns {string}
    */
-   _escapeSingleQuotes(str) {
+   _escapeSingleQuotes(str: string) {
     const regex = new RegExp('\'', 'g');
     return str.replace(regex, '\\\'');
   }

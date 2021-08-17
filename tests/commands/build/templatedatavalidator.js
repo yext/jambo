@@ -1,6 +1,5 @@
 import TemplateDataValidator from '../../../src/commands/build/templatedatavalidator';
 import path from 'path';
-import UserError from '../../../src/errors/usererror';
 
 describe('TemplateDataValidator validates config data using hook properly', () => {
   const currentPageConfig = {

@@ -1,6 +1,7 @@
 import fs from 'file-system';
 import { addToPartials } from '../../utils/jamboconfigutils';
 import UserError from '../../errors/usererror';
+import { JamboConfig } from '../../models/JamboConfig';
 
 /**
  * The ShadowConfiguration specifies what file(s) should be shadowed for a particular
@@ -8,7 +9,10 @@ import UserError from '../../errors/usererror';
  * indicates which file(s) in the Theme should have local shadows.
  */
 export const ShadowConfiguration = class {
-  constructor({ theme, path }) {
+  _theme: string
+  _path: string
+
+  constructor({ theme, path }: any) {
     if (!theme || !path) {
       throw new UserError('Theme and path must be specified when shadowing');
     }
@@ -32,7 +36,9 @@ export const ShadowConfiguration = class {
  * when registering partials. This allows the convenient override of bits and 
  * pieces of a theme.
  */
-export const ThemeShadower = class {
+export class ThemeShadower {
+  config: JamboConfig
+
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
@@ -60,11 +66,11 @@ export const ThemeShadower = class {
    * @param {string} fullPathInThemes The path inside the theme
    * @param {string} localShadowPath The path of the new, local shadow.
    */
-  _createShadowDir(fullPathInThemes, localShadowPath) {
+  _createShadowDir(fullPathInThemes: string, localShadowPath: string) {
     if (fs.lstatSync(fullPathInThemes).isFile()) {
       fs.copyFileSync(fullPathInThemes, localShadowPath);
     } else if (fs.lstatSync(fullPathInThemes).isDirectory()) {
-      fs.recurseSync(fullPathInThemes, (path, relative, filename) => {
+      fs.recurseSync(fullPathInThemes, (path, relative) => {
         if (fs.lstatSync(path).isFile()) {
           fs.copyFileSync(path, `${localShadowPath}/${relative}`);
         } else {
@@ -73,4 +79,4 @@ export const ThemeShadower = class {
       });
     }
   }
-};
+}

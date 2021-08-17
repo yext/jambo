@@ -1,3 +1,4 @@
+import { MustacheStatement } from '@handlebars/parser/types/ast';
 import Handlebars from 'handlebars';
 
 /**
@@ -5,7 +6,11 @@ import Handlebars from 'handlebars';
  * requested hbs helpers, and parses out an array of all
  * hbs helpers found of the requested types.
  */
-class HbsHelperParser {
+export default class HbsHelperParser {
+  helpersToParse: string[]
+  vistor: Handlebars.Visitor
+  helperStatements: MustacheStatement[]
+
   constructor(helpersToParse) {
     /**
      * The helpers that should be parsed out.
@@ -37,7 +42,7 @@ class HbsHelperParser {
    * @param {string} template a handlebars template
    * @return {string[]}
    */
-  parse(template) {
+  parse(template: string) {
     this.helperStatements = [];
     const ast = Handlebars.parse(template);
     this.vistor.accept(ast);
@@ -53,8 +58,8 @@ class HbsHelperParser {
    *
    * @param {hbs.AST.MustacheStatement} statement
    */
-  _handleMustacheStatement(statement) {
-    const isRequestedHelper = this.helpersToParse.includes(statement.path.original);
+  _handleMustacheStatement(statement: MustacheStatement | any) {
+    const isRequestedHelper = this.helpersToParse.includes(statement.path?.original);
     if (!isRequestedHelper) {
       return;
     }
@@ -70,7 +75,7 @@ class HbsHelperParser {
    * @param {string} template 
    * @returns {number[]}
    */
-  _getLineEndIndices(template) {
+  _getLineEndIndices(template: string) {
     const splitTemplate = template.split('\n');
     const indices = [];
     splitTemplate.forEach((line, i) => {
@@ -89,7 +94,7 @@ class HbsHelperParser {
    * @param {number[]} lineEndIndices the line end indices of the original template
    * @param {string} template the original template
    */
-  _getOriginalHelperCall(statement, lineEndIndices, template) {
+  _getOriginalHelperCall(statement: MustacheStatement, lineEndIndices: number[], template: string) {
     const getIndex = ({ line, column }) => {
       const lineStart = line === 1 ? 0 : lineEndIndices[line - 2];
       return lineStart + column;
@@ -100,5 +105,3 @@ class HbsHelperParser {
     return template.substring(startIndex, endIndex);
   }
 }
-
-export default HbsHelperParser;

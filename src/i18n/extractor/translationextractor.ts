@@ -12,7 +12,10 @@ import { error } from '../../utils/logger';
  * from a set of files and exports them to an output file.
  */
 class TranslationExtractor {
-  constructor(options) {
+  _extractor: GettextExtractor;
+  _options: Record<string, any>
+
+  constructor(options?: any) {
     this._options = {
       translateMethods: [ 'translate', 'translateJS' ], // method names to search for
       baseDirectory: process.cwd(), // the root directory when adding a reference to
@@ -25,9 +28,9 @@ class TranslationExtractor {
    /**
     * Extracts messages from all of the input files into the extractor.
     *
-    * @param {Array<string>} globs
+    * @param {string[]} globs
     */
-  extract(globs) {
+  extract(globs: string[]) {
     const filepaths = globby.sync(globs).map(fp => {
       return path.resolve(this._options.baseDirectory, fp)
     });
@@ -52,7 +55,7 @@ class TranslationExtractor {
    * Creates any parent directories as necessary.
    * @param {string} outputPath
    */
-  savePotFile(outputPath) {
+  savePotFile(outputPath: string) {
     const parentDirectory = outputPath.substring(0, outputPath.lastIndexOf('/'));
     parentDirectory && fsExtra.mkdirpSync(parentDirectory);
     this._extractor.savePotFile(outputPath);

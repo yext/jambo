@@ -1,7 +1,6 @@
 import GlobalConfig from './globalconfig';
 import LocalizationConfig from './localizationconfig';
 import Page from './page';
-import PageConfig from './pageconfig';
 
 /**
  * PageSet represents a unit that Jambo uses to generate a set of pages.
@@ -9,13 +8,19 @@ import PageConfig from './pageconfig';
  * the globalConfig, pageNameToConfig, and params.
  */
 export default class PageSet {
+  locale: string
+  pages: Page[]
+  globalConfig: GlobalConfig
+  pageNameToConfig: Record<string, any>
+  currentLocaleConfig: LocalizationConfig
+
   /**
    * @param {String} locale
    * @param {Array<Page>} pages
    * @param {GlobalConfig} globalConfig
    * @param {Object} currentLocaleConfig
    */
-  constructor({ locale, pages, globalConfig, currentLocaleConfig }) {
+  constructor({ locale, pages, globalConfig, currentLocaleConfig }: any) {
     /**
      * @type {String}
      */

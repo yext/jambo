@@ -13,12 +13,16 @@ import { info } from '../utils/logger';
  * This class does not mutate or localize the configuration in any way.
  */
 export default class ConfigurationRegistry {
+  _globalConfig: GlobalConfig
+  _localizationConfig: LocalizationConfig
+  _pageConfigs: PageConfig[]
+
   /**
    * @param {GlobalConfig} globalConfig
    * @param {LocalizationConfig} localizationConfig
    * @param {Array<PageConfig>} pageConfigs
    */
-  constructor({ globalConfig, localizationConfig, pageConfigs }) {
+  constructor({ globalConfig, localizationConfig, pageConfigs }: any) {
     /**
      * @type {GlobalConfig}
      */
@@ -68,7 +72,7 @@ export default class ConfigurationRegistry {
    * @param {Object<String, Object>} configNameToRawConfig
    * @throws {UserError} Thrown if validation fails
    */
-  static validate(configNameToRawConfig) {
+  static validate(configNameToRawConfig: Record<string, any>) {
     new RawConfigValidator(configNameToRawConfig).validate();
   }
 
@@ -82,7 +86,7 @@ export default class ConfigurationRegistry {
    * @returns {ConfigurationRegistry}
    * @throws {UserError} Thrown if configNameToRawConfig is invalid
    */
-  static from(configNameToRawConfig) {
+  static from(configNameToRawConfig: Record<string, any>) {
     this.validate(configNameToRawConfig);
 
     const rawGlobalConfig = configNameToRawConfig[ConfigKeys.GLOBAL_CONFIG];

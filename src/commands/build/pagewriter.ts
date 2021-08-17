@@ -4,7 +4,6 @@ import path from 'path';
 import PageSet from '../../models/pageset';
 import UserError from '../../errors/usererror';
 import { NO_LOCALE } from '../../constants';
-import LocalizationConfig from '../../models/localizationconfig';
 import TemplateArgsBuilder from './templateargsbuilder';
 import TemplateDataValidator from './templatedatavalidator';
 import { info } from '../../utils/logger';
@@ -14,6 +13,11 @@ import { info } from '../../utils/logger';
  * the given output directory.
  */
 export default class PageWriter {
+  _env: any
+  _outputDirectory: string
+  _templateArgsBuilder: TemplateArgsBuilder
+  _templateDataValidator: TemplateDataValidator
+
   constructor(config) {
     /**
      * @type {Object}
@@ -45,7 +49,7 @@ export default class PageWriter {
    * @throws {UserError} on missing page config(s), validation hook execution 
    * failure, and invalid template data using Theme's validation hook
    */
-  writePages(pageSet) {
+  writePages(pageSet: PageSet) {
     if (!pageSet || pageSet.getPages().length < 1) {
       return;
     }
@@ -94,7 +98,7 @@ export default class PageWriter {
    * @param {String} filePath the path to the page output file
    * @returns {String}
    */
-  _calculateRelativePath(filePath) {
+  _calculateRelativePath(filePath: string) {
     return path.relative(path.dirname(filePath), '') || '.';
   }
 }

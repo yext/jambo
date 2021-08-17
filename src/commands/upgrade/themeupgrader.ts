@@ -11,6 +11,7 @@ import { isCustomError } from '../../utils/errorutils';
 import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import { info } from '../../utils/logger';
+import { JamboConfig } from '../../models/JamboConfig';
 
 const git = simpleGit();
 
@@ -19,8 +20,12 @@ const git = simpleGit();
  * version. It first detects whether the theme was imported as a submodule or raw files,
  * then handles the upgrade accordingly.
  */
-class ThemeUpgrader {
-  constructor(jamboConfig = {}) {
+export default class ThemeUpgrader {
+  jamboConfig: JamboConfig
+  _themesDir: string
+  postUpgradeFileName: 'upgrade'
+
+  constructor(jamboConfig: JamboConfig = {}) {
     this.jamboConfig = jamboConfig;
     this._themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.postUpgradeFileName = 'upgrade';
@@ -55,7 +60,7 @@ class ThemeUpgrader {
     }
   }
 
-  static async describe(jamboConfig) {
+  static async describe() {
     return {
       displayName: 'Upgrade Theme',
       params: {
@@ -97,7 +102,7 @@ class ThemeUpgrader {
    * @param {boolean} isLegacy Whether to use the isLegacy flag in the upgrade script
    * @param {string} branch The name of the branch to upgrade to
    */
-  async _upgrade({ themeName, disableScript, isLegacy, branch }) {
+  async _upgrade({ themeName, disableScript, isLegacy, branch }: any) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
       throw new UserError(
@@ -137,7 +142,7 @@ class ThemeUpgrader {
    *
    * @param {string} themePath 
    */
-  _removeGitFolder(themePath) {
+  _removeGitFolder(themePath: string) {
     fsExtra.removeSync(path.join(themePath, '.git'));
   }
 
@@ -146,7 +151,7 @@ class ThemeUpgrader {
    * @param {string} themePath path to the default theme
    * @param {boolean} isLegacy
    */
-  _executePostUpgradeScript(themePath, isLegacy) {
+  _executePostUpgradeScript(themePath: string, isLegacy: boolean) {
     const upgradeScriptName =
       searchDirectoryIgnoringExtensions(this.postUpgradeFileName, themePath)
     const upgradeScriptPath = path.join(themePath, upgradeScriptName);
@@ -167,7 +172,7 @@ class ThemeUpgrader {
    * @param {string} submodulePath
    * @param {string} branch
    */
-  async _upgradeSubmodule(submodulePath, branch) {
+  async _upgradeSubmodule(submodulePath: string, branch: string) {
     if (branch) {
       await git.subModule(['set-branch', '--branch', branch, submodulePath]);
     }
@@ -179,7 +184,7 @@ class ThemeUpgrader {
    * @param {string} themePath
    * @param {string} branch
    */
-  async _recloneTheme(themeName, themePath, branch) {
+  async _recloneTheme(themeName: string, themePath: string, branch: string) {
     await fs.remove(themePath);
     const themeRepoURL = ThemeManager.getRepoForTheme(themeName);
     const updateBranch = branch || 'master';
@@ -191,12 +196,10 @@ class ThemeUpgrader {
    * @param {string} submodulePath
    * @returns {boolean}
    */
-  async _isGitSubmodule(submodulePath) {
+  async _isGitSubmodule(submodulePath: string) {
     const submodulePaths = await git.subModule(['foreach', '--quiet', 'echo $sm_path']);
     return !!submodulePaths
       .split('\n')
       .find(p => p === submodulePath)
   }
 }
-
-export default ThemeUpgrader;

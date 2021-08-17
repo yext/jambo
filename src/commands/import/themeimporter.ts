@@ -13,11 +13,16 @@ import { CustomCommandExecuter } from '../../utils/customcommands/commandexecute
 import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import process from 'process';
+import { JamboConfig } from '../../models/JamboConfig';
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
  */
-class ThemeImporter {
+export default class ThemeImporter {
+  config: JamboConfig;
+  _themeShadower: ThemeShadower;
+  _postImportHook: 'postimport'
+
   constructor(jamboConfig) {
     this.config = jamboConfig;
     this._themeShadower = new ThemeShadower(jamboConfig);
@@ -88,7 +93,7 @@ class ThemeImporter {
    *                            containing the new submodule's local path. If the addition
    *                            failed, a Promise containing the error.
    */
-  async import(themeUrl, themeName, useSubmodules) {
+  async import(themeUrl: string, themeName: string, useSubmodules: boolean) {
     if (!this.config) {
       throw new UserError('No jambo.json found. Did you `jambo init` yet?');
     }
@@ -122,7 +127,7 @@ class ThemeImporter {
    *
    * @param {string} themePath 
    */
-  _removeGitFolder(themePath) {
+  _removeGitFolder(themePath: string) {
     fsExtra.removeSync(path.join(themePath, '.git'));
   }
 
@@ -131,7 +136,7 @@ class ThemeImporter {
    * 
    * @param {string} themePath path to the default theme
    */
-  _postImport(themePath) {
+  _postImport(themePath: string) {
     const postImportHookFile =
       searchDirectoryIgnoringExtensions(this._postImportHook, themePath);
     if (!postImportHookFile) {
@@ -143,5 +148,3 @@ class ThemeImporter {
     new CustomCommandExecuter(this.config).execute(customCommand);
   }
 }
-
-export default ThemeImporter;

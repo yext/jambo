@@ -3,11 +3,15 @@ import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentme
 import { info } from '../../utils/logger';
 import DefaultTranslationGlobber from './defaulttranslationglobber';
 import { readGitignorePaths } from '../../utils/gitutils';
+import { JamboConfig } from '../../models/JamboConfig';
 
 /**
  * JamboTranslationExtractor extracts translations from a jambo repo.
  */
 class JamboTranslationExtractor {
+  jamboConfig: JamboConfig
+  extractor: TranslationExtractor
+
   constructor(jamboConfig) {
     this.jamboConfig = jamboConfig;
     this.extractor = new TranslationExtractor();
@@ -67,9 +71,9 @@ class JamboTranslationExtractor {
    * Extracts i18n strings from a jambo repo to a designed output file.
    *
    * @param {string} outputPath
-   * @param {Array<string>} globs
+   * @param {string[]} globs
    */
-  _extract(outputPath, globs) {
+  _extract(outputPath: string, globs: string[]) {
     info(`Extracting translations to ${outputPath}`);
     this.extractor.extract(globs);
     this.extractor.savePotFile(outputPath);

@@ -1,7 +1,10 @@
 import fs from 'file-system';
 import { parse, stringify, assign } from 'comment-json';
+import { JamboConfig } from '../../../models/JamboConfig';
 
 class PageScaffolder {
+  config: JamboConfig
+
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }

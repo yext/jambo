@@ -13,7 +13,7 @@ export default class PageUniquenessValidator {
    * @param {Array<Page>} pages
    * @throws {UserError} Thrown if validation fails
    */
-  validate(pages) {
+  validate(pages: Array<Page>) {
     if (!pages || pages.length < 1) {
       return;
     }
@@ -28,7 +28,7 @@ export default class PageUniquenessValidator {
    *
    * @param {Array<Page>} pages
    */
-  _validatePageNameLocaleCombinations(pages) {
+  _validatePageNameLocaleCombinations(pages: Array<Page>) {
     const duplicates = this._findDuplicates(
       pages.map(page => `[${page.getName()}, ${page.getLocale()}]`));
 
@@ -45,7 +45,7 @@ export default class PageUniquenessValidator {
    *
    * @param {Array<Page>} pages
    */
-  _validateOutputPaths(pages) {
+  _validateOutputPaths(pages: Array<Page>) {
     const duplicateOutputPaths = this._findDuplicates(
       pages.map(page => page.getOutputPath()));
 
@@ -53,7 +53,7 @@ export default class PageUniquenessValidator {
       return;
     }
 
-    let brokenRuleDescription = [
+    const brokenRuleDescription = [
       'Multiple pages are configured to use the same output path'
     ];
     for (const path of duplicateOutputPaths) {
@@ -73,10 +73,10 @@ export default class PageUniquenessValidator {
   /**
    * Finds and returns duplicate strings in an array
    *
-   * @param {Array<string>} values
-   * @returns {Array<string>} duplicates
+   * @param {string[]} values
+   * @returns {string[]} duplicates
    */
-  _findDuplicates(values) {
+  _findDuplicates(values: string[]) {
     const valueToCount = values.reduce((accumulator, value) => ({
       ...accumulator,
       [value]: (accumulator[value] || 0) + 1

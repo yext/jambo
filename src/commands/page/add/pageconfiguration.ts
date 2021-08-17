@@ -3,8 +3,13 @@
  * needed to create a new page in a Jambo repository.
  */
 class PageConfiguration {
+  _name: string
+  _layout: string
+  _theme: string
+  _template: string
+  _locales: string[]
   
-constructor({ name, layout, theme, template, locales }) {
+constructor({ name, layout, theme, template, locales }: any) {
     this._name = name;
     this._layout = layout;
     this._theme = theme;

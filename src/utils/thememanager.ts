@@ -14,7 +14,7 @@ class ThemeManager {
    * @param {string} themeName 
    * @returns {boolean}
    */
-  static isThemeKnown(themeName) {
+  static isThemeKnown(themeName: string) {
     return (themeName in ThemeRepos);
   }
 
@@ -32,7 +32,7 @@ class ThemeManager {
    * @param {string} themeName The URL to a theme, or the name of a known theme.
    * @returns 
    */
-  static getRepoForTheme(themeName) {
+  static getRepoForTheme(themeName: string) {
     if (!this.isThemeKnown(themeName)) {
       throw new UserError(`The theme ${themeName} is not known by Jambo.`);
     }

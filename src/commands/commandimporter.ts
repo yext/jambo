@@ -1,12 +1,17 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { warn } from '../utils/logger';
+import Command from '../models/commands/command';
+import { JamboConfig } from '../models/JamboConfig';
 
 /**
  * Imports all custom {@link Command}s within a Jambo repository.
  */
-class CommandImporter {
-  constructor(outputDir, themeDir) {
+export default class CommandImporter {
+  _outputDir: string
+  _themeDir: string
+
+  constructor(outputDir, themeDir?) {
     this._outputDir = outputDir;
     this._themeDir = themeDir;
   }
@@ -23,7 +28,7 @@ class CommandImporter {
     let commandDirectories = ['commands'];
     this._themeDir && commandDirectories.unshift(path.join(this._themeDir, 'commands'));
     commandDirectories = commandDirectories.filter(fs.existsSync);
-    let customCommands = [];
+    const customCommands = [];
     if (commandDirectories.length > 0) {
       const mergedDirectory = this._mergeCommandDirectories(commandDirectories);
       const currDirectory = process.cwd();
@@ -56,10 +61,10 @@ class CommandImporter {
    * directory is in 'public'. The order in which directories are provided matters, 
    * later ones can overwrite existing files. 
    * 
-   * @param {Array<string>} directories The directories to merge together.
+   * @param {string[]} directories The directories to merge together.
    * @returns {string} The path of the merged output directory.
    */
-  _mergeCommandDirectories(directories) {
+  _mergeCommandDirectories(directories: string[]) {
     const mergedDirectory = path.join(this._outputDir, 'commands');
 
     // In case the merged directory has not been deleted, do so now.
@@ -76,10 +81,10 @@ class CommandImporter {
    * Validates an imported custom {@link Command} by ensuring the class has all
    * of the expected static and instance methods.
    * 
-   * @param {Clazz} commandClass The custom {@link Command}'s class
+   * @param {Command} commandClass The custom {@link Command}'s class
    * @returns {boolean} A boolean indicating if the custom {@Command} is valid.
    */
-  _validateCustomCommand(commandClass) {
+  _validateCustomCommand(commandClass: typeof Command) {
     let isValidCommand;
     try {
       const getMethods = (classObject) => Object.getOwnPropertyNames(classObject)
@@ -108,7 +113,7 @@ class CommandImporter {
    * @param {any} requiredModule The require'd module.
    * @return {boolean} Boolean indicating if this is a legacy command import.
    */
-  _isLegacyImport(requiredModule) {
+  _isLegacyImport(requiredModule: any) {
     return !('prototype' in requiredModule);
   }
 
@@ -119,8 +124,10 @@ class CommandImporter {
    * @param {Function} commandCreator The function provided by a legacy command import.
    * @returns {class} An implemenation of the current {@link Command} interface.
    */
-  _handleLegacyImport(commandCreator) {
+  _handleLegacyImport(commandCreator: (jamboConfig: JamboConfig) => any) {
     return class {
+      _wrappedInstance: any
+
       constructor(jamboConfig) {
         this._wrappedInstance = commandCreator(jamboConfig);
       }
@@ -147,4 +154,3 @@ class CommandImporter {
     }
   }
 }
-module.exports = CommandImporter;

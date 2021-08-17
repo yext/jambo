@@ -3,6 +3,7 @@ import path from 'path';
 import mergeOptions from 'merge-options';
 import { parse, stringify } from 'comment-json';
 import UserError from '../errors/usererror';
+import { JamboConfig } from '../models/JamboConfig';
 
 /**
  * Parses the repository's Jambo config file. If certain attributes are not
@@ -10,9 +11,9 @@ import UserError from '../errors/usererror';
  *
  * @returns {Object} The parsed Jambo configuration, as an {@link Object}.
  */
-parseJamboConfig = function() {
+export function parseJamboConfig(): JamboConfig {
   try {
-    let config = mergeOptions(
+    const config: JamboConfig = mergeOptions(
       {
         dirs: {
           themes: 'themes',
@@ -28,9 +29,7 @@ parseJamboConfig = function() {
   } catch (err) {
     throw new UserError('Error parsing jambo.json', err.stack);
   }
-
 }
-export { parseJamboConfig };
 
 /**
  * Registers a new set of Handlebars partials in the Jambo configuration
@@ -39,7 +38,7 @@ export { parseJamboConfig };
  *
  * @param {string} partialsPath The local path to the set of partials.
  */
-export const addToPartials = function(partialsPath) {
+export const addToPartials = function(partialsPath: string) {
   const jamboConfig = parseJamboConfig();
   const existingPartials = jamboConfig.dirs.partials;
 

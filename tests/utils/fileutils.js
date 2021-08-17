@@ -1,4 +1,10 @@
-import { stripExtension, getPageName, isValidFile, isValidPartialPath, searchDirectoryIgnoringExtensions } from '../../src/utils/fileutils';
+import {
+  stripExtension,
+  getPageName,
+  isValidFile,
+  isValidPartialPath,
+  searchDirectoryIgnoringExtensions
+} from '../../src/utils/fileutils';
 
 describe('stripExtension correctly strips extension from filename', () => {
   it('strips extension when present', () => {

@@ -7,10 +7,15 @@ import UserError from '../errors/usererror';
  * configuration and URL formatting for each locale.
  */
 export default class LocalizationConfig {
+  _defaultLocale: string
+  _localeToConfig: Record<string, any>
+  _defaultUrlPattern: string
+  _baseLocalePattern: string
+
   /**
    * @param {Object} rawLocalizationConfig
    */
-  constructor(rawLocalizationConfig) {
+  constructor(rawLocalizationConfig: any) {
     const config = rawLocalizationConfig || {};
     this._defaultLocale = canonicalizeLocale(config.default) || NO_LOCALE;
 
@@ -75,12 +80,12 @@ export default class LocalizationConfig {
    * @param {string} locale
    * @returns {function}
    */
-  getUrlFormatter(locale) {
+  getUrlFormatter(locale: string) {
     const language = locale.split('_')[0];
     const basicUrlPattern = locale === this._defaultLocale
       ? this._defaultUrlPattern
       : this._baseLocalePattern;
-    let urlPattern = this._getUrlOverride(locale)
+    const urlPattern = this._getUrlOverride(locale)
       || basicUrlPattern
       || '{pageName}.{pageExt}';
     return (pageName, pageExt) => {
@@ -95,20 +100,20 @@ export default class LocalizationConfig {
   /**
    * Returns the localeConfig for a given locale
    *
-   * @param {Object} locale
+   * @param {string} locale
    * @returns {Object}
    */
-  getConfigForLocale(locale) {
+  getConfigForLocale(locale: string) {
     return this._localeToConfig[locale] || {};
   }
 
   /**
    * Returns the URL Override pattern if exists a given locale
    *
-   * @param {Object} locale
+   * @param {string} locale
    * @returns {string}
    */
-  _getUrlOverride(locale) {
+  _getUrlOverride(locale: string) {
     return this.getConfigForLocale(locale).urlOverride;
   }
 }

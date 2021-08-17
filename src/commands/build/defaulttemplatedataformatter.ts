@@ -16,9 +16,7 @@
  *                 object of pageName to pageConfig, for all pages in localized page set
  */
 export default function defaultTemplateDataFormatter(
-  pageMetadata,
-  siteLevelAttributes,
-  pageNameToConfig
+  pageMetadata, siteLevelAttributes, pageNameToConfig: Record<string, any>
 ) {
   const { relativePath, pageName } = pageMetadata;
   const { globalConfig, currentLocaleConfig, locale, env } = siteLevelAttributes;
@@ -39,10 +37,10 @@ export default function defaultTemplateDataFormatter(
  * to it from the currentLocaleConfig.
  * 
  * @param {Object} globalConfig 
- * @param {string} currentLocaleConfig chunk of locale config for the current locale
+ * @param {any} currentLocaleConfig chunk of locale config for the current locale
  * @param {string} locale the current locale
  */
-function getLocalizedGlobalConfig(globalConfig, currentLocaleConfig, locale) {
+function getLocalizedGlobalConfig(globalConfig: any, currentLocaleConfig: any, locale: string) {
   const localizedGlobalConfig = {
     ...globalConfig
   };

@@ -5,7 +5,7 @@ import ThemeManager from '../../utils/thememanager';
 /**
  * InitCommand initializes the current directory as a Jambo repository.
  */
-class InitCommand {
+export default class InitCommand {
   static getAlias() {
     return 'init';
   }
@@ -61,5 +61,3 @@ class InitCommand {
     await repositoryScaffolder.create(repositorySettings);
   }
 }
-
-export default InitCommand;

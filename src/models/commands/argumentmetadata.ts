@@ -14,7 +14,14 @@ Object.freeze(ArgumentType);
  * the type of the argument's values, if it is required, and an optional default.
  */
 class ArgumentMetadata {
-  constructor({ type, itemType, description, isRequired, defaultValue, displayName }) {
+  _description: string
+  _type: string
+  _displayName: string
+  _itemType: string
+  _isRequired: boolean
+  _defaultValue: unknown
+
+  constructor({ type, itemType, description, isRequired, defaultValue, displayName }: any) {
     this._displayName = displayName;
     this._type = type;
     this._itemType = itemType;
@@ -79,4 +86,4 @@ class ArgumentMetadata {
     };
   }
 }
-export default { ArgumentMetadata, ArgumentType };
+export { ArgumentMetadata, ArgumentType };

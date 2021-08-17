@@ -5,7 +5,12 @@ import fs from 'fs';
  * which files are scanned by the extract-translations command.
  */
 export default class DefaultTranslationGlobber {
-  constructor(dirs = {}, ignoredPaths = []) {
+  pages: string
+  partials: string[]
+  ignoredPaths: string[]
+  extensions: ['.js', '.hbs']
+
+  constructor(dirs: any = {}, ignoredPaths = []) {
     this.pages = dirs.pages || '';
     this.partials = dirs.partials || [];
     this.ignoredPaths = ignoredPaths;
@@ -16,7 +21,7 @@ export default class DefaultTranslationGlobber {
    * Returns the default globs to be scanned, using the given
    * site specific templates and partials, as well as any ignored paths.
    *
-   * @returns {Array<string>}
+   * @returns {string[]}
    */
   getGlobs() {
     const { files, directories } = this._getFilesAndDirsFromJamboConfig();
@@ -26,12 +31,12 @@ export default class DefaultTranslationGlobber {
   /**
    * Globs together the given directories, files, and ignored paths.
    *
-   * @param {Array<string>} directories directories to recursively extract from
-   * @param {Array<string>} files any individual files to extract from
-   * @param {Array<string>} ignoredPaths paths to recursively ignore
-   * @returns {Array<string>}
+   * @param {string[]} directories directories to recursively extract from
+   * @param {string[]} files any individual files to extract from
+   * @param {string[]} ignoredPaths paths to recursively ignore
+   * @returns {string[]}
    */
-   _globInputFilePaths(directories, files, ignoredPaths) {
+   _globInputFilePaths(directories: string[], files: string[], ignoredPaths: string[]) {
     const extensions = this.extensions.join(',');
     const directoryGlobs = directories.map(dirpath => `${dirpath}/**/*{${extensions}}`);
     const ignoreGlobs = ignoredPaths.map(dirpath => `!${dirpath}`);

@@ -2,7 +2,9 @@
  * Represents errors that we may reasonably expect a user to make
  */
 class UserError extends Error {
-  constructor(message, stack) {
+  exitCode: number;
+
+  constructor(message, stack?) {
     super(message);
 
     this.name = 'UserError'

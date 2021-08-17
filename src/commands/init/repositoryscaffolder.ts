@@ -3,6 +3,7 @@ import fs from 'file-system';
 import process from 'process';
 import simpleGit from 'simple-git/promise';
 import SystemError from '../../errors/systemerror';
+import { JamboConfig } from '../../models/JamboConfig';
 const git = simpleGit();
 
 /**
@@ -11,6 +12,11 @@ const git = simpleGit();
  * whether or not the theme should be imported as a submodule.
  */
 export const RepositorySettings = class {
+  _themeUrl: string
+  _theme: string
+  _useSubmodules: boolean
+  _includeTranslations: boolean
+
   constructor({ themeUrl, theme, useSubmodules, includeTranslations }) {
     this._themeUrl = themeUrl;
     this._theme = theme;
@@ -44,7 +50,7 @@ export const RepositoryScaffolder = class {
    *
    * @param {RepositoryScaffolder} repositorySettings The settings for the new repository.
    */
-  async create(repositorySettings) {
+  async create(repositorySettings: any) {
     try {
       const cwd = process.cwd();
       await git.cwd(cwd);
@@ -77,7 +83,7 @@ export const RepositoryScaffolder = class {
    * @param {boolean} includeTranslations Whether or not a translations directory
    *                                      should be included.
    */
-  _createDirectorySkeleton(includeTranslations) {
+  _createDirectorySkeleton(includeTranslations: boolean) {
     fs.mkdirSync('pages');
     fs.mkdirSync('config');
     fs.mkdirSync('partials');
@@ -94,8 +100,8 @@ export const RepositoryScaffolder = class {
    *                                      should be included in the config.
    * @returns {Object} The constructed config.
    */
-  _createJamboConfig(includeTranslations) {
-    const jamboConfig = {
+  _createJamboConfig(includeTranslations: boolean) {
+    const jamboConfig: JamboConfig = {
       dirs: {
         themes: 'themes',
         config: 'config',

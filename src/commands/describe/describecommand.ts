@@ -1,8 +1,14 @@
+import Command from '../../models/commands/command';
+import { JamboConfig } from '../../models/JamboConfig';
+
 /**
  * DescribeCommand outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
 class DescribeCommand {
+  _jamboConfig: JamboConfig
+  getCommands: () => (typeof Command)[]
+
   constructor(jamboConfig, getCommands) {
     /**
      * @type {Function}

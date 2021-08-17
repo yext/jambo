@@ -8,14 +8,17 @@ import UserError from '../../errors/usererror';
  * library is used to put the translations in i18next format.
  */
 class LocalFileParser {
+  _translationsDir: string;
+  _options: Record<string, unknown>
+
   /**
    * Creates a new instance of {@link LocalFileParser}.
    *
    * @param {string} translationsDir The local directory containing .PO files.
-   * @param {Object<string,?>} options Used to optionally configure the i18next-conv
+   * @param {Record<string, unknown>} options Used to optionally configure the i18next-conv
    *                                   library.
   */
-  constructor(translationsDir, options) {
+  constructor(translationsDir: string, options?: Record<string, unknown>) {
     this._translationsDir = translationsDir;
     this._options = options;
   }
@@ -30,7 +33,7 @@ class LocalFileParser {
    * @returns {Promise<Object>} A Promise containing the parsed translations in
    *                            i18next format.
   */
-  async fetch(locale, translationFilePath) {
+  async fetch(locale: string, translationFilePath: string) {
     const translationFile = path.join(this._translationsDir, translationFilePath);
     const translationFileExists = existsSync(translationFile);
 

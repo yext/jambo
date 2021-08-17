@@ -21,8 +21,11 @@ import SystemError from '../../errors/systemerror';
 import Translator from '../../i18n/translator/translator';
 import UserError from '../../errors/usererror';
 import { info } from '../../utils/logger';
+import { JamboConfig } from '../../models/JamboConfig';
 
 class SitesGenerator {
+  config: JamboConfig
+
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
@@ -32,10 +35,10 @@ class SitesGenerator {
    * partials needed to do this are registered. Parameters, driven by the data in
    * any environment variables and the config directory, are supplied to these partials.
    *
-   * @param {Array<string>} jsonEnvVars Those environment variables that were serialized
+   * @param {string[]} jsonEnvVars Those environment variables that were serialized
    *                                    using JSON.
    */
-  async generate(jsonEnvVars=[]) {
+  async generate(jsonEnvVars: string[] = []) {
     const config = this.config;
     if (!config) {
       throw new UserError('Cannot find Jambo config in this directory, exiting.');
@@ -50,7 +53,7 @@ class SitesGenerator {
     const configNameToRawConfig = {};
     fs.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (isValidFile(filename)) {
-        let configName = stripExtension(relative);
+        const configName = stripExtension(relative);
         try {
           configNameToRawConfig[configName] = parse(
             fs.readFileSync(path, 'utf8'),
@@ -71,8 +74,8 @@ class SitesGenerator {
     const configRegistry = ConfigurationRegistry.from(configNameToRawConfig);
     const hasLocalizationConfig = configRegistry.getLocalizationConfig().hasConfig();
 
-    let pageTemplates = [];
-    fs.recurseSync(config.dirs.pages, (path, relative, filename) => {
+    const pageTemplates = [];
+    fs.recurseSync(config.dirs.pages, (path, _relative, filename) => {
       if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
         pageTemplates.push(new PageTemplate({
@@ -120,7 +123,7 @@ class SitesGenerator {
     }
 
     info('Creating static output directory');
-    let staticDirs = [
+    const staticDirs = [
       `${config.dirs.themes}/${config.defaultTheme}/static`,
       'static'
     ];
@@ -197,7 +200,7 @@ class SitesGenerator {
    * @param {string} filePath The path of a directory or file to be cleared.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
    */
-  _clearDirectory(filePath, preservedFiles) {
+  _clearDirectory(filePath: string, preservedFiles: Array<any>) {
     const stats = fs.statSync(filePath);
     if (stats.isFile() && !this._isPreserved(filePath, preservedFiles)) {
       fs.unlinkSync(filePath);
@@ -231,7 +234,7 @@ class SitesGenerator {
    * @param {string} path The path of a directory or file.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
    */
-  _isPreserved(path, preservedFiles) {
+  _isPreserved(path: string, preservedFiles: Array<any>) {
     if (path && preservedFiles) {
       return preservedFiles.some(wildcard => {
         const regex = globToRegExp(wildcard);
@@ -247,10 +250,10 @@ class SitesGenerator {
    * @param {string} directory The path of a directory or file.
    * @param {Array} preservedFiles List of glob wildcards of preserved files.
    */
-  _containsPreservedFiles(directory, preservedFiles) {
+  _containsPreservedFiles(directory: string, preservedFiles: Array<any>) {
     let hasPreservedFile = false;
     if (preservedFiles) {
-      fs.recurseSync(directory, (path, relative, filename) => {
+      fs.recurseSync(directory, (path) => {
         if (this._isPreserved(path, preservedFiles)) {
           hasPreservedFile = true;
         }
@@ -270,9 +273,9 @@ class SitesGenerator {
    * @param {string} outputDir The path of the jambo output directory; the
    *                           output will be written in [outputDir]/static
    */
-  _createStaticOutput(staticDirs, outputDir) {
-    for (let staticDir of staticDirs) {
-      fs.recurseSync(staticDir, (path, relative, filename) => {
+  _createStaticOutput(staticDirs: Array<any>, outputDir: string) {
+    for (const staticDir of staticDirs) {
+      fs.recurseSync(staticDir, (path, relative) => {
         if (fs.lstatSync(path).isFile()) {
           fs.copyFileSync(path, `${outputDir}/static/${relative}`);
         }
@@ -285,11 +288,11 @@ class SitesGenerator {
    * Parses both custom and theme translations.
    * The translations are returned in i18next format.
    *
-   * @param {Array<string>} locales The list of locales.
+   * @param {string[]} locales The list of locales.
    * @param {LocalizationConfig} localizationConfig
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
-  async _extractTranslations(locales, localizationConfig) {
+  async _extractTranslations(locales: string[], localizationConfig: LocalizationConfig) {
     const customTranslations = await this._extractCustomTranslations(
       locales, localizationConfig);
     const themeTranslations = await this._extractThemeTranslations(locales);
@@ -303,11 +306,11 @@ class SitesGenerator {
    * Parses translations in the custom translations folder
    * The translations are returned in i18next format.
    *
-   * @param {Array<string>} locales The list of locales.
+   * @param {string[]} locales The list of locales.
    * @param {LocalizationConfig} localizationConfig
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
-  async _extractCustomTranslations(locales, localizationConfig) {
+  async _extractCustomTranslations(locales: string[], localizationConfig: LocalizationConfig) {
     const translationsDir = this.config.dirs.translations;
 
     if (!translationsDir) {
@@ -337,10 +340,10 @@ class SitesGenerator {
    * Parses translations in the theme translations folder
    * The translations are returned in i18next format.
    *
-   * @param {Array<string>} locales The list of locales.
+   * @param {string[]} locales The list of locales.
    * @returns {Object<string, Object>} A map of locale to formatted translations.
    */
-  async _extractThemeTranslations(locales) {
+  async _extractThemeTranslations(locales: string[]) {
     const themeTranslationsDir =
       `${this.config.dirs.themes}/${this.config.defaultTheme}/translations`;
     const localFileParser = new LocalFileParser(themeTranslationsDir);

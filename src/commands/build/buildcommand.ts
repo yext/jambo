@@ -1,12 +1,15 @@
 import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
+import SitesGenerator from './sitesgenerator';
 
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the
  * public directory.
  */
 class BuildCommand {
+  sitesGenerator: SitesGenerator
+
   constructor(sitesGenerator) {
     this.sitesGenerator = sitesGenerator;
   }

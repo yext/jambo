@@ -1,6 +1,17 @@
 import _ from 'lodash';
 import Handlebars from 'handlebars';
 import UserError from '../../errors/usererror';
+import {
+  BooleanLiteral,
+  HashPair,
+  MustacheStatement,
+  NumberLiteral,
+  NullLiteral,
+  PathExpression,
+  StringLiteral,
+  SubExpression,
+  UndefinedLiteral
+} from '@handlebars/parser/types/ast';
 
 // An enum representing the different parameter types that can appear when the
 // 'translate' or 'translateJS' helpers are invoked.
@@ -19,6 +30,10 @@ Object.freeze(ParamTypes);
  * helpers.
  */
 class TranslateInvocation {
+  _invokedHelper: string
+  _providedParams: Record<string, string>
+  _lineNumber: number
+
   constructor(invokedHelper, providedParams, lineNumber) {
     this._invokedHelper = invokedHelper;
     this._providedParams = providedParams;
@@ -64,7 +79,7 @@ class TranslateInvocation {
    *
    * @returns {string} The invoked helper.
    */
-  getInvokedHelper() {
+  getInvokedHelper(): string {
     return this._invokedHelper;
   }
 
@@ -73,7 +88,7 @@ class TranslateInvocation {
    *
    * @returns {string} The phrase to be translated.
    */
-  getPhrase() {
+  getPhrase(): string {
     return this._providedParams[ParamTypes.PHRASE];
   }
 
@@ -82,7 +97,7 @@ class TranslateInvocation {
    *
    * @returns {string|undefined}
    */
-  getPluralForm() {
+  getPluralForm(): string | undefined {
     return this._providedParams[ParamTypes.PLURAL];
   }
 
@@ -91,7 +106,7 @@ class TranslateInvocation {
    *
    * @returns {string} The translation context.
    */
-  getContext() {
+  getContext(): string {
     return this._providedParams[ParamTypes.CONTEXT];
   }
 
@@ -100,7 +115,7 @@ class TranslateInvocation {
    *
    * @returns {number}
    */
-  getLineNumber() {
+  getLineNumber(): number {
     return this._lineNumber;
   }
 
@@ -109,7 +124,7 @@ class TranslateInvocation {
    *
    * @returns {Object<string, string>} The interpolation params.
    */
-  getInterpolationParams() {
+  getInterpolationParams(): Record<string, string>  {
     const interpParams = _.cloneDeep(this._providedParams);
     const paramsToRemove =
       [ParamTypes.CONTEXT, ParamTypes.PHRASE, ParamTypes.PLURAL, ParamTypes.ESCAPE];
@@ -126,13 +141,13 @@ class TranslateInvocation {
    * @param {string} invocationString The string in the partial calling 'translate'.
    * @returns {TranslateInvocation} The resulting {@link TranslateInvocation}.
    */
-  static from(invocationString) {
+  static from(invocationString: string): TranslateInvocation {
     try {
       const tree = Handlebars.parse(invocationString);
       if (tree.body.length !== 1) {
         throw new Error();
       }
-      const node = tree.body[0];
+      const node = tree.body[0] as MustacheStatement;
       return this.fromMustacheStatementNode(node);
     } catch (err) {
       throw new UserError(
@@ -145,8 +160,8 @@ class TranslateInvocation {
    * Creates a {@link TranslateInvocation} from a Handlebars MustacheStatement.
    * @param {MustacheStatement} mustacheStatement
    */
-  static fromMustacheStatementNode(mustacheStatement) {
-    const invokedHelper = mustacheStatement.path.original;
+  static fromMustacheStatementNode(mustacheStatement: MustacheStatement): TranslateInvocation {
+    const invokedHelper = (mustacheStatement.path as PathExpression).original;
     const hashPairs = mustacheStatement.hash.pairs;
     const parsedParams = this._convertHashPairsToParamsMap(hashPairs);
     const lineNumber = mustacheStatement.loc.start.line;
@@ -159,9 +174,10 @@ class TranslateInvocation {
    * @param {Array<HashPair>} hashPairs
    * @returns {Object}
    */
-  static _convertHashPairsToParamsMap(hashPairs) {
+  static _convertHashPairsToParamsMap(hashPairs: Array<HashPair>) {
     return hashPairs.reduce((map, pair) => {
-      const expression = pair.value;
+      const expression = pair.value as
+        NumberLiteral | BooleanLiteral | StringLiteral | NullLiteral | UndefinedLiteral | SubExpression;
       if (expression.type === 'NullLiteral') {
         map[pair.key] = 'null';
       } else if (expression.type === 'UndefinedLiteral') {

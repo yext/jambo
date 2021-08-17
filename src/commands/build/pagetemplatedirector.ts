@@ -6,6 +6,8 @@ import LocalizationConfig from '../../models/localizationconfig';
  * per (pageTemplate, locale) combination.
  */
 export default class PageTemplateDirector {
+  _localizationConfig: LocalizationConfig
+
   constructor(localizationConfig) {
     /**
      * @type {LocalizationConfig}
@@ -21,7 +23,7 @@ export default class PageTemplateDirector {
    * @param {Array<PageTemplates>} pageTemplates
    * @returns {Array<PageTemplates>}
    */
-  direct(pageTemplates) {
+  direct(pageTemplates: PageTemplate[]) {
     if (!this._localizationConfig.hasConfig()) {
       return {
         [this._localizationConfig.getDefaultLocale()] : pageTemplates
@@ -30,7 +32,7 @@ export default class PageTemplateDirector {
 
     const pageNameToTemplates = this._getPageNameToTemplates(pageTemplates);
 
-    let localizedPageTemplates = {};
+    const localizedPageTemplates = {};
     for (const locale of this._localizationConfig.getLocales()) {
       localizedPageTemplates[locale] = [];
       for (const templates of Object.values(pageNameToTemplates)) {
@@ -55,7 +57,7 @@ export default class PageTemplateDirector {
    * @param {Array<PageTemplate>} templatesForPage
    * @returns {PageTemplate}
    */
-  _findPageTemplateForLocale(locale, templatesForPage) {
+  _findPageTemplateForLocale(locale: string, templatesForPage: Array<PageTemplate>) {
     let pageTemplate = templatesForPage
       .find(template => this._isLocaleMatch(template.getLocale(), locale));
     if (pageTemplate) {
@@ -82,12 +84,12 @@ export default class PageTemplateDirector {
    * @param {Array<PageTemplate>} templates
    * @returns {Object<String, Array<PageTemplate>>}
    */
-  _getPageNameToTemplates(templates) {
+  _getPageNameToTemplates(templates: Array<PageTemplate>): Record<string, PageTemplate[]> {
     if (!templates || templates.length < 1) {
       return {};
     }
 
-    let pageNameToTemplates = {};
+    const pageNameToTemplates = {};
     for (const pageTemplate of templates) {
       const pageName = pageTemplate.getPageName();
       if (!pageNameToTemplates[pageName]) {
@@ -115,7 +117,7 @@ export default class PageTemplateDirector {
    * @param {String} locale
    * @returns {boolean}
    */
-  _isDefaultLocale(locale) {
+  _isDefaultLocale(locale: string) {
     return locale === this._localizationConfig.getDefaultLocale() || !locale;
   }
 }

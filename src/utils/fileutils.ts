@@ -7,7 +7,7 @@ import process from 'process';
  *
  * @returns {string} filename
  */
-stripExtension = function(filename) {
+export function stripExtension(filename) {
   if (filename.indexOf('.') === -1) {
     return filename;
   }
@@ -20,7 +20,7 @@ stripExtension = function(filename) {
  * @param {string} filename the file name of the page handlebars template
  * @returns {string}
  */
-getPageName = function(filename) {
+export function getPageName(filename: string) {
   return filename.split('.')[0];
 }
 
@@ -30,7 +30,7 @@ getPageName = function(filename) {
  * @param {string} filename the file name
  * @returns {boolean}
  */
-isValidFile = function(fileName) {
+export function isValidFile(fileName) {
   return fileName && !fileName.startsWith('.');
 }
 
@@ -40,7 +40,7 @@ isValidFile = function(fileName) {
  * @param {string} path the path to the file
  * @returns {boolean}
  */
-isValidPartialPath = function(path) {
+export function isValidPartialPath(path: string) {
   if (!path) {
     return false;
   }
@@ -60,7 +60,7 @@ isValidPartialPath = function(path) {
  * @param {string} directoryPath
  * @returns {string|undefined} the fileName, if it exists, otherwise undefined.
  */
-searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
+export function searchDirectoryIgnoringExtensions(desiredFile: string, directoryPath: string) {
   const dirEntries = fs.readdirSync(directoryPath);
   for (const dirEntry of dirEntries) {
     if (desiredFile === stripExtension(dirEntry)) {
@@ -72,4 +72,3 @@ searchDirectoryIgnoringExtensions = function(desiredFile, directoryPath) {
   }
   return undefined;
 }
-export { stripExtension, getPageName, isValidFile, isValidPartialPath, searchDirectoryIgnoringExtensions };

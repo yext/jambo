@@ -4,14 +4,20 @@ import { parse } from 'comment-json';
 import PageConfiguration from './pageconfiguration';
 import UserError from '../../../errors/usererror';
 import { ArgumentMetadata, ArgumentType } from '../../../models/commands/argumentmetadata';
+import { JamboConfig } from '../../../models/JamboConfig';
+import PageScaffolder from './pagescaffolder';
 
 /**
  * PageCommand registers a new page with the specified name to be built by Jambo.
  */
 class PageCommand {
-  constructor(jamboConfig = {}, pageScaffolder) {
+  jamboConfig: JamboConfig
+  defaultTheme: string
+  pageScaffolder: PageScaffolder
+
+  constructor(jamboConfig: JamboConfig = {}, pageScaffolder) {
     this.jamboConfig = jamboConfig;
-    this.defaultTheme = jamboConfig.defaultTheme;
+    this.defaultTheme = jamboConfig?.defaultTheme;
     this.pageScaffolder = pageScaffolder;
   }
 
@@ -70,7 +76,7 @@ class PageCommand {
   }
 
   /**
-   * @returns {Array<string>} The page templates available in the theme
+   * @returns {string[]} The page templates available in the theme
    */
   static _getPageTemplates(jamboConfig) {
     const defaultTheme = jamboConfig.defaultTheme;
@@ -85,7 +91,7 @@ class PageCommand {
   }
   
   /**
-   * @returns {Array<string>} The additional locales that are configured in 
+   * @returns {string[]} The additional locales that are configured in 
    *                          locale_config.json
    */
   static _getAdditionalPageLocales(jamboConfig) {

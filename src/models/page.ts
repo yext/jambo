@@ -1,5 +1,4 @@
 import PageConfig from './pageconfig';
-import PageTemplate from './pagetemplate';
 import { stripExtension } from '../utils/fileutils';
 
 /**
@@ -7,12 +6,16 @@ import { stripExtension } from '../utils/fileutils';
  * page-specific information necessary to write an output HTML file for a given page.
  */
 export default class Page {
+  pageConfig: PageConfig
+  templateContents: string
+  outputPath: string
+
   /**
    * @param {PageConfig} pageConfig
    * @param {String} templateContents
    * @param {String} outputPath
    */
-  constructor({ pageConfig, templateContents, outputPath }) {
+  constructor({ pageConfig, templateContents, outputPath }: any) {
     /**
      * @type {PageConfig}
      */
@@ -92,7 +95,7 @@ export default class Page {
    * @param {PageTemplate} pageTemplate
    * @param {Function} urlFormatter
    */
-  static from({ pageConfig, pageTemplate, urlFormatter }) {
+  static from({ pageConfig, pageTemplate, urlFormatter }: any) {
     const outputPath = Page.buildUrl(
       pageConfig.getPageName(),
       pageTemplate.getPath(),
@@ -114,7 +117,7 @@ export default class Page {
    * @param {String} urlFormatter
    * @returns {String}
    */
-  static buildUrl(pageName, path, urlFormatter) {
+  static buildUrl(pageName: string, path: string, urlFormatter: (pageName: string, pageExct: string) => string) {
     const pathWithoutHbsExtension = stripExtension(path);
     const pageExt = pathWithoutHbsExtension
       .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);

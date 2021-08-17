@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import fs from 'fs';
+const fs = require('fs');
 
-import fsExtra from 'fs-extra';
-import { assign, stringify } from 'comment-json';
+const fsExtra = require('fs-extra');
+const { assign, stringify } = require('comment-json');
 
 /**
  * Updates the defaultTheme field in the jambo.json.

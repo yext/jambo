@@ -1,15 +1,21 @@
-import yargs from 'yargs';
+import yargs, { CommandModule } from 'yargs';
 import PageScaffolder from './commands/page/add/pagescaffolder';
 import SitesGenerator from './commands/build/sitesgenerator';
 import { ArgumentMetadata, ArgumentType } from './models/commands/argumentmetadata';
 import { info, error } from './utils/logger';
 import { exitWithError } from './utils/errorutils';
+import CommandRegistry from './commands/commandregistry';
+import Command from './models/commands/command';
+import { JamboConfig } from './models/JamboConfig';
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
  */
 class YargsFactory {
-  constructor(commandRegistry, jamboConfig) {
+  _commandRegistry: CommandRegistry
+  _jamboConfig: JamboConfig
+
+  constructor(commandRegistry: CommandRegistry, jamboConfig: JamboConfig) {
     this._commandRegistry = commandRegistry;
     this._jamboConfig = jamboConfig;
   }
@@ -76,7 +82,7 @@ class YargsFactory {
    * @param {ArgumentMetadata} metadata The option's {@link ArgumentMetadata}.
    * @param {import('yargs').Argv} yargs The Yargs instance to modify.
    */
-  _addListOption(name, metadata, yargs) {
+  _addListOption(name: string, metadata: ArgumentMetadata, yargs: import('yargs').Argv) {
     yargs.array(name);
     const defaultValue = metadata.defaultValue() || [];
 

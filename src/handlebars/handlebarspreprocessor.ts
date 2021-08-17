@@ -7,7 +7,9 @@ import HbsHelperParser from './hbshelperparser';
  * with Handlebars. The preprocessing is applicable to any type of Handlebars content
  * used with Jambo.
  */
-class HandlebarsPreprocessor {
+export default class HandlebarsPreprocessor {
+  _invocationTranspiler: InvocationTranspiler
+
   constructor(translator) {
     this._invocationTranspiler = new InvocationTranspiler(translator);
   }
@@ -20,7 +22,7 @@ class HandlebarsPreprocessor {
    * @param {string} handlebarsContent The Handlebars content to process.
    * @returns {string} The transpiled Handlebars content.
    */
-  process(handlebarsContent) {
+  process(handlebarsContent: string) {
     let processedHandlebarsContent = handlebarsContent;
     try {
       const translateHelperCalls =
@@ -41,4 +43,3 @@ class HandlebarsPreprocessor {
     return processedHandlebarsContent;
   }
 }
-export default HandlebarsPreprocessor;

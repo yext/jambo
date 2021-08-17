@@ -6,6 +6,8 @@ import Partial from './partial';
  * PartialsRegistry is a registry of the partials provided to Jambo.
  */
 export default class PartialsRegistry {
+  partials: Partial[]
+
   constructor(partials) {
     /**
      * @type {Array<Partial>}
@@ -23,12 +25,12 @@ export default class PartialsRegistry {
    * the path's root is included in the partial naming scheme; the relativePaths
    * are considered relative to the given path rather than root.
    *
-   * @param {Array<String>} customPartialPaths The set of custom partials to
+   * @param {string[]} customPartialPaths The set of custom partials to
    *                                           register with Jambo.
    * @param {String} themePath The path to the default theme directory
    * @returns {PartialsRegistry}
    */
-  static build({ customPartialPaths, themePath }) {
+  static build({ customPartialPaths, themePath }: any) {
     const partials = [];
 
     // Build partials from the theme
@@ -52,8 +54,8 @@ export default class PartialsRegistry {
    *                                        in the name of the newly registered partials.
    * @returns {Array<Partial>}
    */
-  static buildPartials(partialsPath, useFullyQualifiedName) {
-    let partials = [];
+  static buildPartials(partialsPath: string, useFullyQualifiedName: boolean) {
+    const partials = [];
     const pathExists = fs.existsSync(partialsPath);
     if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
       fs.recurseSync(partialsPath, (path, relative, filename) => {

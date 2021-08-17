@@ -7,6 +7,8 @@ import LocalizationConfig from '../../models/localizationconfig';
  * information provided.
  */
 export default class PageConfigDecorator {
+  _localizationConfig: LocalizationConfig
+
   constructor(localizationConfig) {
     /**
      * @type {LocalizationConfig}
@@ -23,7 +25,7 @@ export default class PageConfigDecorator {
    * @param {Array<PageConfig>} pageConfigs
    * @returns {Object<String, Array<PageConfig>>}
    */
-  decorate(pageConfigs) {
+  decorate(pageConfigs: PageConfig[]): Record<string, PageConfig[]> {
     const pageNameToPageConfigs = this._getPageNameToConfigs(pageConfigs);
     const decoratedPageConfigs = {};
 
@@ -50,7 +52,7 @@ export default class PageConfigDecorator {
    * @param {Array<PageConfig>} configsForPage
    * @returns {PageConfig}
    */
-  _decoratePageConfig(localeSpecificConfig, configsForPage) {
+  _decoratePageConfig(localeSpecificConfig: PageConfig, configsForPage: Array<PageConfig>) {
     const currentLocale = localeSpecificConfig.getLocale()
       || this._localizationConfig.getDefaultLocale();
     const localeFallbacks = this._localizationConfig.getFallbacks(currentLocale);
@@ -85,12 +87,12 @@ export default class PageConfigDecorator {
    * @param {Array<PageConfig>} configs
    * @returns {Object}
    */
-  _getPageNameToConfigs(pageConfigs) {
+  _getPageNameToConfigs(pageConfigs): Record<string, any> {
     if (!pageConfigs || pageConfigs.length < 1) {
       return {};
     }
 
-    let pageNameToConfigs = {};
+    const pageNameToConfigs = {};
     for (const config of pageConfigs) {
       const pageName = config.getPageName();
       if (!pageNameToConfigs[pageName]) {
@@ -108,7 +110,7 @@ export default class PageConfigDecorator {
    * @param {Array<Object>} objects
    * @returns {Object}
    */
-  _merge(objects) {
+  _merge(objects: Array<any>) {
     const truthyObjects = objects && objects.filter(config => config);
     if (!truthyObjects || truthyObjects.length < 1) {
       return {};
@@ -134,7 +136,7 @@ export default class PageConfigDecorator {
    * @param {String} locale
    * @returns {boolean}
    */
-  _isDefaultLocale(locale) {
+  _isDefaultLocale(locale: string) {
     return locale === this._localizationConfig.getDefaultLocale() || !locale;
   }
 }

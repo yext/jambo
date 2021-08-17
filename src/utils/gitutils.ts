@@ -6,14 +6,14 @@ import fsExtra from 'fs-extra';
  * Gets the repo name from a git repo URL
  * @param {string} repoURL
  */
-export const getRepoNameFromURL = function(repoURL) {
+export const getRepoNameFromURL = function(repoURL: string) {
   return path.basename(repoURL, '.git');
 };
 
 /**
  * Reads a gitignore.
  * 
- * @return {Array<string>}
+ * @return {string[]}
  */
 export const readGitignorePaths = function() {
   if (fsExtra.pathExistsSync('.gitignore')) {

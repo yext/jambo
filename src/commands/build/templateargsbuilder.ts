@@ -1,11 +1,14 @@
 import defaultTemplateDataFormatter from './defaulttemplatedataformatter';
 import fs from 'fs';
+import UserError from '../../errors/usererror';
 
 /**
  * TemplateArgsBuilder is responsible for building the arguments that are
  * sent to the handlebars templates.
  */
 export default class TemplateArgsBuilder {
+  templateDataFormatterHook: string;
+
   constructor(templateDataFormatterHook) {
     /**
      * The path to the template data formatter hook.
@@ -31,15 +34,7 @@ export default class TemplateArgsBuilder {
    * @param {Object<string, Object>} pageNameToConfig
    * @returns {Object}
    */
-  buildArgs({
-    relativePath,
-    pageName,
-    currentLocaleConfig,
-    globalConfig,
-    locale,
-    env,
-    pageNameToConfig
-  }) {
+  buildArgs({ relativePath, pageName, currentLocaleConfig, globalConfig, locale, env, pageNameToConfig }: any) {
     const pageMetadata = {
       relativePath,
       pageName

@@ -2,10 +2,12 @@
  * GlobalConfig is a representation of the a global_config file.
  */
 export default class GlobalConfig {
+	rawConfig: any;
+
 	/**
 	 * @param {Object} rawConfig
 	 */
-  constructor(rawConfig) {
+  constructor(rawConfig: any) {
 		/**
 		 * @type {Object}
 		 */

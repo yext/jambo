@@ -14,6 +14,8 @@
     "lib"
   ],
   "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "arrow-spacing": "error",
     "quotes": [
       "error",
@@ -33,9 +35,17 @@
     "max-len": [
       "error",
       {
-        "code": 90,
+        "code": 125,
         "ignorePattern": "^const\\s.+=\\s*require\\s*\\("
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["tests/acceptance/test-themes/**"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }

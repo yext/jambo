@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+import i18next, { i18n, Resource } from 'i18next';
 import escapeRegExp from 'lodash/escapeRegExp';
 
 /**
@@ -7,12 +7,14 @@ import escapeRegExp from 'lodash/escapeRegExp';
  * pluralization, and added context.
  */
 class Translator {
+  _i18next: i18n;
+
   /**
    * Creates a new {@link Translator} that wraps the provided {@link i18next} instance.
    *
-   * @param {i18next} i18nextInstance The instance to wrap.
+   * @param {i18n} i18nextInstance The instance to wrap.
    */
-  constructor(i18nextInstance) {
+  constructor(i18nextInstance: i18n) {
     this._i18next = i18nextInstance;
   }
 
@@ -24,7 +26,7 @@ class Translator {
    * @param {string} phrase The phrase to translate.
    * @returns {string} The translated phrase or format string.
    */
-  translate(phrase) {
+  translate(phrase: string) {
     const interpPlaceholders = this._getInterpolationPlaceholders(phrase);
 
     return this._i18next.t(phrase, interpPlaceholders);
@@ -39,7 +41,7 @@ class Translator {
    * @param {string} context The context of the translation.
    * @returns {string} The translated phrase or format string.
    */
-  translateWithContext(phrase, context) {
+  translateWithContext(phrase: string, context: string) {
     const interpPlaceholders = this._getInterpolationPlaceholders(phrase);
 
     return this._i18next.t(phrase, { context, ...interpPlaceholders});
@@ -55,7 +57,7 @@ class Translator {
    *   well as the locale. A form is keyed by its gettext plural form count see
    *   https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
-  translatePlural(phrase, pluralForm) {
+  translatePlural(phrase: string, pluralForm: string): Record<string|number, string> {
     const escapedPhrase = escapeRegExp(phrase);
     const pluralKeyRegex = new RegExp(`${escapedPhrase}_([0-9]+|plural)`);
     const i18nextOptions = this._i18next.options;
@@ -63,7 +65,7 @@ class Translator {
     // We first look for the translations in the given locale. If none can be
     // found there, we iterate through the fallbacks, in order.
     const localeWithPluralTranslations = this._findLocaleWithTranslationKey(
-      [i18nextOptions.lng, ...i18nextOptions.fallbackLng], pluralKeyRegex);
+      [i18nextOptions.lng, ...i18nextOptions.fallbackLng as string[]], pluralKeyRegex);
 
     if (localeWithPluralTranslations) {
       return this._generateMapOfPluralizationsToTranslations(
@@ -86,7 +88,7 @@ class Translator {
    *   well as the locale. A form is keyed by its gettext plural form count, see
    *   https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
-  translatePluralWithContext(phrase, pluralForm, context) {
+  translatePluralWithContext(phrase: string, pluralForm: string, context: string): Record<string|number, string> {
     const escapedPhraseAndContext = escapeRegExp(`${phrase}_${context}`);
     const pluralWithContextKeyRegex = new RegExp(
       `${escapedPhraseAndContext}_([0-9]+|plural)`);
@@ -95,7 +97,7 @@ class Translator {
     // We first look for the translations in the given locale. If none can be
     // found there, we iterate through the fallbacks, in order.
     const localeWithPluralTranslations = this._findLocaleWithTranslationKey(
-      [i18nextOptions.lng, ...i18nextOptions.fallbackLng], pluralWithContextKeyRegex);
+      [i18nextOptions.lng, ...i18nextOptions.fallbackLng as string[]], pluralWithContextKeyRegex);
 
     if (localeWithPluralTranslations) {
       return this._generateMapOfPluralizationsToTranslations(
@@ -118,7 +120,7 @@ class Translator {
    * @returns {Object<string|number, string>} A map containing the various forms as
    *   well as the locale.
    */
-  _getUntranslatedPluralizations(phrase, pluralForm){
+  _getUntranslatedPluralizations(phrase: string, pluralForm: string) {
     return {
       0: phrase,
       1: pluralForm
@@ -134,7 +136,11 @@ class Translator {
    * @returns {Object<string|number, string>} A map containing the various forms as
    *   well as the locale.
    */
-  _generateMapOfPluralizationsToTranslations(locale, pluralRegex, translationKey) {
+  _generateMapOfPluralizationsToTranslations(
+    locale: string,
+    pluralRegex: RegExp,
+    translationKey: string): Record<string|number, string> 
+  {
     const localeTranslations =
         this._i18next.options.resources[locale].translation;
 
@@ -161,7 +167,7 @@ class Translator {
    *                                   As an example, if the phrase was: 'My [[name]] is',
    *                                   the object would contains { name: '[[name]]' }.
    */
-  _getInterpolationPlaceholders(phrase) {
+  _getInterpolationPlaceholders(phrase: string): Record<string, string> {
     const placeholders = {};
     let placeholderMatch;
 
@@ -179,11 +185,11 @@ class Translator {
    * Finds the first of the provided locales with a translation whose key matches
    * the regex.
    *
-   * @param {Array<string>} locales The list of locales.
+   * @param {string[]} locales The list of locales.
    * @param {RegExp} keyRegex The pattern to match translation keys against.
    * @returns {string} The first matching locale.
    */
-  _findLocaleWithTranslationKey(locales, keyRegex) {
+  _findLocaleWithTranslationKey(locales: string[], keyRegex: RegExp): string {
     const i18nextOptions = this._i18next.options;
 
     return locales.find(locale => {
@@ -202,11 +208,11 @@ class Translator {
    * new {@link i18next} instance.
    *
    * @param {string} locale The desired locale.
-   * @param {Array<string>} fallbacks A prioritized list of translation fallbacks
+   * @param {string[]} fallbacks A prioritized list of translation fallbacks
    *                                  for the locale.
    * @param {Object<string, Object>} translations A map of locales to translations
    */
-  static async create(locale, fallbacks, translations) {
+  static async create(locale: string, fallbacks: string[], translations: Resource): Promise<Translator> {
     const i18nextInstance = i18next.createInstance();
     await i18nextInstance.init({
       lng: locale,

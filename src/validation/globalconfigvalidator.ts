@@ -5,6 +5,8 @@ import { FileNames } from '../constants';
  * Performs validation on global_config.json
  */
 export default class GlobalConfigValidator {
+  _globalConfig: any
+
   constructor(globalConfig) {
     /**
      * @type {Object<string, string>}

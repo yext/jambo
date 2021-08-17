@@ -7,6 +7,7 @@ import PageTemplate from '../../models/pagetemplate';
 import PageTemplateDirector from './pagetemplatedirector';
 import { NO_LOCALE } from '../../constants';
 import { warn } from '../../utils/logger';
+import GlobalConfig from '../../models/globalconfig';
 
 /**
  * PageSetsBuilder is responsible for matching {@link PageConfigs} and
@@ -14,6 +15,9 @@ import { warn } from '../../utils/logger';
  * of {@link PageSet}s.
  */
 export default class PageSetsBuilder {
+  _globalConfig: GlobalConfig
+  _localizationConfig: LocalizationConfig
+
   constructor({ globalConfig, localizationConfig }) {
     /**
      * @type {GlobalConfig}
@@ -34,7 +38,7 @@ export default class PageSetsBuilder {
    * @param {Array<PageTemplate>} pageTemplates
    * @returns {Array<PageSet>}
    */
-  build(pageConfigs, pageTemplates) {
+  build(pageConfigs: Array<PageConfig>, pageTemplates: Array<PageTemplate>) {
     const localeToPageConfigs = new PageConfigDecorator(this._localizationConfig)
       .decorate(pageConfigs);
 
@@ -71,8 +75,8 @@ export default class PageSetsBuilder {
    * @param {Array<PageTemplate>} pageTemplates
    * @returns {Array<Page>}
    */
-  _buildPages(pageConfigs, pageTemplates) {
-    let pages = [];
+  _buildPages(pageConfigs: Array<PageConfig>, pageTemplates: Array<PageTemplate>) {
+    const pages = [];
     for (const config of pageConfigs) {
       const pageTemplate = pageTemplates
         .find(template => template.getPageName() === config.getPageName());

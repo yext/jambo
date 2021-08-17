@@ -5,12 +5,16 @@ import { NO_LOCALE } from '../constants';
  * the given locale.
  */
 export default class PageConfig {
+  pageName: string
+  locale: string
+  rawConfig: any
+
   /**
    * @param {String} pageName
    * @param {String} locale
    * @param {Object} rawConfig
    */
-  constructor({ pageName, locale, rawConfig }) {
+  constructor({ pageName, locale, rawConfig }: any) {
     /**
      * @type {String}
      */

@@ -3,12 +3,16 @@ import path from 'path';
 import fileSystem from 'file-system';
 import { ShadowConfiguration, ThemeShadower } from './themeshadower';
 import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { JamboConfig } from '../../models/JamboConfig';
 
 /**
  * OverrideCommand overrides a specific file in the theme.
  */
 class OverrideCommand {
-  constructor(jamboConfig = {}) {
+  jamboConfig: JamboConfig
+  defaultTheme: string
+
+  constructor(jamboConfig: JamboConfig = {}) {
     this.jamboConfig = jamboConfig;
     this.defaultTheme = jamboConfig.defaultTheme;
   }
@@ -47,7 +51,7 @@ class OverrideCommand {
   }
 
   /**
-   * @returns {Array<string>} all theme files that can be overridden
+   * @returns {string[]} all theme files that can be overridden
    */
   static _getThemeFiles(jamboConfig) {
     const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;

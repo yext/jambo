@@ -5,7 +5,7 @@ import { canonicalizeLocale } from './i18nutils';
  * @param {String} configName the file name of the config, without the extension
  * @returns {String}
  */
-parseLocale = function(configName) {
+export function parseLocale(configName: string) {
   const configNameParts = configName.split('.');
   const locale = configNameParts.length > 1 && configNameParts[1];
   return canonicalizeLocale(locale);
@@ -17,8 +17,7 @@ parseLocale = function(configName) {
  * @param {String} configName the file name of the config, without the extension
  * @returns {Boolean}
  */
-containsLocale = function(configName) {
+export function containsLocale(configName: string) {
   const configNameParts = configName.split('.');
   return configNameParts.length > 1;
 }
-export { parseLocale, containsLocale };

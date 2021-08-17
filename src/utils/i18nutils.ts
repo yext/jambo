@@ -6,7 +6,7 @@ import UserError from '../errors/usererror'
  * @param {string} localeCode
  * @returns {string}
  */
-export function canonicalizeLocale(localeCode) {
+export function canonicalizeLocale(localeCode: string) {
   if (!localeCode) {
     return;
   }

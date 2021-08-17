@@ -3,7 +3,9 @@
  * not likely to be caused by users of jambo
  */
 class SystemError extends Error {
-  constructor(message, stack) {
+  exitCode: number
+
+  constructor(message, stack?) {
     super(message);
 
     this.name = 'SystemError'

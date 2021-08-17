@@ -3,7 +3,11 @@
  * of a built-in Jambo command. These shell commands are supplied by Themes.
  */
 export const CustomCommand = class {
-    constructor({ executable, args, cwd }) {
+    _executable: string
+    _args: string[]
+    _cwd: string
+
+    constructor({ executable, args, cwd }: any) {
         this._executable = executable;
         this._args = args || [];
         this._cwd = cwd;
@@ -14,7 +18,7 @@ export const CustomCommand = class {
      * 
      * @param {Array} args The additional arguments.
      */
-    addArgs(args) {
+    addArgs(args: Array<string>) {
         this._args = this._args.concat(args);
     }
 

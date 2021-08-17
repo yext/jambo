@@ -1,11 +1,15 @@
 import UserError from '../errors/usererror';
 import { parseLocale, containsLocale } from '../utils/configutils';
 import { FileNames } from '../constants';
+import PageConfig from '../models/pageconfig';
 
 /**
  * Performs validation on page config files
  */
 export default class PageConfigsValidator {
+  _pageConfigs: Record<string, PageConfig>
+  _configuredLocales: string[]
+
   constructor(pageConfigs, configuredLocales) {
     /**
      * A mapping of pages to their configurations. Keys are the config
@@ -49,8 +53,8 @@ export default class PageConfigsValidator {
    * @param {string[]} list
    * @returns {string[]}
    */
-  _removeDuplicates(list) {
-    return [...new Set(list)];
+  _removeDuplicates(list: string[]): string[] {
+    return Array.from(new Set(list));
   }
 
   _validatePageLocalesHaveConfigs() {
@@ -66,7 +70,7 @@ export default class PageConfigsValidator {
    * @param {string[]} pageLocales A list of locales defined by page config files
    * @returns {string[]}
    */
-  _getLocalesMissingConfigs(pageLocales) {
+  _getLocalesMissingConfigs(pageLocales: string[]) {
     const locales = pageLocales.filter(locale => {
       return !this._configuredLocales.includes(locale)
     });
@@ -76,7 +80,7 @@ export default class PageConfigsValidator {
   /**
    * @param {string[]} locales A list of locales which are missing configuration
    */
-  _throwErrorForLocalesMissingConfigs(locales) {
+  _throwErrorForLocalesMissingConfigs(locales: string[]) {
     if (locales.length == 1) {
       throw new UserError(
         `The locale '${locales}' is referenced but is not configured ` +

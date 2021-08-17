@@ -4,11 +4,14 @@ import { stripExtension } from '../utils/fileutils';
  * A data model representing a partial that registered with Jambo.
  */
 export default class Partial {
+  name: string
+  fileContents: string
+
   /**
    * @param {String} path
    * @param {String} fileContents
    */
-  constructor(path, fileContents) {
+  constructor(path: string, fileContents: string) {
     /**
      * @type {String}
      */

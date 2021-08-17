@@ -5,12 +5,13 @@ import CommandRegistry from './commands/commandregistry';
 import YargsFactory from './yargsfactory';
 import CommandImporter from './commands/commandimporter';
 import { error } from './utils/logger';
+import { JamboConfig } from './models/JamboConfig';
 
 /**
  * @param {string[]} argv the argv for the current process
  * @returns {import('yargs').Argv} A fully built Jambo CLI instance.
  */
-export default function buildJamboCLI(argv) {
+export default function buildJamboCLI(argv: string[]) {
   const jamboConfig = fs.existsSync('jambo.json') && parseJamboConfig();
   const commandRegistry = new CommandRegistry();
 
@@ -40,7 +41,7 @@ export default function buildJamboCLI(argv) {
  * @param {CommandRegistry} commandRegistry The registry containing all built-in commands.
  * @returns {boolean} If custom {@link Command}s need to be added to the CLI instance.    
  */
-function shouldImportCustomCommands(invokedCommand, commandRegistry) {
+function shouldImportCustomCommands(invokedCommand: string, commandRegistry: CommandRegistry) {
   const isCustomCommand =
     !commandRegistry.getAliases().includes(invokedCommand) &&
     !invokedCommand.startsWith('--');
@@ -57,7 +58,7 @@ function shouldImportCustomCommands(invokedCommand, commandRegistry) {
  * @param {Object} jamboConfig The site's parsed Jambo configuration.
  * @param {CommandRegistry} commandRegistry The existing registry of built-in commands.
  */
-function importCustomCommands(jamboConfig, commandRegistry) {
+function importCustomCommands(jamboConfig: JamboConfig, commandRegistry: CommandRegistry) {
   const commandImporter = jamboConfig.defaultTheme ?
     new CommandImporter(
       jamboConfig.dirs.output,

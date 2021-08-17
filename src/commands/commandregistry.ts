@@ -6,11 +6,14 @@ import DescribeCommand from '../commands/describe/describecommand';
 import JamboTranslationExtractor from './extract-translations/jambotranslationextractor';
 import ThemeImporter from './import/themeimporter';
 import ThemeUpgrader from './upgrade/themeupgrader';
+import Command from '../models/commands/command';
 
 /**
  * A registry that maintains the built-in and custom commands for the Jambo CLI.
  */
 class CommandRegistry {
+  _commandsByName: Record<string, typeof Command>
+
   constructor() {
     this._commandsByName = this._initialize();
   }
@@ -20,7 +23,7 @@ class CommandRegistry {
    *
    * @param {Class} commandClass 
    */
-  addCommand(commandClass) {
+  addCommand(commandClass: typeof Command) {
     this._commandsByName[commandClass.getAlias()] = commandClass;
   }
 
@@ -28,7 +31,7 @@ class CommandRegistry {
    * @param {string} name The command's alias.
    * @returns {Class} The {@link Command} class with the provided alias.
    */
-  getCommand(name) {
+  getCommand(name: string) {
     return this._commandsByName[name];
   }
 
@@ -40,7 +43,7 @@ class CommandRegistry {
   }
 
   /**
-   * @returns {Array<string>} The alias of each registered {@link Command}.
+   * @returns {string[]} The alias of each registered {@link Command}.
    */
   getAliases() {
     return Object.keys(this._commandsByName);
@@ -52,7 +55,7 @@ class CommandRegistry {
    *
    * @returns {Map<string, Command>} The built-in commmands' classes, keyed by name.
    */
-  _initialize() {
+  _initialize(): Record<string, any> {
     return {
       [ InitCommand.getAlias() ]: InitCommand,
       [ ThemeImporter.getAlias() ]: ThemeImporter,

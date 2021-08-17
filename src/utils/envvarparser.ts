@@ -5,40 +5,42 @@ import { parse } from 'comment-json';
  * It exposes a method to retrieve unserialized values from this mapping.
  */
 class EnvironmentVariableParser {
-    constructor(envVars) {
-        this._envVars = envVars;
+  _envVars: any
+
+  constructor(envVars) {
+    this._envVars = envVars;
+  }
+
+  /**
+   * Computes the unserialized values of the environment variables. This method
+   * takes in a parameter indicating which environment variables were serialized
+   * as JSON. All other variables are assumed to correspond to simple strings.
+   * 
+   * @param {string[]} jsonEnvVars The environment variables serialized as JSON. 
+   * @returns {Object} An object containing the unserialized values, keyed by
+   *                   environment variable.
+   */
+  parse(jsonEnvVars: string[]) {
+    const parsedValuesAccumulator = (accumulator, envVar) => {
+      if (jsonEnvVars.includes(envVar)) {
+        accumulator[envVar] = parse(this._envVars[envVar], null, true);
+      } else {
+        accumulator[envVar] = this._envVars[envVar];
+      }
+      return accumulator;
     }
 
-    /**
-     * Computes the unserialized values of the environment variables. This method
-     * takes in a parameter indicating which environment variables were serialized
-     * as JSON. All other variables are assumed to correspond to simple strings.
-     * 
-     * @param {Array<string>} jsonEnvVars The environment variables serialized as JSON. 
-     * @returns {Object} An object containing the unserialized values, keyed by
-     *                   environment variable.
-     */
-    parse(jsonEnvVars) {
-        const parsedValuesAccumulator = (accumulator, envVar) => {
-            if (jsonEnvVars.includes(envVar)) {
-                accumulator[envVar] = parse(this._envVars[envVar], null, true);
-            } else {
-                accumulator[envVar] = this._envVars[envVar];
-            }
-            return accumulator;
-        }
+    return Object.keys(this._envVars).reduce(parsedValuesAccumulator, {});
+  }
 
-        return Object.keys(this._envVars).reduce(parsedValuesAccumulator, {});
-    }
-
-    /**
-     * Creates an instance of an {@link EnvironmentVariableParser} from the
-     * process.env object.
-     * 
-     * @returns {EnvironmentVariableParser} The new parser.
-     */
-    static create() {
-        return new EnvironmentVariableParser(process.env);
-    }
+  /**
+   * Creates an instance of an {@link EnvironmentVariableParser} from the
+   * process.env object.
+   * 
+   * @returns {EnvironmentVariableParser} The new parser.
+   */
+  static create() {
+    return new EnvironmentVariableParser(process.env);
+  }
 }
 export { EnvironmentVariableParser };

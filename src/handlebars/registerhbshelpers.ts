@@ -1,4 +1,4 @@
-import babel from '@babel/core';
+import { transformSync } from '@babel/core';
 import lodash from 'lodash';
 
 /**
@@ -6,7 +6,7 @@ import lodash from 'lodash';
  *
  * @param {Handlebars} hbs the handlebars instance
  */
-export default function registerHbsHelpers(hbs) {
+export default function registerHbsHelpers(hbs: typeof Handlebars) {
   hbs.registerHelper('json', function(context) {
     return JSON.stringify(context || {});
   });
@@ -34,11 +34,11 @@ export default function registerHbsHelpers(hbs) {
     gte: function(v1, v2) {
       return v1 >= v2;
     },
-    and: function() {
-      return Array.prototype.slice.call(arguments).every(Boolean);
+    and: function(...args) {
+      return Array.prototype.slice.call(args).every(Boolean);
     },
-    or: function() {
-      return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+    or: function(...args) {
+      return Array.prototype.slice.call(args, 0, -1).some(Boolean);
     }
   });
 
