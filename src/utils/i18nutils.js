@@ -29,18 +29,14 @@ function parseLocale(localeCode) {
     if (numSections === 1) {
       return {};
     } else if (numSections === 2 && language === 'zh') {
-      return { 
-        modifier: localeCodeSections[1]
-      };
+      return { modifier: localeCodeSections[1] };
     } else if (numSections === 2) {
-      return {
-        region: localeCodeSections[1]
-      }
+      return { region: localeCodeSections[1] };
     } else if (numSections === 3) {
       return {
         modifier: localeCodeSections[1],
         region: localeCodeSections[2]
-      }
+      };
     } else if (numSections > 3) {
       throw new UserError(
         `Encountered strangely formatted locale "${localeCode}", ` +
