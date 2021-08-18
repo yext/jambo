@@ -29,7 +29,12 @@ function parseLocale(localeCode) {
     if (numSections === 1) {
       return {};
     } else if (numSections === 2 && language === 'zh') {
-      return { modifier: localeCodeSections[1] };
+      const ambiguous = localeCodeSections[1].toLowerCase();
+      if (['hans', 'hant'].includes(ambiguous)) {
+        return { modifier: ambiguous };
+      } else {
+        return { region: ambiguous };
+      }
     } else if (numSections === 2) {
       return { region: localeCodeSections[1] };
     } else if (numSections === 3) {

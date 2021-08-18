@@ -26,6 +26,7 @@ describe('canonicalizeLocale correctly normalizes locales', () => {
       ['dash then underscore', 'zh-Hans_CH'],
       ['updates casing', 'ZH-hans_Ch'],
       ['does not have region code', 'zh-hans', 'zh-Hans'],
+      ['has region but no modifier', 'zh-cH', 'zh_CH']
     ];
     const expected = 'zh-Hans_CH';
     for (const [testName, inputLocale, specificExpected] of testCases) {
@@ -43,10 +44,17 @@ describe('parseLocale', () => {
     })
   });
 
-  it('ZH_HANS', () => {
+  it('chinese with modifier only', () => {
     expect(parseLocale('ZH_HANS')).toEqual({
       language: 'zh',
       modifier: 'Hans'
+    })
+  });
+
+  it('chinese with region only', () => {
+    expect(parseLocale('ZH-cH')).toEqual({
+      language: 'zh',
+      region: 'CH'
     })
   });
 
