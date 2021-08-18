@@ -12,19 +12,16 @@ canonicalizeLocale = function(localeCode) {
   }
   const localeCodeSections = localeCode.replace(/-/g, '_').split('_');
   const numSections = localeCodeSections.length;
+  const language = localeCodeSections[0].toLowerCase();
   if (numSections === 1) {
-    return localeCodeSections[0].toLowerCase();
+    return language;
   } else if (numSections === 2) {
-    const language = localeCodeSections[0].toLowerCase();
-    const region = localeCodeSections[1].toUpperCase();
-    return `${language}_${region}`; 
+    if (language === 'zh') {
+      return formatLocale(language, localeCodeSections[1]);
+    }
+    return formatLocale(language, null, localeCodeSections[1]);
   } else if (numSections === 3) {
-    const language = localeCodeSections[0].toLowerCase();
-    const rawModifier = localeCodeSections[1];
-    const languageModifier =
-      rawModifier.charAt(0).toUpperCase() + rawModifier.slice(1).toLowerCase();
-    const region = localeCodeSections[2].toUpperCase();
-    return `${language}-${languageModifier}_${region}`;
+    return formatLocale(language, localeCodeSections[1], localeCodeSections[2]);
   } else if (numSections > 3) {
     warn(
       `Encountered strangely formatted locale "${localeCode}", ` +
@@ -33,3 +30,22 @@ canonicalizeLocale = function(localeCode) {
   }
 }
 exports.canonicalizeLocale = canonicalizeLocale;
+
+/**
+ * Formats a locale code given its constituent parts.
+ *
+ * @param {string} language zh in zh-Hans_CH
+ * @param {string?} modifier Hans in zh-Hans_CH
+ * @param {string?} region CH in zh-Hans_CH
+ * @returns 
+ */
+function formatLocale(language, modifier, region) {
+  let result = language.toLowerCase();
+  if (modifier) {
+    result += '-' + modifier.charAt(0).toUpperCase() + modifier.slice(1).toLowerCase();
+  }
+  if (region) {
+    result += '_' + region.toUpperCase();
+  }
+  return result;
+}

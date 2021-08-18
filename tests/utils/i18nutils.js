@@ -18,11 +18,12 @@ describe('works for chinese', () => {
     ['using underscores', 'zh_Hans_CH'],
     ['underscore then dash', 'zh_Hans-CH'],
     ['dash then underscore', 'zh-Hans_CH'],
-    ['updates casing', 'zh-hans_ch'],
+    ['updates casing', 'ZH-hans_Ch'],
+    ['does not have region code', 'zh-hans', 'zh-Hans'],
   ];
   const expected = 'zh-Hans_CH';
-  for (const [testName, inputLocale] of testCases) {
-    runTest(testName, inputLocale, expected);
+  for (const [testName, inputLocale, specificExpected] of testCases) {
+    runTest(testName, inputLocale, specificExpected || expected);
   }
 });
 
