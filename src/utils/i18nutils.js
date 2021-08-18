@@ -1,4 +1,4 @@
-const { warn } = require('npmlog');
+const { warn } = require('./logger');
 
 /**
  * Normalizes a locale code
