@@ -1,4 +1,4 @@
-const { warn } = require('./logger');
+const UserError = require('../errors/usererror');
 
 /**
  * Normalizes a locale code
@@ -6,30 +6,49 @@ const { warn } = require('./logger');
  * @param {string} localeCode
  * @returns {string}
  */
-canonicalizeLocale = function(localeCode) {
+exports.canonicalizeLocale = function(localeCode) {
   if (!localeCode) {
     return;
   }
+  const { language, modifier, region } = parseLocale(localeCode);
+  return formatLocale(language, modifier, region);
+}
+
+/**
+ * Parses a locale code into its constituent parts.
+ * 
+ * @param {string} localeCode 
+ * @returns { language: string, modifier?: string, region?: string } 
+ */
+function parseLocale(localeCode) {
   const localeCodeSections = localeCode.replace(/-/g, '_').split('_');
   const numSections = localeCodeSections.length;
   const language = localeCodeSections[0].toLowerCase();
   if (numSections === 1) {
-    return language;
+    return { language };
   } else if (numSections === 2) {
     if (language === 'zh') {
-      return formatLocale(language, localeCodeSections[1]);
+      return {
+        modifier: localeCodeSections[1],
+        language
+      };
     }
-    return formatLocale(language, null, localeCodeSections[1]);
+    return {
+      region: localeCodeSections[1],
+      language
+    }
   } else if (numSections === 3) {
-    return formatLocale(language, localeCodeSections[1], localeCodeSections[2]);
+    return {
+      modifier: localeCodeSections[1],
+      region: localeCodeSections[2],
+      language
+    }
   } else if (numSections > 3) {
-    warn(
+    throw new UserError(
       `Encountered strangely formatted locale "${localeCode}", ` +
       `with ${numSections} sections.`);
-    return localeCode;
   }
 }
-exports.canonicalizeLocale = canonicalizeLocale;
 
 /**
  * Formats a locale code given its constituent parts.
