@@ -35,8 +35,7 @@
     "max-len": [
       "error",
       {
-        "code": 125,
-        "ignorePattern": "^const\\s.+=\\s*require\\s*\\("
+        "code": 125
       }
     ]
   },
