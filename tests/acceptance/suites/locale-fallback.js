@@ -1,6 +1,5 @@
-const fs = require('fs');
-
-const { runInPlayground } = require('../setup/playground');
+import fs from 'fs';
+import { runInPlayground } from '../setup/playground';
 
 it('check locale fallback functionality for page and config files', 
   () => runInPlayground(async t => {

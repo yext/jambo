@@ -1,6 +1,6 @@
-const Page = require('../../src/models/page');
-const PageConfig = require('../../src/models/pageconfig');
-const PageTemplate = require('../../src/models/pagetemplate');
+import Page from '../../src/models/page';
+import PageConfig from '../../src/models/pageconfig';
+import PageTemplate from '../../src/models/pagetemplate';
 
 describe('Correctly forms Page object using static from', () => {
   const pageName = 'test';

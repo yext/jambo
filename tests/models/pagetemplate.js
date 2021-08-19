@@ -1,5 +1,5 @@
-const PageTemplate = require('../../src/models/pagetemplate');
-const { NO_LOCALE } = require('../../src/constants');
+import PageTemplate from '../../src/models/pagetemplate';
+import { NO_LOCALE } from '../../src/constants';
 
 describe('Correctly forms PageTemplate object from constructor', () => {
   it('PageTemplate is built properly when locale is present', () => {

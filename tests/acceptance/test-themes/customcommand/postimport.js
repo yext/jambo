@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
+
 const { assign, stringify } = require('comment-json');
 
 /**

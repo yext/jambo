@@ -1,6 +1,5 @@
-const fs = require('fs');
-
-const { runInPlayground } = require('../setup/playground');
+import fs from 'fs';
+import { runInPlayground } from '../setup/playground';
 
 it('extract translations w/ default settings', () => runInPlayground(async t => {
   await t.jambo('init');

@@ -1,10 +1,10 @@
-const {
+import {
   stripExtension,
   getPageName,
   isValidFile,
   isValidPartialPath,
   searchDirectoryIgnoringExtensions
-} = require('../../src/utils/fileutils');
+} from '../../src/utils/fileutils';
 
 describe('stripExtension correctly strips extension from filename', () => {
   it('strips extension when present', () => {

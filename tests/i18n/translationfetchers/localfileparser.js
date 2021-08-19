@@ -1,6 +1,6 @@
-const path = require('path');
-const LocalFileParser = require('../../../src/i18n/translationfetchers/localfileparser');
-const UserError = require('../../../src/errors/usererror');
+import path from 'path';
+import LocalFileParser from '../../../src/i18n/translationfetchers/localfileparser';
+import UserError from '../../../src/errors/usererror';
 
 describe('LocalFileParser works correctly', () => {
   const translationsPath = path.join(__dirname, '../../fixtures/translations');

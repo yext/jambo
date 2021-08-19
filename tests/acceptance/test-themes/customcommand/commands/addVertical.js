@@ -1,4 +1,8 @@
-const { ArgumentMetadata, ArgumentType } = require('../../../../../src/models/commands/argumentmetadata');
+const {
+  ArgumentMetadata,
+  ArgumentType
+} = require('../../../../../src/models/commands/argumentmetadata');
+const fs = require('fs');
 
 /**
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
@@ -57,7 +61,7 @@ class VerticalAdder {
   /**
    * @returns {Object} description of the vertical command and its parameters.
    */
-  static describe(jamboConfig) {
+  static describe() {
     return {
       displayName: 'Add Vertical',
       params: {
@@ -94,15 +98,8 @@ class VerticalAdder {
  * @param {Object<string, string>} args The arguments, keyed by name 
  */
   execute(args) {
-    const fs = require('fs');
     const content = args.name + args.template + args.verticalKey;
-    fs.writeFileSync('index.html', content, err => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-  //file written successfully
-    })
+    fs.writeFileSync('index.html', content);
   }
 }
 module.exports = VerticalAdder;

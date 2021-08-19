@@ -1,6 +1,6 @@
-const TranslationExtractor = require('../../../src/i18n/extractor/translationextractor');
-const path = require('path');
-const fs = require('fs');
+import TranslationExtractor from '../../../src/i18n/extractor/translationextractor';
+import path from 'path';
+import fs from 'fs';
 
 describe('TranslationExtractor', () => {
   const rootDir = path.resolve(__dirname, '../../..');
