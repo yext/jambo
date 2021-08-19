@@ -1,7 +1,6 @@
-const path = require('path');
-const process = require('process');
-
-const DefaultTranslationGlobber = require('../../../src/commands/extract-translations/defaulttranslationglobber');
+import path from 'path';
+import process from 'process';
+import DefaultTranslationGlobber from '../../../src/commands/extract-translations/defaulttranslationglobber';
 
 const fixturesAbsPath = path.resolve(__dirname, '../../fixtures/extractions');
 const fixturesDir = path.relative(process.cwd(), fixturesAbsPath);

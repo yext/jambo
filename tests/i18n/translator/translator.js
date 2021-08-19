@@ -1,7 +1,6 @@
-const path = require('path');
-
-const LocalFileParser = require('../../../src/i18n/translationfetchers/localfileparser');
-const Translator = require('../../../src/i18n/translator/translator');
+import path from 'path';
+import LocalFileParser from '../../../src/i18n/translationfetchers/localfileparser';
+import Translator from '../../../src/i18n/translator/translator';
 
 describe('translations with one plural form (French)', () => {
   let translator;

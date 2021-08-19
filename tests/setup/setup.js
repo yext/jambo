@@ -1,5 +1,5 @@
-const prettier = require('prettier');
-const { setLogLevel } = require('../../src/utils/logger');
+import prettier from 'prettier';
+import { setLogLevel } from '../../src/utils/logger';
 process.env.IS_DEVELOPMENT_PREVIEW = 'false';
 
 setLogLevel('silent');

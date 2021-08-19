@@ -1,6 +1,5 @@
-const TemplateDataValidator = require('../../../src/commands/build/templatedatavalidator');
-const path = require('path');
-const UserError = require('../../../src/errors/usererror');
+import TemplateDataValidator from '../../../src/commands/build/templatedatavalidator';
+import path from 'path';
 
 describe('TemplateDataValidator validates config data using hook properly', () => {
   const currentPageConfig = {

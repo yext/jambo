@@ -11,10 +11,10 @@
  * 
  * @param {Object} pageNameToConfig object of pageName to pageConfig
  */
-module.exports = function (pageMetadata, siteLevelAttributes, pageNameToConfig) {
+export default function (pageMetadata, siteLevelAttributes, pageNameToConfig) {
   return {
     aPageMetadata: pageMetadata,
     someSiteLevelAttributes: siteLevelAttributes,
     aPageNameToConfig: pageNameToConfig
   };
-}
+};

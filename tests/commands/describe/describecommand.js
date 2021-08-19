@@ -1,4 +1,4 @@
-const DescribeCommand = require('../../../src/commands/describe/describecommand');
+import DescribeCommand from '../../../src/commands/describe/describecommand';
 
 const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 const mockJamboConfig = {};

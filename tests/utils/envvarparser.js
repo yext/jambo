@@ -1,4 +1,4 @@
-const { EnvironmentVariableParser } = require('../../src/utils/envvarparser');
+import { EnvironmentVariableParser } from '../../src/utils/envvarparser';
 
 describe('EnvironmentVariableParser works correctly', () => {
     const var1 = {

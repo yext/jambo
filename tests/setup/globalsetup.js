@@ -1,5 +1,5 @@
-const { setupTestThemes } = require('./themesetup');
+import { setupTestThemes } from './themesetup';
 
-module.exports = async () => {
+export default async () => {
   await setupTestThemes();
-}
+};
