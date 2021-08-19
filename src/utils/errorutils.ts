@@ -8,10 +8,12 @@ import { error } from './logger';
  * async operations will be lost.
  * @param {Error} error
  */
-export const exitWithError = (err = {}) => {
+export const exitWithError = (err: Error | UserError | SystemError) => {
   err.stack && error(err.stack);
-  const exitCode = err.exitCode || 1;
-  process.exit(exitCode);
+  if (isCustomError(err)) {
+    process.exit(err.exitCode || 1);
+  }
+  process.exit(1);
 };
 
 /**
@@ -19,6 +21,6 @@ export const exitWithError = (err = {}) => {
  * (Either UserError or SystemError)
  * @param {Error} err The error to evaluate
  */
-export const isCustomError = (err) => {
+export const isCustomError = (err: Error): err is UserError | SystemError => {
   return (err instanceof UserError || err instanceof SystemError);
 };
