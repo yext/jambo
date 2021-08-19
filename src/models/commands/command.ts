@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-
 import { JamboConfig } from '../JamboConfig';
 import { ArgumentMetadata } from './argumentmetadata';
 
