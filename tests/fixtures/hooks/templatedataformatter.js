@@ -11,7 +11,7 @@
  * 
  * @param {Object} pageNameToConfig object of pageName to pageConfig
  */
-export default function (pageMetadata, siteLevelAttributes, pageNameToConfig) {
+module.exports = function (pageMetadata, siteLevelAttributes, pageNameToConfig) {
   return {
     aPageMetadata: pageMetadata,
     someSiteLevelAttributes: siteLevelAttributes,
