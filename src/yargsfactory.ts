@@ -56,7 +56,7 @@ class YargsFactory {
           if (metadata.getType() === ArgumentType.ARRAY) {
             this._addListOption(name, metadata, yargs);
           } else {
-            yargs.option<any, any>(
+            yargs.option<string, any>(
               name,
               {
                 type: metadata.getType(),
