@@ -62,14 +62,14 @@ export default class TemplateArgsBuilder {
    * @param {Object<string, Object>} pageNameToConfig
    * @returns {Object}
    */
-  _getTemplateDataFromFormatter(pageMetadata, siteLevelAttributes, pageNameToConfig) {
+  _getTemplateDataFromFormatter(pageMetadata: any, siteLevelAttributes: any, pageNameToConfig: Record<string, any>) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const formatterFunction = require(this.templateDataFormatterHook);
       return formatterFunction(pageMetadata, siteLevelAttributes, pageNameToConfig);
     } catch (err) {
       const msg =
-        `Could not load template data hook from ${this._templateDataFormatter}: `;
+        `Could not load template data hook from ${this.templateDataFormatterHook}: `;
       throw new UserError(msg, err.stack);
     }
   }
