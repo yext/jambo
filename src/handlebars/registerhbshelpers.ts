@@ -83,9 +83,10 @@ export default function registerHbsHelpers(hbs: typeof Handlebars) {
     if (process.env.IS_DEVELOPMENT_PREVIEW === 'true' ) {
       return srcCode;
     } else {
-      return babel.transformSync(srcCode, {
+      return transformSync(srcCode, {
         compact: true,
         minified: true,
+        configFile: false,
         comments: false,
         sourceType: 'script',
         presets: ['@babel/preset-env'],
