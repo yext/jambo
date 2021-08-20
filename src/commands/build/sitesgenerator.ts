@@ -148,7 +148,7 @@ class SitesGenerator {
     if (fs.existsSync(customHbsHelpersDir)) {
       try {
         info('Registering custom Handlebars helpers from the default theme');
-        registerCustomHbsHelpers(hbs, customHbsHelpersDir);
+        await registerCustomHbsHelpers(hbs, customHbsHelpersDir);
       } catch (err) {
         throw new UserError('Failed to register custom handlebars helpers', err.stack);
       }

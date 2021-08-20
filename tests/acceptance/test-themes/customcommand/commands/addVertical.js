@@ -8,7 +8,7 @@ const fs = require('fs');
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
  * a new page for the given Vertical and associates a card type with it.
  */
-class VerticalAdder {
+module.exports = class VerticalAdder {
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
@@ -102,4 +102,3 @@ class VerticalAdder {
     fs.writeFileSync('index.html', content);
   }
 }
-module.exports = VerticalAdder;
