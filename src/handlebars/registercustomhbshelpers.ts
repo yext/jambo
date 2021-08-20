@@ -9,20 +9,24 @@ import { stripExtension } from '../utils/fileutils';
  * @param {Handlebars} hbs the handlebars instance
  * @param {string} pathToCustomHelpers the path to the hbs helpers directory
  */
-export default function registerCustomHbsHelpers(hbs, pathToCustomHelpers) {
-  fs.readdirSync(pathToCustomHelpers)
-    .forEach(filename => {
+export default async function registerCustomHbsHelpers(
+  hbs: typeof Handlebars,
+  pathToCustomHelpers: string): Promise<void> 
+{
+  const registerHelperPromises = fs.readdirSync(pathToCustomHelpers)
+    .map(async filename => {
       const filePath = path.resolve(pathToCustomHelpers, filename);
       if (!fs.lstatSync(filePath).isFile()) {
         return;
       }
       const helperName = stripExtension(filename);
       try {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        hbs.registerHelper(helperName, require(filePath));
+        const helperFunction = (await import(filePath)).default;
+        hbs.registerHelper(helperName, helperFunction);
       } catch (err) {
         throw new UserError(
           `Could not register handlebars helper from file ${path}`, err.stack);
       }
     });
+  await Promise.all(registerHelperPromises);
 }
