@@ -8,10 +8,12 @@ import { error } from './logger';
  * async operations will be lost.
  * @param {Error} error
  */
-export const exitWithError = (err: Error | UserError | SystemError) => {
-  err.stack && error(err.stack);
-  if (isCustomError(err)) {
-    process.exit(err.exitCode || 1);
+export const exitWithError = (err: Error | UserError | SystemError | undefined) => {
+  if (err) {
+    err.stack && error(err.stack);
+    if (isCustomError(err)) {
+      process.exit(err.exitCode || 1);
+    }
   }
   process.exit(1);
 };
