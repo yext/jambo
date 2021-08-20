@@ -47,16 +47,16 @@ class YargsFactory {
    * @param {Class} commandClass A Jambo {@link Command}'s class.
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
-  _createCommandModule(commandClass) {
+  _createCommandModule(commandClass: typeof Command): CommandModule {
     return {
       command: commandClass.getAlias(),
-      desc: commandClass.getShortDescription(),
+      describe: commandClass.getShortDescription(),
       builder: yargs => {
         Object.entries(commandClass.args()).forEach(([name, metadata]) => {
           if (metadata.getType() === ArgumentType.ARRAY) {
             this._addListOption(name, metadata, yargs);
           } else {
-            yargs.option(
+            yargs.option<string, any>(
               name,
               {
                 type: metadata.getType(),
@@ -66,6 +66,7 @@ class YargsFactory {
               });
           }
         });
+        return yargs;
       },
       handler: async argv => {
         const commandInstance = this._createCommandInstance(commandClass);
