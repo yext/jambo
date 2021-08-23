@@ -17,7 +17,7 @@ export class RepositorySettings {
   _useSubmodules: boolean
   _includeTranslations: boolean
 
-  constructor({ themeUrl, theme, useSubmodules, includeTranslations }) {
+  constructor({ themeUrl, theme, useSubmodules, includeTranslations }: Record<string, any>) {
     this._themeUrl = themeUrl;
     this._theme = theme;
     this._useSubmodules = useSubmodules;
@@ -66,10 +66,11 @@ export class RepositoryScaffolder {
       const theme = repositorySettings.getTheme();
       if (themeUrl || theme) {
         const themeImporter = new ThemeImporter(jamboConfig);
-        await themeImporter.import(
+        await themeImporter.execute({
           themeUrl,
           theme, 
-          repositorySettings.shouldUseSubmodules());
+          useSubmodules: repositorySettings.shouldUseSubmodules()
+        });
       }
     } catch (err) {
       throw new SystemError(err.message, err.stack);

@@ -7,6 +7,9 @@ import { exitWithError } from './utils/errorutils';
 import CommandRegistry from './commands/commandregistry';
 import Command from './models/commands/command';
 import { JamboConfig } from './models/JamboConfig';
+import DescribeCommand from './commands/describe/describecommand';
+import PageCommand from './commands/page/add/pagecommand';
+import BuildCommand from './commands/build/buildcommand';
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
@@ -47,22 +50,22 @@ class YargsFactory {
    * @param {Class} commandClass A Jambo {@link Command}'s class.
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
-  _createCommandModule(commandClass: typeof Command): CommandModule {
+  _createCommandModule(commandClass: Command): CommandModule {
     return {
-      command: commandClass.getAlias(),
-      describe: commandClass.getShortDescription(),
+      command: commandClass.alias,
+      describe: commandClass.shortDescription,
       builder: yargs => {
-        Object.entries(commandClass.args()).forEach(([name, metadata]) => {
-          if (metadata.getType() === ArgumentType.ARRAY) {
+        Object.entries(commandClass.args).forEach(([name, metadata]) => {
+          if (metadata.type === ArgumentType.ARRAY) {
             this._addListOption(name, metadata, yargs);
           } else {
             yargs.option<string, any>(
               name,
               {
-                type: metadata.getType(),
-                description: metadata.getDescription(),
-                demandOption: metadata.isRequired(),
-                default: metadata.defaultValue()
+                type: metadata.type,
+                description: metadata.description,
+                demandOption: metadata.isRequired,
+                default: metadata.defaultValue
               });
           }
         });
@@ -85,11 +88,11 @@ class YargsFactory {
    */
   _addListOption(name: string, metadata: ArgumentMetadata, yargs: import('yargs').Argv) {
     yargs.array(name);
-    const defaultValue = metadata.defaultValue() || [];
+    const defaultValue = metadata.defaultValue || [];
 
-    metadata.isRequired() && yargs.demandOption(name);
+    metadata.isRequired && yargs.demandOption(name);
     yargs.default(name, defaultValue);
-    yargs.describe(name, metadata.getDescription());
+    yargs.describe(name, metadata.description);
   }
 
   /**
@@ -97,20 +100,20 @@ class YargsFactory {
    * @returns {Command} the instantiated Jambo command
    */
   _createCommandInstance(commandClass) {
-    const className = commandClass.name;
+    const classAlias = commandClass.alias;
     let commandInstance;
-    switch (className) {
-      case 'DescribeCommand':
+    switch (classAlias) {
+      case DescribeCommand.alias:
         commandInstance = new commandClass(
           this._jamboConfig, 
           () => this._commandRegistry.getCommands()
         );
         break;
-      case 'PageCommand':
+      case PageCommand.alias:
         const pageScaffolder = new PageScaffolder(this._jamboConfig);
         commandInstance = new commandClass(this._jamboConfig, pageScaffolder);
         break;
-      case 'BuildCommand':
+      case BuildCommand.alias:
         const sitesGenerator = new SitesGenerator(this._jamboConfig);
         commandInstance = new commandClass(sitesGenerator);
         break;

@@ -84,7 +84,7 @@ export default class CommandImporter {
    * @param {Command} commandClass The custom {@link Command}'s class
    * @returns {boolean} A boolean indicating if the custom {@Command} is valid.
    */
-  _validateCustomCommand(commandClass: typeof Command) {
+  _validateCustomCommand(commandClass: Command) {
     let isValidCommand;
     try {
       const getMethods = (classObject) => Object.getOwnPropertyNames(classObject)

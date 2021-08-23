@@ -1,3 +1,4 @@
+import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
 import Command from '../../models/commands/command';
 import { JamboConfig } from '../../models/JamboConfig';
 
@@ -5,9 +6,12 @@ import { JamboConfig } from '../../models/JamboConfig';
  * DescribeCommand outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
-class DescribeCommand {
+const DescribeCommand : Command  = class {
   _jamboConfig: JamboConfig
-  getCommands: () => (typeof Command)[]
+  getCommands: () => Command[]
+  static alias = 'describe';
+  static shortDescription = 'describe all the registered jambo commands and their possible arguments';
+  static args: Record<string, ArgumentMetadata> = {};
 
   constructor(jamboConfig, getCommands) {
     /**
@@ -15,18 +19,6 @@ class DescribeCommand {
      */
     this._jamboConfig = jamboConfig;
     this.getCommands = getCommands;
-  }
-
-  static getAlias() {
-    return 'describe';
-  }
-
-  static getShortDescription() {
-    return 'describe all the registered jambo commands and their possible arguments';
-  }
-
-  static args() {
-    return {};
   }
 
   /**
@@ -51,11 +43,11 @@ class DescribeCommand {
         const describeValue = command.describe(this._jamboConfig);
         if (describeValue.then && typeof describeValue.then === 'function') {
           return describeValue.then(
-            (value) => { descriptions[command.getAlias()] = value; }
+            (value) => { descriptions[command.alias] = value; }
           );
         } else {
-          if (command.getAlias() !== 'describe') {
-            descriptions[command.getAlias()] = describeValue;
+          if (command.alias !== 'describe') {
+            descriptions[command.alias] = describeValue;
           }
         }
       }

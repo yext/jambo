@@ -12,7 +12,7 @@ import Command from '../models/commands/command';
  * A registry that maintains the built-in and custom commands for the Jambo CLI.
  */
 class CommandRegistry {
-  _commandsByName: Record<string, typeof Command>
+  _commandsByName: Record<string, Command>
 
   constructor() {
     this._commandsByName = this._initialize();
@@ -23,8 +23,8 @@ class CommandRegistry {
    *
    * @param {Class} commandClass 
    */
-  addCommand(commandClass: typeof Command) {
-    this._commandsByName[commandClass.getAlias()] = commandClass;
+  addCommand(commandClass: Command) {
+    this._commandsByName[commandClass.alias] = commandClass;
   }
 
   /**
@@ -57,14 +57,14 @@ class CommandRegistry {
    */
   _initialize(): Record<string, any> {
     return {
-      [ InitCommand.getAlias() ]: InitCommand,
-      [ ThemeImporter.getAlias() ]: ThemeImporter,
-      [ PageCommand.getAlias() ]: PageCommand,
-      [ OverrideCommand.getAlias() ]: OverrideCommand,
-      [ BuildCommand.getAlias() ]: BuildCommand,
-      [ ThemeUpgrader.getAlias() ]: ThemeUpgrader,
-      [ DescribeCommand.getAlias() ]: DescribeCommand,
-      [ JamboTranslationExtractor.getAlias() ]: JamboTranslationExtractor
+      [ InitCommand.alias ]: InitCommand,
+      [ ThemeImporter.alias ]: ThemeImporter,
+      [ PageCommand.alias ]: PageCommand,
+      [ OverrideCommand.alias ]: OverrideCommand,
+      [ BuildCommand.alias ]: BuildCommand,
+      [ ThemeUpgrader.alias ]: ThemeUpgrader,
+      [ DescribeCommand.alias ]: DescribeCommand,
+      [ JamboTranslationExtractor.alias ]: JamboTranslationExtractor
     };
   }
 }

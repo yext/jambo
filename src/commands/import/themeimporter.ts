@@ -14,45 +14,37 @@ import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import process from 'process';
 import { JamboConfig } from '../../models/JamboConfig';
+import Command from '../../models/commands/command';
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
  */
-export default class ThemeImporter {
+const ThemeImporter : Command = class {
   config: JamboConfig;
   _themeShadower: ThemeShadower;
-  _postImportHook: 'postimport'
+  _postImportHook: 'postimport';
+  static alias = 'import';
+  static shortDescription = 'import a theme';
+  static args: Record<string, ArgumentMetadata> = {
+    themeUrl: {
+      type: ArgumentType.STRING,
+      description: 'url of the theme\'s git repo',
+    },
+    theme: {
+      type: ArgumentType.STRING,
+      description: '(deprecated: specify the themeUrl instead)'
+        + ' the name of the theme to import',
+    },
+    useSubmodules: {
+      type: ArgumentType.BOOLEAN,
+      description: 'import the theme as a submodule'
+    }
+  };
 
   constructor(jamboConfig) {
     this.config = jamboConfig;
     this._themeShadower = new ThemeShadower(jamboConfig);
     this._postImportHook = 'postimport';
-  }
-
-  static getAlias() {
-    return 'import';
-  }
-
-  static getShortDescription() {
-    return 'import a theme';
-  }
-
-  static args() {
-    return {
-      themeUrl: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: 'url of the theme\'s git repo',
-      }),
-      theme: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: '(deprecated: specify the themeUrl instead)'
-          + ' the name of the theme to import',
-      }),
-      useSubmodules: new ArgumentMetadata({
-        type: ArgumentType.BOOLEAN,
-        description: 'import the theme as a submodule'
-      }),
-    }
   }
 
   static describe() {
@@ -77,7 +69,7 @@ export default class ThemeImporter {
     }
   }
 
-  async execute(args) {
+  async execute(args: Record<string, any>) {
     await this.import(args.themeUrl, args.theme, args.useSubmodules);
   }
 
@@ -148,3 +140,5 @@ export default class ThemeImporter {
     new CustomCommandExecuter(this.config).execute(customCommand);
   }
 }
+
+export default ThemeImporter;

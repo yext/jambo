@@ -6,48 +6,39 @@ import UserError from '../../../errors/usererror';
 import { ArgumentMetadata, ArgumentType } from '../../../models/commands/argumentmetadata';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
+import Command from '../../../models/commands/command';
 
 /**
  * PageCommand registers a new page with the specified name to be built by Jambo.
  */
-class PageCommand {
-  jamboConfig: JamboConfig
-  defaultTheme: string
-  pageScaffolder: PageScaffolder
+const PageCommand : Command = class {
+  jamboConfig: JamboConfig;
+  defaultTheme: string;
+  pageScaffolder: PageScaffolder;
+  static alias =  'page';
+  static shortDescription = 'add a new page to the site';
+  static args: Record<string, ArgumentMetadata> = {
+    name: {
+      type: ArgumentType.STRING,
+      description: 'name for the new files',
+      isRequired: true
+    },
+    template: {
+      type: ArgumentType.STRING,
+      description: 'template to use within theme',
+      isRequired: false
+    },
+    locales: {
+      type: ArgumentType.ARRAY,
+      description: 'additional locales to generate the page for',
+      isRequired: false
+    }
+  };
 
   constructor(jamboConfig: JamboConfig = {}, pageScaffolder) {
     this.jamboConfig = jamboConfig;
     this.defaultTheme = jamboConfig?.defaultTheme;
     this.pageScaffolder = pageScaffolder;
-  }
-
-  static getAlias() {
-    return 'page';
-  }
-
-  static getShortDescription() {
-    return 'add a new page to the site';
-  }
-
-  static args() {
-    return {
-      name: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: 'name for the new files',
-        isRequired: true
-      }),
-      template: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: 'template to use within theme',
-        isRequired: false
-      }),
-      locales: new ArgumentMetadata({
-        type: ArgumentType.ARRAY,
-        itemType: ArgumentType.STRING,
-        description: 'additional locales to generate the page for',
-        isRequired: false
-      })
-    }
   }
 
   static describe(jamboConfig) {
@@ -127,7 +118,7 @@ class PageCommand {
     return pageLocales;
   }
 
-  execute(args) {
+  execute(args: Record<string, any>) {
     const pageConfiguration = new PageConfiguration(
       { ...args, theme: this.defaultTheme });
     try {

@@ -3,40 +3,41 @@ import { JamboConfig } from '../JamboConfig';
 import { ArgumentMetadata } from './argumentmetadata';
 
 /**
- * An interface that represents a command in the Jambo CLI. 
+ * Command interface that contains non static fields and methods
+ * of a Command instance
  */
-class Command {
-
-  /**
-   * @returns {string} The alias for the command.
-   */
-  static getAlias(): string { return ''; }
-
-  /**
-   * @returns {string} A short, one sentence description of the command. This
-   *                   description appears as part of the help text in the CLI. 
-   */
-  static getShortDescription(): string {
-    return '';
-  }
-
+interface CommandExecutable {
   /**
    * Executes the command with the provided arguments.
    * 
-   * @param {Object<string, unknown>} args The arguments, keyed by name.
+   * @param {Object<string, any>} args The arguments, keyed by name.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  execute(args: Record<string, unknown>): Record<string, unknown> {
-    return {};
-  }
+  execute(args: Record<string, any>): any
+}
+
+/**
+ * An interface that represents a command in the Jambo CLI. 
+ * Contains non static (CommandExecutable interface) and 
+ * static (specified in here) fields and methods.
+ */
+interface Command {
+  new(...args: any[]):CommandExecutable;
 
   /**
-   * @returns {Object<string, ArgumentMetadata>} Descriptions of each argument,
-   *                                             keyed by name.
+   * The alias for the command.
    */
-  static args(): Record<string, ArgumentMetadata>{
-    return {};
-  }
+  alias: string;
+  
+  /**
+   * A short, one sentence description of the command. This
+   * description appears as part of the help text in the CLI. 
+   */
+  shortDescription : string;
+
+  /**
+   * Descriptions of each argument, keyed by name.
+   */
+  args: Record<string, ArgumentMetadata>;
 
   /**
    * @param {Object} jamboConfig the config of the jambo repository
@@ -44,6 +45,6 @@ class Command {
    *                   all available cards
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static describe(jamboConfig: JamboConfig): Promise<any> | any {}
+  describe(jamboConfig: JamboConfig): Promise<any> | any;
 }
 export default Command;
