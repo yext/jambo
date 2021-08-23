@@ -99,7 +99,7 @@ class YargsFactory {
    * @param {Class} commandClass the class of the Jambo command
    * @returns {Command} the instantiated Jambo command
    */
-  _createCommandInstance(commandClass) {
+  _createCommandInstance(commandClass: Command) {
     const classAlias = commandClass.alias;
     let commandInstance;
     switch (classAlias) {

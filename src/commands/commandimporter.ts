@@ -125,24 +125,16 @@ export default class CommandImporter {
    * @returns {class} An implemenation of the current {@link Command} interface.
    */
   _handleLegacyImport(commandCreator: (jamboConfig: JamboConfig) => any) {
-    return class {
+    const Cmd : Command = class {
       _wrappedInstance: any
 
       constructor(jamboConfig) {
         this._wrappedInstance = commandCreator(jamboConfig);
       }
-
-      static getAlias() {
-        return commandCreator({}).getAlias();
-      }
-
-      static getShortDescription() {
-        return commandCreator({}).getShortDescription();
-      }
-
-      static args() {
-        return commandCreator({}).args();
-      }
+      
+      static alias = commandCreator({}).getAlias();
+      static shortDescription = commandCreator({}).getShortDescription();
+      static args = commandCreator({}).args();
 
       static describe(jamboConfig) {
         return commandCreator(jamboConfig).describe();
@@ -152,5 +144,6 @@ export default class CommandImporter {
         return this._wrappedInstance.execute(args);
       }
     }
+    return Cmd;
   }
 }
