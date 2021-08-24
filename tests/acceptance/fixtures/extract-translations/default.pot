@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: translations/lonewolf.hbs:1
+msgid "don't forget me by default though!"
+msgstr ""
+
+#: translations/translation-folder/template.hbs:1
+msgctxt "Example: 1-10 of 50"
+msgid ""
+"<span class=\"yxt-VerticalResultsCount-start\">[[start]]</span>\n"
+"<span class=\"yxt-VerticalResultsCount-dash\">-</span>\n"
+"<span class=\"yxt-VerticalResultsCount-end\">[[end]]</span>\n"
+"<span class=\"yxt-VerticalResultsCount-of\">of</span>\n"
+"<span class=\"yxt-VerticalResultsCount-total\">[[resultsCount]]</span>"
+msgstr ""

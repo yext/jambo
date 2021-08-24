@@ -1,5 +1,6 @@
 const buildJamboCLI = require('../../../src/buildJamboCLI');
 const { parse } = require('shell-quote');
+const { error } = require('../../../src/utils/logger');
 
 /**
  * TestInstance gives Jambo acceptance tests different ways
@@ -13,7 +14,7 @@ module.exports = class TestInstance {
     return buildJamboCLI(argv)
       .scriptName('jambo')
       .fail(function(msg, err) {
-        console.error('Error running command:', command);
+        error('Error running command:', command);
         if (err) throw err
       })
       .exitProcess(false)

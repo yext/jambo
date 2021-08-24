@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
+const { warn } = require('../utils/logger');
 
 /**
  * Imports all custom {@link Command}s within a Jambo repository.
@@ -22,17 +23,16 @@ class CommandImporter {
     let commandDirectories = ['commands'];
     this._themeDir && commandDirectories.unshift(path.join(this._themeDir, 'commands'));
     commandDirectories = commandDirectories.filter(fs.existsSync);
-
     let customCommands = [];
     if (commandDirectories.length > 0) {
       const mergedDirectory = this._mergeCommandDirectories(commandDirectories);
+      const currDirectory = process.cwd();
       fs.readdirSync(mergedDirectory)
-        .map(directoryPath => path.resolve(mergedDirectory, directoryPath))
+        .map(directoryPath => path.resolve(currDirectory, mergedDirectory, directoryPath))
         .filter(directoryPath => directoryPath.endsWith('.js'))
         .filter(directoryPath => fs.lstatSync(directoryPath).isFile())
         .forEach(filePath => {
           const requiredModule = require(filePath);
-
           const commandClass = this._isLegacyImport(requiredModule) ?
             this._handleLegacyImport(requiredModule) :
             requiredModule;
@@ -40,8 +40,7 @@ class CommandImporter {
           if (this._validateCustomCommand(commandClass)) {
             customCommands.push(commandClass);
           } else {
-            console.warn(
-              `Command in ${path.basename(filePath)} was not formatted properly`);
+            warn(`Command in ${path.basename(filePath)} was not formatted properly`);
           }
         });
 

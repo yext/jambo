@@ -1,14 +1,15 @@
 const TranslationExtractor = require('../../i18n/extractor/translationextractor');
 const { ArgumentMetadata, ArgumentType } = require('../../models/commands/argumentmetadata');
-const fsExtra = require('fs-extra');
-const fs = require('fs');
+const { info } = require('../../utils/logger');
+const DefaultTranslationGlobber = require('./defaulttranslationglobber');
+const { readGitignorePaths } = require('../../utils/gitutils');
 
 /**
  * JamboTranslationExtractor extracts translations from a jambo repo.
  */
 class JamboTranslationExtractor {
   constructor(jamboConfig) {
-    this.config = jamboConfig;
+    this.jamboConfig = jamboConfig;
     this.extractor = new TranslationExtractor();
   }
 
@@ -22,6 +23,13 @@ class JamboTranslationExtractor {
 
   static args() {
     return {
+      globs: new ArgumentMetadata({
+        displayName: 'Globs to Scan',
+        type: ArgumentType.ARRAY,
+        description:
+          'specify globs to scan for translations, instead of using the defaults',
+        isRequired: false
+      }),
       output: new ArgumentMetadata({
         displayName: 'Output Path',
         type: ArgumentType.STRING,
@@ -43,51 +51,28 @@ class JamboTranslationExtractor {
     };
   }
 
-  execute(args) {
-    this._extract(args.output);
+  execute({ output, globs }) {
+    if (globs && globs.length > 0) {
+      this._extract(output, globs);
+    } else {
+      const gitignorePaths = readGitignorePaths();
+      const defaultGlobber = new DefaultTranslationGlobber(
+        this.jamboConfig.dirs, gitignorePaths);
+      const defaultGlobs = defaultGlobber.getGlobs();
+      this._extract(output, defaultGlobs);
+    }
   }
 
   /**
    * Extracts i18n strings from a jambo repo to a designed output file.
+   *
    * @param {string} outputPath
+   * @param {Array<string>} globs
    */
-  async _extract(outputPath) {
-    const { files, directories } = this._getFilesAndDirsFromJamboConfig();
-    const gitignorePaths = this._parseGitignorePaths();
-    console.log(`Extracting translations to ${outputPath}`);
-    this.extractor.extract({
-      specificFiles: files,
-      directories: directories,
-      ignoredPaths: gitignorePaths
-    });
+  _extract(outputPath, globs) {
+    info(`Extracting translations to ${outputPath}`);
+    this.extractor.extract(globs);
     this.extractor.savePotFile(outputPath);
-  }
-
-  /**
-   * Gets the list of gitignored paths, if a .gitignore file exists.
-   * @returns {Promise.<Array.<string>>}
-   */
-  _parseGitignorePaths() {
-    if (fsExtra.pathExistsSync('.gitignore')) {
-      const ignoredPaths = fs.readFileSync('.gitignore', 'utf-8');
-      return ignoredPaths.split('\n').filter(pathname => pathname);
-    }
-    return [];
-  }
-
-  /**
-   * Returns an array of files and array of directories contained in the jamboConfig.
-   * @returns {{files: Array.<string>, directories: Array.<string>}}
-   */
-  _getFilesAndDirsFromJamboConfig() {
-    const { pages, partials } = this.config.dirs;
-    const files = [];
-    const directories = [];
-    for (const pathname of [pages, ...partials]) {
-      const isFile = fs.existsSync(pathname) && fs.lstatSync(pathname).isFile();
-      isFile ? files.push(pathname) : directories.push(pathname);
-    }
-    return { files: files, directories: directories };
   }
 }
 

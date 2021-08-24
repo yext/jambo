@@ -1,4 +1,8 @@
 const prettier = require('prettier');
+const { setLogLevel } = require('../../src/utils/logger');
+process.env.IS_DEVELOPMENT_PREVIEW = 'false';
+
+setLogLevel('silent');
 
 expect.extend({
   toEqualHtml: function(received, expected) {

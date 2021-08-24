@@ -1,0 +1,145 @@
+{
+  "init": {
+    "displayName": "Initialize Jambo",
+    "params": {
+      "themeUrl": {
+        "displayName": "URL",
+        "type": "string"
+      },
+      "theme": {
+        "displayName": "Theme",
+        "type": "singleoption",
+        "options": [
+          "answers-hitchhiker-theme"
+        ]
+      },
+      "useSubmodules": {
+        "displayName": "Use Submodules",
+        "type": "boolean"
+      }
+    }
+  },
+  "import": {
+    "displayName": "Import Theme",
+    "params": {
+      "themeUrl": {
+        "displayName": "URL",
+        "type": "string"
+      },
+      "theme": {
+        "displayName": "Theme",
+        "type": "singleoption",
+        "options": [
+          "answers-hitchhiker-theme"
+        ]
+      },
+      "useSubmodules": {
+        "displayName": "Use Submodules",
+        "type": "boolean"
+      }
+    }
+  },
+  "page": {
+    "displayName": "Add Page",
+    "params": {
+      "name": {
+        "displayName": "Page Name",
+        "type": "string",
+        "required": true
+      },
+      "template": {
+        "displayName": "Page Template",
+        "type": "singleoption",
+        "options": [
+          "describe-template"
+        ]
+      },
+      "locales": {
+        "displayName": "Additional Page Locales",
+        "type": "multioption",
+        "options": []
+      }
+    }
+  },
+  "override": {
+    "displayName": "Override Theme",
+    "params": {
+      "path": {
+        "displayName": "Path to Override",
+        "type": "filesystem",
+        "required": true,
+        "options": [
+          "commands/addVertical.js",
+          "postimport.js",
+          "templates/describe-template/page-config.json",
+          "templates/describe-template/page.html.hbs"
+        ]
+      }
+    }
+  },
+  "build": {
+    "displayName": "Build Pages"
+  },
+  "extract-translations": {
+    "displayName": "Extract Translations",
+    "params": {
+      "globs": {
+        "displayName": "Globs to Scan",
+        "required": false,
+        "type": "array"
+      },
+      "output": {
+        "displayName": "Output Path",
+        "type": "string",
+        "required": false,
+        "default": "messages.pot"
+      }
+    }
+  },
+  "vertical": {
+    "displayName": "Add Vertical",
+    "params": {
+      "name": {
+        "displayName": "Page Name",
+        "required": true,
+        "type": "string"
+      },
+      "verticalKey": {
+        "displayName": "Vertical Key",
+        "required": true,
+        "type": "string"
+      },
+      "cardName": {
+        "displayName": "Card Name",
+        "type": "singleoption"
+      },
+      "template": {
+        "displayName": "Page Template",
+        "required": true,
+        "type": "singleoption"
+      },
+      "locales": {
+        "displayName": "Additional Page Locales",
+        "type": "multioption"
+      }
+    }
+  },
+  "upgrade": {
+    "displayName": "Upgrade Theme",
+    "params": {
+      "isLegacy": {
+        "displayName": "Is Legacy Upgrade",
+        "type": "boolean"
+      },
+      "disableScript": {
+        "displayName": "Disable Upgrade Script",
+        "type": "boolean"
+      },
+      "branch": {
+        "displayName": "Branch of theme to upgrade to",
+        "type": "string",
+        "default": "master"
+      }
+    }
+  }
+}

@@ -1,10 +1,6 @@
 const fs = require('fs');
-const path = require('path');
 
 const { runInPlayground } = require('../setup/playground');
-
-// silence jambo's noisy output
-console.log = jest.fn();
 
 it('can init -> import -> create page -> build', () => runInPlayground(async t => {
   await t.jambo('init');

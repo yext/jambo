@@ -7,6 +7,8 @@ const UserError = require('../../errors/usererror');
 const { NO_LOCALE } = require('../../constants');
 const LocalizationConfig = require('../../models/localizationconfig');
 const TemplateArgsBuilder = require('./templateargsbuilder');
+const TemplateDataValidator = require('./templatedatavalidator');
+const { info } = require('../../utils/logger');
 
 /**
  * PageWriter is responsible for writing output files for the given {@link PageSet} to
@@ -29,12 +31,20 @@ module.exports = class PageWriter {
      */
     this._templateArgsBuilder =
       new TemplateArgsBuilder(config.templateDataFormatterHook);
+
+    /**
+     * @type {TemplateDataValidator}
+     */
+    this._templateDataValidator =
+      new TemplateDataValidator(config.templateDataValidationHook);
   }
 
   /**
    * Writes a file to the output directory per page in the given PageSet.
    *
    * @param {PageSet} pageSet the collection of pages to generate
+   * @throws {UserError} on missing page config(s), validation hook execution 
+   * failure, and invalid template data using Theme's validation hook
    */
   writePages(pageSet) {
     if (!pageSet || pageSet.getPages().length < 1) {
@@ -43,14 +53,13 @@ module.exports = class PageWriter {
     const localeMessage = pageSet.getLocale() !== NO_LOCALE
       ? ` for '${pageSet.getLocale()}' locale`
       : '';
-    console.log(`Writing files${localeMessage}`);
+    info(`Writing files${localeMessage}`);
 
     for (const page of pageSet.getPages()) {
       if (!page.getConfig()) {
         throw new UserError(`Error: No config found for page: ${page.getName()}`);
       }
 
-      console.log(`Writing output file for the '${page.getName()}' page`);
       const templateArguments = this._templateArgsBuilder.buildArgs({
         relativePath: this._calculateRelativePath(page.getOutputPath()),
         pageName: page.getName(),
@@ -60,7 +69,16 @@ module.exports = class PageWriter {
         locale: pageSet.getLocale(),
         env: this._env
       });
+      
+      if(!this._templateDataValidator.validate({
+        pageName: page.getName(),
+        pageData: templateArguments,
+        partials: hbs.partials
+      })) {
+        throw new UserError('Invalid page template configuration(s).');
+      }
 
+      info(`Writing output file for the '${page.getName()}' page`);
       const template = hbs.compile(page.getTemplateContents());
       const outputHTML = template(templateArguments);
 

@@ -1,4 +1,4 @@
-const UserError = require('../errors/usererror')
+const UserError = require('../errors/usererror');
 
 const ThemeRepos = {
   'answers-hitchhiker-theme': 'https://github.com/yext/answers-hitchhiker-theme.git'

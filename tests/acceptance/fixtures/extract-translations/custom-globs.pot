@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: themes/basic-flow/translations/translation-folder/ignored.hbs:1
+#: translations/translation-folder/ignored.hbs:1
+msgid "ignore me by default!"
+msgstr ""
+
+#: user-created.js:1
+msgctxt "RSVP is a verb"
+msgid "RSVP"
+msgstr ""
