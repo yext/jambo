@@ -20,24 +20,24 @@ interface CommandExecutable {
  * Contains non static (CommandExecutable interface) and 
  * static (specified in here) fields and methods.
  */
-interface Command {
+export default interface Command {
   new(...args: any[]):CommandExecutable;
 
   /**
    * The alias for the command.
    */
-  alias: string;
+  getAlias(): string;
   
   /**
    * A short, one sentence description of the command. This
    * description appears as part of the help text in the CLI. 
    */
-  shortDescription : string;
+   getShortDescription() : string;
 
   /**
    * Descriptions of each argument, keyed by name.
    */
-  args: Record<string, ArgumentMetadata>;
+   args(): Record<string, ArgumentMetadata>;
 
   /**
    * @param {Object} jamboConfig the config of the jambo repository
@@ -47,4 +47,3 @@ interface Command {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   describe(jamboConfig: JamboConfig): Promise<any> | any;
 }
-export default Command;

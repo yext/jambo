@@ -1,5 +1,5 @@
 import TranslationExtractor from '../../i18n/extractor/translationextractor';
-import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
 import { info } from '../../utils/logger';
 import DefaultTranslationGlobber from './defaulttranslationglobber';
 import { readGitignorePaths } from '../../utils/gitutils';
@@ -10,24 +10,32 @@ import Command from '../../models/commands/command';
  * JamboTranslationExtractor extracts translations from a jambo repo.
  */
 const JamboTranslationExtractor : Command = class {
-  static alias = 'extract-translations';
-  static shortDescription = 'extract translated strings from .hbs and .js files';
-  static args: Record<string, ArgumentMetadata> = {
-    globs: {
-      describeName: 'Globs to Scan',
-      type: ArgumentType.ARRAY,
-      description:
-        'specify globs to scan for translations, instead of using the defaults',
-      isRequired: false
-    },
-    output: {
-      describeName: 'Output Path',
-      type: ArgumentType.STRING,
-      description: 'the output path to extract the .pot file to',
-      isRequired: false,
-      defaultValue: 'messages.pot'
-    }
-  };
+  static getAlias() {
+    return 'extract-translations';
+  }
+
+  static getShortDescription() {
+    return 'extract translated strings from .hbs and .js files';
+  }
+
+  static args() {
+    return {
+      globs: new ArgumentMetadata({
+        displayName: 'Globs to Scan',
+        type: 'array',
+        description:
+          'specify globs to scan for translations, instead of using the defaults',
+        isRequired: false
+      }),
+      output: new ArgumentMetadata({
+        displayName: 'Output Path',
+        type: 'string',
+        description: 'the output path to extract the .pot file to',
+        isRequired: false,
+        defaultValue: 'messages.pot'
+      })
+    };
+  }
   jamboConfig: JamboConfig
   extractor: TranslationExtractor
   
@@ -37,15 +45,15 @@ const JamboTranslationExtractor : Command = class {
   }
 
   static describe() {
+    const args = this.args();
     return {
       displayName: 'Extract Translations',
-      params: Object.keys(this.args).reduce((params, alias) => {
+      params: Object.keys(args).reduce((params, alias) => {
         params[alias] = {
-          displayName: this.args[alias].describeName,
-          type: this.args[alias].type,
-          required: this.args[alias].isRequired,
-          default: this.args[alias].defaultValue,
-
+          displayName: args[alias].getDisplayName(),
+          type: args[alias].getType(),
+          required: args[alias].isRequired(),
+          default: args[alias].defaultValue(),
         }
         return params;
       }, {})

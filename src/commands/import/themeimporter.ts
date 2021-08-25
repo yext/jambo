@@ -7,7 +7,7 @@ import { getRepoNameFromURL } from '../../utils/gitutils';
 import SystemError from '../../errors/systemerror';
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
-import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
 import { CustomCommand } from '../../utils/customcommands/command';
 import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
 import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
@@ -23,28 +23,37 @@ const ThemeImporter : Command = class {
   config: JamboConfig;
   _themeShadower: ThemeShadower;
   _postImportHook: 'postimport';
-  static alias = 'import';
-  static shortDescription = 'import a theme';
-  static args: Record<string, ArgumentMetadata> = {
-    themeUrl: {
-      type: ArgumentType.STRING,
-      description: 'url of the theme\'s git repo',
-    },
-    theme: {
-      type: ArgumentType.STRING,
-      description: '(deprecated: specify the themeUrl instead)'
-        + ' the name of the theme to import',
-    },
-    useSubmodules: {
-      type: ArgumentType.BOOLEAN,
-      description: 'import the theme as a submodule'
-    }
-  };
 
   constructor(jamboConfig) {
     this.config = jamboConfig;
     this._themeShadower = new ThemeShadower(jamboConfig);
     this._postImportHook = 'postimport';
+  }
+
+  static getAlias() {
+    return 'import';
+  }
+
+  static getShortDescription() {
+    return 'import a theme';
+  }
+
+  static args() {
+    return {
+      themeUrl: new ArgumentMetadata({
+        type: 'string',
+        description: 'url of the theme\'s git repo',
+      }),
+      theme: new ArgumentMetadata({
+        type:'string',
+        description: '(deprecated: specify the themeUrl instead)'
+          + ' the name of the theme to import',
+      }),
+      useSubmodules: new ArgumentMetadata({
+        type: 'boolean',
+        description: 'import the theme as a submodule'
+      }),
+    }
   }
 
   static describe() {

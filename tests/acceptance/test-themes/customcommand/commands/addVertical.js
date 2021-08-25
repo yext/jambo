@@ -1,6 +1,5 @@
 const {
-  ArgumentMetadata,
-  ArgumentType
+  ArgumentMetadata
 } = require('../../../../../src/models/commands/argumentmetadata');
 const fs = require('fs');
 
@@ -34,27 +33,27 @@ module.exports = class VerticalAdder {
   static args() {
     return {
       name: new ArgumentMetadata({
-        itemType: ArgumentType.STRING, 
+        itemType: 'string', 
         description: 'name of the vertical\'s page', 
         isRequired: true}),
       verticalKey: new ArgumentMetadata({
-        itemType: ArgumentType.STRING, 
+        itemType: 'string', 
         description: 'the vertical\'s key', 
         isRequired: true}),
       cardName: new ArgumentMetadata({
-        itemType: ArgumentType.STRING, 
+        itemType: 'string', 
         description: 'card to use with vertical', 
         isRequired: false}),
       template: new ArgumentMetadata({
-        itemType: ArgumentType.STRING,
+        itemType: 'string',
         description: 'page template to use within theme',
         isRequired: true}),
       locales: new ArgumentMetadata({
-        type: ArgumentType.ARRAY,
+        type: 'array',
         description: 'additional locales to generate the page for',
         isRequired: false,
         defaultValue: [],
-        itemType: ArgumentType.STRING})
+        itemType: 'string'})
     };
   }
 

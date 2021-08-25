@@ -24,7 +24,7 @@ class CommandRegistry {
    * @param {Class} commandClass 
    */
   addCommand(commandClass: Command) {
-    this._commandsByName[commandClass.alias] = commandClass;
+    this._commandsByName[commandClass.getAlias()] = commandClass;
   }
 
   /**
@@ -57,14 +57,14 @@ class CommandRegistry {
    */
   _initialize(): Record<string, any> {
     return {
-      [ InitCommand.alias ]: InitCommand,
-      [ ThemeImporter.alias ]: ThemeImporter,
-      [ PageCommand.alias ]: PageCommand,
-      [ OverrideCommand.alias ]: OverrideCommand,
-      [ BuildCommand.alias ]: BuildCommand,
-      [ ThemeUpgrader.alias ]: ThemeUpgrader,
-      [ DescribeCommand.alias ]: DescribeCommand,
-      [ JamboTranslationExtractor.alias ]: JamboTranslationExtractor
+      [ InitCommand.getAlias() ]: InitCommand,
+      [ ThemeImporter.getAlias() ]: ThemeImporter,
+      [ PageCommand.getAlias() ]: PageCommand,
+      [ OverrideCommand.getAlias() ]: OverrideCommand,
+      [ BuildCommand.getAlias() ]: BuildCommand,
+      [ ThemeUpgrader.getAlias() ]: ThemeUpgrader,
+      [ DescribeCommand.getAlias() ]: DescribeCommand,
+      [ JamboTranslationExtractor.getAlias() ]: JamboTranslationExtractor
     };
   }
 }

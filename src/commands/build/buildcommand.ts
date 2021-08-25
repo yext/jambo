@@ -1,4 +1,4 @@
-import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
 import SitesGenerator from './sitesgenerator';
@@ -9,19 +9,29 @@ import Command from '../../models/commands/command';
  * public directory.
  */
 const BuildCommand : Command = class {
-  static alias = 'build';
-  static shortDescription = 'build the static pages for the site';
-  static args: Record<string, ArgumentMetadata> = {
-    jsonEnvVars: {
-      type: ArgumentType.ARRAY,
-      description: 'environment variables containing JSON',
-      isRequired: false
-    }
-  };
   sitesGenerator: SitesGenerator;
 
   constructor(sitesGenerator) {
     this.sitesGenerator = sitesGenerator;
+  }
+ 
+  static getAlias() {
+    return 'build';
+  }
+
+  static getShortDescription() {
+    return 'build the static pages for the site';
+  }
+
+  static args() {
+    return {
+      jsonEnvVars: new ArgumentMetadata({
+        type: 'array',
+        itemType:'string', 
+        description: 'environment variables containing JSON',
+        isRequired: false
+      })
+    }
   }
 
   static describe() {

@@ -3,7 +3,7 @@ import path from 'path';
 import { parse } from 'comment-json';
 import PageConfiguration from './pageconfiguration';
 import UserError from '../../../errors/usererror';
-import { ArgumentMetadata, ArgumentType } from '../../../models/commands/argumentmetadata';
+import { ArgumentMetadata } from '../../../models/commands/argumentmetadata';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
 import Command from '../../../models/commands/command';
@@ -15,30 +15,40 @@ const PageCommand : Command = class {
   jamboConfig: JamboConfig;
   defaultTheme: string;
   pageScaffolder: PageScaffolder;
-  static alias =  'page';
-  static shortDescription = 'add a new page to the site';
-  static args: Record<string, ArgumentMetadata> = {
-    name: {
-      type: ArgumentType.STRING,
-      description: 'name for the new files',
-      isRequired: true
-    },
-    template: {
-      type: ArgumentType.STRING,
-      description: 'template to use within theme',
-      isRequired: false
-    },
-    locales: {
-      type: ArgumentType.ARRAY,
-      description: 'additional locales to generate the page for',
-      isRequired: false
-    }
-  };
 
   constructor(jamboConfig: JamboConfig = {}, pageScaffolder) {
     this.jamboConfig = jamboConfig;
     this.defaultTheme = jamboConfig?.defaultTheme;
     this.pageScaffolder = pageScaffolder;
+  }
+
+  static getAlias() {
+    return 'page';
+  }
+
+  static getShortDescription() {
+    return 'add a new page to the site';
+  }
+
+  static args() {
+    return {
+      name: new ArgumentMetadata({
+        type: 'string',
+        description: 'name for the new files',
+        isRequired: true
+      }),
+      template: new ArgumentMetadata({
+        type: 'string',
+        description: 'template to use within theme',
+        isRequired: false
+      }),
+      locales: new ArgumentMetadata({
+        type: 'array',
+        itemType: 'string',
+        description: 'additional locales to generate the page for',
+        isRequired: false
+      })
+    }
   }
 
   static describe(jamboConfig) {

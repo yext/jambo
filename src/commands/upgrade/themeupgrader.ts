@@ -4,7 +4,7 @@ import simpleGit from 'simple-git/promise';
 import ThemeManager from '../../utils/thememanager';
 import { CustomCommand } from '../../utils/customcommands/command';
 import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
-import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
 import SystemError from '../../errors/systemerror';
 import UserError from '../../errors/systemerror';
 import { isCustomError } from '../../utils/errorutils';
@@ -25,31 +25,40 @@ const ThemeUpgrader : Command = class {
   jamboConfig: JamboConfig;
   _themesDir: string;
   postUpgradeFileName: 'upgrade';
-  static alias = 'upgrade';
-  static shortDescription = 'upgrade the default theme to the latest version';
-  static args: Record<string, ArgumentMetadata> = {
-    disableScript:{
-      type: ArgumentType.BOOLEAN,
-      description: 'disable execution of ./upgrade.js after the upgrade is done',
-      isRequired: false
-    },
-    isLegacy: {
-      type: ArgumentType.BOOLEAN,
-      description: 'whether to pass the --isLegacy flag to ./upgrade.js',
-      isRequired: false
-    },
-    branch: {
-      type: ArgumentType.STRING,
-      description: 'the branch of the theme to upgrade to',
-      isRequired: false,
-      defaultValue: 'master'
-    }
-  };
-  
+
   constructor(jamboConfig: JamboConfig = {}) {
     this.jamboConfig = jamboConfig;
     this._themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     this.postUpgradeFileName = 'upgrade';
+  }
+
+  static getAlias() {
+    return 'upgrade';
+  }
+
+  static getShortDescription() {
+    return 'upgrade the default theme to the latest version';
+  }
+
+  static args() {
+    return {
+      disableScript: new ArgumentMetadata({
+        type: 'boolean',
+        description: 'disable execution of ./upgrade.js after the upgrade is done',
+        isRequired: false
+      }),
+      isLegacy: new ArgumentMetadata({
+        type: 'boolean',
+        description: 'whether to pass the --isLegacy flag to ./upgrade.js',
+        isRequired: false
+      }),
+      branch: new ArgumentMetadata({
+        type: 'string',
+        description: 'the branch of the theme to upgrade to',
+        isRequired: false,
+        defaultValue: 'master'
+      })
+    }
   }
 
   static async describe() {

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import fileSystem from 'file-system';
 import { ShadowConfiguration, ThemeShadower } from './themeshadower';
-import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
 import { JamboConfig } from '../../models/JamboConfig';
 import Command from '../../models/commands/command';
 
@@ -12,19 +12,28 @@ import Command from '../../models/commands/command';
 const OverrideCommand : Command = class {
   jamboConfig: JamboConfig;
   defaultTheme: string;
-  static alias = 'override';
-  static shortDescription = 'override a path within the theme';
-  static args: Record<string, ArgumentMetadata> = {
-    path: {
-      type: ArgumentType.STRING,
-      description: 'path in the theme to override',
-      isRequired: true
-    }
-  };
 
   constructor(jamboConfig: JamboConfig = {}) {
     this.jamboConfig = jamboConfig;
     this.defaultTheme = jamboConfig.defaultTheme;
+  }
+
+  static getAlias() {
+    return 'override';
+  }
+
+  static getShortDescription() {
+    return 'override a path within the theme';
+  }
+
+  static args() {
+    return{
+      path: new ArgumentMetadata({
+        type: 'string',
+        description: 'path in the theme to override',
+        isRequired: true
+      })
+    }
   }
 
   static describe(jamboConfig) {

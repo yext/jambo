@@ -84,7 +84,7 @@ export default class CommandImporter {
    * @param {Command} commandClass The custom {@link Command}'s class
    * @returns {boolean} A boolean indicating if the custom {@Command} is valid.
    */
-  _validateCustomCommand(commandClass: Command) {
+  _validateCustomCommand(commandClass) {
     let isValidCommand;
     try {
       const getMethods = (classObject) => Object.getOwnPropertyNames(classObject)
@@ -103,7 +103,6 @@ export default class CommandImporter {
     } catch {
       isValidCommand = false;
     }
-
     return isValidCommand;
   }
   
@@ -132,9 +131,17 @@ export default class CommandImporter {
         this._wrappedInstance = commandCreator(jamboConfig);
       }
       
-      static alias = commandCreator({}).getAlias();
-      static shortDescription = commandCreator({}).getShortDescription();
-      static args = commandCreator({}).args();
+      static getAlias() {
+        return commandCreator({}).getAlias();
+      }
+
+      static getShortDescription() {
+        return commandCreator({}).getShortDescription();
+      }
+
+      static args() {
+        return commandCreator({}).args();
+      }
 
       static describe(jamboConfig) {
         return commandCreator(jamboConfig).describe();

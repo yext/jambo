@@ -1,5 +1,5 @@
 import { RepositorySettings, RepositoryScaffolder } from './repositoryscaffolder';
-import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
 import ThemeManager from '../../utils/thememanager';
 import Command from '../../models/commands/command';
 
@@ -7,24 +7,32 @@ import Command from '../../models/commands/command';
  * InitCommand initializes the current directory as a Jambo repository.
  */
 const InitCommand : Command = class {
-  static alias = 'init';
-  static shortDescription = 'initialize the repository';
-  static args: Record<string, ArgumentMetadata> = {
-    themeUrl: {
-      type: ArgumentType.STRING,
-      description: 'url of a theme\'s git repo to import during the init',
-    },
-    theme: {
-      type: ArgumentType.STRING,
-      description: '(deprecated: specify the themeUrl instead)'
-        + ' the name of a theme to import during the init',
-      isRequired: false
-    },
-    useSubmodules: {
-      type: ArgumentType.BOOLEAN, 
-      description: 'if starter theme should be imported as submodule'
+  static getAlias() {
+    return 'init';
+  }
+
+  static getShortDescription() {
+    return 'initialize the repository';
+  }
+
+  static args() {
+    return {
+      themeUrl: new ArgumentMetadata({
+        type: 'string',
+        description: 'url of a theme\'s git repo to import during the init',
+      }),
+      theme: new ArgumentMetadata({
+        type: 'string',
+        description: '(deprecated: specify the themeUrl instead)'
+          + ' the name of a theme to import during the init',
+        isRequired: false
+      }),
+      useSubmodules: new ArgumentMetadata({
+        type: 'boolean', 
+        description: 'if starter theme should be imported as submodule'
+      }),
     }
-  };
+  }
 
   static describe() {
     const importableThemes = ThemeManager.getKnownThemes();
