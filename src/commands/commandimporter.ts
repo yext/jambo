@@ -124,7 +124,7 @@ export default class CommandImporter {
    * @returns {class} An implemenation of the current {@link Command} interface.
    */
   _handleLegacyImport(commandCreator: (jamboConfig: JamboConfig) => any) {
-    const Cmd : Command = class {
+    const cmd : Command = class {
       _wrappedInstance: any
 
       constructor(jamboConfig) {
@@ -151,6 +151,6 @@ export default class CommandImporter {
         return this._wrappedInstance.execute(args);
       }
     }
-    return Cmd;
+    return cmd;
   }
 }
