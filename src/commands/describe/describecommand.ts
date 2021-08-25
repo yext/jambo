@@ -26,7 +26,7 @@ const DescribeCommand : Command  = class {
   }
 
   static args() {
-    return {}
+    return {};
   }
 
   /**

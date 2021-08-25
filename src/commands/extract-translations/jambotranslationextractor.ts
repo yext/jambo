@@ -10,6 +10,14 @@ import Command from '../../models/commands/command';
  * JamboTranslationExtractor extracts translations from a jambo repo.
  */
 const JamboTranslationExtractor : Command = class {
+  jamboConfig: JamboConfig
+  extractor: TranslationExtractor
+  
+  constructor(jamboConfig) {
+    this.jamboConfig = jamboConfig;
+    this.extractor = new TranslationExtractor();
+  }
+
   static getAlias() {
     return 'extract-translations';
   }
@@ -35,13 +43,6 @@ const JamboTranslationExtractor : Command = class {
         defaultValue: 'messages.pot'
       })
     };
-  }
-  jamboConfig: JamboConfig
-  extractor: TranslationExtractor
-  
-  constructor(jamboConfig) {
-    this.jamboConfig = jamboConfig;
-    this.extractor = new TranslationExtractor();
   }
 
   static describe() {

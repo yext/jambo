@@ -130,7 +130,7 @@ export default class CommandImporter {
       constructor(jamboConfig) {
         this._wrappedInstance = commandCreator(jamboConfig);
       }
-      
+
       static getAlias() {
         return commandCreator({}).getAlias();
       }

@@ -44,6 +44,5 @@ export default interface Command {
    * @returns {Object} description of the card command, including paths to 
    *                   all available cards
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   describe(jamboConfig: JamboConfig): Promise<any> | any;
 }

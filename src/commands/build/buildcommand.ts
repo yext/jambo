@@ -14,7 +14,7 @@ const BuildCommand : Command = class {
   constructor(sitesGenerator) {
     this.sitesGenerator = sitesGenerator;
   }
- 
+
   static getAlias() {
     return 'build';
   }
