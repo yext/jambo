@@ -1,7 +1,7 @@
 /**
  * defines the different kinds of argument that are supported.
  */
-type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
+export type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
 
 /**
  * An interface outlining the metadata for a {@link Command}'s argument. This includes
@@ -37,15 +37,20 @@ interface ArgumentMetadata {
    * The display name for the argument.
    */
   getDisplayName(): string
+
+  /**
+   * Returns an Object with the keys expected by the Jambo describe command
+   */
+  toDescribeFormat(): Record<string, any>
 }
 
-class ArgumentMetadata implements ArgumentMetadata {
-  _description: string
-  _type: string
-  _displayName: string
-  _itemType: string
-  _isRequired: boolean
-  _defaultValue: unknown
+export class ArgumentMetadataImpl implements ArgumentMetadata {
+  private _description: string
+  private _type: ArgumentType
+  private _displayName: string
+  private _itemType: string
+  private _isRequired: boolean
+  private _defaultValue: string|boolean|number
 
   constructor({displayName, type, itemType, isRequired, defaultValue, description}: any) {
     this._displayName = displayName;
@@ -79,6 +84,13 @@ class ArgumentMetadata implements ArgumentMetadata {
   getDisplayName() {
     return this._displayName;
   }
-}
 
-export { ArgumentMetadata, ArgumentType };
+  toDescribeFormat() {
+    return {
+      displayName: this.getDisplayName(),
+      type: this.getType(),
+      required: this.isRequired(),
+      default: this.defaultValue(),
+    };
+  }
+}

@@ -1,6 +1,7 @@
 import fs from 'file-system';
 import { parse, stringify, assign } from 'comment-json';
 import { JamboConfig } from '../../../models/JamboConfig';
+import PageConfiguration from './pageconfiguration';
 
 class PageScaffolder {
   config: JamboConfig
@@ -9,12 +10,12 @@ class PageScaffolder {
     this.config = jamboConfig;
   }
 
-  create(pageConfiguration) {
-    const name = pageConfiguration.getName();
-    const theme = pageConfiguration.getTheme();
-    const template = pageConfiguration.getTemplate();
-    const layout = pageConfiguration.getLayout();
-    const locales = pageConfiguration.getLocales();
+  create(pageConfiguration: PageConfiguration) {
+    const name = pageConfiguration.name;
+    const theme = pageConfiguration.theme;
+    const template = pageConfiguration.template;
+    const layout = pageConfiguration.layout;
+    const locales = pageConfiguration.locales;
 
     const htmlFilePath = `${this.config.dirs.pages}/${name}.html.hbs`;
     const configFilePath = `${this.config.dirs.config}/${name}.json`;

@@ -6,7 +6,7 @@ import { JamboConfig } from '../../models/JamboConfig';
  * and their possible arguments.
  */
 const DescribeCommand : Command  = class {
-  _jamboConfig: JamboConfig
+  private _jamboConfig: JamboConfig
   getCommands: () => Command[]
 
   constructor(jamboConfig, getCommands) {

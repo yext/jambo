@@ -8,8 +8,8 @@ import { JamboConfig } from '../models/JamboConfig';
  * Imports all custom {@link Command}s within a Jambo repository.
  */
 export default class CommandImporter {
-  _outputDir: string
-  _themeDir: string
+  private _outputDir: string
+  private _themeDir: string
 
   constructor(outputDir, themeDir?) {
     this._outputDir = outputDir;

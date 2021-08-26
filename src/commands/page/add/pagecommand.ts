@@ -3,7 +3,7 @@ import path from 'path';
 import { parse } from 'comment-json';
 import PageConfiguration from './pageconfiguration';
 import UserError from '../../../errors/usererror';
-import { ArgumentMetadata } from '../../../models/commands/argumentmetadata';
+import { ArgumentMetadataImpl } from '../../../models/commands/argumentmetadata';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
 import Command from '../../../models/commands/command';
@@ -32,17 +32,22 @@ const PageCommand : Command = class {
 
   static args() {
     return {
-      name: new ArgumentMetadata({
+      name: new ArgumentMetadataImpl({
         type: 'string',
         description: 'name for the new files',
         isRequired: true
       }),
-      template: new ArgumentMetadata({
+      template: new ArgumentMetadataImpl({
         type: 'string',
         description: 'template to use within theme',
         isRequired: false
       }),
-      locales: new ArgumentMetadata({
+      layout: new ArgumentMetadataImpl({
+        type: 'string',
+        description: 'layout to use within theme',
+        isRequired: false
+      }),
+      locales: new ArgumentMetadataImpl({
         type: 'array',
         itemType: 'string',
         description: 'additional locales to generate the page for',
@@ -53,6 +58,7 @@ const PageCommand : Command = class {
 
   static describe(jamboConfig) {
     const pageTemplates = this._getPageTemplates(jamboConfig);
+    const pageLayouts = this._getPageLayouts(jamboConfig);
     const pageLocales = this._getAdditionalPageLocales(jamboConfig);
     return {
       displayName: 'Add Page',
@@ -66,6 +72,11 @@ const PageCommand : Command = class {
           displayName: 'Page Template',
           type: 'singleoption',
           options: pageTemplates
+        },
+        layout: {
+          displayName: 'Page Layout',
+          type: 'singleoption',
+          options: pageLayouts
         },
         locales: {
           displayName: 'Additional Page Locales',
@@ -89,6 +100,21 @@ const PageCommand : Command = class {
     const pageTemplatesDir = 
       path.resolve(currDirectory, themesDir, defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
+  }
+
+  /**
+   * @returns {string[]} The layouts available in the theme
+   */
+   static _getPageLayouts(jamboConfig) {
+    const defaultTheme = jamboConfig.defaultTheme;
+    const themesDir = jamboConfig.dirs && jamboConfig.dirs.layouts;
+    if (!defaultTheme || !themesDir) {
+      return [];
+    }
+    const currDirectory = process.cwd();
+    const pageLayoutDir = 
+      path.resolve(currDirectory, themesDir, defaultTheme, 'layouts');
+    return fs.readdirSync(pageLayoutDir);
   }
   
   /**
@@ -128,9 +154,8 @@ const PageCommand : Command = class {
     return pageLocales;
   }
 
-  execute(args: Record<string, any>) {
-    const pageConfiguration = new PageConfiguration(
-      { ...args, theme: this.defaultTheme });
+  execute(args: PageConfiguration) {
+    const pageConfiguration = { ...args, theme: this.defaultTheme };
     try {
       this.pageScaffolder.create(pageConfiguration);
     } catch (err) {

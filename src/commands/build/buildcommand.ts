@@ -1,4 +1,4 @@
-import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
 import SitesGenerator from './sitesgenerator';
@@ -25,7 +25,7 @@ const BuildCommand : Command = class {
 
   static args() {
     return {
-      jsonEnvVars: new ArgumentMetadata({
+      jsonEnvVars: new ArgumentMetadataImpl({
         type: 'array',
         itemType:'string', 
         description: 'environment variables containing JSON',

@@ -8,7 +8,7 @@ import { JamboConfig } from '../../models/JamboConfig';
  * flags.
  */
 export class CustomCommandExecuter {
-  _jamboFlags: any
+  private _jamboFlags: any
 
   constructor(jamboConfig) {
     this._jamboFlags = this._generateJamboFlags(jamboConfig);

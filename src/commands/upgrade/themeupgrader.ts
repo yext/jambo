@@ -4,7 +4,7 @@ import simpleGit from 'simple-git/promise';
 import ThemeManager from '../../utils/thememanager';
 import { CustomCommand } from '../../utils/customcommands/command';
 import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
-import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import SystemError from '../../errors/systemerror';
 import UserError from '../../errors/systemerror';
 import { isCustomError } from '../../utils/errorutils';
@@ -23,7 +23,7 @@ const git = simpleGit();
  */
 const ThemeUpgrader : Command = class {
   jamboConfig: JamboConfig;
-  _themesDir: string;
+  private _themesDir: string;
   postUpgradeFileName: 'upgrade';
 
   constructor(jamboConfig: JamboConfig = {}) {
@@ -42,17 +42,17 @@ const ThemeUpgrader : Command = class {
 
   static args() {
     return {
-      disableScript: new ArgumentMetadata({
+      disableScript: new ArgumentMetadataImpl({
         type: 'boolean',
         description: 'disable execution of ./upgrade.js after the upgrade is done',
         isRequired: false
       }),
-      isLegacy: new ArgumentMetadata({
+      isLegacy: new ArgumentMetadataImpl({
         type: 'boolean',
         description: 'whether to pass the --isLegacy flag to ./upgrade.js',
         isRequired: false
       }),
-      branch: new ArgumentMetadata({
+      branch: new ArgumentMetadataImpl({
         type: 'string',
         description: 'the branch of the theme to upgrade to',
         isRequired: false,

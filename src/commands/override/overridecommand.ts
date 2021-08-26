@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import fileSystem from 'file-system';
 import { ShadowConfiguration, ThemeShadower } from './themeshadower';
-import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import { JamboConfig } from '../../models/JamboConfig';
 import Command from '../../models/commands/command';
 
@@ -28,7 +28,7 @@ const OverrideCommand : Command = class {
 
   static args() {
     return{
-      path: new ArgumentMetadata({
+      path: new ArgumentMetadataImpl({
         type: 'string',
         description: 'path in the theme to override',
         isRequired: true

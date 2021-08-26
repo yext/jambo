@@ -7,7 +7,7 @@ import { getRepoNameFromURL } from '../../utils/gitutils';
 import SystemError from '../../errors/systemerror';
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
-import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import { CustomCommand } from '../../utils/customcommands/command';
 import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
 import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
@@ -21,8 +21,8 @@ import Command from '../../models/commands/command';
  */
 const ThemeImporter : Command = class {
   config: JamboConfig;
-  _themeShadower: ThemeShadower;
-  _postImportHook: 'postimport';
+  private _themeShadower: ThemeShadower;
+  private _postImportHook: 'postimport';
 
   constructor(jamboConfig) {
     this.config = jamboConfig;
@@ -40,16 +40,16 @@ const ThemeImporter : Command = class {
 
   static args() {
     return {
-      themeUrl: new ArgumentMetadata({
+      themeUrl: new ArgumentMetadataImpl({
         type: 'string',
         description: 'url of the theme\'s git repo',
       }),
-      theme: new ArgumentMetadata({
+      theme: new ArgumentMetadataImpl({
         type:'string',
         description: '(deprecated: specify the themeUrl instead)'
           + ' the name of the theme to import',
       }),
-      useSubmodules: new ArgumentMetadata({
+      useSubmodules: new ArgumentMetadataImpl({
         type: 'boolean',
         description: 'import the theme as a submodule'
       }),

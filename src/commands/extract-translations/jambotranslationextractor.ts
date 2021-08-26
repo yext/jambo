@@ -1,5 +1,5 @@
 import TranslationExtractor from '../../i18n/extractor/translationextractor';
-import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import { info } from '../../utils/logger';
 import DefaultTranslationGlobber from './defaulttranslationglobber';
 import { readGitignorePaths } from '../../utils/gitutils';
@@ -28,14 +28,14 @@ const JamboTranslationExtractor : Command = class {
 
   static args() {
     return {
-      globs: new ArgumentMetadata({
+      globs: new ArgumentMetadataImpl({
         displayName: 'Globs to Scan',
         type: 'array',
         description:
           'specify globs to scan for translations, instead of using the defaults',
         isRequired: false
       }),
-      output: new ArgumentMetadata({
+      output: new ArgumentMetadataImpl({
         displayName: 'Output Path',
         type: 'string',
         description: 'the output path to extract the .pot file to',
@@ -50,12 +50,7 @@ const JamboTranslationExtractor : Command = class {
     return {
       displayName: 'Extract Translations',
       params: Object.keys(args).reduce((params, alias) => {
-        params[alias] = {
-          displayName: args[alias].getDisplayName(),
-          type: args[alias].getType(),
-          required: args[alias].isRequired(),
-          default: args[alias].defaultValue(),
-        }
+        params[alias] = args[alias].toDescribeFormat();
         return params;
       }, {})
     };

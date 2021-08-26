@@ -12,8 +12,8 @@ import { error } from '../../utils/logger';
  * from a set of files and exports them to an output file.
  */
 class TranslationExtractor {
-  _extractor: GettextExtractor;
-  _options: Record<string, any>
+  private _extractor: GettextExtractor;
+  private _options: Record<string, any>
 
   constructor(options?: any) {
     this._options = {

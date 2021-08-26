@@ -8,8 +8,8 @@ import UserError from '../../errors/usererror';
  * library is used to put the translations in i18next format.
  */
 class LocalFileParser {
-  _translationsDir: string;
-  _options: Record<string, unknown>
+  private _translationsDir: string;
+  private _options: Record<string, unknown>
 
   /**
    * Creates a new instance of {@link LocalFileParser}.

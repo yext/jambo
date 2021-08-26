@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { JamboConfig } from '../JamboConfig';
-import { ArgumentMetadata } from './argumentmetadata';
+import { ArgumentMetadataImpl } from './argumentmetadata';
 
 /**
  * Command interface that contains non static fields and methods
@@ -37,7 +37,7 @@ export default interface Command {
   /**
    * Descriptions of each argument, keyed by name.
    */
-   args(): Record<string, ArgumentMetadata>;
+   args(): Record<string, ArgumentMetadataImpl>;
 
   /**
    * @param {Object} jamboConfig the config of the jambo repository

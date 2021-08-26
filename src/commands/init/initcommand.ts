@@ -1,5 +1,5 @@
 import { RepositorySettings, RepositoryScaffolder } from './repositoryscaffolder';
-import { ArgumentMetadata } from '../../models/commands/argumentmetadata';
+import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import ThemeManager from '../../utils/thememanager';
 import Command from '../../models/commands/command';
 
@@ -17,17 +17,17 @@ const InitCommand : Command = class {
 
   static args() {
     return {
-      themeUrl: new ArgumentMetadata({
+      themeUrl: new ArgumentMetadataImpl({
         type: 'string',
         description: 'url of a theme\'s git repo to import during the init',
       }),
-      theme: new ArgumentMetadata({
+      theme: new ArgumentMetadataImpl({
         type: 'string',
         description: '(deprecated: specify the themeUrl instead)'
           + ' the name of a theme to import during the init',
         isRequired: false
       }),
-      useSubmodules: new ArgumentMetadata({
+      useSubmodules: new ArgumentMetadataImpl({
         type: 'boolean', 
         description: 'if starter theme should be imported as submodule'
       }),
@@ -56,10 +56,9 @@ const InitCommand : Command = class {
     }
   }
 
-  async execute(args: Record<string, any>) {
-    const repositorySettings = new RepositorySettings(args);
+  async execute(args: RepositorySettings) {
     const repositoryScaffolder = new RepositoryScaffolder();
-    await repositoryScaffolder.create(repositorySettings);
+    await repositoryScaffolder.create(args);
   }
 }
 

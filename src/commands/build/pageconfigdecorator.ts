@@ -7,7 +7,7 @@ import LocalizationConfig from '../../models/localizationconfig';
  * information provided.
  */
 export default class PageConfigDecorator {
-  _localizationConfig: LocalizationConfig
+  private _localizationConfig: LocalizationConfig
 
   constructor(localizationConfig) {
     /**
