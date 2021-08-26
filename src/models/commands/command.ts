@@ -44,5 +44,5 @@ export default interface Command {
    * @returns {Object} description of the card command, including paths to 
    *                   all available cards
    */
-  describe(jamboConfig: JamboConfig): Promise<any> | any;
+  describe(jamboConfig: JamboConfig): any;
 }
