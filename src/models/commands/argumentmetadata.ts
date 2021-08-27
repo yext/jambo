@@ -1,4 +1,4 @@
-import { DescribeArg } from '../../commands/describe/DescribeOutput';
+import { DescribeArg } from './describeoutput';
 
 /**
  * defines the different kinds of argument that are supported.

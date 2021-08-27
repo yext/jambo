@@ -1,4 +1,4 @@
-import { ArgumentType } from '../../models/commands/argumentmetadata';
+import { ArgumentType } from './argumentmetadata';
 
 /**
  * interface that defines the fields used to describe Jambo commands

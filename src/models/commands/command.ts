@@ -1,4 +1,4 @@
-import { DescribeOutput } from '../../commands/describe/DescribeOutput';
+import { DescribeOutput } from './describeoutput';
 import { JamboConfig } from '../JamboConfig';
 import { ArgumentMetadataImpl } from './argumentmetadata';
 

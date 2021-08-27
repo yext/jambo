@@ -1,6 +1,6 @@
 import Command from '../../models/commands/command';
 import { JamboConfig } from '../../models/JamboConfig';
-import { DescribeOutput } from './DescribeOutput';
+import { DescribeOutput } from '../../models/commands/describeoutput';
 
 /**
  * DescribeCommand outputs JSON that describes all registered Jambo commands
