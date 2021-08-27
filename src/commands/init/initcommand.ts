@@ -1,12 +1,29 @@
 import { RepositorySettings, RepositoryScaffolder } from './repositoryscaffolder';
-import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import ThemeManager from '../../utils/thememanager';
-import Command from '../../models/commands/command';
+import Command, { ArgsForExecute } from '../../models/commands/command';
+
+const args = {
+  themeUrl: {
+    type: 'string',
+    description: 'url of a theme\'s git repo to import during the init',
+  },
+  theme: {
+    type: 'string',
+    description: '(deprecated: specify the themeUrl instead)'
+      + ' the name of a theme to import during the init',
+    isRequired: false
+  },
+  useSubmodules: {
+    type: 'boolean', 
+    description: 'if starter theme should be imported as submodule'
+  },
+} as const;
+type Args = typeof args;
 
 /**
  * InitCommand initializes the current directory as a Jambo repository.
  */
-const InitCommand : Command = class {
+const InitCommand : Command<Args> = class {
   static getAlias() {
     return 'init';
   }
@@ -16,22 +33,7 @@ const InitCommand : Command = class {
   }
 
   static args() {
-    return {
-      themeUrl: new ArgumentMetadataImpl({
-        type: 'string',
-        description: 'url of a theme\'s git repo to import during the init',
-      }),
-      theme: new ArgumentMetadataImpl({
-        type: 'string',
-        description: '(deprecated: specify the themeUrl instead)'
-          + ' the name of a theme to import during the init',
-        isRequired: false
-      }),
-      useSubmodules: new ArgumentMetadataImpl({
-        type: 'boolean', 
-        description: 'if starter theme should be imported as submodule'
-      }),
-    }
+    return args;
   }
 
   static describe() {
@@ -56,7 +58,7 @@ const InitCommand : Command = class {
     }
   }
 
-  async execute(args: RepositorySettings) {
+  async execute(args: ArgsForExecute<Args> & RepositorySettings) {
     const repositoryScaffolder = new RepositoryScaffolder();
     await repositoryScaffolder.create(args);
   }

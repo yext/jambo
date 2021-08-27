@@ -97,10 +97,6 @@ The name this page will be registered as.
 
 The template to generate the page with.
 
---layout _layout_name_
-
-The layout to use around the page.
-
 #### Build
 
 ```bash
@@ -119,8 +115,7 @@ The build command uses the 'defaultTheme' attribute in the jambo.json in Jambo's
     "config":"config",
     "overrides":"overrides",
     "output":"public",
-    "pages":"pages",
-    "layouts":"layouts"
+    "pages":"pages"
   },
   "defaultTheme": "answers-hitchhiker-theme"
 }

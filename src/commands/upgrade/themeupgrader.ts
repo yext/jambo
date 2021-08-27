@@ -4,7 +4,6 @@ import simpleGit from 'simple-git/promise';
 import ThemeManager from '../../utils/thememanager';
 import { CustomCommand } from '../../utils/customcommands/command';
 import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
-import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import SystemError from '../../errors/systemerror';
 import UserError from '../../errors/systemerror';
 import { isCustomError } from '../../utils/errorutils';
@@ -12,16 +11,35 @@ import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import { info } from '../../utils/logger';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command from '../../models/commands/command';
+import Command, { ArgsForExecute } from '../../models/commands/command';
 
 const git = simpleGit();
+const args = {
+  disableScript: {
+    type: 'boolean',
+    description: 'disable execution of ./upgrade.js after the upgrade is done',
+    isRequired: false
+  },
+  isLegacy: {
+    type: 'boolean',
+    description: 'whether to pass the --isLegacy flag to ./upgrade.js',
+    isRequired: false
+  },
+  branch: {
+    type: 'string',
+    description: 'the branch of the theme to upgrade to',
+    isRequired: false,
+    defaultValue: 'master'
+  }
+} as const;
+type Args = typeof args;
 
 /**
  * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest
  * version. It first detects whether the theme was imported as a submodule or raw files,
  * then handles the upgrade accordingly.
  */
-const ThemeUpgrader : Command = class {
+const ThemeUpgrader : Command<Args> = class {
   jamboConfig: JamboConfig;
   private _themesDir: string;
   postUpgradeFileName: 'upgrade';
@@ -41,24 +59,7 @@ const ThemeUpgrader : Command = class {
   }
 
   static args() {
-    return {
-      disableScript: new ArgumentMetadataImpl({
-        type: 'boolean',
-        description: 'disable execution of ./upgrade.js after the upgrade is done',
-        isRequired: false
-      }),
-      isLegacy: new ArgumentMetadataImpl({
-        type: 'boolean',
-        description: 'whether to pass the --isLegacy flag to ./upgrade.js',
-        isRequired: false
-      }),
-      branch: new ArgumentMetadataImpl({
-        type: 'string',
-        description: 'the branch of the theme to upgrade to',
-        isRequired: false,
-        defaultValue: 'master'
-      })
-    }
+    return args;
   }
 
   static async describe() {
@@ -82,7 +83,7 @@ const ThemeUpgrader : Command = class {
     }
   }
 
-  async execute(args: Record<string, any>) {
+  async execute(args: ArgsForExecute<Args>) {
     await this._upgrade({
       themeName: this.jamboConfig.defaultTheme,
       disableScript: args.disableScript,

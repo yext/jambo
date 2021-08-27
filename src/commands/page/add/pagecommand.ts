@@ -3,15 +3,34 @@ import path from 'path';
 import { parse } from 'comment-json';
 import PageConfiguration from './pageconfiguration';
 import UserError from '../../../errors/usererror';
-import { ArgumentMetadataImpl } from '../../../models/commands/argumentmetadata';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
-import Command from '../../../models/commands/command';
+import Command, { ArgsForExecute } from '../../../models/commands/command';
+
+const args = {
+  name: {
+    type: 'string',
+    description: 'name for the new files',
+    isRequired: true
+  },
+  template: {
+    type: 'string',
+    description: 'template to use within theme',
+    isRequired: false
+  },
+  locales: {
+    type: 'array',
+    itemType: 'string',
+    description: 'additional locales to generate the page for',
+    isRequired: false
+  }
+} as const;
+type Args = typeof args;
 
 /**
  * PageCommand registers a new page with the specified name to be built by Jambo.
  */
-const PageCommand : Command = class {
+const PageCommand : Command<Args> = class {
   jamboConfig: JamboConfig;
   defaultTheme: string;
   pageScaffolder: PageScaffolder;
@@ -31,34 +50,11 @@ const PageCommand : Command = class {
   }
 
   static args() {
-    return {
-      name: new ArgumentMetadataImpl({
-        type: 'string',
-        description: 'name for the new files',
-        isRequired: true
-      }),
-      template: new ArgumentMetadataImpl({
-        type: 'string',
-        description: 'template to use within theme',
-        isRequired: false
-      }),
-      layout: new ArgumentMetadataImpl({
-        type: 'string',
-        description: 'layout to use within theme',
-        isRequired: false
-      }),
-      locales: new ArgumentMetadataImpl({
-        type: 'array',
-        itemType: 'string',
-        description: 'additional locales to generate the page for',
-        isRequired: false
-      })
-    }
+    return args;
   }
 
   static describe(jamboConfig) {
     const pageTemplates = this._getPageTemplates(jamboConfig);
-    const pageLayouts = this._getPageLayouts(jamboConfig);
     const pageLocales = this._getAdditionalPageLocales(jamboConfig);
     return {
       displayName: 'Add Page',
@@ -72,11 +68,6 @@ const PageCommand : Command = class {
           displayName: 'Page Template',
           type: 'singleoption',
           options: pageTemplates
-        },
-        layout: {
-          displayName: 'Page Layout',
-          type: 'singleoption',
-          options: pageLayouts
         },
         locales: {
           displayName: 'Additional Page Locales',
@@ -100,21 +91,6 @@ const PageCommand : Command = class {
     const pageTemplatesDir = 
       path.resolve(currDirectory, themesDir, defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
-  }
-
-  /**
-   * @returns {string[]} The layouts available in the theme
-   */
-   static _getPageLayouts(jamboConfig) {
-    const defaultTheme = jamboConfig.defaultTheme;
-    const themesDir = jamboConfig.dirs && jamboConfig.dirs.layouts;
-    if (!defaultTheme || !themesDir) {
-      return [];
-    }
-    const currDirectory = process.cwd();
-    const pageLayoutDir = 
-      path.resolve(currDirectory, themesDir, defaultTheme, 'layouts');
-    return fs.readdirSync(pageLayoutDir);
   }
   
   /**
@@ -154,7 +130,7 @@ const PageCommand : Command = class {
     return pageLocales;
   }
 
-  execute(args: PageConfiguration) {
+  execute(args: ArgsForExecute<Args> & PageConfiguration) {
     const pageConfiguration = { ...args, theme: this.defaultTheme };
     try {
       this.pageScaffolder.create(pageConfiguration);

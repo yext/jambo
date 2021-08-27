@@ -54,11 +54,6 @@
           "describe-template"
         ]
       },
-      "layout": {
-        "displayName": "Page Layout",
-        "type": "singleoption",
-        "options": []
-      },
       "locales": {
         "displayName": "Additional Page Locales",
         "type": "multioption",
