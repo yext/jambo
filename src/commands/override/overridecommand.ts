@@ -48,7 +48,7 @@ const OverrideCommand : Command = class {
           options: themeFiles
         }
       }
-    }
+    } as const;
   }
 
   /**

@@ -75,7 +75,7 @@ const ThemeImporter : Command = class {
           type: 'boolean'
         }
       }
-    }
+    } as const;
   }
 
   async execute(args: Record<string, any>) {

@@ -61,7 +61,7 @@ const ThemeUpgrader : Command = class {
     }
   }
 
-  static async describe() {
+  static describe() {
     return {
       displayName: 'Upgrade Theme',
       params: {
@@ -79,7 +79,7 @@ const ThemeUpgrader : Command = class {
           default: 'master'
         }
       }
-    }
+    } as const
   }
 
   async execute(args: Record<string, any>) {

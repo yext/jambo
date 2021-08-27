@@ -53,7 +53,7 @@ const InitCommand : Command = class {
           type: 'boolean'
         }
       }
-    }
+    } as const
   }
 
   async execute(args: RepositorySettings) {

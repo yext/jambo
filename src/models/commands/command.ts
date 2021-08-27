@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
+import { DescribeOutput } from '../../commands/describe/DescribeOutput';
 import { JamboConfig } from '../JamboConfig';
 import { ArgumentMetadataImpl } from './argumentmetadata';
 
@@ -44,5 +44,5 @@ export default interface Command {
    * @returns {Object} description of the card command, including paths to 
    *                   all available cards
    */
-  describe(jamboConfig: JamboConfig): any;
+  describe(jamboConfig: JamboConfig): DescribeOutput;
 }

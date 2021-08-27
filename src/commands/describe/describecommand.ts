@@ -1,5 +1,6 @@
 import Command from '../../models/commands/command';
 import { JamboConfig } from '../../models/JamboConfig';
+import { DescribeOutput } from './DescribeOutput';
 
 /**
  * DescribeCommand outputs JSON that describes all registered Jambo commands
@@ -36,31 +37,24 @@ const DescribeCommand : Command  = class {
     return {};
   }
 
-  async execute() {
-    const descriptions = await this._getCommandDescriptions();
+  execute() {
+    const descriptions = this._getCommandDescriptions();
     console.log(JSON.stringify(descriptions, null, 2));
   }
 
   /**
    * Returns the descriptions of all registered Commands
    */
-  _getCommandDescriptions() {
+  _getCommandDescriptions(): Record<string, DescribeOutput> {
     const descriptions = {};
-    const describePromises = this.getCommands().map(
+    this.getCommands().map(
       command => {
-        const describeValue = command.describe(this._jamboConfig);
-        if (describeValue.then && typeof describeValue.then === 'function') {
-          return describeValue.then(
-            (value) => { descriptions[command.getAlias()] = value; }
-          );
-        } else {
-          if (command.getAlias() !== 'describe') {
-            descriptions[command.getAlias()] = describeValue;
-          }
+        if(command.getAlias() !== 'describe') {
+          descriptions[command.getAlias()] = command.describe(this._jamboConfig);
         }
       }
     );
-    return Promise.all(describePromises).then(() => descriptions);
+    return descriptions;
   }
 }
 

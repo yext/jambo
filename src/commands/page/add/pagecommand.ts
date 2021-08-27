@@ -84,7 +84,7 @@ const PageCommand : Command = class {
           options: pageLocales
         }
       }
-    }
+    } as const;
   }
 
   /**

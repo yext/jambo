@@ -1,3 +1,5 @@
+import { DescribeArg } from '../../commands/describe/DescribeOutput';
+
 /**
  * defines the different kinds of argument that are supported.
  */
@@ -41,7 +43,7 @@ interface ArgumentMetadata {
   /**
    * Returns an Object with the keys expected by the Jambo describe command
    */
-  toDescribeFormat(): Record<string, any>
+  toDescribeFormat(): DescribeArg
 }
 
 export class ArgumentMetadataImpl implements ArgumentMetadata {
