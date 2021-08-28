@@ -7,7 +7,6 @@ import { getRepoNameFromURL } from '../../utils/gitutils';
 import SystemError from '../../errors/systemerror';
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
-import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import { CustomCommand } from '../../utils/customcommands/command';
 import { CustomCommandExecuter } from '../../utils/customcommands/commandexecuter';
 import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
@@ -16,10 +15,27 @@ import process from 'process';
 import { JamboConfig } from '../../models/JamboConfig';
 import Command from '../../models/commands/command';
 
+const args = {
+  themeUrl: {
+    type: 'string',
+    description: 'url of the theme\'s git repo',
+  },
+  theme: {
+    type:'string',
+    description: '(deprecated: specify the themeUrl instead)'
+      + ' the name of the theme to import',
+  },
+  useSubmodules: {
+    type: 'boolean',
+    description: 'import the theme as a submodule'
+  },
+} as const ;
+type Args = typeof args;
+
 /**
  * ThemeImporter imports a specified theme into the themes directory.
  */
-const ThemeImporter : Command = class {
+const ThemeImporter : Command<Args> = class {
   config: JamboConfig;
   private _themeShadower: ThemeShadower;
   private _postImportHook: 'postimport';
@@ -39,21 +55,7 @@ const ThemeImporter : Command = class {
   }
 
   static args() {
-    return {
-      themeUrl: new ArgumentMetadataImpl({
-        type: 'string',
-        description: 'url of the theme\'s git repo',
-      }),
-      theme: new ArgumentMetadataImpl({
-        type:'string',
-        description: '(deprecated: specify the themeUrl instead)'
-          + ' the name of the theme to import',
-      }),
-      useSubmodules: new ArgumentMetadataImpl({
-        type: 'boolean',
-        description: 'import the theme as a submodule'
-      }),
-    }
+    return args;
   }
 
   static describe() {
@@ -78,7 +80,7 @@ const ThemeImporter : Command = class {
     } as const;
   }
 
-  async execute(args: Record<string, any>) {
+  async execute(args) {
     await this.import(args.themeUrl, args.theme, args.useSubmodules);
   }
 

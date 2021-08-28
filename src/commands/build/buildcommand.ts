@@ -1,14 +1,23 @@
-import { ArgumentMetadataImpl } from '../../models/commands/argumentmetadata';
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
 import SitesGenerator from './sitesgenerator';
-import Command from '../../models/commands/command';
+import Command, { ArgsForExecute } from '../../models/commands/command';
 
+const args = {
+  jsonEnvVars: {
+    type: 'array',
+    itemType:'string', 
+    description: 'environment variables containing JSON',
+    isRequired: false
+  }
+} as const;
+type Args = typeof args;
+  
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the
  * public directory.
  */
-const BuildCommand : Command = class {
+const BuildCommand : Command<Args> = class {
   sitesGenerator: SitesGenerator;
 
   constructor(sitesGenerator) {
@@ -24,14 +33,7 @@ const BuildCommand : Command = class {
   }
 
   static args() {
-    return {
-      jsonEnvVars: new ArgumentMetadataImpl({
-        type: 'array',
-        itemType:'string', 
-        description: 'environment variables containing JSON',
-        isRequired: false
-      })
-    }
+    return args;
   }
 
   static describe() {
@@ -40,7 +42,7 @@ const BuildCommand : Command = class {
     }
   }
 
-  async execute(args: Record<string, any>): Promise<any> {
+  async execute(args: ArgsForExecute<Args>): Promise<any> {
     try {
       await this.sitesGenerator.generate(args.jsonEnvVars);
     } catch (err) {

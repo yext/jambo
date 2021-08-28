@@ -1,18 +1,38 @@
 import { DescribeOutput } from './describeoutput';
 import { JamboConfig } from '../JamboConfig';
-import { ArgumentMetadataImpl } from './argumentmetadata';
+import { ArgumentMetadata } from './argumentmetadata';
+
+type toPrim<T = never> = {
+  'string': string
+  'number': number
+  'boolean': boolean
+  'array': T[]
+}
+
+type Metadata = {
+  type: keyof toPrim,
+  itemType?: keyof toPrim
+}
+
+/**
+ * generate a type based on the arguments given to Jambo command
+ */
+export type ArgsForExecute<T extends Record<string, Metadata>> = {
+  [prop in keyof T]: toPrim<toPrim[T[prop]['itemType']]>[T[prop]['type']]
+}
 
 /**
  * Command interface that contains non static fields and methods
- * of a Command instance
+ * of a Command instance. It requires a type T that defines the
+ * arguments pass to execute()
  */
-interface CommandExecutable {
+interface CommandExecutable<T> {
   /**
    * Executes the command with the provided arguments.
    * 
    * @param {Object<string, any>} args The arguments, keyed by name.
    */
-  execute(args: Record<string, any>): any
+  execute(args?: ArgsForExecute<T & Record<string, Metadata>>): any
 }
 
 /**
@@ -20,8 +40,8 @@ interface CommandExecutable {
  * Contains non static (CommandExecutable interface) and 
  * static (specified in here) fields and methods.
  */
-export default interface Command {
-  new(...args: any[]):CommandExecutable;
+export default interface Command<T> {
+  new(...args: any[]):CommandExecutable<T>;
 
   /**
    * The alias for the command.
@@ -37,7 +57,7 @@ export default interface Command {
   /**
    * Descriptions of each argument, keyed by name.
    */
-   args(): Record<string, ArgumentMetadataImpl>;
+   args(): Record<string, ArgumentMetadata>;
 
   /**
    * @param {Object} jamboConfig the config of the jambo repository

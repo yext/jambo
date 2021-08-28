@@ -5,7 +5,6 @@
 
 export default interface PageConfiguration {
   name: string;
-  layout: string;
   theme: string;
   template: string;
   locales: string[];
