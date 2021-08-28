@@ -1,5 +1,3 @@
-import { DescribeArg } from './describeoutput';
-
 /**
  * defines the different kinds of argument that are supported.
  */

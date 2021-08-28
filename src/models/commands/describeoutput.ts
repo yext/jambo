@@ -7,15 +7,13 @@ import { ArgumentType } from './argumentmetadata';
 export interface DescribeOutput {
   displayName?: string
   params?: {
-    [argumentName: string]: DescribeArg
+    [argumentName: string]: {
+      displayName: string
+      type: DescribeType
+      required?: boolean
+      options?: string[]
+    }
   }
-}
-
-export interface DescribeArg {
-  displayName: string,
-  type: DescribeType,
-  required?: boolean,
-  options?: string[]
 }
 
 export type DescribeType = ArgumentType | & 'singleoption' | 'multioption' | 'filesystem'
