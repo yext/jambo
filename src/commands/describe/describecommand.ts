@@ -1,14 +1,11 @@
 import Command from '../../models/commands/command';
 import { JamboConfig } from '../../models/JamboConfig';
 
-const args = {};
-type Args = typeof args;
-
 /**
  * DescribeCommand outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
-const DescribeCommand : Command<Args> = class {
+const DescribeCommand : Command<any> = class {
   private _jamboConfig: JamboConfig
   getCommands: () => Command<any>[]
 
@@ -29,7 +26,7 @@ const DescribeCommand : Command<Args> = class {
   }
 
   static args() {
-    return args;
+    return {};
   }
 
   /**

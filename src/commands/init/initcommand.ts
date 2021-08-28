@@ -1,6 +1,6 @@
 import { RepositorySettings, RepositoryScaffolder } from './repositoryscaffolder';
 import ThemeManager from '../../utils/thememanager';
-import Command, { ArgsForExecute } from '../../models/commands/command';
+import Command from '../../models/commands/command';
 
 const args = {
   themeUrl: {
@@ -17,6 +17,10 @@ const args = {
     type: 'boolean', 
     description: 'if starter theme should be imported as submodule'
   },
+  includeTranslations: {
+    type: 'boolean', 
+    description: 'if a translations directory should be included'
+  }
 } as const;
 type Args = typeof args;
 
@@ -53,12 +57,16 @@ const InitCommand : Command<Args> = class {
         useSubmodules: {
           displayName: 'Use Submodules',
           type: 'boolean'
-        }
+        },
+        includeTranslations: {
+          displayName: 'Include Translations',
+          type: 'boolean'
+        },
       }
     }
   }
 
-  async execute(args: ArgsForExecute<Args> & RepositorySettings) {
+  async execute(args: RepositorySettings) {
     const repositoryScaffolder = new RepositoryScaffolder();
     await repositoryScaffolder.create(args);
   }

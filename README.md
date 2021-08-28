@@ -43,6 +43,10 @@ The git URL of the theme to import, if a theme should be imported on init.
 
 If importing a theme on init, whether to import it as a git submodule as opposed to regular files. Defaults to false.
 
+--includeTranslations _true/false_
+
+If importing a theme on init, whether to initializes a translations directory as well. Defaults to false.
+
 #### Import
 
 ```bash

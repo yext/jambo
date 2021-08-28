@@ -35,13 +35,7 @@ const OverrideCommand : Command<Args> = class {
   }
 
   static args() {
-    return {
-      path: {
-        type: 'string',
-        description: 'path in the theme to override',
-        isRequired: true
-      }
-    } as const
+    return args;
   }
 
   static describe(jamboConfig) {

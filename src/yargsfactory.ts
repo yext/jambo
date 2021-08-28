@@ -55,7 +55,16 @@ class YargsFactory {
       command: commandClass.getAlias(),
       describe: commandClass.getShortDescription(),
       builder: yargs => {
-        Object.entries(commandClass.args()).forEach(([name, metadata]) => {
+        Object.entries(commandClass.args()).forEach(([name, argMetadata]: [string, ArgumentMetadata | any]) => {
+          let metadata = argMetadata;
+          if(metadata.hasOwnProperty('_type')) {
+            metadata = {
+              type: argMetadata.getType(),
+              description: argMetadata.getDescription(),
+              demandOption: argMetadata.isRequired(),
+              default: argMetadata.defaultValue()
+            }
+          }
           if (metadata.type === 'array') {
             this._addListOption(name, metadata, yargs);
           } else {
