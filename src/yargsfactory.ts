@@ -92,7 +92,7 @@ class YargsFactory {
    * option cannot be added with 'yargs.option'.
    * 
    * @param {string} name The name of the option.
-   * @param {ArgumentMetadataImpl} metadata The option's {@link ArgumentMetadataImpl}.
+   * @param {ArgumentMetadata} metadata The option's {@link ArgumentMetadata}.
    * @param {import('yargs').Argv} yargs The Yargs instance to modify.
    */
   _addListOption(name: string, metadata: ArgumentMetadata, yargs: import('yargs').Argv) {
