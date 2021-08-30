@@ -8,7 +8,7 @@
   */
  export interface ArgumentMetadataLegacy {
    /**
-    * The type of the argument, e.g. STRING, BOOLEAN, etc.
+    * The type of the argument, e.g. 'string', 'boolean', etc.
     */
    getType(): ArgumentType
  

@@ -9,7 +9,7 @@ export type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
  */
 export interface ArgumentMetadata {
   /**
-   * The type of the argument, e.g. STRING, BOOLEAN, etc.
+   * The type of the argument, e.g. 'string', 'boolean', etc.
    */
   type: ArgumentType
 
