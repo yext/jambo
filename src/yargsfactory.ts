@@ -10,6 +10,7 @@ import DescribeCommand from './commands/describe/describecommand';
 import PageCommand from './commands/page/add/pagecommand';
 import BuildCommand from './commands/build/buildcommand';
 import { ArgumentMetadata } from './models/commands/argumentmetadata';
+import { ArgumentMetadataLegacy, isArgumentMetadataLegacy } from './models/commands/argumentmetadatalegacy';
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
@@ -55,15 +56,18 @@ class YargsFactory {
       command: commandClass.getAlias(),
       describe: commandClass.getShortDescription(),
       builder: yargs => {
-        Object.entries(commandClass.args()).forEach(([name, argMetadata]: [string, ArgumentMetadata | any]) => {
-          let metadata = argMetadata;
-          if(metadata.hasOwnProperty('_type')) {
+        Object.entries(commandClass.args())
+          .forEach(([name, argMetadata]: [string, ArgumentMetadata | ArgumentMetadataLegacy]) => {
+          let metadata: ArgumentMetadata;
+          if(isArgumentMetadataLegacy(argMetadata)) {
             metadata = {
               type: argMetadata.getType(),
               description: argMetadata.getDescription(),
-              demandOption: argMetadata.isRequired(),
-              default: argMetadata.defaultValue()
+              isRequired: argMetadata.isRequired(),
+              defaultValue: argMetadata.defaultValue()
             }
+          } else {
+            metadata = argMetadata;
           }
           if (metadata.type === 'array') {
             this._addListOption(name, metadata, yargs);
