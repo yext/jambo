@@ -1,6 +1,6 @@
-import { RepositorySettings, RepositoryScaffolder } from './repositoryscaffolder';
+import { RepositoryScaffolder } from './repositoryscaffolder';
 import ThemeManager from '../../utils/thememanager';
-import Command from '../../models/commands/command';
+import Command, { ArgsForExecute } from '../../models/commands/command';
 
 const args = {
   themeUrl: {
@@ -66,7 +66,7 @@ const InitCommand : Command<Args> = class {
     }
   }
 
-  async execute(args: RepositorySettings) {
+  async execute(args: ArgsForExecute<Args>) {
     const repositoryScaffolder = new RepositoryScaffolder();
     await repositoryScaffolder.create(args);
   }

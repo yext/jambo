@@ -1,10 +1,11 @@
 /**
- * defines the different kinds of argument that are supported.
+ * Defines the different kinds of arguments that are supported.
  */
  type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
 
  /**
   * An interface describing the legacy version of {@link ArgumentMetadata}.
+  * @deprecated
   */
  export interface ArgumentMetadataLegacy {
    /**
@@ -15,7 +16,7 @@
    /**
     * The type of the elements of an array argument.
     */
-   getItemType(): string | undefined
+   getItemType(): ArgumentType | undefined
  
    /**
     * The description of the argument.

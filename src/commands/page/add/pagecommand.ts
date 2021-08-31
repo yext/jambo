@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'comment-json';
-import PageConfiguration from './pageconfiguration';
 import UserError from '../../../errors/usererror';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
@@ -130,7 +129,7 @@ const PageCommand : Command<Args> = class {
     return pageLocales;
   }
 
-  execute(args: ArgsForExecute<Args> & PageConfiguration) {
+  execute(args: ArgsForExecute<Args>) {
     const pageConfiguration = { ...args, theme: this.defaultTheme };
     try {
       this.pageScaffolder.create(pageConfiguration);

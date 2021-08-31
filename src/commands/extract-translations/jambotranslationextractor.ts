@@ -21,7 +21,7 @@ const args = {
     isRequired: false,
     defaultValue: 'messages.pot'
   }
-} as const ;
+} as const;
 type Args = typeof args;
 
 /**

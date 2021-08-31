@@ -6,7 +6,7 @@ import Command, { ArgsForExecute } from '../../models/commands/command';
 const args = {
   jsonEnvVars: {
     type: 'array',
-    itemType:'string', 
+    itemType: 'string', 
     description: 'environment variables containing JSON',
     isRequired: false
   }

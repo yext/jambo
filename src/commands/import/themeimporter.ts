@@ -13,7 +13,7 @@ import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import process from 'process';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command from '../../models/commands/command';
+import Command, { ArgsForExecute } from '../../models/commands/command';
 
 const args = {
   themeUrl: {
@@ -29,7 +29,7 @@ const args = {
     type: 'boolean',
     description: 'import the theme as a submodule'
   },
-} as const ;
+} as const;
 type Args = typeof args;
 
 /**
@@ -80,7 +80,7 @@ const ThemeImporter : Command<Args> = class {
     }
   }
 
-  async execute(args) {
+  async execute(args: ArgsForExecute<Args>) {
     await this.import(args.themeUrl, args.theme, args.useSubmodules);
   }
 

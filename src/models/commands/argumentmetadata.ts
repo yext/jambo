@@ -1,5 +1,5 @@
 /**
- * defines the different kinds of argument that are supported.
+ * Defines the different kinds of arguments that are supported.
  */
 export type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
 
@@ -16,7 +16,7 @@ export interface ArgumentMetadata {
   /**
    * The type of the elements of an array argument.
    */
-  itemType?: string
+  itemType?: ArgumentType
 
   /**
    * The description of the argument.
