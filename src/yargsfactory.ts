@@ -51,7 +51,7 @@ class YargsFactory {
    * @param {Class} commandClass A Jambo {@link Command}'s class.
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
-  _createCommandModule(commandClass: Command<any>): CommandModule {
+  _createCommandModule(commandClass: Command<any, any>): CommandModule {
     return {
       command: commandClass.getAlias(),
       describe: commandClass.getShortDescription(),
