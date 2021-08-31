@@ -1,8 +1,8 @@
 import { JamboConfig } from '../JamboConfig';
-import { ArgumentMetadata } from './argumentmetadata';
-import { CommandExecutable } from './commandexecutable';
+import { ArgumentMetadata, ArgumentMetadataRecord } from './argumentmetadata';
+import { CommandExecutable, ExecArgumentRecord } from './commandexecutable';
 
-type toPrim<T = never> = {
+type valToType<T = never> = {
   'string': string
   'number': number
   'boolean': boolean
@@ -13,7 +13,7 @@ type toPrim<T = never> = {
  * generate a type based on the arguments given to Jambo command
  */
 export type ArgsForExecute<T extends Record<string, ArgumentMetadata>> = {
-  [prop in keyof T]: toPrim<toPrim[T[prop]['itemType']]>[T[prop]['type']]
+  [prop in keyof T]: valToType<valToType[T[prop]['itemType']]>[T[prop]['type']]
 }
 
 /**
@@ -21,8 +21,8 @@ export type ArgsForExecute<T extends Record<string, ArgumentMetadata>> = {
  * Contains non static (CommandExecutable interface) and 
  * static (specified in here) fields and methods.
  */
-export default interface Command<T extends Record<string, ArgumentMetadata>> {
-  new(...args: any[]):CommandExecutable<ArgsForExecute<T>>;
+export default interface Command<T extends ArgumentMetadataRecord, S extends ExecArgumentRecord> {
+  new(...args: any[]):CommandExecutable<S>;
 
   /**
    * The alias for the command.

@@ -23,11 +23,12 @@ const args = {
   }
 } as const;
 type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * JamboTranslationExtractor extracts translations from a jambo repo.
  */
-const JamboTranslationExtractor : Command<Args> = class {
+const JamboTranslationExtractor : Command<Args, ExecArgs> = class {
   jamboConfig: JamboConfig
   extractor: TranslationExtractor
   
@@ -64,7 +65,7 @@ const JamboTranslationExtractor : Command<Args> = class {
     };
   }
 
-  execute({ output, globs }: ArgsForExecute<Args>) {
+  execute({ output, globs }: ExecArgs) {
     if (globs && globs.length > 0) {
       this._extract(output, globs);
     } else {

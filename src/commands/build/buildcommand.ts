@@ -12,12 +12,13 @@ const args = {
   }
 } as const;
 type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
   
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the
  * public directory.
  */
-const BuildCommand : Command<Args> = class {
+const BuildCommand : Command<Args, ExecArgs> = class {
   sitesGenerator: SitesGenerator;
 
   constructor(sitesGenerator) {
@@ -42,7 +43,7 @@ const BuildCommand : Command<Args> = class {
     }
   }
 
-  async execute(args: ArgsForExecute<Args>): Promise<any> {
+  async execute(args: ExecArgs): Promise<any> {
     try {
       await this.sitesGenerator.generate(args.jsonEnvVars);
     } catch (err) {

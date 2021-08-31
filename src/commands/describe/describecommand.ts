@@ -5,9 +5,9 @@ import { JamboConfig } from '../../models/JamboConfig';
  * DescribeCommand outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
-const DescribeCommand : Command<any> = class {
+const DescribeCommand : Command<any, any> = class {
   private _jamboConfig: JamboConfig
-  getCommands: () => Command<any>[]
+  getCommands: () => Command<any, any>[]
 
   constructor(jamboConfig, getCommands) {
     /**

@@ -25,11 +25,12 @@ const args = {
   }
 } as const;
 type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * PageCommand registers a new page with the specified name to be built by Jambo.
  */
-const PageCommand : Command<Args> = class {
+const PageCommand : Command<Args, ExecArgs> = class {
   jamboConfig: JamboConfig;
   defaultTheme: string;
   pageScaffolder: PageScaffolder;
@@ -129,7 +130,7 @@ const PageCommand : Command<Args> = class {
     return pageLocales;
   }
 
-  execute(args: ArgsForExecute<Args>) {
+  execute(args: ExecArgs) {
     const pageConfiguration = { ...args, theme: this.defaultTheme };
     try {
       this.pageScaffolder.create(pageConfiguration);

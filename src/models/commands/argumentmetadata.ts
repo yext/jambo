@@ -38,3 +38,8 @@ export interface ArgumentMetadata {
    */
   displayName?: string
 }
+
+/**
+ * Represents a record of argument names to metadata about that argument
+ */
+export type ArgumentMetadataRecord = Record<string, ArgumentMetadata>;

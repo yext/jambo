@@ -33,13 +33,14 @@ const args = {
   }
 } as const;
 type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest
  * version. It first detects whether the theme was imported as a submodule or raw files,
  * then handles the upgrade accordingly.
  */
-const ThemeUpgrader : Command<Args> = class {
+const ThemeUpgrader : Command<Args, ExecArgs> = class {
   jamboConfig: JamboConfig;
   private _themesDir: string;
   postUpgradeFileName: 'upgrade';
@@ -83,7 +84,7 @@ const ThemeUpgrader : Command<Args> = class {
     }
   }
 
-  async execute(args: ArgsForExecute<Args>) {
+  async execute(args: ExecArgs) {
     await this._upgrade({
       themeName: this.jamboConfig.defaultTheme,
       disableScript: args.disableScript,

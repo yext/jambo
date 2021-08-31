@@ -31,11 +31,12 @@ const args = {
   },
 } as const;
 type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
  */
-const ThemeImporter : Command<Args> = class {
+const ThemeImporter : Command<Args, ExecArgs> = class {
   config: JamboConfig;
   private _themeShadower: ThemeShadower;
   private _postImportHook: 'postimport';
@@ -80,7 +81,7 @@ const ThemeImporter : Command<Args> = class {
     }
   }
 
-  async execute(args: ArgsForExecute<Args>) {
+  async execute(args: ExecArgs) {
     await this.import(args.themeUrl, args.theme, args.useSubmodules);
   }
 

@@ -23,11 +23,12 @@ const args = {
   }
 } as const;
 type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * InitCommand initializes the current directory as a Jambo repository.
  */
-const InitCommand : Command<Args> = class {
+const InitCommand : Command<Args, ExecArgs> = class {
   static getAlias() {
     return 'init';
   }

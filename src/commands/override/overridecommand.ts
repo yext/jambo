@@ -13,11 +13,12 @@ const args = {
   }
 } as const;
 type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * OverrideCommand overrides a specific file in the theme.
  */
-const OverrideCommand : Command<Args> = class {
+const OverrideCommand : Command<Args, ExecArgs> = class {
   jamboConfig: JamboConfig;
   defaultTheme: string;
 
@@ -75,7 +76,7 @@ const OverrideCommand : Command<Args> = class {
     return themeFiles;
   }
 
-  execute(args: ArgsForExecute<Args>) {
+  execute(args: ExecArgs) {
     const shadowConfiguration = new ShadowConfiguration(
       { ...args, theme: this.defaultTheme });
     const themeShadower = new ThemeShadower(this.jamboConfig);
