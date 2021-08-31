@@ -8,7 +8,7 @@ import TranslateInvocation from './models/translateinvocation';
  * if possible, or a runtime translation helper if not.
  */
 class InvocationTranspiler {
-  _translator: Translator;
+  private _translator: Translator;
 
   constructor(translator) {
     /**

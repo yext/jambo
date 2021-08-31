@@ -13,6 +13,10 @@
           "answers-hitchhiker-theme"
         ]
       },
+      "includeTranslations": {
+        "displayName": "Include Translations",
+        "type": "boolean"
+      },
       "useSubmodules": {
         "displayName": "Use Submodules",
         "type": "boolean"
@@ -70,6 +74,7 @@
         "required": true,
         "options": [
           "commands/addVertical.js",
+          "commands/addVerticalLegacy.js",
           "postimport.js",
           "templates/describe-template/page-config.json",
           "templates/describe-template/page.html.hbs"
@@ -97,6 +102,34 @@
     }
   },
   "vertical": {
+    "displayName": "Add Vertical",
+    "params": {
+      "name": {
+        "displayName": "Page Name",
+        "required": true,
+        "type": "string"
+      },
+      "verticalKey": {
+        "displayName": "Vertical Key",
+        "required": true,
+        "type": "string"
+      },
+      "cardName": {
+        "displayName": "Card Name",
+        "type": "singleoption"
+      },
+      "template": {
+        "displayName": "Page Template",
+        "required": true,
+        "type": "singleoption"
+      },
+      "locales": {
+        "displayName": "Additional Page Locales",
+        "type": "multioption"
+      }
+    }
+  },
+  "verticalLegacy": {
     "displayName": "Add Vertical",
     "params": {
       "name": {

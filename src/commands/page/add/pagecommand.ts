@@ -1,19 +1,39 @@
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'comment-json';
-import PageConfiguration from './pageconfiguration';
 import UserError from '../../../errors/usererror';
-import { ArgumentMetadata, ArgumentType } from '../../../models/commands/argumentmetadata';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
+import Command, { ArgsForExecute } from '../../../models/commands/command';
+
+const args = {
+  name: {
+    type: 'string',
+    description: 'name for the new files',
+    isRequired: true
+  },
+  template: {
+    type: 'string',
+    description: 'template to use within theme',
+    isRequired: false
+  },
+  locales: {
+    type: 'array',
+    itemType: 'string',
+    description: 'additional locales to generate the page for',
+    isRequired: false
+  }
+} as const;
+type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * PageCommand registers a new page with the specified name to be built by Jambo.
  */
-class PageCommand {
-  jamboConfig: JamboConfig
-  defaultTheme: string
-  pageScaffolder: PageScaffolder
+const PageCommand : Command<Args, ExecArgs> = class {
+  jamboConfig: JamboConfig;
+  defaultTheme: string;
+  pageScaffolder: PageScaffolder;
 
   constructor(jamboConfig: JamboConfig = {}, pageScaffolder) {
     this.jamboConfig = jamboConfig;
@@ -30,24 +50,7 @@ class PageCommand {
   }
 
   static args() {
-    return {
-      name: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: 'name for the new files',
-        isRequired: true
-      }),
-      template: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: 'template to use within theme',
-        isRequired: false
-      }),
-      locales: new ArgumentMetadata({
-        type: ArgumentType.ARRAY,
-        itemType: ArgumentType.STRING,
-        description: 'additional locales to generate the page for',
-        isRequired: false
-      })
-    }
+    return args;
   }
 
   static describe(jamboConfig) {
@@ -127,9 +130,8 @@ class PageCommand {
     return pageLocales;
   }
 
-  execute(args) {
-    const pageConfiguration = new PageConfiguration(
-      { ...args, theme: this.defaultTheme });
+  execute(args: ExecArgs) {
+    const pageConfiguration = { ...args, theme: this.defaultTheme };
     try {
       this.pageScaffolder.create(pageConfiguration);
     } catch (err) {

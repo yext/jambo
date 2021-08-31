@@ -6,7 +6,7 @@ import LocalizationConfig from '../models/localizationconfig';
  * Performs validation on locale_config.json
  */
 export default class LocaleConfigValidator {
-  _localizationConfig: LocalizationConfig
+  private _localizationConfig: LocalizationConfig
 
   constructor(localizationConfig) {
     /**

@@ -3,9 +3,9 @@
  * of a built-in Jambo command. These shell commands are supplied by Themes.
  */
 export class CustomCommand {
-    _executable: string
-    _args: string[]
-    _cwd: string
+    private _executable: string
+    private _args: string[]
+    private _cwd: string
 
     constructor({ executable, args, cwd }: any) {
         this._executable = executable;

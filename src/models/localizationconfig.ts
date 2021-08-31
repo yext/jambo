@@ -7,10 +7,10 @@ import UserError from '../errors/usererror';
  * configuration and URL formatting for each locale.
  */
 export default class LocalizationConfig {
-  _defaultLocale: string
-  _localeToConfig: Record<string, any>
-  _defaultUrlPattern: string
-  _baseLocalePattern: string
+  private _defaultLocale: string
+  private _localeToConfig: Record<string, any>
+  private _defaultUrlPattern: string
+  private _baseLocalePattern: string
 
   /**
    * @param {Object} rawLocalizationConfig

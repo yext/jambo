@@ -1,5 +1,35 @@
 const fs = require('fs');
 
+class ArgumentMetadata {
+  constructor({type, description, isRequired, defaultValue, itemType}) {
+    this._type = type;
+    this._description = description;
+    this._isRequired = isRequired;
+    this._defaultValue = defaultValue;
+    this._itemType = itemType;
+  }
+
+  getType() {
+    return this._type;
+  }
+
+  getItemType() {
+    return this._itemType;
+  }
+
+  getDescription() {
+    return this._description
+  }
+
+  isRequired() {
+    return !!this._isRequired;
+  }
+
+  defaultValue() {
+    return this._defaultValue;
+  }
+}
+
 /**
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
  * a new page for the given Vertical and associates a card type with it.
@@ -13,7 +43,7 @@ module.exports = class VerticalAdder {
    * @returns {string} the alias for the add vertical command.
    */
   static getAlias() {
-    return 'vertical';
+    return 'verticalLegacy';
   }
 
   /**
@@ -29,33 +59,28 @@ module.exports = class VerticalAdder {
    */
   static args() {
     return {
-      name: {
+      name: new ArgumentMetadata({
         itemType: 'string', 
         description: 'name of the vertical\'s page', 
-        isRequired: true
-      },
-      verticalKey: {
+        isRequired: true}),
+      verticalKey: new ArgumentMetadata({
         itemType: 'string', 
         description: 'the vertical\'s key', 
-        isRequired: true
-      },
-      cardName: {
+        isRequired: true}),
+      cardName: new ArgumentMetadata({
         itemType: 'string', 
         description: 'card to use with vertical', 
-        isRequired: false
-      },
-      template: {
+        isRequired: false}),
+      template: new ArgumentMetadata({
         itemType: 'string',
         description: 'page template to use within theme',
-        isRequired: true
-      },
-      locales: {
+        isRequired: true}),
+      locales: new ArgumentMetadata({
         type: 'array',
         description: 'additional locales to generate the page for',
         isRequired: false,
         defaultValue: [],
-        itemType: 'string'
-      }
+        itemType: 'string'})
     };
   }
 
@@ -100,6 +125,6 @@ module.exports = class VerticalAdder {
  */
   execute(args) {
     const content = args.name + args.template + args.verticalKey;
-    fs.writeFileSync('index.html', content);
+    fs.writeFileSync('indexLegacy.html', content);
   }
 }

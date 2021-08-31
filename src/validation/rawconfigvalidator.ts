@@ -11,7 +11,7 @@ import { canonicalizeLocale } from '../utils/i18nutils';
  * the various page configurations
  */
 export default class RawConfigValidator {
-  _configNameToRawConfig: Record<string, any>
+  private _configNameToRawConfig: Record<string, any>
 
   constructor(configNameToRawConfig) {
     /**

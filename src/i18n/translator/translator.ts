@@ -7,7 +7,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
  * pluralization, and added context.
  */
 class Translator {
-  _i18next: i18n;
+  private _i18next: i18n;
 
   /**
    * Creates a new {@link Translator} that wraps the provided {@link i18next} instance.

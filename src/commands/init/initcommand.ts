@@ -1,11 +1,34 @@
-import { RepositorySettings, RepositoryScaffolder } from './repositoryscaffolder';
-import { ArgumentMetadata, ArgumentType } from '../../models/commands/argumentmetadata';
+import { RepositoryScaffolder } from './repositoryscaffolder';
 import ThemeManager from '../../utils/thememanager';
+import Command, { ArgsForExecute } from '../../models/commands/command';
+
+const args = {
+  themeUrl: {
+    type: 'string',
+    description: 'url of a theme\'s git repo to import during the init',
+  },
+  theme: {
+    type: 'string',
+    description: '(deprecated: specify the themeUrl instead)'
+      + ' the name of a theme to import during the init',
+    isRequired: false
+  },
+  useSubmodules: {
+    type: 'boolean', 
+    description: 'if starter theme should be imported as submodule'
+  },
+  includeTranslations: {
+    type: 'boolean', 
+    description: 'if a translations directory should be included'
+  }
+} as const;
+type Args = typeof args;
+type ExecArgs = ArgsForExecute<Args>;
 
 /**
  * InitCommand initializes the current directory as a Jambo repository.
  */
-export default class InitCommand {
+const InitCommand : Command<Args, ExecArgs> = class {
   static getAlias() {
     return 'init';
   }
@@ -15,22 +38,7 @@ export default class InitCommand {
   }
 
   static args() {
-    return {
-      themeUrl: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: 'url of a theme\'s git repo to import during the init',
-      }),
-      theme: new ArgumentMetadata({
-        type: ArgumentType.STRING,
-        description: '(deprecated: specify the themeUrl instead)'
-          + ' the name of a theme to import during the init',
-        isRequired: false
-      }),
-      useSubmodules: new ArgumentMetadata({
-        type: ArgumentType.BOOLEAN, 
-        description: 'if starter theme should be imported as submodule'
-      }),
-    }
+    return args;
   }
 
   static describe() {
@@ -50,14 +58,19 @@ export default class InitCommand {
         useSubmodules: {
           displayName: 'Use Submodules',
           type: 'boolean'
-        }
+        },
+        includeTranslations: {
+          displayName: 'Include Translations',
+          type: 'boolean'
+        },
       }
     }
   }
 
-  async execute(args) {
-    const repositorySettings = new RepositorySettings(args);
+  async execute(args: ArgsForExecute<Args>) {
     const repositoryScaffolder = new RepositoryScaffolder();
-    await repositoryScaffolder.create(repositorySettings);
+    await repositoryScaffolder.create(args);
   }
 }
+
+export default InitCommand;
