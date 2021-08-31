@@ -8,7 +8,7 @@ import HbsHelperParser from './hbshelperparser';
  * used with Jambo.
  */
 export default class HandlebarsPreprocessor {
-  _invocationTranspiler: InvocationTranspiler
+  private _invocationTranspiler: InvocationTranspiler
 
   constructor(translator) {
     this._invocationTranspiler = new InvocationTranspiler(translator);

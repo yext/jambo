@@ -15,8 +15,8 @@ import GlobalConfig from '../../models/globalconfig';
  * of {@link PageSet}s.
  */
 export default class PageSetsBuilder {
-  _globalConfig: GlobalConfig
-  _localizationConfig: LocalizationConfig
+  private _globalConfig: GlobalConfig
+  private _localizationConfig: LocalizationConfig
 
   constructor({ globalConfig, localizationConfig }) {
     /**

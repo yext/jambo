@@ -9,8 +9,8 @@ import { JamboConfig } from '../../models/JamboConfig';
  * indicates which file(s) in the Theme should have local shadows.
  */
 export class ShadowConfiguration {
-  _theme: string
-  _path: string
+  private _theme: string
+  private _path: string
 
   constructor({ theme, path }: any) {
     if (!theme || !path) {

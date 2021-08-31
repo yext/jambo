@@ -1,89 +1,45 @@
 /**
- * An enum describing the different kinds of argument that are supported.
+ * Defines the different kinds of arguments that are supported.
  */
-const ArgumentType = {
-  STRING: 'string',
-  NUMBER: 'number',
-  BOOLEAN: 'boolean',
-  ARRAY: 'array'
-}
-Object.freeze(ArgumentType);
+export type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
 
 /**
- * A class outlining the metadata for a {@link Command}'s argument. This includes
+ * An interface outlining the metadata for a {@link Command}'s argument. This includes
  * the type of the argument's values, if it is required, and an optional default.
  */
-class ArgumentMetadata {
-  _description: string
-  _type: string
-  _displayName: string
-  _itemType: string
-  _isRequired: boolean
-  _defaultValue: unknown
-
-  constructor({ type, itemType, description, isRequired, defaultValue, displayName }: any) {
-    this._displayName = displayName;
-    this._type = type;
-    this._itemType = itemType;
-    this._isRequired = isRequired;
-    this._defaultValue = defaultValue;
-    this._description = description;
-  }
+export interface ArgumentMetadata {
+  /**
+   * The type of the argument, e.g. 'string', 'boolean', etc.
+   */
+  type: ArgumentType
 
   /**
-   * @returns {ArgumentType} The type of the argument, e.g. STRING, BOOLEAN, etc.
+   * The type of the elements of an array argument.
    */
-  getType() {
-    return this._type;
-  }
+  itemType?: ArgumentType
 
   /**
-   * @returns {ItemType} The type of the elements of an array argument.
+   * The description of the argument.
    */
-  getItemType() {
-    return this._itemType;
-  }
+  description: string
 
   /**
-   * @returns {string} The description of the argument.
+   * A boolean indicating if the argument is required.
    */
-  getDescription() {
-    return this._description
-  }
+  isRequired?: boolean
 
   /**
-   * @returns {boolean} A boolean indicating if the argument is required.
+   * Optional, a default value for the argument.
    */
-  isRequired() {
-    return !!this._isRequired;
-  }
+  defaultValue?: string|boolean|number
 
   /**
-   * @returns {string|boolean|number} Optional, a default value for the argument.
+   * The display name for the argument.
    */
-  defaultValue() {
-    return this._defaultValue;
-  }
-
-  /**
-   * @returns {string} The display name for the argument.
-   */
-  getDisplayName() {
-    return this._displayName;
-  }
-
-  /**
-   * Returns an Object with the keys expected by the Jambo describe command
-   *
-   * @returns {Object}
-   */
-  toDescribeFormat() {
-    return {
-      displayName: this.getDisplayName(),
-      type: this.getType(),
-      required: this.isRequired(),
-      default: this.defaultValue(),
-    };
-  }
+  displayName?: string
 }
-export { ArgumentMetadata, ArgumentType };
+
+/**
+ * Represents a record of argument names to metadata about that argument
+ */
+export type ArgumentMetadataRecord = Record<string, ArgumentMetadata>;

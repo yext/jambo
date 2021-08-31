@@ -1,6 +1,7 @@
 import fs from 'file-system';
-import { parse, stringify, assign } from 'comment-json';
+import { parse, stringify } from 'comment-json';
 import { JamboConfig } from '../../../models/JamboConfig';
+import PageConfiguration from './pageconfiguration';
 
 class PageScaffolder {
   config: JamboConfig
@@ -9,25 +10,22 @@ class PageScaffolder {
     this.config = jamboConfig;
   }
 
-  create(pageConfiguration) {
-    const name = pageConfiguration.getName();
-    const theme = pageConfiguration.getTheme();
-    const template = pageConfiguration.getTemplate();
-    const layout = pageConfiguration.getLayout();
-    const locales = pageConfiguration.getLocales();
+  create(pageConfiguration: PageConfiguration) {
+    const name = pageConfiguration.name;
+    const theme = pageConfiguration.theme;
+    const template = pageConfiguration.template;
+    const locales = pageConfiguration.locales;
 
     const htmlFilePath = `${this.config.dirs.pages}/${name}.html.hbs`;
     const configFilePath = `${this.config.dirs.config}/${name}.json`;
 
-    let configContents = layout ? { layout } : {};
+    let configContents = {};
     if (theme && template) {
       const rootTemplatePath = 
         `${this.config.dirs.themes}/${theme}/templates/${template}`;
       fs.copyFileSync(`${rootTemplatePath}/page.html.hbs`, htmlFilePath);
 
-      configContents = assign(
-        parse(fs.readFileSync(`${rootTemplatePath}/page-config.json`, 'utf8')),
-        configContents);
+      configContents = parse(fs.readFileSync(`${rootTemplatePath}/page-config.json`, 'utf8'));
     } else {
       fs.writeFileSync(htmlFilePath, '');
     }

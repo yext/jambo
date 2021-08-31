@@ -11,34 +11,11 @@ const git = simpleGit();
  * repository. Currently, these settings include an optional themeUrl, theme name, and
  * whether or not the theme should be imported as a submodule.
  */
-export class RepositorySettings {
-  _themeUrl: string
-  _theme: string
-  _useSubmodules: boolean
-  _includeTranslations: boolean
-
-  constructor({ themeUrl, theme, useSubmodules, includeTranslations }) {
-    this._themeUrl = themeUrl;
-    this._theme = theme;
-    this._useSubmodules = useSubmodules;
-    this._includeTranslations = includeTranslations;
-  }
-
-  getThemeUrl() {
-    return this._themeUrl;
-  }
-
-  getTheme() {
-    return this._theme;
-  }
-
-  shouldUseSubmodules() {
-    return this._useSubmodules;
-  }
-
-  shouldIncludeTranslations() {
-    return this._includeTranslations;
-  }
+export interface RepositorySettings {
+  themeUrl: string
+  theme: string
+  useSubmodules: boolean
+  includeTranslations: boolean
 }
 
 export class RepositoryScaffolder {
@@ -48,9 +25,9 @@ export class RepositoryScaffolder {
    * Git infrastructure needed for source control. If a theme is specified, that will 
    * also be imported.
    *
-   * @param {RepositoryScaffolder} repositorySettings The settings for the new repository.
+   * @param {RepositorySettings} repositorySettings The settings for the new repository.
    */
-  async create(repositorySettings: any) {
+  async create(repositorySettings: RepositorySettings) {
     try {
       const cwd = process.cwd();
       await git.cwd(cwd);
@@ -58,18 +35,19 @@ export class RepositoryScaffolder {
       fs.writeFileSync('.gitignore', 'public/\nnode_modules/\n');
 
       const includeTranslations = 
-        repositorySettings.shouldIncludeTranslations();
+        repositorySettings.includeTranslations;
       this._createDirectorySkeleton(includeTranslations);
       const jamboConfig = this._createJamboConfig(includeTranslations);
 
-      const themeUrl = repositorySettings.getThemeUrl();
-      const theme = repositorySettings.getTheme();
+      const themeUrl = repositorySettings.themeUrl;
+      const theme = repositorySettings.theme;
       if (themeUrl || theme) {
         const themeImporter = new ThemeImporter(jamboConfig);
-        await themeImporter.import(
+        await themeImporter.execute({
           themeUrl,
           theme, 
-          repositorySettings.shouldUseSubmodules());
+          useSubmodules: repositorySettings.useSubmodules
+        });
       }
     } catch (err) {
       throw new SystemError(err.message, err.stack);

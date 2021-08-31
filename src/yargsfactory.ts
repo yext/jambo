@@ -1,19 +1,23 @@
 import yargs, { CommandModule } from 'yargs';
 import PageScaffolder from './commands/page/add/pagescaffolder';
 import SitesGenerator from './commands/build/sitesgenerator';
-import { ArgumentMetadata, ArgumentType } from './models/commands/argumentmetadata';
 import { info, error } from './utils/logger';
 import { exitWithError } from './utils/errorutils';
 import CommandRegistry from './commands/commandregistry';
 import Command from './models/commands/command';
 import { JamboConfig } from './models/JamboConfig';
+import DescribeCommand from './commands/describe/describecommand';
+import PageCommand from './commands/page/add/pagecommand';
+import BuildCommand from './commands/build/buildcommand';
+import { ArgumentMetadata } from './models/commands/argumentmetadata';
+import { ArgumentMetadataLegacy, isArgumentMetadataLegacy } from './models/commands/argumentmetadatalegacy';
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
  */
 class YargsFactory {
-  _commandRegistry: CommandRegistry
-  _jamboConfig: JamboConfig
+  private _commandRegistry: CommandRegistry
+  private _jamboConfig: JamboConfig
 
   constructor(commandRegistry: CommandRegistry, jamboConfig: JamboConfig) {
     this._commandRegistry = commandRegistry;
@@ -47,22 +51,34 @@ class YargsFactory {
    * @param {Class} commandClass A Jambo {@link Command}'s class.
    * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
    */
-  _createCommandModule(commandClass: typeof Command): CommandModule {
+  _createCommandModule(commandClass: Command<any, any>): CommandModule {
     return {
       command: commandClass.getAlias(),
       describe: commandClass.getShortDescription(),
       builder: yargs => {
-        Object.entries(commandClass.args()).forEach(([name, metadata]) => {
-          if (metadata.getType() === ArgumentType.ARRAY) {
+        Object.entries(commandClass.args())
+          .forEach(([name, argMetadata]: [string, ArgumentMetadata | ArgumentMetadataLegacy]) => {
+          let metadata: ArgumentMetadata;
+          if(isArgumentMetadataLegacy(argMetadata)) {
+            metadata = {
+              type: argMetadata.getType(),
+              description: argMetadata.getDescription(),
+              isRequired: argMetadata.isRequired(),
+              defaultValue: argMetadata.defaultValue()
+            }
+          } else {
+            metadata = argMetadata;
+          }
+          if (metadata.type === 'array') {
             this._addListOption(name, metadata, yargs);
           } else {
             yargs.option<string, any>(
               name,
               {
-                type: metadata.getType(),
-                description: metadata.getDescription(),
-                demandOption: metadata.isRequired(),
-                default: metadata.defaultValue()
+                type: metadata.type,
+                description: metadata.description,
+                demandOption: metadata.isRequired,
+                default: metadata.defaultValue
               });
           }
         });
@@ -85,11 +101,11 @@ class YargsFactory {
    */
   _addListOption(name: string, metadata: ArgumentMetadata, yargs: import('yargs').Argv) {
     yargs.array(name);
-    const defaultValue = metadata.defaultValue() || [];
+    const defaultValue = metadata.defaultValue || [];
 
-    metadata.isRequired() && yargs.demandOption(name);
+    metadata.isRequired && yargs.demandOption(name);
     yargs.default(name, defaultValue);
-    yargs.describe(name, metadata.getDescription());
+    yargs.describe(name, metadata.description);
   }
 
   /**
@@ -97,20 +113,20 @@ class YargsFactory {
    * @returns {Command} the instantiated Jambo command
    */
   _createCommandInstance(commandClass) {
-    const className = commandClass.name;
+    const classAlias = commandClass.getAlias();
     let commandInstance;
-    switch (className) {
-      case 'DescribeCommand':
+    switch (classAlias) {
+      case DescribeCommand.getAlias():
         commandInstance = new commandClass(
           this._jamboConfig, 
           () => this._commandRegistry.getCommands()
         );
         break;
-      case 'PageCommand':
+      case PageCommand.getAlias():
         const pageScaffolder = new PageScaffolder(this._jamboConfig);
         commandInstance = new commandClass(this._jamboConfig, pageScaffolder);
         break;
-      case 'BuildCommand':
+      case BuildCommand.getAlias():
         const sitesGenerator = new SitesGenerator(this._jamboConfig);
         commandInstance = new commandClass(sitesGenerator);
         break;

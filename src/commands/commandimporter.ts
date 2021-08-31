@@ -8,8 +8,8 @@ import { JamboConfig } from '../models/JamboConfig';
  * Imports all custom {@link Command}s within a Jambo repository.
  */
 export default class CommandImporter {
-  _outputDir: string
-  _themeDir: string
+  private _outputDir: string
+  private _themeDir: string
 
   constructor(outputDir, themeDir?) {
     this._outputDir = outputDir;
@@ -84,7 +84,7 @@ export default class CommandImporter {
    * @param {Command} commandClass The custom {@link Command}'s class
    * @returns {boolean} A boolean indicating if the custom {@Command} is valid.
    */
-  _validateCustomCommand(commandClass: typeof Command) {
+  _validateCustomCommand(commandClass) {
     let isValidCommand;
     try {
       const getMethods = (classObject) => Object.getOwnPropertyNames(classObject)
@@ -103,7 +103,6 @@ export default class CommandImporter {
     } catch {
       isValidCommand = false;
     }
-
     return isValidCommand;
   }
   
@@ -125,7 +124,7 @@ export default class CommandImporter {
    * @returns {class} An implemenation of the current {@link Command} interface.
    */
   _handleLegacyImport(commandCreator: (jamboConfig: JamboConfig) => any) {
-    return class {
+    const cmd : Command<any, any> = class {
       _wrappedInstance: any
 
       constructor(jamboConfig) {
@@ -152,5 +151,6 @@ export default class CommandImporter {
         return this._wrappedInstance.execute(args);
       }
     }
+    return cmd;
   }
 }
