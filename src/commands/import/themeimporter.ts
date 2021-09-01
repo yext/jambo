@@ -1,7 +1,6 @@
 import path from 'path';
 import simpleGit from 'simple-git/promise';
 const git = simpleGit();
-import { ThemeShadower } from '../override/themeshadower';
 import ThemeManager from '../../utils/thememanager';
 import { getRepoNameFromURL } from '../../utils/gitutils';
 import SystemError from '../../errors/systemerror';
@@ -38,12 +37,10 @@ type ExecArgs = ArgsForExecute<Args>;
  */
 const ThemeImporter : Command<Args, ExecArgs> = class {
   config: JamboConfig;
-  private _themeShadower: ThemeShadower;
   private _postImportHook: 'postimport';
 
   constructor(jamboConfig) {
     this.config = jamboConfig;
-    this._themeShadower = new ThemeShadower(jamboConfig);
     this._postImportHook = 'postimport';
   }
 
