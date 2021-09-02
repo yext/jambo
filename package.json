@@ -2,7 +2,7 @@
   "name": "jambo",
   "version": "1.11.0",
   "description": "A JAMStack implementation using Handlebars",
-  "main": "lib/cli.js",
+  "main": "./lib/exports.js",
   "types": "./lib/cli.d.ts",
   "files": [
     "lib"
@@ -73,7 +73,7 @@
       "./tests/setup/setup.js"
     ],
     "testMatch": [
-      "**/tests/**/*.js",
+      "**/tests/**/*.[j|t]s",
       "!**/tests/acceptance/**/*.js",
       "**/tests/acceptance/suites/**/*.js"
     ],

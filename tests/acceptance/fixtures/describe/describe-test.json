@@ -74,7 +74,7 @@
         "required": true,
         "options": [
           "commands/addVertical.js",
-          "commands/addVerticalLegacy.js",
+          "commands/addVerticalLegacyArgs.js",
           "postimport.js",
           "templates/describe-template/page-config.json",
           "templates/describe-template/page.html.hbs"
@@ -129,7 +129,7 @@
       }
     }
   },
-  "verticalLegacy": {
+  "verticalLegacyArgs": {
     "displayName": "Add Vertical",
     "params": {
       "name": {

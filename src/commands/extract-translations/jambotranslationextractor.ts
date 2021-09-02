@@ -3,32 +3,28 @@ import { info } from '../../utils/logger';
 import DefaultTranslationGlobber from './defaulttranslationglobber';
 import { readGitignorePaths } from '../../utils/gitutils';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command, { ArgsForExecute } from '../../models/commands/command';
+import Command from '../../models/commands/command';
+import { StringArrayMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
-  globs: {
+  globs: new StringArrayMetadata({
     displayName: 'Globs to Scan',
-    type: 'array',
-    itemType: 'string',
     description:
       'specify globs to scan for translations, instead of using the defaults',
     isRequired: false
-  },
-  output: {
+  }),
+  output: new StringMetadata({
     displayName: 'Output Path',
-    type: 'string',
     description: 'the output path to extract the .pot file to',
     isRequired: false,
     defaultValue: 'messages.pot'
-  }
-} as const;
-type Args = typeof args;
-type ExecArgs = ArgsForExecute<Args>;
+  })
+};
 
 /**
  * JamboTranslationExtractor extracts translations from a jambo repo.
  */
-const JamboTranslationExtractor : Command<Args, ExecArgs> = class {
+const JamboTranslationExtractor: Command<typeof args> = class {
   jamboConfig: JamboConfig
   extractor: TranslationExtractor
   
@@ -65,7 +61,7 @@ const JamboTranslationExtractor : Command<Args, ExecArgs> = class {
     };
   }
 
-  execute({ output, globs }: ExecArgs) {
+  execute({ output, globs }: { output: string, globs: string[] }) {
     if (globs && globs.length > 0) {
       this._extract(output, globs);
     } else {

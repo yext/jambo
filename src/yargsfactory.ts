@@ -1,4 +1,4 @@
-import yargs, { CommandModule } from 'yargs';
+import yargs, { CommandModule, Argv } from 'yargs';
 import PageScaffolder from './commands/page/add/pagescaffolder';
 import SitesGenerator from './commands/build/sitesgenerator';
 import { info, error } from './utils/logger';
@@ -9,8 +9,11 @@ import { JamboConfig } from './models/JamboConfig';
 import DescribeCommand from './commands/describe/describecommand';
 import PageCommand from './commands/page/add/pagecommand';
 import BuildCommand from './commands/build/buildcommand';
-import { ArgumentMetadata } from './models/commands/argumentmetadata';
-import { ArgumentMetadataLegacy, isArgumentMetadataLegacy } from './models/commands/argumentmetadatalegacy';
+import {
+  ArgumentMetadataImpl,
+  ArgumentMetadataRecord,
+  ConcreteArgumentMetadata
+} from './models/commands/concreteargumentmetadata';
 
 /**
  * Creates the {@link yargs} instance that powers the Jambo CLI.
@@ -27,8 +30,6 @@ class YargsFactory {
   /**
    * Generates a {@link yargs} instance with all of the built-in and custom
    * commands known to Jambo. 
-   * 
-   * @returns {import('yargs').Argv}
    */
   createCLI() {
     const cli = yargs
@@ -48,26 +49,22 @@ class YargsFactory {
   }
 
   /**
-   * @param {Class} commandClass A Jambo {@link Command}'s class.
-   * @returns {Object<string, ?>} The {@link yargs} CommandModule for the {@link Command}.
+   * @param commandClass A Jambo {@link Command}'s class.
+   * @returns The {@link yargs} CommandModule for the {@link Command}.
    */
-  _createCommandModule(commandClass: Command<any, any>): CommandModule {
+  _createCommandModule(commandClass: Command<ArgumentMetadataRecord>): CommandModule {
     return {
       command: commandClass.getAlias(),
       describe: commandClass.getShortDescription(),
       builder: yargs => {
-        Object.entries(commandClass.args())
-          .forEach(([name, argMetadata]: [string, ArgumentMetadata | ArgumentMetadataLegacy]) => {
-          let metadata: ArgumentMetadata;
-          if(isArgumentMetadataLegacy(argMetadata)) {
-            metadata = {
-              type: argMetadata.getType(),
-              description: argMetadata.getDescription(),
-              isRequired: argMetadata.isRequired(),
-              defaultValue: argMetadata.defaultValue()
-            }
-          } else {
-            metadata = argMetadata;
+        const args = Object.entries(commandClass.args())
+        args.forEach(([name, metadata]) => {
+          if (!(metadata instanceof ArgumentMetadataImpl)) {
+            throw new Error(
+              `The "${name}"" argument for the ${commandClass.getAlias()} command ` +
+              'is not an instance of a jambo ArgumentMetadata class.\n' +
+              'Please import and use one of them, for example `const { StringMetadata } = require(\'jambo\')`'
+            )
           }
           if (metadata.type === 'array') {
             this._addListOption(name, metadata, yargs);
@@ -95,11 +92,11 @@ class YargsFactory {
    * Adds an Array-type option to the provided Yargs instance. Note that this type of
    * option cannot be added with 'yargs.option'.
    * 
-   * @param {string} name The name of the option.
-   * @param {ArgumentMetadata} metadata The option's {@link ArgumentMetadata}.
-   * @param {import('yargs').Argv} yargs The Yargs instance to modify.
+   * @param name The name of the option.
+   * @param metadata The option's {@link ConcreteArgumentMetadata}.
+   * @param yargs The Yargs instance to modify.
    */
-  _addListOption(name: string, metadata: ArgumentMetadata, yargs: import('yargs').Argv) {
+  _addListOption(name: string, metadata: ConcreteArgumentMetadata, yargs: Argv) {
     yargs.array(name);
     const defaultValue = metadata.defaultValue || [];
 
@@ -109,16 +106,16 @@ class YargsFactory {
   }
 
   /**
-   * @param {Class} commandClass the class of the Jambo command
-   * @returns {Command} the instantiated Jambo command
+   * @param commandClass the class of the Jambo command
+   * @returns the instantiated Jambo command
    */
-  _createCommandInstance(commandClass) {
+  _createCommandInstance(commandClass: Command<any>) {
     const classAlias = commandClass.getAlias();
     let commandInstance;
     switch (classAlias) {
       case DescribeCommand.getAlias():
         commandInstance = new commandClass(
-          this._jamboConfig, 
+          this._jamboConfig,
           () => this._commandRegistry.getCommands()
         );
         break;

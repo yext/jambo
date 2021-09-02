@@ -13,30 +13,25 @@ import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import process from 'process';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command, { ArgsForExecute } from '../../models/commands/command';
+import Command from '../../models/commands/command';
+import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
-  themeUrl: {
-    type: 'string',
+  themeUrl: new StringMetadata({
     description: 'url of the theme\'s git repo',
-  },
-  theme: {
-    type:'string',
-    description: '(deprecated: specify the themeUrl instead)'
-      + ' the name of the theme to import',
-  },
-  useSubmodules: {
-    type: 'boolean',
+  }),
+  theme: new StringMetadata({
+    description: '(deprecated: specify the themeUrl instead) the name of the theme to import',
+  }),
+  useSubmodules: new BooleanMetadata({
     description: 'import the theme as a submodule'
-  },
-} as const;
-type Args = typeof args;
-type ExecArgs = ArgsForExecute<Args>;
+  }),
+};
 
 /**
  * ThemeImporter imports a specified theme into the themes directory.
  */
-const ThemeImporter : Command<Args, ExecArgs> = class {
+const ThemeImporter : Command<typeof args> = class {
   config: JamboConfig;
   private _themeShadower: ThemeShadower;
   private _postImportHook: 'postimport';
@@ -81,7 +76,11 @@ const ThemeImporter : Command<Args, ExecArgs> = class {
     }
   }
 
-  async execute(args: ExecArgs) {
+  async execute(args: {
+    themeUrl: string
+    theme: string
+    useSubmodules: boolean
+  }) {
     await this.import(args.themeUrl, args.theme, args.useSubmodules);
   }
 

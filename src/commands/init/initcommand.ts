@@ -1,34 +1,29 @@
-import { RepositoryScaffolder } from './repositoryscaffolder';
+import { RepositoryScaffolder, RepositorySettings } from './repositoryscaffolder';
 import ThemeManager from '../../utils/thememanager';
-import Command, { ArgsForExecute } from '../../models/commands/command';
+import Command from '../../models/commands/command';
+import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
-  themeUrl: {
-    type: 'string',
+  themeUrl: new StringMetadata({
     description: 'url of a theme\'s git repo to import during the init',
-  },
-  theme: {
-    type: 'string',
+  }),
+  theme: new StringMetadata({
     description: '(deprecated: specify the themeUrl instead)'
       + ' the name of a theme to import during the init',
     isRequired: false
-  },
-  useSubmodules: {
-    type: 'boolean', 
+  }),
+  useSubmodules: new BooleanMetadata({
     description: 'if starter theme should be imported as submodule'
-  },
-  includeTranslations: {
-    type: 'boolean', 
+  }),
+  includeTranslations: new BooleanMetadata({
     description: 'if a translations directory should be included'
-  }
-} as const;
-type Args = typeof args;
-type ExecArgs = ArgsForExecute<Args>;
+  })
+};
 
 /**
  * InitCommand initializes the current directory as a Jambo repository.
  */
-const InitCommand : Command<Args, ExecArgs> = class {
+const InitCommand: Command<typeof args> = class {
   static getAlias() {
     return 'init';
   }
@@ -67,7 +62,7 @@ const InitCommand : Command<Args, ExecArgs> = class {
     }
   }
 
-  async execute(args: ArgsForExecute<Args>) {
+  async execute(args: RepositorySettings) {
     const repositoryScaffolder = new RepositoryScaffolder();
     await repositoryScaffolder.create(args);
   }

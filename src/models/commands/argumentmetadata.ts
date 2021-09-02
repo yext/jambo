@@ -1,23 +1,10 @@
-/**
- * Defines the different kinds of arguments that are supported.
- */
-export type ArgumentType = 'string' | 'number' | 'boolean' | 'array';
+export type ArgumentType = string | number | boolean | string[] | number[] | boolean[];
 
 /**
- * An interface outlining the metadata for a {@link Command}'s argument. This includes
+ * The public interface outlining the metadata for a {@link Command}'s argument. This includes
  * the type of the argument's values, if it is required, and an optional default.
  */
-export interface ArgumentMetadata {
-  /**
-   * The type of the argument, e.g. 'string', 'boolean', etc.
-   */
-  type: ArgumentType
-
-  /**
-   * The type of the elements of an array argument.
-   */
-  itemType?: ArgumentType
-
+export interface ArgumentMetadata<T extends ArgumentType> {
   /**
    * The description of the argument.
    */
@@ -31,15 +18,10 @@ export interface ArgumentMetadata {
   /**
    * Optional, a default value for the argument.
    */
-  defaultValue?: string|boolean|number
+  defaultValue?: T
 
   /**
    * The display name for the argument.
    */
   displayName?: string
 }
-
-/**
- * Represents a record of argument names to metadata about that argument
- */
-export type ArgumentMetadataRecord = Record<string, ArgumentMetadata>;

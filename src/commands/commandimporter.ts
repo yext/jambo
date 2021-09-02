@@ -1,8 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { warn } from '../utils/logger';
-import Command from '../models/commands/command';
-import { JamboConfig } from '../models/JamboConfig';
+import LegacyAdapter from './LegacyAdapter';
 
 /**
  * Imports all custom {@link Command}s within a Jambo repository.
@@ -39,9 +38,7 @@ export default class CommandImporter {
         .forEach(filePath => {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           const requiredModule = require(filePath);
-          const commandClass = this._isLegacyImport(requiredModule) ?
-            this._handleLegacyImport(requiredModule) :
-            requiredModule;
+          const commandClass = new LegacyAdapter().adapt(requiredModule);
 
           if (this._validateCustomCommand(commandClass)) {
             customCommands.push(commandClass);
@@ -91,66 +88,18 @@ export default class CommandImporter {
         .filter(propName => typeof classObject[propName] === 'function');
 
       const staticMethods = getMethods(commandClass);
-      const expectedStaticMethods = 
+      const expectedStaticMethods =
         ['getAlias', 'getShortDescription', 'args', 'describe'];
 
       const instanceMethods = getMethods(commandClass.prototype);
       const expectedInstanceMethods = ['execute'];
 
-      isValidCommand = 
+      isValidCommand =
         expectedStaticMethods.every(method => staticMethods.includes(method)) &&
         expectedInstanceMethods.every(method => instanceMethods.includes(method));
     } catch {
       isValidCommand = false;
     }
     return isValidCommand;
-  }
-  
-  /**
-   * Verifies if the require'd module corresponds to a legacy command import.
-   * 
-   * @param {any} requiredModule The require'd module.
-   * @return {boolean} Boolean indicating if this is a legacy command import.
-   */
-  _isLegacyImport(requiredModule: any) {
-    return !('prototype' in requiredModule);
-  }
-
-  /**
-   * Creates an implementation of the current {@link Command} interface that wraps the
-   * result of a legacy command import.
-   * 
-   * @param {Function} commandCreator The function provided by a legacy command import.
-   * @returns {class} An implemenation of the current {@link Command} interface.
-   */
-  _handleLegacyImport(commandCreator: (jamboConfig: JamboConfig) => any) {
-    const cmd : Command<any, any> = class {
-      _wrappedInstance: any
-
-      constructor(jamboConfig) {
-        this._wrappedInstance = commandCreator(jamboConfig);
-      }
-
-      static getAlias() {
-        return commandCreator({}).getAlias();
-      }
-
-      static getShortDescription() {
-        return commandCreator({}).getShortDescription();
-      }
-
-      static args() {
-        return commandCreator({}).args();
-      }
-
-      static describe(jamboConfig) {
-        return commandCreator(jamboConfig).describe();
-      }
-
-      execute(args) {
-        return this._wrappedInstance.execute(args);
-      }
-    }
-    return cmd;
   }
 }

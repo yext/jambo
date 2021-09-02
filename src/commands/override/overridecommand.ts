@@ -3,22 +3,20 @@ import path from 'path';
 import fileSystem from 'file-system';
 import { ShadowConfiguration, ThemeShadower } from './themeshadower';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command, { ArgsForExecute } from '../../models/commands/command';
+import Command from '../../models/commands/command';
+import { StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
-  path: {
-    type: 'string',
+  path: new StringMetadata({
     description: 'path in the theme to override',
     isRequired: true
-  }
-} as const;
-type Args = typeof args;
-type ExecArgs = ArgsForExecute<Args>;
+  })
+};
 
 /**
  * OverrideCommand overrides a specific file in the theme.
  */
-const OverrideCommand : Command<Args, ExecArgs> = class {
+const OverrideCommand: Command<typeof args> = class {
   jamboConfig: JamboConfig;
   defaultTheme: string;
 
@@ -55,9 +53,9 @@ const OverrideCommand : Command<Args, ExecArgs> = class {
   }
 
   /**
-   * @returns {string[]} all theme files that can be overridden
+   * @returns all theme files that can be overridden
    */
-  static _getThemeFiles(jamboConfig) {
+  static _getThemeFiles(jamboConfig): string[] {
     const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     const defaultTheme = jamboConfig.defaultTheme;
 
@@ -76,7 +74,7 @@ const OverrideCommand : Command<Args, ExecArgs> = class {
     return themeFiles;
   }
 
-  execute(args: ExecArgs) {
+  execute(args: { path: string }) {
     const shadowConfiguration = new ShadowConfiguration(
       { ...args, theme: this.defaultTheme });
     const themeShadower = new ThemeShadower(this.jamboConfig);

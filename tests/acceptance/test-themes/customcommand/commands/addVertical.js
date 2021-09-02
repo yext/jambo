@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { StringMetadata, StringArrayMetadata } = require('../../../../../src/models/commands/concreteargumentmetadata');
 
 /**
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
@@ -29,33 +30,27 @@ module.exports = class VerticalAdder {
    */
   static args() {
     return {
-      name: {
-        itemType: 'string', 
+      name: new StringMetadata({
         description: 'name of the vertical\'s page', 
         isRequired: true
-      },
-      verticalKey: {
-        itemType: 'string', 
+      }),
+      verticalKey: new StringMetadata({
         description: 'the vertical\'s key', 
         isRequired: true
-      },
-      cardName: {
-        itemType: 'string', 
+      }),
+      cardName: new StringMetadata({
         description: 'card to use with vertical', 
         isRequired: false
-      },
-      template: {
-        itemType: 'string',
+      }),
+      template: new StringMetadata({
         description: 'page template to use within theme',
         isRequired: true
-      },
-      locales: {
-        type: 'array',
+      }),
+      locales: new StringArrayMetadata({
         description: 'additional locales to generate the page for',
         isRequired: false,
-        defaultValue: [],
-        itemType: 'string'
-      }
+        defaultValue: []
+      })
     };
   }
 

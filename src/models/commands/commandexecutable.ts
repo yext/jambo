@@ -1,13 +1,22 @@
-/**
- * The primitive types used by execute arguments
- */
-type Primitive = string | number | boolean;
+import {
+  ArgumentMetadataRecord,
+  BooleanArrayMetadata,
+  BooleanMetadata,
+  NumberArrayMetadata,
+  NumberMetadata,
+  StringArrayMetadata,
+  StringMetadata
+} from './concreteargumentmetadata';
 
-/**
- * Represents a record of argument names to their corresponding type
- */
- export type ExecArgumentRecord = {
-  [arg: string]: Primitive | Primitive[]
+type ExecArgs<T extends ArgumentMetadataRecord> = {
+  [arg in keyof T]:
+  T[arg] extends StringMetadata ? string :
+  T[arg] extends StringArrayMetadata ? string[] :
+  T[arg] extends BooleanMetadata ? boolean :
+  T[arg] extends BooleanArrayMetadata ? boolean[] :
+  T[arg] extends NumberMetadata ? number :
+  T[arg] extends NumberArrayMetadata ? number[] :
+  never;
 }
 
 /**
@@ -15,11 +24,11 @@ type Primitive = string | number | boolean;
  * of a Command instance. It requires a type T that defines the
  * arguments pass to execute()
  */
- export interface CommandExecutable<T extends ExecArgumentRecord> {
+export interface CommandExecutable<T extends ArgumentMetadataRecord> {
   /**
    * Executes the command with the provided arguments.
    * 
-   * @param {T} args The arguments passed to the execute command
+   * @param args The arguments passed to the execute command
    */
-  execute(args: T): any
+  execute(args: ExecArgs<T>): any
 }

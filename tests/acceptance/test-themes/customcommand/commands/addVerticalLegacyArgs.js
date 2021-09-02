@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 class ArgumentMetadata {
-  constructor({type, description, isRequired, defaultValue, itemType}) {
+  constructor({ type, description, isRequired, defaultValue, itemType }) {
     this._type = type;
     this._description = description;
     this._isRequired = isRequired;
@@ -43,7 +43,7 @@ module.exports = class VerticalAdder {
    * @returns {string} the alias for the add vertical command.
    */
   static getAlias() {
-    return 'verticalLegacy';
+    return 'verticalLegacyArgs';
   }
 
   /**
@@ -60,27 +60,32 @@ module.exports = class VerticalAdder {
   static args() {
     return {
       name: new ArgumentMetadata({
-        itemType: 'string', 
+        type: 'string', 
         description: 'name of the vertical\'s page', 
-        isRequired: true}),
+        isRequired: true
+      }),
       verticalKey: new ArgumentMetadata({
-        itemType: 'string', 
+        type: 'string', 
         description: 'the vertical\'s key', 
-        isRequired: true}),
+        isRequired: true
+      }),
       cardName: new ArgumentMetadata({
-        itemType: 'string', 
+        type: 'string', 
         description: 'card to use with vertical', 
-        isRequired: false}),
+        isRequired: false
+      }),
       template: new ArgumentMetadata({
-        itemType: 'string',
+        type: 'string',
         description: 'page template to use within theme',
-        isRequired: true}),
+        isRequired: true
+      }),
       locales: new ArgumentMetadata({
         type: 'array',
+        itemType: 'string',
         description: 'additional locales to generate the page for',
         isRequired: false,
-        defaultValue: [],
-        itemType: 'string'})
+        defaultValue: []
+      })
     };
   }
 
