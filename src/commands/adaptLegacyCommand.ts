@@ -19,7 +19,7 @@ export type LegacyCommand = (jamboConfig: JamboConfig) => {
 /**
  * Creates an implementation of the current {@link Command} interface that wraps the
  * result of a legacy command import.
- * 
+ *
  * @param {Function} commandCreator The function provided by a legacy command import.
  * @returns {class} An implemenation of the current {@link Command} interface.
  */

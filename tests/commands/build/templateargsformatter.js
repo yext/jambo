@@ -62,7 +62,7 @@ describe('TemplateArgsBuilder builds args for Handlebars Templates properly', ()
   });
 
   it('can use the templatedata hook in the theme for custom args', () => {
-    const templateDataFormatterPath = 
+    const templateDataFormatterPath =
       path.resolve(__dirname, '../../fixtures/hooks/templatedataformatter.js');
     const templateArgsBuilder = new TemplateArgsBuilder(templateDataFormatterPath);
     const args = templateArgsBuilder.buildArgs({

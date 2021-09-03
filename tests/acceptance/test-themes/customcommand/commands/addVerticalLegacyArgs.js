@@ -54,24 +54,24 @@ module.exports = class VerticalAdder {
   }
 
   /**
-   * @returns {Object<string, ArgumentMetadata>} description of each argument for 
+   * @returns {Object<string, ArgumentMetadata>} description of each argument for
    *                                             the add vertical command, keyed by name
    */
   static args() {
     return {
       name: new ArgumentMetadata({
-        type: 'string', 
-        description: 'name of the vertical\'s page', 
+        type: 'string',
+        description: 'name of the vertical\'s page',
         isRequired: true
       }),
       verticalKey: new ArgumentMetadata({
-        type: 'string', 
-        description: 'the vertical\'s key', 
+        type: 'string',
+        description: 'the vertical\'s key',
         isRequired: true
       }),
       cardName: new ArgumentMetadata({
-        type: 'string', 
-        description: 'card to use with vertical', 
+        type: 'string',
+        description: 'card to use with vertical',
         isRequired: false
       }),
       template: new ArgumentMetadata({
@@ -125,8 +125,8 @@ module.exports = class VerticalAdder {
 
 /**
  * Executes a command that creates an html file.
- * 
- * @param {Object<string, string>} args The arguments, keyed by name 
+ *
+ * @param {Object<string, string>} args The arguments, keyed by name
  */
   execute(args) {
     const content = args.name + args.template + args.verticalKey;

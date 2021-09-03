@@ -23,10 +23,10 @@ export default class TemplateDataValidator {
      */
     this._hasHook = fs.existsSync(this._templateDataValidationHook);
   }
-  
+
   /**
    * Execute validation hook's function if file exists
-   * 
+   *
    * @param {Object} page
    * @param {string} page.pageName name of the current page
    * @param {Object} page.pageData template arguments for the current page
@@ -46,7 +46,7 @@ export default class TemplateDataValidator {
       const validatorFunction = require(this._templateDataValidationHook);
       return validatorFunction(pageData, partials);
     } catch (err) {
-      const msg = 
+      const msg =
           `Error executing validation hook from ${this._templateDataValidationHook}: `;
       throw new UserError(msg, err.stack);
     }

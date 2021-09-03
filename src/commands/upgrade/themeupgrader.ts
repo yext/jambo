@@ -120,7 +120,7 @@ const ThemeUpgrader : Command<typeof args> = class {
       await this._upgradeSubmodule(themePath, branch)
     } else {
       const tempDir = fs.mkdtempSync('./');
-      try { 
+      try {
         fs.copySync(themePath, tempDir);
         await this._recloneTheme(themeName, themePath, branch);
         this._removeGitFolder(themePath);
@@ -148,7 +148,7 @@ const ThemeUpgrader : Command<typeof args> = class {
   /**
    * Removes the .git folder from the theme.
    *
-   * @param {string} themePath 
+   * @param {string} themePath
    */
   _removeGitFolder(themePath: string) {
     fsExtra.removeSync(path.join(themePath, '.git'));
@@ -175,7 +175,7 @@ const ThemeUpgrader : Command<typeof args> = class {
   /**
    * Calls "git update --remote" on the given submodule path, which
    * updates the given submodule to the most recent version of the branch
-   * it is set to track. If a branch is specified, the given submodule 
+   * it is set to track. If a branch is specified, the given submodule
    * will be updated to the provided branch.
    * @param {string} submodulePath
    * @param {string} branch

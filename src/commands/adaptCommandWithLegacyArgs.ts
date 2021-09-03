@@ -27,7 +27,7 @@ export interface CommandClassWithLegacyArguments extends Command<any>{
 /**
  * Creates an implementation of the current {@link Command} interface that wraps the
  * a command with legacy args.
- * 
+ *
  * @param commandToWrap a command with legacy arguments
  * @returns A wrapper command that handles transforming the args() output
  */
@@ -66,8 +66,8 @@ export default function adaptCommandWithLegacyArgs(
  * Given an record containing LegacyArgumentMetadata, adapt all legacy instances into
  * up to date ones.
  *
- * @param legacyArgs 
- * @returns 
+ * @param legacyArgs
+ * @returns
  */
 function adaptLegacyArguments(
   legacyArgs: Record<string, LegacyArgumentMetadata | ConcreteArgumentMetadata>
@@ -113,4 +113,4 @@ function createMetadataFromType(
     case 'array': return createArrayMetadata();
     default: throw new UserError(`Unrecognized legacy argument type ${type}`);
   }
-} 
+}

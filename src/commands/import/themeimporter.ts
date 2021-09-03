@@ -128,7 +128,7 @@ const ThemeImporter : Command<typeof args> = class {
   /**
    * Removes the .git folder from the theme.
    *
-   * @param {string} themePath 
+   * @param {string} themePath
    */
   _removeGitFolder(themePath: string) {
     fsExtra.removeSync(path.join(themePath, '.git'));
@@ -136,7 +136,7 @@ const ThemeImporter : Command<typeof args> = class {
 
   /**
    * Run the post import hook, if one exists.
-   * 
+   *
    * @param {string} themePath path to the default theme
    */
   _postImport(themePath: string) {

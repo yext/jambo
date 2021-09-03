@@ -29,7 +29,7 @@ class YargsFactory {
 
   /**
    * Generates a {@link yargs} instance with all of the built-in and custom
-   * commands known to Jambo. 
+   * commands known to Jambo.
    */
   createCLI() {
     const cli = yargs
@@ -91,7 +91,7 @@ class YargsFactory {
   /**
    * Adds an Array-type option to the provided Yargs instance. Note that this type of
    * option cannot be added with 'yargs.option'.
-   * 
+   *
    * @param name The name of the option.
    * @param metadata The option's {@link ConcreteArgumentMetadata}.
    * @param yargs The Yargs instance to modify.

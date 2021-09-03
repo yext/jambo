@@ -55,7 +55,7 @@ export function isValidPartialPath(path: string) {
  * For example, given a desiredFile 'upgrade', will look for
  * files like upgrade.js and upgrade.sh, and return the filename
  * of the first found.
- * 
+ *
  * @param {string} desiredFile
  * @param {string} directoryPath
  * @returns {string|undefined} the fileName, if it exists, otherwise undefined.

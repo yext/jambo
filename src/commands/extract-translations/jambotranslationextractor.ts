@@ -27,7 +27,7 @@ const args = {
 const JamboTranslationExtractor: Command<typeof args> = class {
   jamboConfig: JamboConfig
   extractor: TranslationExtractor
-  
+
   constructor(jamboConfig) {
     this.jamboConfig = jamboConfig;
     this.extractor = new TranslationExtractor();

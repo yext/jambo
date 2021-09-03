@@ -46,7 +46,7 @@ export default class PageWriter {
    * Writes a file to the output directory per page in the given PageSet.
    *
    * @param {PageSet} pageSet the collection of pages to generate
-   * @throws {UserError} on missing page config(s), validation hook execution 
+   * @throws {UserError} on missing page config(s), validation hook execution
    * failure, and invalid template data using Theme's validation hook
    */
   writePages(pageSet: PageSet) {
@@ -72,7 +72,7 @@ export default class PageWriter {
         locale: pageSet.getLocale(),
         env: this._env
       });
-      
+
       if(!this._templateDataValidator.validate({
         pageName: page.getName(),
         pageData: templateArguments,

@@ -21,7 +21,7 @@ class CommandRegistry {
   /**
    * Registers a new {@link Command} class with the CLI.
    *
-   * @param {Class} commandClass 
+   * @param {Class} commandClass
    */
   addCommand(commandClass: Command<any>) {
     this._commandsByName[commandClass.getAlias()] = commandClass;

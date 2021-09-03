@@ -29,7 +29,7 @@ interface InternalArrayMetadata {
 
 /**
  * The concrete metadata implementations are used to provide the type of argument at runtime,
- * by checking the `instanceof` for an ArgumentMetadata. 
+ * by checking the `instanceof` for an ArgumentMetadata.
  * This allows us to hide the "type" and "itemType" implementation details.
  */
 export class StringMetadata extends ArgumentMetadataImpl<string> implements InternalMetadata {

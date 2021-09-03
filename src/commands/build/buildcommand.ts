@@ -10,7 +10,7 @@ const args = {
     isRequired: false
   })
 };
-  
+
 /**
  * BuildCommand builds all pages in the Jambo repo and places them in the
  * public directory.

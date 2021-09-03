@@ -64,7 +64,7 @@ const OverrideCommand: Command<typeof args> = class {
     }
     const themeFiles = []
     fileSystem.recurseSync(
-      path.join(themesDir, defaultTheme), 
+      path.join(themesDir, defaultTheme),
       function(filepath, relative) {
         if (fs.statSync(filepath).isFile()) {
           themeFiles.push(relative);

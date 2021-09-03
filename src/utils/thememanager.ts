@@ -11,7 +11,7 @@ class ThemeManager {
   /**
    * Returns true if a theme name is known by Jambo
    *
-   * @param {string} themeName 
+   * @param {string} themeName
    * @returns {boolean}
    */
   static isThemeKnown(themeName: string) {
@@ -28,9 +28,9 @@ class ThemeManager {
 
   /**
    * Gets the repo for a given theme name
-   * 
+   *
    * @param {string} themeName The URL to a theme, or the name of a known theme.
-   * @returns 
+   * @returns
    */
   static getRepoForTheme(themeName: string) {
     if (!this.isThemeKnown(themeName)) {

@@ -48,7 +48,7 @@ export default class PageSet {
 
     /**
      * The chunk of the locale config pertaining the this PageSet's locale
-     * 
+     *
      * @type {Object}
      */
     this.currentLocaleConfig = currentLocaleConfig || {};

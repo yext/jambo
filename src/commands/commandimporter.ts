@@ -18,8 +18,8 @@ export default class CommandImporter {
   /**
    * Imports custom commands from the Theme (if one has been applied) and the top-level
    * of the Jambo repository. If a custom command is specified in both places, it is
-   * deduped, with the override in the top-level taking priority. 
-   * 
+   * deduped, with the override in the top-level taking priority.
+   *
    * @returns {Array<{Command}>} The imported {@link Command}s, ready to be registered
    *                             with Jambo.
    */
@@ -55,9 +55,9 @@ export default class CommandImporter {
 
   /**
    * Merges the provided custom command directories together. The resulting, merged
-   * directory is in 'public'. The order in which directories are provided matters, 
-   * later ones can overwrite existing files. 
-   * 
+   * directory is in 'public'. The order in which directories are provided matters,
+   * later ones can overwrite existing files.
+   *
    * @param {string[]} directories The directories to merge together.
    * @returns {string} The path of the merged output directory.
    */
@@ -77,7 +77,7 @@ export default class CommandImporter {
   /**
    * Validates an imported custom {@link Command} by ensuring the class has all
    * of the expected static and instance methods.
-   * 
+   *
    * @param {Command} commandClass The custom {@link Command}'s class
    * @returns {boolean} A boolean indicating if the custom {@Command} is valid.
    */

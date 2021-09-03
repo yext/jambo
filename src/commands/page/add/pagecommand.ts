@@ -31,7 +31,7 @@ const PageCommand: Command<typeof args> = class {
   defaultTheme: string;
   pageScaffolder: PageScaffolder;
 
-  constructor(jamboConfig: JamboConfig = {}, pageScaffolder) { 
+  constructor(jamboConfig: JamboConfig = {}, pageScaffolder) {
     this.jamboConfig = jamboConfig;
     this.defaultTheme = jamboConfig?.defaultTheme;
     this.pageScaffolder = pageScaffolder;
@@ -84,11 +84,11 @@ const PageCommand: Command<typeof args> = class {
       return [];
     }
     const currDirectory = process.cwd();
-    const pageTemplatesDir = 
+    const pageTemplatesDir =
       path.resolve(currDirectory, themesDir, defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
   }
-  
+
   /**
    * @returns The additional locales that are configured in locale_config.json
    */

@@ -19,7 +19,7 @@ export default class LegacyAdapter {
 
 /**
  * Checks whether a command is a legacy command.
- * 
+ *
  * @param command The require'd module.
  * @returns whether this is a legacy command import.
  */

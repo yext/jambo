@@ -4,8 +4,8 @@ import { CommandExecutable } from './commandexecutable';
 
 
 /**
- * An interface that represents a command in the Jambo CLI. 
- * Contains non static (CommandExecutable interface) and 
+ * An interface that represents a command in the Jambo CLI.
+ * Contains non static (CommandExecutable interface) and
  * static (specified in here) fields and methods.
  */
 export default interface Command<T extends ArgumentMetadataRecord> {
@@ -15,10 +15,10 @@ export default interface Command<T extends ArgumentMetadataRecord> {
    * The alias for the command.
    */
   getAlias(): string;
-  
+
   /**
    * A short, one sentence description of the command. This
-   * description appears as part of the help text in the CLI. 
+   * description appears as part of the help text in the CLI.
    */
    getShortDescription() : string;
 
@@ -29,7 +29,7 @@ export default interface Command<T extends ArgumentMetadataRecord> {
 
   /**
    * @param {Object} jamboConfig the config of the jambo repository
-   * @returns {Object} description of the card command, including paths to 
+   * @returns {Object} description of the card command, including paths to
    *                   all available cards
    */
   describe(jamboConfig: JamboConfig): any;

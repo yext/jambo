@@ -15,8 +15,8 @@ class EnvironmentVariableParser {
    * Computes the unserialized values of the environment variables. This method
    * takes in a parameter indicating which environment variables were serialized
    * as JSON. All other variables are assumed to correspond to simple strings.
-   * 
-   * @param {string[]} jsonEnvVars The environment variables serialized as JSON. 
+   *
+   * @param {string[]} jsonEnvVars The environment variables serialized as JSON.
    * @returns {Object} An object containing the unserialized values, keyed by
    *                   environment variable.
    */
@@ -36,7 +36,7 @@ class EnvironmentVariableParser {
   /**
    * Creates an instance of an {@link EnvironmentVariableParser} from the
    * process.env object.
-   * 
+   *
    * @returns {EnvironmentVariableParser} The new parser.
    */
   static create() {

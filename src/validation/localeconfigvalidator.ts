@@ -14,10 +14,10 @@ export default class LocaleConfigValidator {
      */
     this._localizationConfig = localizationConfig;
   }
-  
+
   /**
    * Performs a series of validation steps
-   * 
+   *
    * @throws {UserError} Thrown if validation fails
    */
   validate() {

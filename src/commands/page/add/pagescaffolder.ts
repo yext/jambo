@@ -21,7 +21,7 @@ class PageScaffolder {
 
     let configContents = {};
     if (theme && template) {
-      const rootTemplatePath = 
+      const rootTemplatePath =
         `${this.config.dirs.themes}/${theme}/templates/${template}`;
       fs.copyFileSync(`${rootTemplatePath}/page.html.hbs`, htmlFilePath);
 

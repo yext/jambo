@@ -17,7 +17,7 @@ export class CustomCommandExecuter {
   /**
    * Executes the provided {@link CustomCommand}. The result of the execution
    * is returned.
-   * 
+   *
    * @param {CustomCommand} command The command to execute in the shell.
    * @returns {Object} The result of executing the {@link CustomCommand}. This
    *                   object contains stdout, stderr, a status code, and an
@@ -38,7 +38,7 @@ export class CustomCommandExecuter {
 
   /**
    * Makes command line flags for all of the properties in the given jambo config.
-   * 
+   *
    * @param {Object} jamboConfig The Jambo config object.
    * @returns {Array} An array containing the flags to add to any {@link CustomCommand}.
    */
