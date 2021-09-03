@@ -5,7 +5,7 @@
     "./tests/setup/setup.js"
   ],
   "testMatch": [
-    "**/tests/**/*.js"
+    "**/tests/**/*.[j|t]s"
   ],
   "testPathIgnorePatterns": [
     "<rootDir>/tests/fixtures/",
