@@ -17,6 +17,7 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-trailing-spaces": "error",
+    "no-multiple-empty-lines": "error",
     "arrow-spacing": "error",
     "quotes": [
       "error",
