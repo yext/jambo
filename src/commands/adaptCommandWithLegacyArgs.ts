@@ -98,7 +98,7 @@ function getMetadataClassFromType(
   type: LegacyArgumentType,
   itemType?: LegacyArgumentItemType
 ): ConcreteMetadataClass  {
-  function createArrayMetadata() {
+  function getArrayMetadataType() {
     switch(itemType) {
       case 'string': return StringArrayMetadata
       case 'number': return NumberArrayMetadata
@@ -110,7 +110,7 @@ function getMetadataClassFromType(
     case 'string': return StringMetadata
     case 'number': return NumberMetadata
     case 'boolean': return BooleanMetadata
-    case 'array': return createArrayMetadata();
+    case 'array': return getArrayMetadataType();
     default: throw new UserError(`Unrecognized legacy argument type ${type}`);
   }
 }
