@@ -86,7 +86,7 @@ function adaptLegacyArguments(
         isRequired: legacyArg.isRequired(),
         defaultValue: legacyArg.defaultValue()
       }
-      const MetadataClass = createMetadataFromType(type, itemType);
+      const MetadataClass = getMetadataClassFromType(type, itemType);
       const adaptedMetadata = new MetadataClass(metadata);
       args[argName] = adaptedMetadata;
     }
@@ -94,7 +94,7 @@ function adaptLegacyArguments(
   return args;
 }
 
-function createMetadataFromType(
+function getMetadataClassFromType(
   type: LegacyArgumentType,
   itemType?: LegacyArgumentItemType
 ): ConcreteMetadataClass  {
