@@ -1,5 +1,5 @@
 import Command from '../models/commands/command';
-import { LegacyArgumentMetadata } from '../models/commands/legacyargumentmetadata';
+import { LegacyArgumentMetadata } from '../models/commands/LegacyArgumentMetadata';
 import { JamboConfig } from '../models/JamboConfig';
 import { CommandClassWithLegacyArguments } from './adaptCommandWithLegacyArgs';
 

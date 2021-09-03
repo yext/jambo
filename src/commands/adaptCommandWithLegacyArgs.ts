@@ -17,7 +17,7 @@ import {
   LegacyArgumentItemType,
   LegacyArgumentMetadata,
   LegacyArgumentType
-} from '../models/commands/legacyargumentmetadata';
+} from '../models/commands/LegacyArgumentMetadata';
 import { JamboConfig } from '../models/JamboConfig';
 
 export interface CommandClassWithLegacyArguments extends Command<any>{

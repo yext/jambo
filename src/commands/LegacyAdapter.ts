@@ -1,6 +1,6 @@
 import Command from '../models/commands/command';
 import { ArgumentMetadataImpl, ConcreteArgumentMetadata } from '../models/commands/concreteargumentmetadata';
-import { LegacyArgumentMetadata } from '../models/commands/legacyargumentmetadata';
+import { LegacyArgumentMetadata } from '../models/commands/LegacyArgumentMetadata';
 import adaptCommandWithLegacyArgs, { CommandClassWithLegacyArguments } from './adaptCommandWithLegacyArgs';
 import adaptLegacyCommand, { LegacyCommand } from './adaptLegacyCommand';
 
