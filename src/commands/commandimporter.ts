@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { warn } from '../utils/logger';
 import LegacyAdapter from './LegacyAdapter';
 
 /**
@@ -38,13 +37,8 @@ export default class CommandImporter {
         .forEach(filePath => {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           const requiredModule = require(filePath);
-          const commandClass = new LegacyAdapter().adapt(requiredModule);
-
-          if (this._validateCustomCommand(commandClass)) {
-            customCommands.push(commandClass);
-          } else {
-            warn(`Command in ${path.basename(filePath)} was not formatted properly`);
-          }
+          const commandClass = new LegacyAdapter().adapt(requiredModule, filePath);
+          customCommands.push(commandClass);
         });
 
       // Remove the merged commands directory from 'public' as it is no longer needed.
@@ -72,34 +66,5 @@ export default class CommandImporter {
     directories.forEach(directory => fs.copySync(directory, mergedDirectory));
 
     return mergedDirectory;
-  }
-
-  /**
-   * Validates an imported custom {@link Command} by ensuring the class has all
-   * of the expected static and instance methods.
-   *
-   * @param {Command} commandClass The custom {@link Command}'s class
-   * @returns {boolean} A boolean indicating if the custom {@Command} is valid.
-   */
-  _validateCustomCommand(commandClass) {
-    let isValidCommand;
-    try {
-      const getMethods = (classObject) => Object.getOwnPropertyNames(classObject)
-        .filter(propName => typeof classObject[propName] === 'function');
-
-      const staticMethods = getMethods(commandClass);
-      const expectedStaticMethods =
-        ['getAlias', 'getShortDescription', 'args', 'describe'];
-
-      const instanceMethods = getMethods(commandClass.prototype);
-      const expectedInstanceMethods = ['execute'];
-
-      isValidCommand =
-        expectedStaticMethods.every(method => staticMethods.includes(method)) &&
-        expectedInstanceMethods.every(method => instanceMethods.includes(method));
-    } catch {
-      isValidCommand = false;
-    }
-    return isValidCommand;
   }
 }
