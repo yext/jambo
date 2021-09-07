@@ -38,7 +38,7 @@ export default class CommandImporter {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           const requiredModule = require(filePath);
           const commandClass = new LegacyAdapter().adapt(requiredModule, filePath);
-          customCommands.push(commandClass);
+          commandClass && customCommands.push(commandClass);
         });
 
       // Remove the merged commands directory from 'public' as it is no longer needed.

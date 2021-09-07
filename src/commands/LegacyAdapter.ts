@@ -1,8 +1,8 @@
 import path from 'path';
-import UserError from '../errors/usererror';
 import Command from '../models/commands/command';
 import { ArgumentMetadataImpl, ConcreteArgumentMetadata } from '../models/commands/concreteargumentmetadata';
 import { LegacyArgumentMetadata } from '../models/commands/LegacyArgumentMetadata';
+import { warn } from '../utils/logger';
 import adaptCommandWithLegacyArgs, { CommandClassWithLegacyArguments } from './adaptCommandWithLegacyArgs';
 import adaptLegacyCommand, { LegacyCommand } from './adaptLegacyCommand';
 
@@ -12,10 +12,11 @@ export default class LegacyAdapter {
   adapt(
     command: IndeterminateCommand,
     filePath: string
-  ): Command<any> {
+  ): Command<any> | null {
     const commandClass = isLegacyCommand(command) ? adaptLegacyCommand(command) : command;
     if (!isValidCustomCommand(commandClass)) {
-      throw new UserError(`Command in ${path.basename(filePath)} was not formatted properly`);
+      warn(`Command in ${path.basename(filePath)} was not formatted properly`);
+      return null;
     }
     const commandClassWithModernArgs =
       isCommandClassWithLegacyArguments(commandClass)
