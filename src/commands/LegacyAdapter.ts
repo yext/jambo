@@ -33,12 +33,9 @@ function isCommandClassWithLegacyArguments(
   command: CommandClassWithLegacyArguments | Command<any>
 ): command is CommandClassWithLegacyArguments {
  function isLegacyArgs(args: Record<string, ConcreteArgumentMetadata | LegacyArgumentMetadata>) {
-    for (const metadata of Object.values(args)) {
-      if (!(metadata instanceof ArgumentMetadataImpl)) {
-        return true;
-      }
-    }
-    return false;
+   return Object.values(args).some(metadata => {
+     return !(metadata instanceof ArgumentMetadataImpl);
+   });
   }
   return isLegacyArgs(command.args());
 }

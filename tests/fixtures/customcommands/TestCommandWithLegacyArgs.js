@@ -2,8 +2,9 @@ const { LegacyArgumentMetadata, LegacyArgumentType } = require('./LegacyArgument
 
 /**
  * An LegacyCommand implementation for unit tests.
- * This is an example of our VERY FIRST version of custom commands, before updating all methods but
- * execute into static methods.
+ * This is an example of our second version of custom commands. This version updated the
+ * Command interface to have static methods for all methods except execute, but
+ * still uses ArgumentMetadata with getters.
  */
 module.exports = class CommandClass {
   constructor(jamboConfig) {
