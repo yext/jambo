@@ -14,7 +14,7 @@ export default class TemplateArgsBuilder {
      * The path to the template data formatter hook.
      * If a file exists at this path, TemplateArgsFormatter will
      * try to use it to format the template arguments.
-     * 
+     *
      * @type {string}
      */
     this.templateDataFormatterHook = templateDataFormatterHook;
@@ -22,7 +22,7 @@ export default class TemplateArgsBuilder {
 
   /**
    * Builds the template arguments for a given page.
-   * 
+   *
    * @param {string} relativePath the relativePath from page to the static assets,
    *                              e.g. ".", "..", "../.."
    * @param {string} pageName the name of the current page,
@@ -54,7 +54,7 @@ export default class TemplateArgsBuilder {
   }
 
   /**
-   * Returns the data after applying the template data hook 
+   * Returns the data after applying the template data hook
    * formatter on it.
    *
    * @param {Object} pageMetadata

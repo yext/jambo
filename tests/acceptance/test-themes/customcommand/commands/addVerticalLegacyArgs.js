@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 class ArgumentMetadata {
-  constructor({type, description, isRequired, defaultValue, itemType}) {
+  constructor({ type, description, isRequired, defaultValue, itemType }) {
     this._type = type;
     this._description = description;
     this._isRequired = isRequired;
@@ -43,7 +43,7 @@ module.exports = class VerticalAdder {
    * @returns {string} the alias for the add vertical command.
    */
   static getAlias() {
-    return 'verticalLegacy';
+    return 'verticalLegacyArgs';
   }
 
   /**
@@ -54,33 +54,38 @@ module.exports = class VerticalAdder {
   }
 
   /**
-   * @returns {Object<string, ArgumentMetadata>} description of each argument for 
+   * @returns {Object<string, ArgumentMetadata>} description of each argument for
    *                                             the add vertical command, keyed by name
    */
   static args() {
     return {
       name: new ArgumentMetadata({
-        itemType: 'string', 
-        description: 'name of the vertical\'s page', 
-        isRequired: true}),
+        type: 'string',
+        description: 'name of the vertical\'s page',
+        isRequired: true
+      }),
       verticalKey: new ArgumentMetadata({
-        itemType: 'string', 
-        description: 'the vertical\'s key', 
-        isRequired: true}),
+        type: 'string',
+        description: 'the vertical\'s key',
+        isRequired: true
+      }),
       cardName: new ArgumentMetadata({
-        itemType: 'string', 
-        description: 'card to use with vertical', 
-        isRequired: false}),
+        type: 'string',
+        description: 'card to use with vertical',
+        isRequired: false
+      }),
       template: new ArgumentMetadata({
-        itemType: 'string',
+        type: 'string',
         description: 'page template to use within theme',
-        isRequired: true}),
+        isRequired: true
+      }),
       locales: new ArgumentMetadata({
         type: 'array',
+        itemType: 'string',
         description: 'additional locales to generate the page for',
         isRequired: false,
-        defaultValue: [],
-        itemType: 'string'})
+        defaultValue: []
+      })
     };
   }
 
@@ -120,8 +125,8 @@ module.exports = class VerticalAdder {
 
 /**
  * Executes a command that creates an html file.
- * 
- * @param {Object<string, string>} args The arguments, keyed by name 
+ *
+ * @param {Object<string, string>} args The arguments, keyed by name
  */
   execute(args) {
     const content = args.name + args.template + args.verticalKey;

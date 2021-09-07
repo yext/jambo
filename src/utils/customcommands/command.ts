@@ -15,7 +15,7 @@ export class CustomCommand {
 
     /**
      * Add additional arguments for the executable.
-     * 
+     *
      * @param {Array} args The additional arguments.
      */
     addArgs(args: Array<string>) {
@@ -25,7 +25,7 @@ export class CustomCommand {
     /**
      * Provides the list of arguments to be used when the executable
      * is invoked.
-     * 
+     *
      * @returns {Array} The current arguments.
      */
     getArgs() {
@@ -34,7 +34,7 @@ export class CustomCommand {
 
     /**
      * Returns the executable to be invoked.
-     * 
+     *
      * @returns {string} The executable.
      */
     getExecutable() {
@@ -43,7 +43,7 @@ export class CustomCommand {
 
     /**
      * Provides the cwd to be used when executing the {@link CustomCommand}.
-     * 
+     *
      * @returns {string} The cwd.
      */
     getCwd() {

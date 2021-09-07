@@ -4,33 +4,29 @@ import { parse } from 'comment-json';
 import UserError from '../../../errors/usererror';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
-import Command, { ArgsForExecute } from '../../../models/commands/command';
+import { StringArrayMetadata, StringMetadata } from '../../../models/commands/concreteargumentmetadata';
+import Command from '../../../models/commands/command';
+import PageConfiguration from './pageconfiguration';
 
 const args = {
-  name: {
-    type: 'string',
+  name: new StringMetadata({
     description: 'name for the new files',
     isRequired: true
-  },
-  template: {
-    type: 'string',
+  }),
+  template: new StringMetadata({
     description: 'template to use within theme',
     isRequired: false
-  },
-  locales: {
-    type: 'array',
-    itemType: 'string',
+  }),
+  locales: new StringArrayMetadata({
     description: 'additional locales to generate the page for',
     isRequired: false
-  }
-} as const;
-type Args = typeof args;
-type ExecArgs = ArgsForExecute<Args>;
+  })
+};
 
 /**
  * PageCommand registers a new page with the specified name to be built by Jambo.
  */
-const PageCommand : Command<Args, ExecArgs> = class {
+const PageCommand: Command<typeof args> = class {
   jamboConfig: JamboConfig;
   defaultTheme: string;
   pageScaffolder: PageScaffolder;
@@ -79,25 +75,24 @@ const PageCommand : Command<Args, ExecArgs> = class {
   }
 
   /**
-   * @returns {string[]} The page templates available in the theme
+   * @returns The page templates available in the theme
    */
-  static _getPageTemplates(jamboConfig) {
+  static _getPageTemplates(jamboConfig): string[] {
     const defaultTheme = jamboConfig.defaultTheme;
     const themesDir = jamboConfig.dirs && jamboConfig.dirs.themes;
     if (!defaultTheme || !themesDir) {
       return [];
     }
     const currDirectory = process.cwd();
-    const pageTemplatesDir = 
+    const pageTemplatesDir =
       path.resolve(currDirectory, themesDir, defaultTheme, 'templates');
     return fs.readdirSync(pageTemplatesDir);
   }
-  
+
   /**
-   * @returns {string[]} The additional locales that are configured in 
-   *                          locale_config.json
+   * @returns The additional locales that are configured in locale_config.json
    */
-  static _getAdditionalPageLocales(jamboConfig) {
+  static _getAdditionalPageLocales(jamboConfig): string[] {
     if (!jamboConfig) {
       return [];
     }
@@ -130,7 +125,7 @@ const PageCommand : Command<Args, ExecArgs> = class {
     return pageLocales;
   }
 
-  execute(args: ExecArgs) {
+  execute(args: PageConfiguration) {
     const pageConfiguration = { ...args, theme: this.defaultTheme };
     try {
       this.pageScaffolder.create(pageConfiguration);

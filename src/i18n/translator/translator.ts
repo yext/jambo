@@ -139,7 +139,7 @@ class Translator {
   _generateMapOfPluralizationsToTranslations(
     locale: string,
     pluralRegex: RegExp,
-    translationKey: string): Record<string|number, string> 
+    translationKey: string): Record<string|number, string>
   {
     const localeTranslations =
         this._i18next.options.resources[locale].translation;

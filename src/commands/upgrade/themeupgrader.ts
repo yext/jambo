@@ -11,36 +11,32 @@ import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import { info } from '../../utils/logger';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command, { ArgsForExecute } from '../../models/commands/command';
+import Command from '../../models/commands/command';
+import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const git = simpleGit();
 const args = {
-  disableScript: {
-    type: 'boolean',
+  disableScript: new BooleanMetadata({
     description: 'disable execution of ./upgrade.js after the upgrade is done',
     isRequired: false
-  },
-  isLegacy: {
-    type: 'boolean',
+  }),
+  isLegacy: new BooleanMetadata({
     description: 'whether to pass the --isLegacy flag to ./upgrade.js',
     isRequired: false
-  },
-  branch: {
-    type: 'string',
+  }),
+  branch: new StringMetadata({
     description: 'the branch of the theme to upgrade to',
     isRequired: false,
     defaultValue: 'master'
-  }
-} as const;
-type Args = typeof args;
-type ExecArgs = ArgsForExecute<Args>;
+  })
+};
 
 /**
  * ThemeUpgrader is responsible for upgrading the current defaultTheme to the latest
  * version. It first detects whether the theme was imported as a submodule or raw files,
  * then handles the upgrade accordingly.
  */
-const ThemeUpgrader : Command<Args, ExecArgs> = class {
+const ThemeUpgrader : Command<typeof args> = class {
   jamboConfig: JamboConfig;
   private _themesDir: string;
   postUpgradeFileName: 'upgrade';
@@ -84,7 +80,11 @@ const ThemeUpgrader : Command<Args, ExecArgs> = class {
     }
   }
 
-  async execute(args: ExecArgs) {
+  async execute(args: {
+    disableScript: boolean,
+    isLegacy: boolean,
+    branch: string
+  }) {
     await this._upgrade({
       themeName: this.jamboConfig.defaultTheme,
       disableScript: args.disableScript,
@@ -105,7 +105,12 @@ const ThemeUpgrader : Command<Args, ExecArgs> = class {
    * @param {boolean} isLegacy Whether to use the isLegacy flag in the upgrade script
    * @param {string} branch The name of the branch to upgrade to
    */
-  async _upgrade({ themeName, disableScript, isLegacy, branch }: any) {
+  async _upgrade({ themeName, disableScript, isLegacy, branch }: {
+    themeName: string
+    disableScript: boolean,
+    isLegacy: boolean,
+    branch: string
+  }) {
     const themePath = path.join(this._themesDir, themeName);
     if (!fs.existsSync(themePath)) {
       throw new UserError(
@@ -115,7 +120,7 @@ const ThemeUpgrader : Command<Args, ExecArgs> = class {
       await this._upgradeSubmodule(themePath, branch)
     } else {
       const tempDir = fs.mkdtempSync('./');
-      try { 
+      try {
         fs.copySync(themePath, tempDir);
         await this._recloneTheme(themeName, themePath, branch);
         this._removeGitFolder(themePath);
@@ -143,7 +148,7 @@ const ThemeUpgrader : Command<Args, ExecArgs> = class {
   /**
    * Removes the .git folder from the theme.
    *
-   * @param {string} themePath 
+   * @param {string} themePath
    */
   _removeGitFolder(themePath: string) {
     fsExtra.removeSync(path.join(themePath, '.git'));
@@ -170,7 +175,7 @@ const ThemeUpgrader : Command<Args, ExecArgs> = class {
   /**
    * Calls "git update --remote" on the given submodule path, which
    * updates the given submodule to the most recent version of the branch
-   * it is set to track. If a branch is specified, the given submodule 
+   * it is set to track. If a branch is specified, the given submodule
    * will be updated to the provided branch.
    * @param {string} submodulePath
    * @param {string} branch

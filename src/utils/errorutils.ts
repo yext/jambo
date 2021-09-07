@@ -3,7 +3,7 @@ import SystemError from '../errors/systemerror';
 import { error } from './logger';
 
 /**
- * Print the error, and then forcefully end the 
+ * Print the error, and then forcefully end the
  * process with the specified exit code. Pending
  * async operations will be lost.
  * @param {Error} error

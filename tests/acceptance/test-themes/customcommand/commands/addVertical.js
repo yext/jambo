@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { StringMetadata, StringArrayMetadata } = require('../../../../../src/models/commands/concreteargumentmetadata');
 
 /**
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
@@ -24,38 +25,32 @@ module.exports = class VerticalAdder {
   }
 
   /**
-   * @returns {Object<string, ArgumentMetadata>} description of each argument for 
+   * @returns {Object<string, ArgumentMetadata>} description of each argument for
    *                                             the add vertical command, keyed by name
    */
   static args() {
     return {
-      name: {
-        itemType: 'string', 
-        description: 'name of the vertical\'s page', 
+      name: new StringMetadata({
+        description: 'name of the vertical\'s page',
         isRequired: true
-      },
-      verticalKey: {
-        itemType: 'string', 
-        description: 'the vertical\'s key', 
+      }),
+      verticalKey: new StringMetadata({
+        description: 'the vertical\'s key',
         isRequired: true
-      },
-      cardName: {
-        itemType: 'string', 
-        description: 'card to use with vertical', 
+      }),
+      cardName: new StringMetadata({
+        description: 'card to use with vertical',
         isRequired: false
-      },
-      template: {
-        itemType: 'string',
+      }),
+      template: new StringMetadata({
         description: 'page template to use within theme',
         isRequired: true
-      },
-      locales: {
-        type: 'array',
+      }),
+      locales: new StringArrayMetadata({
         description: 'additional locales to generate the page for',
         isRequired: false,
-        defaultValue: [],
-        itemType: 'string'
-      }
+        defaultValue: []
+      })
     };
   }
 
@@ -95,8 +90,8 @@ module.exports = class VerticalAdder {
 
 /**
  * Executes a command that creates an html file.
- * 
- * @param {Object<string, string>} args The arguments, keyed by name 
+ *
+ * @param {Object<string, string>} args The arguments, keyed by name
  */
   execute(args) {
     const content = args.name + args.template + args.verticalKey;

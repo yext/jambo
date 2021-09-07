@@ -17,9 +17,9 @@ export function canonicalizeLocale(localeCode: string) {
 /**
  * Parses a locale code into its constituent parts.
  * Performs case formatting on the result.
- * 
- * @param {string} localeCode 
- * @returns { language: string, modifier?: string, region?: string } 
+ *
+ * @param {string} localeCode
+ * @returns { language: string, modifier?: string, region?: string }
  */
 export function parseLocale(localeCode) {
   const localeCodeSections = localeCode.replace(/-/g, '_').split('_');
@@ -72,7 +72,7 @@ export function parseLocale(localeCode) {
  * @param {string} language zh in zh-Hans_CH
  * @param {string?} modifier Hans in zh-Hans_CH
  * @param {string?} region CH in zh-Hans_CH
- * @returns 
+ * @returns
  */
 function formatLocale(language, modifier, region) {
   let result = language.toLowerCase();

@@ -6,7 +6,7 @@ import TestInstance from './TestInstance';
 /**
  * Runs a test suite in a playground-[id] folder.
  *
- * @param {Function} testFunction 
+ * @param {Function} testFunction
  */
 export const runInPlayground = async function(testFunction, procrastinateCleanup = false) {
   const originalDir = cwd();

@@ -79,7 +79,7 @@ export default function registerHbsHelpers(hbs: typeof Handlebars) {
 
   hbs.registerHelper('babel', function(options) {
     const srcCode = options.fn(this);
-    
+
     if (process.env.IS_DEVELOPMENT_PREVIEW === 'true' ) {
       return srcCode;
     } else {

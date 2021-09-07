@@ -35,11 +35,11 @@ export default function buildJamboCLI(argv: string[]) {
 
 /**
  * Determines if custom {@link Command}s should be imported and added to the CLI instance.
- * 
- * @param {string} invokedCommand The Jambo command that was invoked from the 
+ *
+ * @param {string} invokedCommand The Jambo command that was invoked from the
  *                                command line.
  * @param {CommandRegistry} commandRegistry The registry containing all built-in commands.
- * @returns {boolean} If custom {@link Command}s need to be added to the CLI instance.    
+ * @returns {boolean} If custom {@link Command}s need to be added to the CLI instance.
  */
 function shouldImportCustomCommands(invokedCommand: string, commandRegistry: CommandRegistry) {
   const isCustomCommand =
@@ -54,7 +54,7 @@ function shouldImportCustomCommands(invokedCommand: string, commandRegistry: Com
 /**
  * Imports custom commands from the Theme and the top-level of the site repository.
  * The imported commands are added to the provided {@link CommandRegistry}.
- * 
+ *
  * @param {Object} jamboConfig The site's parsed Jambo configuration.
  * @param {CommandRegistry} commandRegistry The existing registry of built-in commands.
  */

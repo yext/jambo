@@ -12,7 +12,7 @@ import Command from '../models/commands/command';
  * A registry that maintains the built-in and custom commands for the Jambo CLI.
  */
 class CommandRegistry {
-  private _commandsByName: Record<string, Command<any, any>>
+  private _commandsByName: Record<string, Command<any>>
 
   constructor() {
     this._commandsByName = this._initialize();
@@ -21,9 +21,9 @@ class CommandRegistry {
   /**
    * Registers a new {@link Command} class with the CLI.
    *
-   * @param {Class} commandClass 
+   * @param {Class} commandClass
    */
-  addCommand(commandClass: Command<any, any>) {
+  addCommand(commandClass: Command<any>) {
     this._commandsByName[commandClass.getAlias()] = commandClass;
   }
 
@@ -55,7 +55,7 @@ class CommandRegistry {
    *
    * @returns {Map<string, Command>} The built-in commmands' classes, keyed by name.
    */
-  _initialize(): Record<string, any> {
+  _initialize(): Record<string, Command<any>> {
     return {
       [ InitCommand.getAlias() ]: InitCommand,
       [ ThemeImporter.getAlias() ]: ThemeImporter,

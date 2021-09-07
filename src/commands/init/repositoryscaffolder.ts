@@ -21,8 +21,8 @@ export interface RepositorySettings {
 export class RepositoryScaffolder {
   /**
    * This method scaffolds a new site repository based on the provided RepositorySettings
-   * object. The repository will include all directories needed by Jambo as well as the 
-   * Git infrastructure needed for source control. If a theme is specified, that will 
+   * object. The repository will include all directories needed by Jambo as well as the
+   * Git infrastructure needed for source control. If a theme is specified, that will
    * also be imported.
    *
    * @param {RepositorySettings} repositorySettings The settings for the new repository.
@@ -34,7 +34,7 @@ export class RepositoryScaffolder {
       await git.init();
       fs.writeFileSync('.gitignore', 'public/\nnode_modules/\n');
 
-      const includeTranslations = 
+      const includeTranslations =
         repositorySettings.includeTranslations;
       this._createDirectorySkeleton(includeTranslations);
       const jamboConfig = this._createJamboConfig(includeTranslations);
@@ -45,7 +45,7 @@ export class RepositoryScaffolder {
         const themeImporter = new ThemeImporter(jamboConfig);
         await themeImporter.execute({
           themeUrl,
-          theme, 
+          theme,
           useSubmodules: repositorySettings.useSubmodules
         });
       }
@@ -57,7 +57,7 @@ export class RepositoryScaffolder {
   /**
    * Initialize pages, config, themes, partials, and public directories.
    * Optionally initializes a translations directory as well.
-   * 
+   *
    * @param {boolean} includeTranslations Whether or not a translations directory
    *                                      should be included.
    */

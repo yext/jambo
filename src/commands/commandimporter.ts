@@ -1,8 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { warn } from '../utils/logger';
-import Command from '../models/commands/command';
-import { JamboConfig } from '../models/JamboConfig';
+import LegacyAdapter from './LegacyAdapter';
 
 /**
  * Imports all custom {@link Command}s within a Jambo repository.
@@ -19,8 +17,8 @@ export default class CommandImporter {
   /**
    * Imports custom commands from the Theme (if one has been applied) and the top-level
    * of the Jambo repository. If a custom command is specified in both places, it is
-   * deduped, with the override in the top-level taking priority. 
-   * 
+   * deduped, with the override in the top-level taking priority.
+   *
    * @returns {Array<{Command}>} The imported {@link Command}s, ready to be registered
    *                             with Jambo.
    */
@@ -39,15 +37,8 @@ export default class CommandImporter {
         .forEach(filePath => {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           const requiredModule = require(filePath);
-          const commandClass = this._isLegacyImport(requiredModule) ?
-            this._handleLegacyImport(requiredModule) :
-            requiredModule;
-
-          if (this._validateCustomCommand(commandClass)) {
-            customCommands.push(commandClass);
-          } else {
-            warn(`Command in ${path.basename(filePath)} was not formatted properly`);
-          }
+          const commandClass = new LegacyAdapter().adapt(requiredModule, filePath);
+          commandClass && customCommands.push(commandClass);
         });
 
       // Remove the merged commands directory from 'public' as it is no longer needed.
@@ -58,9 +49,9 @@ export default class CommandImporter {
 
   /**
    * Merges the provided custom command directories together. The resulting, merged
-   * directory is in 'public'. The order in which directories are provided matters, 
-   * later ones can overwrite existing files. 
-   * 
+   * directory is in 'public'. The order in which directories are provided matters,
+   * later ones can overwrite existing files.
+   *
    * @param {string[]} directories The directories to merge together.
    * @returns {string} The path of the merged output directory.
    */
@@ -75,82 +66,5 @@ export default class CommandImporter {
     directories.forEach(directory => fs.copySync(directory, mergedDirectory));
 
     return mergedDirectory;
-  }
-
-  /**
-   * Validates an imported custom {@link Command} by ensuring the class has all
-   * of the expected static and instance methods.
-   * 
-   * @param {Command} commandClass The custom {@link Command}'s class
-   * @returns {boolean} A boolean indicating if the custom {@Command} is valid.
-   */
-  _validateCustomCommand(commandClass) {
-    let isValidCommand;
-    try {
-      const getMethods = (classObject) => Object.getOwnPropertyNames(classObject)
-        .filter(propName => typeof classObject[propName] === 'function');
-
-      const staticMethods = getMethods(commandClass);
-      const expectedStaticMethods = 
-        ['getAlias', 'getShortDescription', 'args', 'describe'];
-
-      const instanceMethods = getMethods(commandClass.prototype);
-      const expectedInstanceMethods = ['execute'];
-
-      isValidCommand = 
-        expectedStaticMethods.every(method => staticMethods.includes(method)) &&
-        expectedInstanceMethods.every(method => instanceMethods.includes(method));
-    } catch {
-      isValidCommand = false;
-    }
-    return isValidCommand;
-  }
-  
-  /**
-   * Verifies if the require'd module corresponds to a legacy command import.
-   * 
-   * @param {any} requiredModule The require'd module.
-   * @return {boolean} Boolean indicating if this is a legacy command import.
-   */
-  _isLegacyImport(requiredModule: any) {
-    return !('prototype' in requiredModule);
-  }
-
-  /**
-   * Creates an implementation of the current {@link Command} interface that wraps the
-   * result of a legacy command import.
-   * 
-   * @param {Function} commandCreator The function provided by a legacy command import.
-   * @returns {class} An implemenation of the current {@link Command} interface.
-   */
-  _handleLegacyImport(commandCreator: (jamboConfig: JamboConfig) => any) {
-    const cmd : Command<any, any> = class {
-      _wrappedInstance: any
-
-      constructor(jamboConfig) {
-        this._wrappedInstance = commandCreator(jamboConfig);
-      }
-
-      static getAlias() {
-        return commandCreator({}).getAlias();
-      }
-
-      static getShortDescription() {
-        return commandCreator({}).getShortDescription();
-      }
-
-      static args() {
-        return commandCreator({}).args();
-      }
-
-      static describe(jamboConfig) {
-        return commandCreator(jamboConfig).describe();
-      }
-
-      execute(args) {
-        return this._wrappedInstance.execute(args);
-      }
-    }
-    return cmd;
   }
 }

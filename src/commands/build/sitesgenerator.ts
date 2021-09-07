@@ -131,7 +131,7 @@ class SitesGenerator {
 
     info('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
-    const translations = 
+    const translations =
       await this._extractTranslations(locales, configRegistry.getLocalizationConfig());
 
     // Register built-in Jambo Handlebars helpers.
@@ -321,7 +321,7 @@ class SitesGenerator {
     const translations = {};
 
     for (const locale of locales) {
-      const translationFileName = 
+      const translationFileName =
         localizationConfig.getTranslationFile(locale) || `${locale}.po`;
       const translationFilePath = path.join(translationsDir, translationFileName);
       const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());

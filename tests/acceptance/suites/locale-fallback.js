@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { runInPlayground } from '../setup/playground';
 
-it('check locale fallback functionality for page and config files', 
+it('check locale fallback functionality for page and config files',
   () => runInPlayground(async t => {
   await t.jambo('init');
   await t.jambo('import --themeUrl ../test-themes/locale-fallback');

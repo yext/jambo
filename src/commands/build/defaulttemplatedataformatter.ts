@@ -11,7 +11,7 @@
  * @param {string} siteLevelAttributes.locale the current locale
  * @param {Object} siteLevelAttributes.env
  *                 all environment variables, like JAMBO_INJECTED_DATA
- * 
+ *
  * @param {Object} pageNameToConfig
  *                 object of pageName to pageConfig, for all pages in localized page set
  */
@@ -35,8 +35,8 @@ export default function defaultTemplateDataFormatter(
 /**
  * Gets the global config, with experienceKey and locale added
  * to it from the currentLocaleConfig.
- * 
- * @param {Object} globalConfig 
+ *
+ * @param {Object} globalConfig
  * @param {any} currentLocaleConfig chunk of locale config for the current locale
  * @param {string} locale the current locale
  */

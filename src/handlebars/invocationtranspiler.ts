@@ -107,8 +107,8 @@ class InvocationTranspiler {
    * Constructs a string representation of a translatorResult Object. This output is
    * similar to JSON.stringiy(), however keys are not surrounded by quotes, and values
    * are surrounded by single quotes.
-   * 
-   * @param {Object<number,string>} translatorResult 
+   *
+   * @param {Object<number,string>} translatorResult
    * @returns {string}
    */
    _getFormattedPluralForms(translatorResult: { [n: number]: string; }) {
@@ -144,7 +144,7 @@ class InvocationTranspiler {
     translatorResult: any,
     interpolationValues: Record<string, unknown>,
     needsPluralization: boolean,
-    shouldEscapeHTML: boolean) 
+    shouldEscapeHTML: boolean)
   {
     const translationParams = needsPluralization ?
       Object.entries(translatorResult)

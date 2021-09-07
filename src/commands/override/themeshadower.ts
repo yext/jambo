@@ -5,7 +5,7 @@ import { JamboConfig } from '../../models/JamboConfig';
 
 /**
  * The ShadowConfiguration specifies what file(s) should be shadowed for a particular
- * theme. The configuration consists of a theme and a path within the theme. The path 
+ * theme. The configuration consists of a theme and a path within the theme. The path
  * indicates which file(s) in the Theme should have local shadows.
  */
 export class ShadowConfiguration {
@@ -31,9 +31,9 @@ export class ShadowConfiguration {
 }
 
 /**
- * The ThemeShadower takes a ShadowConfiguration and produces the necessary shadows. 
- * These shadows are copies of the original files and will take precedence over them 
- * when registering partials. This allows the convenient override of bits and 
+ * The ThemeShadower takes a ShadowConfiguration and produces the necessary shadows.
+ * These shadows are copies of the original files and will take precedence over them
+ * when registering partials. This allows the convenient override of bits and
  * pieces of a theme.
  */
 export class ThemeShadower {
@@ -55,7 +55,7 @@ export class ThemeShadower {
     } catch (err) {
       throw new UserError('Override failed', err.stack);
     }
-    
+
     addToPartials(path);
   }
 

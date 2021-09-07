@@ -72,7 +72,7 @@ export default class HbsHelperParser {
    * [3, 10, 14], which are the indices corresponding to the end
    * of each line.
    *
-   * @param {string} template 
+   * @param {string} template
    * @returns {number[]}
    */
   _getLineEndIndices(template: string) {
@@ -89,7 +89,7 @@ export default class HbsHelperParser {
 
   /**
    * Gets the original value for a given MustacheStatement.
-   * 
+   *
    * @param {hbs.AST.MustacheStatement} statement the statement to get the original of
    * @param {number[]} lineEndIndices the line end indices of the original template
    * @param {string} template the original template

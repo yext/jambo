@@ -12,7 +12,7 @@ export const getRepoNameFromURL = function(repoURL: string) {
 
 /**
  * Reads a gitignore.
- * 
+ *
  * @return {string[]}
  */
 export const readGitignorePaths = function() {

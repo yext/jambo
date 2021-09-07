@@ -25,5 +25,5 @@ it('tests upgrade fail', () => runInPlayground(async t => {
     /Remote branch fail not found in upstream origin/);
   const diff = await git.diff();
   expect(diff).toBe('');
-}));
+}), 15000);
 

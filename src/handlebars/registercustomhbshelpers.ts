@@ -11,7 +11,7 @@ import { stripExtension } from '../utils/fileutils';
  */
 export default async function registerCustomHbsHelpers(
   hbs: typeof Handlebars,
-  pathToCustomHelpers: string): Promise<void> 
+  pathToCustomHelpers: string): Promise<void>
 {
   const registerHelperPromises = fs.readdirSync(pathToCustomHelpers)
     .map(async filename => {

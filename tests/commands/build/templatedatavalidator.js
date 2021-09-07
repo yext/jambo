@@ -9,7 +9,7 @@ describe('TemplateDataValidator validates config data using hook properly', () =
     pageSettings: { search: { verticalKey: 'examplePage', defaultInitialSearch: '' } },
     componentSettings: {
       prop: 'example1',
-    }, 
+    },
     verticalsToConfig: {
       examplePage: {
         prop: 'example2'
@@ -72,7 +72,7 @@ describe('TemplateDataValidator validates config data using hook properly', () =
         params : params,
         relativePath: relativePath,
         env: env
-    }; 
+    };
 
     const isValid = new TemplateDataValidator(templateDataValidationHook).validate({
         pageName: 'examplePage',
