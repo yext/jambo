@@ -30,6 +30,11 @@ export function parseJamboConfig(): JamboConfig {
     throw new UserError('Error parsing jambo.json', err.stack);
   }
 }
+// Unfortunately, we need this for backwards compatibility purposes. We used to
+// declare many of our helpers on the global namespace, and the global parseJamboConfig
+// was actually being referenced in answers-hitchhiker-theme
+// (see PRs #19 in @yext/jambo and #364 in @yext/answers-hitchhiker-theme)
+globalThis.parseJamboConfig = parseJamboConfig;
 
 /**
  * Registers a new set of Handlebars partials in the Jambo configuration
