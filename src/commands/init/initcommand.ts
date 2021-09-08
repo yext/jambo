@@ -2,6 +2,7 @@ import { RepositoryScaffolder, RepositorySettings } from './repositoryscaffolder
 import ThemeManager from '../../utils/thememanager';
 import Command from '../../models/commands/Command';
 import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 
 const args = {
   themeUrl: new StringMetadata({
@@ -36,7 +37,7 @@ const InitCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe() {
+  static describe(): DescribeDefinition<typeof args> {
     const importableThemes = ThemeManager.getKnownThemes();
     return {
       displayName: 'Initialize Jambo',
@@ -56,7 +57,7 @@ const InitCommand: Command<typeof args> = class {
           displayName: 'Include Translations'
         }
       }
-    } as const;
+    };
   }
 
   async execute(args: RepositorySettings) {

@@ -14,6 +14,7 @@ import process from 'process';
 import { JamboConfig } from '../../models/JamboConfig';
 import Command from '../../models/commands/Command';
 import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 
 const args = {
   themeUrl: new StringMetadata({
@@ -51,7 +52,7 @@ const ThemeImporter: Command<typeof args> = class {
     return args;
   }
 
-  static describe() {
+  static describe(): DescribeDefinition<typeof args> {
     const importableThemes = ThemeManager.getKnownThemes();
     return {
       displayName: 'Import Theme',
@@ -68,7 +69,7 @@ const ThemeImporter: Command<typeof args> = class {
           displayName: 'Use Submodules',
         }
       }
-    } as const;
+    };
   }
 
   async execute(args: {

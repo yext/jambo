@@ -5,6 +5,7 @@ import { readGitignorePaths } from '../../utils/gitutils';
 import { JamboConfig } from '../../models/JamboConfig';
 import Command from '../../models/commands/Command';
 import { StringArrayMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 
 const args = {
   globs: new StringArrayMetadata({
@@ -43,7 +44,7 @@ const JamboTranslationExtractor: Command<typeof args> = class {
     return args;
   }
 
-  static describe() {
+  static describe(): DescribeDefinition<typeof args> {
     return {
       displayName: 'Extract Translations',
       params: {

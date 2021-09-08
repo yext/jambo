@@ -3,6 +3,7 @@ import { isCustomError } from '../../utils/errorutils';
 import SitesGenerator from './sitesgenerator';
 import Command from '../../models/commands/Command';
 import { StringArrayMetadata } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 
 const args = {
   jsonEnvVars: new StringArrayMetadata({
@@ -34,7 +35,7 @@ const BuildCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe() {
+  static describe(): DescribeDefinition<typeof args> {
     return {
       displayName: 'Build Pages'
     }

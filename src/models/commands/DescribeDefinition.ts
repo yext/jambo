@@ -29,16 +29,30 @@ export type DescribeDefinitionParam<T extends ConcreteArgumentMetadata> =
   T extends NumberMetadata ? DescribeParamForPrimitive<'number'> :
   never;
 
-interface DescribeParamForPrimitive<T extends 'string' | 'number' | 'boolean'> {
+type DeprecatedDescribeParamTypes = 'string' | 'number' | 'boolean'
+
+type DescribeParamForPrimitive<T extends 'string' | 'number' | 'boolean'> = {
   displayName: string
   options?: StringToPrimitiveType<T>[]
-  type?: 'singleoption' | 'filesystem'
+  /**
+   * @note 'string', 'number', and 'boolean' are deprecated
+   * These types can be automatically inferred from Command.args()
+   **/
+  type?: 'singleoption' | 'filesystem' | DeprecatedDescribeParamTypes
+  /** @deprecated - specify in Command.args() instead */
+  required?: boolean,
+  /** @deprecated - specify in Command.args() instead */
+  default?: StringToPrimitiveType<T>
 }
 
 interface DescribeParamForArray<T extends 'string' | 'number' | 'boolean'> {
   displayName: string
   options?: StringToPrimitiveType<T>[]
   type?: 'multioption'
+  /** @deprecated - specify in Command.args() instead */
+  required?: boolean,
+  /** @deprecated - specify in Command.args() instead */
+  default?: StringToPrimitiveType<T>[]
 }
 
 type StringToPrimitiveType<T extends 'string' | 'number' | 'boolean'> = {
