@@ -1,4 +1,4 @@
-import fs from 'file-system';
+import fs from 'fs';
 import path from 'path';
 import { parseJamboConfig } from './utils/jamboconfigutils';
 import CommandRegistry from './commands/commandregistry';

@@ -6,7 +6,7 @@ import DescribeCommand from '../commands/describe/describecommand';
 import JamboTranslationExtractor from './extract-translations/jambotranslationextractor';
 import ThemeImporter from './import/themeimporter';
 import ThemeUpgrader from './upgrade/themeupgrader';
-import Command from '../models/commands/command';
+import Command from '../models/commands/Command';
 
 /**
  * A registry that maintains the built-in and custom commands for the Jambo CLI.

@@ -3,18 +3,16 @@ import { info } from '../../utils/logger';
 import DefaultTranslationGlobber from './defaulttranslationglobber';
 import { readGitignorePaths } from '../../utils/gitutils';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { StringArrayMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
   globs: new StringArrayMetadata({
-    displayName: 'Globs to Scan',
     description:
       'specify globs to scan for translations, instead of using the defaults',
     isRequired: false
   }),
   output: new StringMetadata({
-    displayName: 'Output Path',
     description: 'the output path to extract the .pot file to',
     isRequired: false,
     defaultValue: 'messages.pot'
@@ -48,16 +46,14 @@ const JamboTranslationExtractor: Command<typeof args> = class {
   static describe() {
     return {
       displayName: 'Extract Translations',
-      params: Object.keys(args).reduce((params, alias) => {
-        params[alias] = {
-          displayName: args[alias].displayName,
-          type: args[alias].type,
-          required: args[alias].isRequired,
-          default: args[alias].defaultValue,
-
+      params: {
+        globs: {
+          displayName: 'Globs to Scan',
+        },
+        output: {
+          displayName: 'Output Path',
         }
-        return params;
-      }, {})
+      }
     };
   }
 

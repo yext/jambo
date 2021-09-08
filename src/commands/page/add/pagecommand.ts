@@ -5,7 +5,7 @@ import UserError from '../../../errors/usererror';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
 import { StringArrayMetadata, StringMetadata } from '../../../models/commands/concreteargumentmetadata';
-import Command from '../../../models/commands/command';
+import Command from '../../../models/commands/Command';
 import PageConfiguration from './pageconfiguration';
 
 const args = {
@@ -56,9 +56,7 @@ const PageCommand: Command<typeof args> = class {
       displayName: 'Add Page',
       params: {
         name: {
-          displayName: 'Page Name',
-          type: 'string',
-          required: true
+          displayName: 'Page Name'
         },
         template: {
           displayName: 'Page Template',
@@ -70,8 +68,8 @@ const PageCommand: Command<typeof args> = class {
           type: 'multioption',
           options: pageLocales
         }
-      }
-    }
+      } as const
+    };
   }
 
   /**

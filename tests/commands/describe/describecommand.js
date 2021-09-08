@@ -1,8 +1,19 @@
 import DescribeCommand from '../../../src/commands/describe/describecommand';
+import { BooleanMetadata, StringMetadata } from '../../../src/models/commands/concreteargumentmetadata';
 
 const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 const mockJamboConfig = {};
 const mockInitCommand = {
+  args() {
+    return {
+      theme: new StringMetadata({
+        description: 'the theme'
+      }),
+      useSubmodules: new BooleanMetadata({
+        description: 'use submodules'
+      })
+    }
+  },
   getAlias() {
     return 'init';
   },
@@ -17,7 +28,6 @@ const mockInitCommand = {
         },
         useSubmodules: {
           displayName: 'Use Submodules',
-          type: 'boolean'
         }
       }
     }

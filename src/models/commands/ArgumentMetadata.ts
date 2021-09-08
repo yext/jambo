@@ -19,9 +19,4 @@ export interface ArgumentMetadata<T extends ArgumentType> {
    * Optional, a default value for the argument.
    */
   defaultValue?: T
-
-  /**
-   * The display name for the argument.
-   */
-  displayName?: string
 }

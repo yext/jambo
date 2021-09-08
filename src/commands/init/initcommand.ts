@@ -1,6 +1,6 @@
 import { RepositoryScaffolder, RepositorySettings } from './repositoryscaffolder';
 import ThemeManager from '../../utils/thememanager';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
@@ -42,8 +42,7 @@ const InitCommand: Command<typeof args> = class {
       displayName: 'Initialize Jambo',
       params: {
         themeUrl: {
-          displayName: 'URL',
-          type: 'string',
+          displayName: 'URL'
         },
         theme: {
           displayName: 'Theme',
@@ -51,15 +50,13 @@ const InitCommand: Command<typeof args> = class {
           options: importableThemes
         },
         useSubmodules: {
-          displayName: 'Use Submodules',
-          type: 'boolean'
+          displayName: 'Use Submodules'
         },
         includeTranslations: {
-          displayName: 'Include Translations',
-          type: 'boolean'
-        },
+          displayName: 'Include Translations'
+        }
       }
-    }
+    } as const;
   }
 
   async execute(args: RepositorySettings) {

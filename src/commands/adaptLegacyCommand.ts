@@ -1,4 +1,4 @@
-import Command from '../models/commands/command';
+import Command from '../models/commands/Command';
 import { LegacyArgumentMetadata } from '../models/commands/LegacyArgumentMetadata';
 import { JamboConfig } from '../models/JamboConfig';
 import { CommandClassWithLegacyArguments } from './adaptCommandWithLegacyArgs';
@@ -12,7 +12,7 @@ export type LegacyCommand = (jamboConfig: JamboConfig) => {
   getAlias: () => string
   getShortDescription: () => string
   args: () => Record<string, LegacyArgumentMetadata>
-  describe: () => void
+  describe: () => any
   execute: (params: any) => void
 }
 

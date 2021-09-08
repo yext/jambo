@@ -1,7 +1,7 @@
 import UserError from '../../errors/usererror';
 import { isCustomError } from '../../utils/errorutils';
 import SitesGenerator from './sitesgenerator';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { StringArrayMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
@@ -15,7 +15,7 @@ const args = {
  * BuildCommand builds all pages in the Jambo repo and places them in the
  * public directory.
  */
-const BuildCommand : Command<typeof args> = class {
+const BuildCommand: Command<typeof args> = class {
   sitesGenerator: SitesGenerator;
 
   constructor(sitesGenerator) {
@@ -40,7 +40,7 @@ const BuildCommand : Command<typeof args> = class {
     }
   }
 
-  async execute(args: { jsonEnvVars: string[] }): Promise<any> {
+  async execute(args: { jsonEnvVars: string[] }): Promise<void> {
     try {
       await this.sitesGenerator.generate(args.jsonEnvVars);
     } catch (err) {

@@ -3,7 +3,7 @@ import path from 'path';
 import fileSystem from 'file-system';
 import { ShadowConfiguration, ThemeShadower } from './themeshadower';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
@@ -45,11 +45,10 @@ const OverrideCommand: Command<typeof args> = class {
         path: {
           displayName: 'Path to Override',
           type: 'filesystem',
-          required: true,
           options: themeFiles
         }
       }
-    }
+    } as const;
   }
 
   /**

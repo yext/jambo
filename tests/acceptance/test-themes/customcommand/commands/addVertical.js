@@ -62,14 +62,10 @@ module.exports = class VerticalAdder {
       displayName: 'Add Vertical',
       params: {
         name: {
-          displayName: 'Page Name',
-          required: true,
-          type: 'string'
+          displayName: 'Page Name'
         },
         verticalKey: {
-          displayName: 'Vertical Key',
-          required: true,
-          type: 'string',
+          displayName: 'Vertical Key'
         },
         cardName: {
           displayName: 'Card Name',
@@ -77,7 +73,6 @@ module.exports = class VerticalAdder {
         },
         template: {
           displayName: 'Page Template',
-          required: true,
           type: 'singleoption'
         },
         locales: {

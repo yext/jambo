@@ -12,7 +12,7 @@ import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import process from 'process';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
 
 const args = {
@@ -30,7 +30,7 @@ const args = {
 /**
  * ThemeImporter imports a specified theme into the themes directory.
  */
-const ThemeImporter : Command<typeof args> = class {
+const ThemeImporter: Command<typeof args> = class {
   config: JamboConfig;
   private _postImportHook: 'postimport';
 
@@ -58,7 +58,6 @@ const ThemeImporter : Command<typeof args> = class {
       params: {
         themeUrl: {
           displayName: 'URL',
-          type: 'string',
         },
         theme: {
           displayName: 'Theme',
@@ -67,10 +66,9 @@ const ThemeImporter : Command<typeof args> = class {
         },
         useSubmodules: {
           displayName: 'Use Submodules',
-          type: 'boolean'
         }
       }
-    }
+    } as const;
   }
 
   async execute(args: {
