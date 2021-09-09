@@ -3,23 +3,24 @@
     "displayName": "Initialize Jambo",
     "params": {
       "themeUrl": {
-        "displayName": "URL",
-        "type": "string"
+        "type": "string",
+        "displayName": "URL"
       },
       "theme": {
-        "displayName": "Theme",
+        "required": false,
         "type": "singleoption",
+        "displayName": "Theme",
         "options": [
           "answers-hitchhiker-theme"
         ]
       },
-      "includeTranslations": {
-        "displayName": "Include Translations",
-        "type": "boolean"
-      },
       "useSubmodules": {
-        "displayName": "Use Submodules",
-        "type": "boolean"
+        "type": "boolean",
+        "displayName": "Use Submodules"
+      },
+      "includeTranslations": {
+        "type": "boolean",
+        "displayName": "Include Translations"
       }
     }
   },
@@ -27,19 +28,19 @@
     "displayName": "Import Theme",
     "params": {
       "themeUrl": {
-        "displayName": "URL",
-        "type": "string"
+        "type": "string",
+        "displayName": "URL"
       },
       "theme": {
-        "displayName": "Theme",
         "type": "singleoption",
+        "displayName": "Theme",
         "options": [
           "answers-hitchhiker-theme"
         ]
       },
       "useSubmodules": {
-        "displayName": "Use Submodules",
-        "type": "boolean"
+        "type": "boolean",
+        "displayName": "Use Submodules"
       }
     }
   },
@@ -47,20 +48,22 @@
     "displayName": "Add Page",
     "params": {
       "name": {
-        "displayName": "Page Name",
+        "required": true,
         "type": "string",
-        "required": true
+        "displayName": "Page Name"
       },
       "template": {
-        "displayName": "Page Template",
+        "required": false,
         "type": "singleoption",
+        "displayName": "Page Template",
         "options": [
           "describe-template"
         ]
       },
       "locales": {
-        "displayName": "Additional Page Locales",
+        "required": false,
         "type": "multioption",
+        "displayName": "Additional Page Locales",
         "options": []
       }
     }
@@ -69,9 +72,9 @@
     "displayName": "Override Theme",
     "params": {
       "path": {
-        "displayName": "Path to Override",
-        "type": "filesystem",
         "required": true,
+        "type": "filesystem",
+        "displayName": "Path to Override",
         "options": [
           "commands/addVertical.js",
           "commands/addVerticalLegacyArgs.js",
@@ -85,19 +88,40 @@
   "build": {
     "displayName": "Build Pages"
   },
+  "upgrade": {
+    "displayName": "Upgrade Theme",
+    "params": {
+      "isLegacy": {
+        "required": false,
+        "type": "boolean",
+        "displayName": "Is Legacy Upgrade"
+      },
+      "disableScript": {
+        "required": false,
+        "type": "boolean",
+        "displayName": "Disable Upgrade Script"
+      },
+      "branch": {
+        "required": false,
+        "default": "master",
+        "type": "string",
+        "displayName": "Branch of theme to upgrade to"
+      }
+    }
+  },
   "extract-translations": {
     "displayName": "Extract Translations",
     "params": {
       "globs": {
-        "displayName": "Globs to Scan",
         "required": false,
-        "type": "array"
+        "type": "array",
+        "displayName": "Globs to Scan"
       },
       "output": {
-        "displayName": "Output Path",
-        "type": "string",
         "required": false,
-        "default": "messages.pot"
+        "default": "messages.pot",
+        "type": "string",
+        "displayName": "Output Path"
       }
     }
   },
@@ -105,27 +129,30 @@
     "displayName": "Add Vertical",
     "params": {
       "name": {
-        "displayName": "Page Name",
         "required": true,
-        "type": "string"
+        "type": "string",
+        "displayName": "Page Name"
       },
       "verticalKey": {
-        "displayName": "Vertical Key",
         "required": true,
-        "type": "string"
+        "type": "string",
+        "displayName": "Vertical Key"
       },
       "cardName": {
-        "displayName": "Card Name",
-        "type": "singleoption"
+        "required": false,
+        "type": "singleoption",
+        "displayName": "Card Name"
       },
       "template": {
-        "displayName": "Page Template",
         "required": true,
-        "type": "singleoption"
+        "type": "singleoption",
+        "displayName": "Page Template"
       },
       "locales": {
-        "displayName": "Additional Page Locales",
-        "type": "multioption"
+        "required": false,
+        "default": [],
+        "type": "multioption",
+        "displayName": "Additional Page Locales"
       }
     }
   },
@@ -133,45 +160,30 @@
     "displayName": "Add Vertical",
     "params": {
       "name": {
-        "displayName": "Page Name",
         "required": true,
-        "type": "string"
+        "type": "string",
+        "displayName": "Page Name"
       },
       "verticalKey": {
-        "displayName": "Vertical Key",
         "required": true,
-        "type": "string"
+        "type": "string",
+        "displayName": "Vertical Key"
       },
       "cardName": {
-        "displayName": "Card Name",
-        "type": "singleoption"
+        "required": false,
+        "type": "singleoption",
+        "displayName": "Card Name"
       },
       "template": {
-        "displayName": "Page Template",
         "required": true,
-        "type": "singleoption"
+        "type": "singleoption",
+        "displayName": "Page Template"
       },
       "locales": {
-        "displayName": "Additional Page Locales",
-        "type": "multioption"
-      }
-    }
-  },
-  "upgrade": {
-    "displayName": "Upgrade Theme",
-    "params": {
-      "isLegacy": {
-        "displayName": "Is Legacy Upgrade",
-        "type": "boolean"
-      },
-      "disableScript": {
-        "displayName": "Disable Upgrade Script",
-        "type": "boolean"
-      },
-      "branch": {
-        "displayName": "Branch of theme to upgrade to",
-        "type": "string",
-        "default": "master"
+        "required": false,
+        "default": [],
+        "type": "multioption",
+        "displayName": "Additional Page Locales"
       }
     }
   }

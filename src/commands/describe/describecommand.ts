@@ -1,13 +1,16 @@
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
+import { ArgumentMetadataRecord } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 import { JamboConfig } from '../../models/JamboConfig';
+import DescribeOutput from './DescribeOutput';
 
 /**
  * DescribeCommand outputs JSON that describes all registered Jambo commands
  * and their possible arguments.
  */
-const DescribeCommand : Command<any> = class {
+const DescribeCommand: Command<any> = class {
   private _jamboConfig: JamboConfig
-  getCommands: () => Command<any>[]
+  getCommands: () => Command<ArgumentMetadataRecord>[]
 
   constructor(jamboConfig, getCommands) {
     /**
@@ -33,35 +36,70 @@ const DescribeCommand : Command<any> = class {
    * The describe command filters its own describe out of the jambo describe output.
    */
   static describe() {
-    return {};
+    return null;
   }
 
   async execute() {
-    const descriptions = await this._getCommandDescriptions();
+    const descriptions = await this.getCommandDescriptions();
     console.log(JSON.stringify(descriptions, null, 2));
   }
 
   /**
    * Returns the descriptions of all registered Commands
    */
-  _getCommandDescriptions() {
+  private getCommandDescriptions() {
     const descriptions = {};
-    const describePromises = this.getCommands().map(
-      command => {
-        const describeValue = command.describe(this._jamboConfig);
-        if (describeValue.then && typeof describeValue.then === 'function') {
-          return describeValue.then(
-            (value) => { descriptions[command.getAlias()] = value; }
-          );
-        } else {
-          if (command.getAlias() !== 'describe') {
-            descriptions[command.getAlias()] = describeValue;
-          }
-        }
+    const commands = this.getCommands();
+    const describePromises = commands.map(command => {
+      const recordDescription = (value: DescribeDefinition) => {
+        descriptions[command.getAlias()] = this.calculateDescribeOutput(command.args(), value);
       }
-    );
+      const describeValue = command.describe(this._jamboConfig);
+      if (!describeValue) {
+        return;
+      }
+      if (isPromise(describeValue)) {
+        return describeValue.then(value => {
+          value && recordDescription(value);
+        });
+      } else {
+        recordDescription(describeValue);
+      }
+    });
     return Promise.all(describePromises).then(() => descriptions);
   }
+
+  private calculateDescribeOutput(
+    args: ArgumentMetadataRecord,
+    describeDefinition: DescribeDefinition
+  ): DescribeOutput {
+    if (!describeDefinition.params) {
+      return {
+        displayName: describeDefinition.displayName
+      };
+    }
+    const mergedParams = {};
+    for (const [argName, describeParam] of Object.entries(describeDefinition.params)) {
+      const concreteMetadata = args[argName];
+      mergedParams[argName] = {
+        required: concreteMetadata.isRequired,
+        default: concreteMetadata.defaultValue,
+        type: concreteMetadata.type,
+        ...describeParam
+      }
+    }
+    return {
+      displayName: describeDefinition.displayName,
+      params: mergedParams
+    };
+  }
+}
+
+function isPromise(
+  describeValue: DescribeDefinition | Promise<DescribeDefinition>
+): describeValue is Promise<DescribeDefinition> {
+  return ('then' in describeValue)
+    && typeof describeValue.then === 'function';
 }
 
 export default DescribeCommand;

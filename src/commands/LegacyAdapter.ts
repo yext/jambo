@@ -1,5 +1,5 @@
 import path from 'path';
-import Command from '../models/commands/command';
+import Command from '../models/commands/Command';
 import { ArgumentMetadataImpl, ConcreteArgumentMetadata } from '../models/commands/concreteargumentmetadata';
 import { LegacyArgumentMetadata } from '../models/commands/LegacyArgumentMetadata';
 import { warn } from '../utils/logger';

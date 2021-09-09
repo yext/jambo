@@ -4,7 +4,7 @@ import SitesGenerator from './commands/build/sitesgenerator';
 import { info, error } from './utils/logger';
 import { exitWithError } from './utils/errorutils';
 import CommandRegistry from './commands/commandregistry';
-import Command from './models/commands/command';
+import Command from './models/commands/Command';
 import { JamboConfig } from './models/JamboConfig';
 import DescribeCommand from './commands/describe/describecommand';
 import PageCommand from './commands/page/add/pagecommand';

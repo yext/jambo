@@ -11,8 +11,9 @@ import { searchDirectoryIgnoringExtensions } from '../../utils/fileutils';
 import fsExtra from 'fs-extra';
 import { info } from '../../utils/logger';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 
 const git = simpleGit();
 const args = {
@@ -36,7 +37,7 @@ const args = {
  * version. It first detects whether the theme was imported as a submodule or raw files,
  * then handles the upgrade accordingly.
  */
-const ThemeUpgrader : Command<typeof args> = class {
+const ThemeUpgrader: Command<typeof args> = class {
   jamboConfig: JamboConfig;
   private _themesDir: string;
   postUpgradeFileName: 'upgrade';
@@ -59,22 +60,18 @@ const ThemeUpgrader : Command<typeof args> = class {
     return args;
   }
 
-  static async describe() {
+  static describe(): DescribeDefinition<typeof args> {
     return {
       displayName: 'Upgrade Theme',
       params: {
         isLegacy: {
           displayName: 'Is Legacy Upgrade',
-          type: 'boolean'
         },
         disableScript: {
           displayName: 'Disable Upgrade Script',
-          type: 'boolean'
         },
         branch: {
-          displayName: 'Branch of theme to upgrade to',
-          type: 'string',
-          default: 'master'
+          displayName: 'Branch of theme to upgrade to'
         }
       }
     }

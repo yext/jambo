@@ -10,13 +10,13 @@ import {
 
 type ExecArgs<T extends ArgumentMetadataRecord> = {
   [arg in keyof T]:
-  T[arg] extends StringMetadata ? string :
-  T[arg] extends StringArrayMetadata ? string[] :
-  T[arg] extends BooleanMetadata ? boolean :
-  T[arg] extends BooleanArrayMetadata ? boolean[] :
-  T[arg] extends NumberMetadata ? number :
-  T[arg] extends NumberArrayMetadata ? number[] :
-  never;
+    T[arg] extends StringMetadata ? string :
+    T[arg] extends StringArrayMetadata ? string[] :
+    T[arg] extends BooleanMetadata ? boolean :
+    T[arg] extends BooleanArrayMetadata ? boolean[] :
+    T[arg] extends NumberMetadata ? number :
+    T[arg] extends NumberArrayMetadata ? number[] :
+    never;
 }
 
 /**

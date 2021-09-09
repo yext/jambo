@@ -5,8 +5,9 @@ import UserError from '../../../errors/usererror';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageScaffolder from './pagescaffolder';
 import { StringArrayMetadata, StringMetadata } from '../../../models/commands/concreteargumentmetadata';
-import Command from '../../../models/commands/command';
+import Command from '../../../models/commands/Command';
 import PageConfiguration from './pageconfiguration';
+import DescribeDefinition from '../../../models/commands/DescribeDefinition';
 
 const args = {
   name: new StringMetadata({
@@ -49,7 +50,7 @@ const PageCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe(jamboConfig) {
+  static describe(jamboConfig): DescribeDefinition<typeof args> {
     const pageTemplates = this._getPageTemplates(jamboConfig);
     const pageLocales = this._getAdditionalPageLocales(jamboConfig);
     return {
@@ -57,8 +58,6 @@ const PageCommand: Command<typeof args> = class {
       params: {
         name: {
           displayName: 'Page Name',
-          type: 'string',
-          required: true
         },
         template: {
           displayName: 'Page Template',
@@ -71,7 +70,7 @@ const PageCommand: Command<typeof args> = class {
           options: pageLocales
         }
       }
-    }
+    };
   }
 
   /**

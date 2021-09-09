@@ -1,6 +1,6 @@
 import UserError from '../errors/usererror';
 import { ArgumentMetadata } from '../models/commands/ArgumentMetadata';
-import Command from '../models/commands/command';
+import Command from '../models/commands/Command';
 import { CommandExecutable } from '../models/commands/commandexecutable';
 import {
   ConcreteArgumentMetadata,

@@ -1,7 +1,8 @@
 import { RepositoryScaffolder, RepositorySettings } from './repositoryscaffolder';
 import ThemeManager from '../../utils/thememanager';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 
 const args = {
   themeUrl: new StringMetadata({
@@ -36,14 +37,13 @@ const InitCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe() {
+  static describe(): DescribeDefinition<typeof args> {
     const importableThemes = ThemeManager.getKnownThemes();
     return {
       displayName: 'Initialize Jambo',
       params: {
         themeUrl: {
-          displayName: 'URL',
-          type: 'string',
+          displayName: 'URL'
         },
         theme: {
           displayName: 'Theme',
@@ -51,15 +51,13 @@ const InitCommand: Command<typeof args> = class {
           options: importableThemes
         },
         useSubmodules: {
-          displayName: 'Use Submodules',
-          type: 'boolean'
+          displayName: 'Use Submodules'
         },
         includeTranslations: {
-          displayName: 'Include Translations',
-          type: 'boolean'
-        },
+          displayName: 'Include Translations'
+        }
       }
-    }
+    };
   }
 
   async execute(args: RepositorySettings) {

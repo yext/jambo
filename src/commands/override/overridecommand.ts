@@ -3,8 +3,9 @@ import path from 'path';
 import fileSystem from 'file-system';
 import { ShadowConfiguration, ThemeShadower } from './themeshadower';
 import { JamboConfig } from '../../models/JamboConfig';
-import Command from '../../models/commands/command';
+import Command from '../../models/commands/Command';
 import { StringMetadata } from '../../models/commands/concreteargumentmetadata';
+import DescribeDefinition from '../../models/commands/DescribeDefinition';
 
 const args = {
   path: new StringMetadata({
@@ -37,7 +38,7 @@ const OverrideCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe(jamboConfig) {
+  static describe(jamboConfig): DescribeDefinition<typeof args> {
     const themeFiles = this._getThemeFiles(jamboConfig);
     return {
       displayName: 'Override Theme',
@@ -45,11 +46,10 @@ const OverrideCommand: Command<typeof args> = class {
         path: {
           displayName: 'Path to Override',
           type: 'filesystem',
-          required: true,
           options: themeFiles
         }
       }
-    }
+    };
   }
 
   /**
