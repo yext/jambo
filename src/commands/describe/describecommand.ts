@@ -51,7 +51,7 @@ const DescribeCommand: Command<any> = class {
     const descriptions = {};
     const commands = this.getCommands();
     const describePromises = commands.map(command => {
-      const recordDescription = (value: DescribeDefinition<ArgumentMetadataRecord>) => {
+      const recordDescription = (value: DescribeDefinition) => {
         descriptions[command.getAlias()] = this.calculateDescribeOutput(command.args(), value);
       }
       const describeValue = command.describe(this._jamboConfig);
@@ -71,7 +71,7 @@ const DescribeCommand: Command<any> = class {
 
   private calculateDescribeOutput(
     args: ArgumentMetadataRecord,
-    describeDefinition: DescribeDefinition<ArgumentMetadataRecord>
+    describeDefinition: DescribeDefinition
   ): DescribeOutput {
     if (!describeDefinition.params) {
       return {
@@ -96,12 +96,10 @@ const DescribeCommand: Command<any> = class {
 }
 
 function isPromise(
-  describeValue: DescribeDefinition<ArgumentMetadataRecord> | Promise<DescribeDefinition<ArgumentMetadataRecord>>
-): describeValue is Promise<DescribeDefinition<ArgumentMetadataRecord>> {
-  if (!('then' in describeValue)) {
-    return false;
-  }
-  return typeof describeValue.then === 'function';
+  describeValue: DescribeDefinition | Promise<DescribeDefinition>
+): describeValue is Promise<DescribeDefinition> {
+  return ('then' in describeValue)
+    && typeof describeValue.then === 'function';
 }
 
 export default DescribeCommand;
