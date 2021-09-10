@@ -1,4 +1,4 @@
-const { canonicalizeLocale, parseLocale } = require('../../src/utils/i18nutils');
+import { canonicalizeLocale, parseLocale } from '../../src/utils/i18nutils';
 
 describe('canonicalizeLocale correctly normalizes locales', () => {
   it('converts language to lower case and region to upper case', () => {

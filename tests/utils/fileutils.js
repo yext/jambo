@@ -1,10 +1,10 @@
-const {
+import {
   stripExtension,
   getPageName,
   isValidFile,
   isValidPartialPath,
   searchDirectoryIgnoringExtensions
-} = require('../../src/utils/fileutils');
+} from '../../src/utils/fileutils';
 
 describe('stripExtension correctly strips extension from filename', () => {
   it('strips extension when present', () => {
@@ -63,14 +63,14 @@ describe('isValidPartialPath properly determines if paths are valid', () => {
       let isValid = isValidPartialPath(path);
       expect(isValid).toEqual(true);
     });
-  
+
     it(`returns false when a path contains /${blacklistedPath}/`, () => {
       let path =
         `../../answers-hitchhiker-theme/test-site/${blacklistedPath}/yargs/index.js`;
       let isValid = isValidPartialPath(path);
       expect(isValid).toEqual(false);
     });
-  
+
     it(`returns false when a path starts with ${blacklistedPath}/`, () => {
       let path = `${blacklistedPath}/handlebars/index.js`;
       let isValid = isValidPartialPath(path);

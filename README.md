@@ -43,6 +43,10 @@ The git URL of the theme to import, if a theme should be imported on init.
 
 If importing a theme on init, whether to import it as a git submodule as opposed to regular files. Defaults to false.
 
+--includeTranslations _true/false_
+
+If importing a theme on init, whether to initializes a translations directory as well. Defaults to false.
+
 #### Import
 
 ```bash
@@ -97,10 +101,6 @@ The name this page will be registered as.
 
 The template to generate the page with.
 
---layout _layout_name_
-
-The layout to use around the page.
-
 #### Build
 
 ```bash
@@ -119,8 +119,7 @@ The build command uses the 'defaultTheme' attribute in the jambo.json in Jambo's
     "config":"config",
     "overrides":"overrides",
     "output":"public",
-    "pages":"pages",
-    "layouts":"layouts"
+    "pages":"pages"
   },
   "defaultTheme": "answers-hitchhiker-theme"
 }

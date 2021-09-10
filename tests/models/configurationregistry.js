@@ -1,10 +1,10 @@
-const ConfigurationRegistry = require('../../src/models/configurationregistry');
-const { getPageName } = require('../../src/utils/fileutils');
-const { parseLocale } = require('../../src/utils/configutils');
-const GlobalConfig = require('../../src/models/globalconfig');
-const LocalizationConfig = require('../../src/models/localizationconfig');
-const PageConfig = require('../../src/models/pageconfig');
-const { NO_LOCALE } = require('../../src/constants');
+import ConfigurationRegistry from '../../src/models/configurationregistry';
+import { getPageName } from '../../src/utils/fileutils';
+import { parseLocale } from '../../src/utils/configutils';
+import GlobalConfig from '../../src/models/globalconfig';
+import LocalizationConfig from '../../src/models/localizationconfig';
+import PageConfig from '../../src/models/pageconfig';
+import { NO_LOCALE } from '../../src/constants';
 
 describe('ConfigurationRegistry forms object properly using static frm', () => {
   it('creates GlobalConfig object properly', () => {

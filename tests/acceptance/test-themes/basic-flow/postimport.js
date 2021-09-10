@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 const fs = require('fs');
+
 const fsExtra = require('fs-extra');
 const { assign, stringify } = require('comment-json');
 
 /**
  * Updates the defaultTheme field in the jambo.json.
- * 
- * @param {string} themeName 
+ *
+ * @param {string} themeName
  */
 function updateDefaultTheme(themeName) {
   const jamboConfig = JSON.parse(fs.readFileSync('jambo.json', 'utf-8'));

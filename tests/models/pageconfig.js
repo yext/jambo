@@ -1,5 +1,5 @@
-const PageConfig = require('../../src/models/pageconfig');
-const { NO_LOCALE } = require('../../src/constants');
+import PageConfig from '../../src/models/pageconfig';
+import { NO_LOCALE } from '../../src/constants';
 
 describe('Properly builds PageConfig object', () => {
   const pageName = 'test';

@@ -1,6 +1,6 @@
-const { cleanupTestThemes } = require('./themesetup');
+import { cleanupTestThemes } from './themesetup';
 
-module.exports = async () => {
+export default async () => {
   cleanupTestThemes();
-}
+};
 

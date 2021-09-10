@@ -1,4 +1,4 @@
-const { EnvironmentVariableParser } = require('../../src/utils/envvarparser');
+import { EnvironmentVariableParser } from '../../src/utils/envvarparser';
 
 describe('EnvironmentVariableParser works correctly', () => {
     const var1 = {
@@ -8,7 +8,7 @@ describe('EnvironmentVariableParser works correctly', () => {
         baz: 'a string'
     };
     const var2 = 'a string';
-    const envVarsParser = 
+    const envVarsParser =
         new EnvironmentVariableParser( { var2, var1: JSON.stringify(var1) });
 
     it('deserializes environment variables correctly', () => {

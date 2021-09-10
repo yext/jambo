@@ -1,5 +1,5 @@
-const LocaleConfigValidator = require('../../src/validation/localeconfigvalidator');
-const UserError = require('../../src/errors/usererror');
+import LocaleConfigValidator from '../../src/validation/localeconfigvalidator';
+import UserError from '../../src/errors/usererror';
 
 describe('LocaleConfigValidator works properly', () => {
   it('does not throw an error with a correct config', () => {

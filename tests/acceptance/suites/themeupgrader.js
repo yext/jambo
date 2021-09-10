@@ -1,8 +1,9 @@
-const process = require('process');
-const git = require('simple-git/promise')();
-const { runInPlayground } = require('../setup/playground');
-const ThemeManager = require('../../../src/utils/thememanager');
-const path = require('path');
+import process from 'process';
+import gitFactory from 'simple-git/promise';
+const git = gitFactory();
+import { runInPlayground } from '../setup/playground';
+import ThemeManager from '../../../src/utils/thememanager';
+import path from 'path';
 
 ThemeManager.getRepoForTheme = () => {
   return path.resolve(__dirname, '../test-themes/basic-flow');
@@ -24,5 +25,5 @@ it('tests upgrade fail', () => runInPlayground(async t => {
     /Remote branch fail not found in upstream origin/);
   const diff = await git.diff();
   expect(diff).toBe('');
-}));
+}), 15000);
 

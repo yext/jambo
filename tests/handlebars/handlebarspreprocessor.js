@@ -1,8 +1,7 @@
-const path = require('path');
-const { readFileSync } = require('file-system');
-
-const Translator = require('../../src/i18n/translator/translator');
-const HandlebarsPreprocessor = require('../../src/handlebars/handlebarspreprocessor');
+import path from 'path';
+import { readFileSync } from 'file-system';
+import Translator from '../../src/i18n/translator/translator';
+import HandlebarsPreprocessor from '../../src/handlebars/handlebarspreprocessor';
 jest.mock('../../src/i18n/translator/translator')
 
 describe('HandlebarsPreprocessor works correctly', () => {
@@ -110,7 +109,7 @@ describe('HandlebarsPreprocessor works correctly', () => {
   });
 
   it('fails gracefully when trying to process .woff files', () => {
-    const woffPath = 
+    const woffPath =
       path.join(__dirname, '../fixtures/handlebars/opensans-regular-webfont.woff');
     const woffContent = readFileSync(woffPath, 'utf8');
     expect(handlebarsPreprocessor.process(woffContent))

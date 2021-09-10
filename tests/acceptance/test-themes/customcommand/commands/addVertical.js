@@ -1,10 +1,11 @@
-const { ArgumentMetadata, ArgumentType } = require('../../../../../src/models/commands/argumentmetadata');
+const fs = require('fs');
+const { StringMetadata, StringArrayMetadata } = require('../../../../../src/models/commands/concreteargumentmetadata');
 
 /**
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
  * a new page for the given Vertical and associates a card type with it.
  */
-class VerticalAdder {
+module.exports = class VerticalAdder {
   constructor(jamboConfig) {
     this.config = jamboConfig;
   }
@@ -24,52 +25,47 @@ class VerticalAdder {
   }
 
   /**
-   * @returns {Object<string, ArgumentMetadata>} description of each argument for 
+   * @returns {Object<string, ArgumentMetadata>} description of each argument for
    *                                             the add vertical command, keyed by name
    */
   static args() {
     return {
-      name: new ArgumentMetadata({
-        itemType: ArgumentType.STRING, 
-        description: 'name of the vertical\'s page', 
-        isRequired: true}),
-      verticalKey: new ArgumentMetadata({
-        itemType: ArgumentType.STRING, 
-        description: 'the vertical\'s key', 
-        isRequired: true}),
-      cardName: new ArgumentMetadata({
-        itemType: ArgumentType.STRING, 
-        description: 'card to use with vertical', 
-        isRequired: false}),
-      template: new ArgumentMetadata({
-        itemType: ArgumentType.STRING,
+      name: new StringMetadata({
+        description: 'name of the vertical\'s page',
+        isRequired: true
+      }),
+      verticalKey: new StringMetadata({
+        description: 'the vertical\'s key',
+        isRequired: true
+      }),
+      cardName: new StringMetadata({
+        description: 'card to use with vertical',
+        isRequired: false
+      }),
+      template: new StringMetadata({
         description: 'page template to use within theme',
-        isRequired: true}),
-      locales: new ArgumentMetadata({
-        type: ArgumentType.ARRAY,
+        isRequired: true
+      }),
+      locales: new StringArrayMetadata({
         description: 'additional locales to generate the page for',
         isRequired: false,
-        defaultValue: [],
-        itemType: ArgumentType.STRING})
+        defaultValue: []
+      })
     };
   }
 
   /**
    * @returns {Object} description of the vertical command and its parameters.
    */
-  static describe(jamboConfig) {
+  static describe() {
     return {
       displayName: 'Add Vertical',
       params: {
         name: {
-          displayName: 'Page Name',
-          required: true,
-          type: 'string'
+          displayName: 'Page Name'
         },
         verticalKey: {
-          displayName: 'Vertical Key',
-          required: true,
-          type: 'string',
+          displayName: 'Vertical Key'
         },
         cardName: {
           displayName: 'Card Name',
@@ -77,7 +73,6 @@ class VerticalAdder {
         },
         template: {
           displayName: 'Page Template',
-          required: true,
           type: 'singleoption'
         },
         locales: {
@@ -90,19 +85,11 @@ class VerticalAdder {
 
 /**
  * Executes a command that creates an html file.
- * 
- * @param {Object<string, string>} args The arguments, keyed by name 
+ *
+ * @param {Object<string, string>} args The arguments, keyed by name
  */
   execute(args) {
-    const fs = require('fs');
     const content = args.name + args.template + args.verticalKey;
-    fs.writeFileSync('index.html', content, err => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-  //file written successfully
-    })
+    fs.writeFileSync('index.html', content);
   }
 }
-module.exports = VerticalAdder;

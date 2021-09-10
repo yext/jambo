@@ -1,4 +1,4 @@
-const HbsHelperParser = require('../../src/handlebars/hbshelperparser');
+import HbsHelperParser from '../../src/handlebars/hbshelperparser';
 
 it('can parse a simple helper', () => {
   const parser = new HbsHelperParser(['simpleBoy']);

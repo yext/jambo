@@ -1,7 +1,7 @@
-const PageTemplateDirector = require('../../../src/commands/build/pagetemplatedirector');
-const PageTemplate = require('../../../src/models/pagetemplate');
-const LocalizationConfig = require('../../../src/models/localizationconfig');
-const { NO_LOCALE } = require('../../../src/constants');
+import PageTemplateDirector from '../../../src/commands/build/pagetemplatedirector';
+import PageTemplate from '../../../src/models/pagetemplate';
+import LocalizationConfig from '../../../src/models/localizationconfig';
+import { NO_LOCALE } from '../../../src/constants';
 
 describe('PageTemplateDirector builds the expected PageTemplates', () => {
   it('creates page templates correctly with no locale config', () => {

@@ -1,7 +1,7 @@
-const Page = require('../../src/models/page');
-const PageConfig = require('../../src/models/pageconfig');
-const PageUniquenessValidator = require('../../src/validation/pageuniquenessvalidator');
-const UserError = require('../../src/errors/usererror');
+import Page from '../../src/models/page';
+import PageConfig from '../../src/models/pageconfig';
+import PageUniquenessValidator from '../../src/validation/pageuniquenessvalidator';
+import UserError from '../../src/errors/usererror';
 
 describe('PageUniquenessValidator validates a set of pages properly', () => {
   it('validation succeeds when there are no duplicate pages', () => {

@@ -1,13 +1,15 @@
-const registerCustomHbsHelpers = require('../../src/handlebars/registercustomhbshelpers');
-const path = require('path');
+import registerCustomHbsHelpers from '../../src/handlebars/registercustomhbshelpers';
+import path from 'path';
+import hbs from 'handlebars';
 
-const hbs = require('handlebars');
-const pathToHelpers = path.resolve(__dirname, '../fixtures/handlebars/customhelpers');
-registerCustomHbsHelpers(hbs, pathToHelpers)
+beforeAll(async () => {
+  const pathToHelpers = path.resolve(__dirname, '../fixtures/handlebars/customhelpers');
+  await registerCustomHbsHelpers(hbs, pathToHelpers);
+});
 
 describe('can register a custom hbs helper', () => {
   it('recognizes https://yext.com as absolute', () => {
-    const template = hbs.compile('{{#if (isNonRelativeUrl url)}}is absolute!{{/if}}');
+    const template = hbs.compile('{{#if (isNonRelativeUrl url) }}is absolute!{{/if}}');
     const data = {
       url: 'https://yext.com'
     };

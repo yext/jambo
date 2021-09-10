@@ -2,21 +2,26 @@
   "name": "jambo",
   "version": "1.12.0",
   "description": "A JAMStack implementation using Handlebars",
-  "main": "index.js",
+  "main": "./lib/exports.js",
+  "types": "./lib/cli.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "test": "eslint . && jest"
+    "test": "eslint . && jest",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yext/jambo.git"
   },
   "bin": {
-    "jambo": "src/cli.js"
+    "jambo": "lib/cli.js"
   },
   "engines": {
     "node": ">=12.0.0"
   },
-  "author": "nbramblett@yext.com",
+  "author": "slapshot@yext.com",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/yext/jambo/issues"
@@ -31,7 +36,7 @@
     "gettext-extractor": "^3.5.2",
     "glob-to-regexp": "^0.4.1",
     "globby": "^11.0.1",
-    "handlebars": "^4.7.3",
+    "handlebars": "^4.7.7",
     "i18next": "^19.6.2",
     "i18next-conv": "^10.0.2",
     "lodash": "^4.17.15",
@@ -39,15 +44,24 @@
     "npmlog": "^4.1.2",
     "prompts": "^2.3.1",
     "simple-git": "^2.40.0",
-    "yargs": "^17.0.0"
+    "yargs": "^17.1.1"
   },
   "devDependencies": {
+    "@babel/node": "^7.14.9",
     "@babel/plugin-transform-object-assign": "^7.12.1",
-    "@types/jest": "^26.0.23",
-    "eslint": "^7.8.1",
-    "jest": "^25.4.0",
-    "prettier": "^2.2.1",
-    "shell-quote": "^1.7.2"
+    "@babel/preset-typescript": "^7.15.0",
+    "@handlebars/parser": "^2.1.0",
+    "@types/jest": "^27.0.1",
+    "@types/lodash": "^4.14.172",
+    "@types/yargs": "^17.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
+    "babel-jest": "^27.1.1",
+    "eslint": "^7.32.0",
+    "jest": "^27.1.1",
+    "prettier": "^2.3.2",
+    "shell-quote": "^1.7.2",
+    "typescript": "^4.4.2"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -60,7 +74,7 @@
       "./tests/setup/setup.js"
     ],
     "testMatch": [
-      "**/tests/**/*.js",
+      "**/tests/**/*.[j|t]s",
       "!**/tests/acceptance/**/*.js",
       "**/tests/acceptance/suites/**/*.js"
     ],

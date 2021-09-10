@@ -17,4 +17,4 @@ module.exports = function (pageMetadata, siteLevelAttributes, pageNameToConfig) 
     someSiteLevelAttributes: siteLevelAttributes,
     aPageNameToConfig: pageNameToConfig
   };
-}
+};

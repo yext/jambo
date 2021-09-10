@@ -1,6 +1,5 @@
-const TemplateDataValidator = require('../../../src/commands/build/templatedatavalidator');
-const path = require('path');
-const UserError = require('../../../src/errors/usererror');
+import TemplateDataValidator from '../../../src/commands/build/templatedatavalidator';
+import path from 'path';
 
 describe('TemplateDataValidator validates config data using hook properly', () => {
   const currentPageConfig = {
@@ -10,7 +9,7 @@ describe('TemplateDataValidator validates config data using hook properly', () =
     pageSettings: { search: { verticalKey: 'examplePage', defaultInitialSearch: '' } },
     componentSettings: {
       prop: 'example1',
-    }, 
+    },
     verticalsToConfig: {
       examplePage: {
         prop: 'example2'
@@ -73,7 +72,7 @@ describe('TemplateDataValidator validates config data using hook properly', () =
         params : params,
         relativePath: relativePath,
         env: env
-    }; 
+    };
 
     const isValid = new TemplateDataValidator(templateDataValidationHook).validate({
         pageName: 'examplePage',

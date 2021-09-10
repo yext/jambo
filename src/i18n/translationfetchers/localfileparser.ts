@@ -1,0 +1,50 @@
+import path from 'path';
+import { readFileSync, existsSync } from 'fs';
+import { gettextToI18next } from 'i18next-conv';
+import UserError from '../../errors/usererror';
+
+/**
+ * This class parses translations from a local .PO file. The i18next-conv
+ * library is used to put the translations in i18next format.
+ */
+class LocalFileParser {
+  private _translationsDir: string;
+  private _options: Record<string, unknown>
+
+  /**
+   * Creates a new instance of {@link LocalFileParser}.
+   *
+   * @param {string} translationsDir The local directory containing .PO files.
+   * @param {Record<string, unknown>} options Used to optionally configure the i18next-conv
+   *                                   library.
+  */
+  constructor(translationsDir: string, options?: Record<string, unknown>) {
+    this._translationsDir = translationsDir;
+    this._options = options;
+  }
+
+  /**
+   * Extracts a locale's translations from the local filesystem. If the translation file
+   * doesn't exist, the function rejects with an error
+   *
+   * @param {string} locale The desired locale.
+   * @param {string} translationFilePath The path to the translation file locale within
+   *                                     the translations directory
+   * @returns {Promise<Object>} A Promise containing the parsed translations in
+   *                            i18next format.
+  */
+  async fetch(locale: string, translationFilePath: string) {
+    const translationFile = path.join(this._translationsDir, translationFilePath);
+    const translationFileExists = existsSync(translationFile);
+
+    if (!translationFileExists) {
+      throw new UserError(
+        `Cannot find translation file for '${locale}' at '${translationFile}'`);
+    }
+
+    const localeTranslations =
+      gettextToI18next(locale, readFileSync(translationFile), this._options);
+    return localeTranslations.then(data => JSON.parse(data));
+  }
+}
+export default LocalFileParser;

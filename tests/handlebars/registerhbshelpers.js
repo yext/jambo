@@ -1,5 +1,5 @@
-const registerHbsHelpers = require('../../src/handlebars/registerhbshelpers');
-const hbs = require('handlebars');
+import registerHbsHelpers from '../../src/handlebars/registerhbshelpers';
+import hbs from 'handlebars';
 registerHbsHelpers(hbs);
 hbs.registerPartial('testPartial', 'this is a {{#if 1}}test{{/if}} partial');
 hbs.registerPartial('cards/standard/component', 'I am a standard card');
@@ -200,127 +200,127 @@ describe('simple hbs expressions', () => {
       const template = hbs.compile('{{#if (eq 1 1) }}equal{{/if}}');
       expect(template()).toEqual('equal');
     });
-  
+
     it('works for 1 === 2', () => {
       const template = hbs.compile('{{#unless (eq 1 2) }}unequal{{/unless}}');
       expect(template()).toEqual('unequal');
     });
   });
-  
+
   describe('ne', () => {
     it('works for 1 !== 2', () => {
       const template = hbs.compile('{{#if (ne 1 2) }}unequal{{/if}}');
       expect(template()).toEqual('unequal');
     });
-  
+
     it('works for 1 !== 1', () => {
       const template = hbs.compile('{{#unless (ne 1 1) }}equal{{/unless}}');
       expect(template()).toEqual('equal')
     });
   });
-  
+
   describe('lt', () => {
     it('works for 1 < 2', () => {
       const template = hbs.compile('{{#if (lt 1 2) }}1 is less than 2{{/if}}');
       expect(template()).toEqual('1 is less than 2');
     });
-  
+
     it('works for 2 < 1', () => {
       const template =
         hbs.compile('{{#unless (lt 2 1) }}2 is not less than 1{{/unless}}');
       expect(template()).toEqual('2 is not less than 1');
     });
   });
-  
+
   describe('lte', () => {
     it('works for 1 <= 2', () => {
       const template = hbs.compile('{{#if (lte 1 2) }}1 is less than 2{{/if}}');
       expect(template()).toEqual('1 is less than 2');
     });
-  
+
     it('works for 2 <= 1', () => {
       const template =
         hbs.compile('{{#unless (lte 2 1) }}2 is not less than 1{{/unless}}');
       expect(template()).toEqual('2 is not less than 1');
     });
-  
+
     it('works for 1 === 1', () => {
       const template = hbs.compile('{{#if (lte 1 1) }}equal{{/if}}');
       expect(template()).toEqual('equal')
     });
   });
-  
+
   describe('gt', () => {
     it('works for 1 > 2', () => {
       const template = hbs.compile('{{#unless (gt 1 2) }}1 is not > 2{{/unless}}');
       expect(template()).toEqual('1 is not > 2')
     });
-  
+
     it('works for 2 > 1', () => {
       const template = hbs.compile('{{#if (gt 2 1) }}2 is > 1{{/if}}');
       expect(template()).toEqual('2 is > 1');
     });
   });
-  
+
   describe('gte', () => {
     it('works for 1 >= 2', () => {
       const template = hbs.compile('{{#unless (gt 1 2) }}1 is not >= 2{{/unless}}');
       expect(template()).toEqual('1 is not >= 2');
     });
-  
+
     it('works for 2 >= 1', () => {
       const template = hbs.compile('{{#if (gt 2 1) }}2 is >= 1{{/if}}');
       expect(template()).toEqual('2 is >= 1');
     });
-  
+
     it('works for 1 === 1', () => {
       const template = hbs.compile('{{#if (gte 1 1) }}equal{{/if}}');
       expect(template()).toEqual('equal');
     });
   });
-  
+
   describe('and', () => {
     it('works for all truthy values', () => {
       const template = hbs.compile('{{#if (and true true 1) }}both true{{/if}}');
       expect(template()).toEqual('both true');
     });
-  
+
     it('rejects when there is 1 falsy value', () => {
       const template = hbs.compile('{{#unless (and true 1 false) }}one false{{/unless}}');
       expect(template()).toEqual('one false');
     });
   });
-  
+
   describe('all', () => {
     it('works for all truthy values', () => {
       const template = hbs.compile('{{#if (all true true 1) }}both true{{/if}}');
       expect(template()).toEqual('both true');
     });
-  
+
     it('rejects when there is 1 falsy value', () => {
       const template = hbs.compile('{{#unless (all true 1 false) }}one false{{/unless}}');
       expect(template()).toEqual('one false');
     });
   });
-  
+
   describe('or', () => {
     it('works for all falsy values', () => {
       const template = hbs.compile('{{#unless (or 0 0 false) }}all false{{/unless}}');
       expect(template()).toEqual('all false')
     });
-  
+
     it('rejects when there is 1 falsy value', () => {
       const template = hbs.compile('{{#if (or 0 false true) }}one true{{/if}}');
       expect(template()).toEqual('one true');
     });
   });
-  
+
   describe('any', () => {
     it('works for all falsy values', () => {
       const template = hbs.compile('{{#unless (any 0 0 false) }}all false{{/unless}}');
       expect(template()).toEqual('all false')
     });
-  
+
     it('rejects when there is 1 falsy value', () => {
       const template = hbs.compile('{{#if (any 0 false true) }}one true{{/if}}');
       expect(template()).toEqual('one true');
