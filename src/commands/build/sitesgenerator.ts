@@ -20,7 +20,7 @@ import registerCustomHbsHelpers from '../../handlebars/registercustomhbshelpers'
 import SystemError from '../../errors/systemerror';
 import Translator from '../../i18n/translator/translator';
 import UserError from '../../errors/usererror';
-import { info } from '../../utils/logger';
+import { info, warn } from '../../utils/logger';
 import { JamboConfig } from '../../models/JamboConfig';
 
 class SitesGenerator {
@@ -321,9 +321,17 @@ class SitesGenerator {
     const translations = {};
 
     for (const locale of locales) {
-      const translationFileName =
-        localizationConfig.getTranslationFile(locale) || `${locale}.po`;
-      const translationFilePath = path.join(translationsDir, translationFileName);
+      let translationFileName = `${locale}.po`;
+      let translationFilePath = path.join(translationsDir, translationFileName);
+
+      const customTranslationFileName = localizationConfig.getTranslationFile(locale);
+      if (customTranslationFileName) {
+        translationFileName = customTranslationFileName;
+        translationFilePath = path.join(translationsDir, translationFileName);
+        if (!fs.existsSync(translationFilePath)) {
+          warn(`Failed to find custom translation file for '${locale}' at '${translationFilePath}'`);
+        }
+      }
       const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
       if (!isDefaultLocale && fs.existsSync(translationFilePath)) {
         const localeTranslations = await localFileParser
