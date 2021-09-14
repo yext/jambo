@@ -60,8 +60,9 @@ describe('_extractCustomTranslations gives warning if file not found', () => {
 
   it('warns when translationFile specified in locale_config is not found', async () => {
     const translations = await sg._extractCustomTranslations(['en', 'es'], config);
+    const translationFilePath = path.join(jamboConfig.dirs.translations, 'dummyFile.po');
     expect(log.warn).toHaveBeenLastCalledWith('',
-      `Failed to find custom translation file for 'es' at '${path.join(jamboConfig.dirs.translations, 'dummyFile.po')}'`
+      `Failed to find custom translation file for 'es' at '${translationFilePath}'`
     );
     expect(translations).toEqual({});
   });
