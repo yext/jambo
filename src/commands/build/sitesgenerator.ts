@@ -20,7 +20,7 @@ import registerCustomHbsHelpers from '../../handlebars/registercustomhbshelpers'
 import SystemError from '../../errors/systemerror';
 import Translator from '../../i18n/translator/translator';
 import UserError from '../../errors/usererror';
-import { info } from '../../utils/logger';
+import { info, warn } from '../../utils/logger';
 import { JamboConfig } from '../../models/JamboConfig';
 
 class SitesGenerator {
@@ -324,11 +324,16 @@ class SitesGenerator {
       const translationFileName =
         localizationConfig.getTranslationFile(locale) || `${locale}.po`;
       const translationFilePath = path.join(translationsDir, translationFileName);
-      const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
-      if (!isDefaultLocale && fs.existsSync(translationFilePath)) {
-        const localeTranslations = await localFileParser
-          .fetch(locale, translationFileName);
-        translations[locale] = { translation: localeTranslations };
+      if (!fs.existsSync(translationFilePath)) {
+        warn(`Failed to find custom translation file for '${locale}' at '${translationFilePath}'`);
+      }
+      else {
+        const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
+        if (!isDefaultLocale) {
+          const localeTranslations = await localFileParser
+            .fetch(locale, translationFileName);
+          translations[locale] = { translation: localeTranslations };
+        }
       }
     }
 
@@ -356,6 +361,9 @@ class SitesGenerator {
         const localeTranslations = await localFileParser
           .fetch(locale, translationFileName);
         translations[locale] = { translation: localeTranslations };
+      }
+      else {
+        warn(`Failed to find theme translation file for '${locale}' at '${translationFilePath}'`);
       }
     }
 
