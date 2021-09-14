@@ -321,22 +321,19 @@ class SitesGenerator {
     const translations = {};
 
     for (const locale of locales) {
-      let translationFileName = `${locale}.po`;
-      let translationFilePath = path.join(translationsDir, translationFileName);
-
-      const customTranslationFileName = localizationConfig.getTranslationFile(locale);
-      if (customTranslationFileName) {
-        translationFileName = customTranslationFileName;
-        translationFilePath = path.join(translationsDir, translationFileName);
-        if (!fs.existsSync(translationFilePath)) {
-          warn(`Failed to find custom translation file for '${locale}' at '${translationFilePath}'`);
-        }
+      const translationFileName =
+        localizationConfig.getTranslationFile(locale) || `${locale}.po`;
+      const translationFilePath = path.join(translationsDir, translationFileName);
+      if (!fs.existsSync(translationFilePath)) {
+        warn(`Failed to find custom translation file for '${locale}' at '${translationFilePath}'`);
       }
-      const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
-      if (!isDefaultLocale && fs.existsSync(translationFilePath)) {
-        const localeTranslations = await localFileParser
-          .fetch(locale, translationFileName);
-        translations[locale] = { translation: localeTranslations };
+      else {
+        const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
+        if (!isDefaultLocale) {
+          const localeTranslations = await localFileParser
+            .fetch(locale, translationFileName);
+          translations[locale] = { translation: localeTranslations };
+        }
       }
     }
 
@@ -364,6 +361,9 @@ class SitesGenerator {
         const localeTranslations = await localFileParser
           .fetch(locale, translationFileName);
         translations[locale] = { translation: localeTranslations };
+      }
+      else {
+        warn(`Failed to find theme translation file for '${locale}' at '${translationFilePath}'`);
       }
     }
 
