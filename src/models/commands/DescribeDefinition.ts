@@ -10,11 +10,19 @@ import {
 } from './concreteargumentmetadata';
 
 /**
- * DescribeOutput provides static type checking for a {@link Command}'s describe(),
- * and ensures that the return value matches the same shape as the {@link Command}'s args.
+ * DescribeDefinition provides static type checking for a {@link Command}'s describe(),
+ * and ensures that the return value matches the param types of {@link Command}'s args.
+ * 
+ * @public
  */
 export default interface DescribeDefinition<T extends ArgumentMetadataRecord = ArgumentMetadataRecord> {
+  /**
+   * Display name of the command.
+   */
   displayName: string
+  /**
+   * Optional, descriptions of command parameters.
+   */
   params?: {
     [arg in keyof T]: DescribeDefinitionParam<T[arg]>
   }
@@ -35,7 +43,7 @@ type DescribeParamForPrimitive<T extends string | number | boolean> = {
   displayName: string
   options?: T[]
   /**
-   * @note 'string', 'number', and 'boolean' are deprecated
+   * @remarks 'string', 'number', and 'boolean' are deprecated
    * These types can be automatically inferred from Command.args()
    **/
   type?: 'singleoption' | 'filesystem' | DeprecatedDescribeParamTypes

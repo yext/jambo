@@ -7,6 +7,8 @@ import DescribeDefinition from './DescribeDefinition';
  * An interface that represents a command in the Jambo CLI.
  * Contains non static (CommandExecutable interface) and
  * static (specified in here) fields and methods.
+ * 
+ * @public
  */
 export default interface Command<T extends ArgumentMetadataRecord> {
   new(...args: any[]): CommandExecutable<T>;
@@ -28,9 +30,11 @@ export default interface Command<T extends ArgumentMetadataRecord> {
    args(): T;
 
   /**
-   * @param {Object} jamboConfig the config of the jambo repository
-   * @returns {Object} description of the card command, including paths to
-   *                   all available cards. returning null causes no description to be output.
+   * Describes the command.
+   * 
+   * @param jamboConfig - the config of the jambo repository
+   * @returns description of the card command, including paths to
+   *          all available cards. returning null causes no description to be output.
    */
   describe(jamboConfig: JamboConfig): null | DescribeDefinition<T> | Promise<DescribeDefinition<T>>;
 }

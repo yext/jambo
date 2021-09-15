@@ -4,8 +4,13 @@ import {
   BooleanMetadata,
   BooleanArrayMetadata,
   NumberMetadata,
-  NumberArrayMetadata
+  NumberArrayMetadata,
+  ArgumentMetadataImpl
 } from './models/commands/concreteargumentmetadata'
+import { JamboConfig } from './models/JamboConfig'
+import DescribeDefinition from './models/commands/DescribeDefinition'
+import Command from './models/commands/Command'
+
 
 export {
   StringMetadata,
@@ -13,5 +18,9 @@ export {
   BooleanMetadata,
   BooleanArrayMetadata,
   NumberMetadata,
-  NumberArrayMetadata
+  NumberArrayMetadata,
+  ArgumentMetadataImpl,
+  JamboConfig,
+  DescribeDefinition,
+  Command
 }
