@@ -8,6 +8,8 @@
 
 Jambo is a JAMStack implementation using Handlebars.
 
+[Full Documentation](./docs/jambo.md)
+
 ## Installation
 
 Install jambo from npm, and save it to your package.json as a dev-dependency.
