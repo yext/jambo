@@ -18,5 +18,5 @@ new (...args: any[]): CommandExecutable<T>;
 
 <b>Returns:</b>
 
-CommandExecutable&lt;T&gt;
+[CommandExecutable](./jambo.commandexecutable.md)<!-- -->&lt;T&gt;
 

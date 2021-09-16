@@ -11,7 +11,7 @@ The base concrete ArgumentMetadata class.
 ```typescript
 export declare class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMetadata<T> 
 ```
-<b>Implements:</b> ArgumentMetadata&lt;T&gt;
+<b>Implements:</b> [ArgumentMetadata](./jambo.argumentmetadata.md)<!-- -->&lt;T&gt;
 
 ## Constructors
 

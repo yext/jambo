@@ -1,8 +1,15 @@
+/**
+ * The allowed types for an argument's value.
+ *
+ * @public
+ */
 export type ArgumentType = string | number | boolean | string[] | number[] | boolean[];
 
 /**
  * The public interface outlining the metadata for a {@link Command}'s argument. This includes
  * the type of the argument's values, if it is required, and an optional default.
+ *
+ * @public
  */
 export interface ArgumentMetadata<T extends ArgumentType> {
   /**

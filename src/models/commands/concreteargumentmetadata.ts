@@ -2,7 +2,7 @@ import { ArgumentType, ArgumentMetadata } from './ArgumentMetadata'
 
 /**
  * The base concrete ArgumentMetadata class.
- * 
+ *
  * @public
  */
 export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMetadata<T> {
@@ -49,7 +49,7 @@ interface InternalArrayMetadata {
 
 /**
  * Metadata for an argument with type string.
- * 
+ *
  * @public
  */
 export class StringMetadata extends ArgumentMetadataImpl<string> implements InternalMetadata {
@@ -57,7 +57,7 @@ export class StringMetadata extends ArgumentMetadataImpl<string> implements Inte
 }
 /**
  * Metadata for an argument with type array of strings.
- * 
+ *
  * @public
  */
 export class StringArrayMetadata extends ArgumentMetadataImpl<string[]> implements InternalArrayMetadata {
@@ -67,7 +67,7 @@ export class StringArrayMetadata extends ArgumentMetadataImpl<string[]> implemen
 
 /**
  * Metadata for an argument with type boolean.
- * 
+ *
  * @public
  */
 export class BooleanMetadata extends ArgumentMetadataImpl<boolean> implements InternalMetadata {
@@ -75,7 +75,7 @@ export class BooleanMetadata extends ArgumentMetadataImpl<boolean> implements In
 }
 /**
  * Metadata for an argument with type array of booleans.
- * 
+ *
  * @public
  */
 export class BooleanArrayMetadata extends ArgumentMetadataImpl<boolean[]> implements InternalArrayMetadata {
@@ -85,7 +85,7 @@ export class BooleanArrayMetadata extends ArgumentMetadataImpl<boolean[]> implem
 
 /**
  * Metadata for an argument with type number.
- * 
+ *
  * @public
  */
 export class NumberMetadata extends ArgumentMetadataImpl<number> implements InternalMetadata {
@@ -93,7 +93,7 @@ export class NumberMetadata extends ArgumentMetadataImpl<number> implements Inte
 }
 /**
  * Metadata for an argument with type array of numbers.
- * 
+ *
  * @public
  */
 export class NumberArrayMetadata extends ArgumentMetadataImpl<number[]> implements InternalArrayMetadata {
@@ -104,6 +104,8 @@ export class NumberArrayMetadata extends ArgumentMetadataImpl<number[]> implemen
 
 /**
  * The specific ArgumentMetadata implementations we allow.
+ *
+ * @public
  */
 export type ConcreteArgumentMetadata =
   StringMetadata |
@@ -114,7 +116,7 @@ export type ConcreteArgumentMetadata =
   NumberArrayMetadata;
 
 /**
- * A type composed of the classes themselves, rather than instances of them
+ * A type composed of the classes themselves, rather than instances of them.
  */
 export type ConcreteMetadataClass =
   typeof StringMetadata |
@@ -126,5 +128,7 @@ export type ConcreteMetadataClass =
 
 /**
  * The shape of a Command.args() return type
+ *
+ * @public
  */
 export type ArgumentMetadataRecord = Record<string, ConcreteArgumentMetadata>;

@@ -10,19 +10,11 @@ import {
 } from './concreteargumentmetadata';
 
 /**
- * DescribeDefinition provides static type checking for a {@link Command}'s describe(),
- * and ensures that the return value matches the param types of {@link Command}'s args.
- * 
- * @public
+ * DescribeOutput provides static type checking for a {@link Command}'s describe(),
+ * and ensures that the return value matches the same shape as the {@link Command}'s args.
  */
 export default interface DescribeDefinition<T extends ArgumentMetadataRecord = ArgumentMetadataRecord> {
-  /**
-   * Display name of the command.
-   */
   displayName: string
-  /**
-   * Optional, descriptions of command parameters.
-   */
   params?: {
     [arg in keyof T]: DescribeDefinitionParam<T[arg]>
   }

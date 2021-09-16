@@ -4,9 +4,13 @@
 
 ```ts
 
-// Warning: (ae-forgotten-export) The symbol "ArgumentType" needs to be exported by the entry point exports.d.ts
-// Warning: (ae-forgotten-export) The symbol "ArgumentMetadata" needs to be exported by the entry point exports.d.ts
-//
+// @public
+export interface ArgumentMetadata<T extends ArgumentType> {
+    defaultValue?: T;
+    description: string;
+    isRequired?: boolean;
+}
+
 // @public
 export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMetadata<T> {
     constructor(metadata: ArgumentMetadata<T>);
@@ -15,6 +19,12 @@ export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMet
     displayName?: string;
     isRequired?: boolean;
 }
+
+// @public
+export type ArgumentMetadataRecord = Record<string, ConcreteArgumentMetadata>;
+
+// @public
+export type ArgumentType = string | number | boolean | string[] | number[] | boolean[];
 
 // Warning: (ae-forgotten-export) The symbol "InternalArrayMetadata" needs to be exported by the entry point exports.d.ts
 //
@@ -34,28 +44,29 @@ export class BooleanMetadata extends ArgumentMetadataImpl<boolean> implements In
     readonly type = "boolean";
 }
 
-// Warning: (ae-forgotten-export) The symbol "ArgumentMetadataRecord" needs to be exported by the entry point exports.d.ts
-//
 // @public
 export interface Command<T extends ArgumentMetadataRecord> {
-    // Warning: (ae-forgotten-export) The symbol "CommandExecutable" needs to be exported by the entry point exports.d.ts
-    //
     // (undocumented)
     new (...args: any[]): CommandExecutable<T>;
     args(): T;
+    // Warning: (ae-forgotten-export) The symbol "DescribeDefinition" needs to be exported by the entry point exports.d.ts
     describe(jamboConfig: JamboConfig): null | DescribeDefinition<T> | Promise<DescribeDefinition<T>>;
     getAlias(): string;
     getShortDescription(): string;
 }
 
 // @public
-export interface DescribeDefinition<T extends ArgumentMetadataRecord = ArgumentMetadataRecord> {
-    displayName: string;
-    // Warning: (ae-forgotten-export) The symbol "DescribeDefinitionParam" needs to be exported by the entry point exports.d.ts
-    params?: {
-        [arg in keyof T]: DescribeDefinitionParam<T[arg]>;
-    };
+export interface CommandExecutable<T extends ArgumentMetadataRecord> {
+    execute(args: ExecArgs<T>): any;
 }
+
+// @public
+export type ConcreteArgumentMetadata = StringMetadata | StringArrayMetadata | BooleanMetadata | BooleanArrayMetadata | NumberMetadata | NumberArrayMetadata;
+
+// @public
+export type ExecArgs<T extends ArgumentMetadataRecord> = {
+    [arg in keyof T]: T[arg] extends StringMetadata ? string : T[arg] extends StringArrayMetadata ? string[] : T[arg] extends BooleanMetadata ? boolean : T[arg] extends BooleanArrayMetadata ? boolean[] : T[arg] extends NumberMetadata ? number : T[arg] extends NumberArrayMetadata ? number[] : never;
+};
 
 // @public
 export interface JamboConfig {

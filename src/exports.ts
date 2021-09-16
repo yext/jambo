@@ -5,11 +5,20 @@ import {
   BooleanArrayMetadata,
   NumberMetadata,
   NumberArrayMetadata,
+  ArgumentMetadataRecord,
+  ConcreteArgumentMetadata,
   ArgumentMetadataImpl
 } from './models/commands/concreteargumentmetadata'
+import {
+  ArgumentMetadata,
+  ArgumentType
+} from './models/commands/ArgumentMetadata'
 import { JamboConfig } from './models/JamboConfig'
-import DescribeDefinition from './models/commands/DescribeDefinition'
 import Command from './models/commands/Command'
+import {
+  CommandExecutable,
+  ExecArgs
+} from './models/commands/commandexecutable'
 
 
 export {
@@ -19,8 +28,13 @@ export {
   BooleanArrayMetadata,
   NumberMetadata,
   NumberArrayMetadata,
+  ArgumentMetadataRecord,
+  ConcreteArgumentMetadata,
   ArgumentMetadataImpl,
+  ArgumentMetadata,
+  ArgumentType,
   JamboConfig,
-  DescribeDefinition,
-  Command
+  Command,
+  CommandExecutable,
+  ExecArgs
 }

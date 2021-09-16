@@ -16,5 +16,5 @@ constructor(metadata: ArgumentMetadata<T>);
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  metadata | ArgumentMetadata&lt;T&gt; |  |
+|  metadata | [ArgumentMetadata](./jambo.argumentmetadata.md)<!-- -->&lt;T&gt; |  |
 
