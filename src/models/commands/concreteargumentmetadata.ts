@@ -18,10 +18,6 @@ export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMet
    * Optional, a default value for the argument.
    */
   defaultValue?: T
-  /**
-   * Optional, a display name for the argument.
-   */
-  displayName?: string
 
   constructor(metadata: ArgumentMetadata<T>) {
     Object.assign(this, metadata);

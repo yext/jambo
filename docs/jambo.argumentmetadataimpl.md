@@ -25,6 +25,5 @@ export declare class ArgumentMetadataImpl<T extends ArgumentType> implements Arg
 |  --- | --- | --- | --- |
 |  [defaultValue?](./jambo.argumentmetadataimpl.defaultvalue.md) |  | T | <i>(Optional)</i> Optional, a default value for the argument. |
 |  [description](./jambo.argumentmetadataimpl.description.md) |  | string | The description of the argument. |
-|  [displayName?](./jambo.argumentmetadataimpl.displayname.md) |  | string | <i>(Optional)</i> Optional, a display name for the argument. |
 |  [isRequired?](./jambo.argumentmetadataimpl.isrequired.md) |  | boolean | <i>(Optional)</i> Optional, a boolean indicating if the argument is required. |
 

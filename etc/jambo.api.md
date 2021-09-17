@@ -16,7 +16,6 @@ export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMet
     constructor(metadata: ArgumentMetadata<T>);
     defaultValue?: T;
     description: string;
-    displayName?: string;
     isRequired?: boolean;
 }
 
