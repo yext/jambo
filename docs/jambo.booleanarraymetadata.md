@@ -4,7 +4,7 @@
 
 ## BooleanArrayMetadata class
 
-Metadata for an argument with type array of booleans.
+Metadata for an array of booleans argument.
 
 <b>Signature:</b>
 

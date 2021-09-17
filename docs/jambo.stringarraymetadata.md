@@ -4,7 +4,7 @@
 
 ## StringArrayMetadata class
 
-Metadata for an argument with type array of strings.
+Metadata for an array of strings argument.
 
 <b>Signature:</b>
 

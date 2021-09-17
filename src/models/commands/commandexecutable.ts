@@ -37,5 +37,5 @@ export interface CommandExecutable<T extends ArgumentMetadataRecord> {
    *
    * @param args - The arguments passed to the execute command
    */
-  execute(args: ExecArgs<T>): any
+  execute(args: ExecArgs<T>): void
 }

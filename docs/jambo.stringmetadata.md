@@ -4,7 +4,7 @@
 
 ## StringMetadata class
 
-Metadata for an argument with type string.
+Metadata for a string argument.
 
 <b>Signature:</b>
 

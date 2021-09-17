@@ -4,7 +4,7 @@
 
 ## BooleanMetadata class
 
-Metadata for an argument with type boolean.
+Metadata for a boolean argument.
 
 <b>Signature:</b>
 

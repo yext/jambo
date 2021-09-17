@@ -48,7 +48,7 @@ interface InternalArrayMetadata {
  */
 
 /**
- * Metadata for an argument with type string.
+ * Metadata for a string argument.
  *
  * @public
  */
@@ -56,7 +56,7 @@ export class StringMetadata extends ArgumentMetadataImpl<string> implements Inte
   readonly type = 'string'
 }
 /**
- * Metadata for an argument with type array of strings.
+ * Metadata for an array of strings argument.
  *
  * @public
  */
@@ -66,7 +66,7 @@ export class StringArrayMetadata extends ArgumentMetadataImpl<string[]> implemen
 }
 
 /**
- * Metadata for an argument with type boolean.
+ * Metadata for a boolean argument.
  *
  * @public
  */
@@ -74,7 +74,7 @@ export class BooleanMetadata extends ArgumentMetadataImpl<boolean> implements In
   readonly type = 'boolean'
 }
 /**
- * Metadata for an argument with type array of booleans.
+ * Metadata for an array of booleans argument.
  *
  * @public
  */
@@ -84,7 +84,7 @@ export class BooleanArrayMetadata extends ArgumentMetadataImpl<boolean[]> implem
 }
 
 /**
- * Metadata for an argument with type number.
+ * Metadata for a number argument.
  *
  * @public
  */
@@ -92,7 +92,7 @@ export class NumberMetadata extends ArgumentMetadataImpl<number> implements Inte
   readonly type = 'number'
 }
 /**
- * Metadata for an argument with type array of numbers.
+ * Metadata for an array of numbers argument.
  *
  * @public
  */

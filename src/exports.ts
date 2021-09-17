@@ -22,6 +22,7 @@ import {
 
 
 export {
+  // concrete ArgumentMetadata classes
   StringMetadata,
   StringArrayMetadata,
   BooleanMetadata,
@@ -30,11 +31,17 @@ export {
   NumberArrayMetadata,
   ArgumentMetadataRecord,
   ConcreteArgumentMetadata,
+
+  // base ArgumentMetadata class
   ArgumentMetadataImpl,
+
+  // types
   ArgumentMetadata,
   ArgumentType,
+  ExecArgs,
+
+  // interfaces
   JamboConfig,
   Command,
-  CommandExecutable,
-  ExecArgs
+  CommandExecutable
 }

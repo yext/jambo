@@ -57,7 +57,7 @@ export interface Command<T extends ArgumentMetadataRecord> {
 
 // @public
 export interface CommandExecutable<T extends ArgumentMetadataRecord> {
-    execute(args: ExecArgs<T>): any;
+    execute(args: ExecArgs<T>): void;
 }
 
 // @public

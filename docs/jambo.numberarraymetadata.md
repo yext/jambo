@@ -4,7 +4,7 @@
 
 ## NumberArrayMetadata class
 
-Metadata for an argument with type array of numbers.
+Metadata for an array of numbers argument.
 
 <b>Signature:</b>
 

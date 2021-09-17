@@ -9,12 +9,12 @@
 |  Class | Description |
 |  --- | --- |
 |  [ArgumentMetadataImpl](./jambo.argumentmetadataimpl.md) | The base concrete ArgumentMetadata class. |
-|  [BooleanArrayMetadata](./jambo.booleanarraymetadata.md) | Metadata for an argument with type array of booleans. |
-|  [BooleanMetadata](./jambo.booleanmetadata.md) | Metadata for an argument with type boolean. |
-|  [NumberArrayMetadata](./jambo.numberarraymetadata.md) | Metadata for an argument with type array of numbers. |
-|  [NumberMetadata](./jambo.numbermetadata.md) | Metadata for an argument with type number. |
-|  [StringArrayMetadata](./jambo.stringarraymetadata.md) | Metadata for an argument with type array of strings. |
-|  [StringMetadata](./jambo.stringmetadata.md) | Metadata for an argument with type string. |
+|  [BooleanArrayMetadata](./jambo.booleanarraymetadata.md) | Metadata for an array of booleans argument. |
+|  [BooleanMetadata](./jambo.booleanmetadata.md) | Metadata for a boolean argument. |
+|  [NumberArrayMetadata](./jambo.numberarraymetadata.md) | Metadata for an array of numbers argument. |
+|  [NumberMetadata](./jambo.numbermetadata.md) | Metadata for a number argument. |
+|  [StringArrayMetadata](./jambo.stringarraymetadata.md) | Metadata for an array of strings argument. |
+|  [StringMetadata](./jambo.stringmetadata.md) | Metadata for a string argument. |
 
 ## Interfaces
 

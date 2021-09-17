@@ -9,7 +9,7 @@ Executes the command with the provided arguments.
 <b>Signature:</b>
 
 ```typescript
-execute(args: ExecArgs<T>): any;
+execute(args: ExecArgs<T>): void;
 ```
 
 ## Parameters
@@ -20,5 +20,5 @@ execute(args: ExecArgs<T>): any;
 
 <b>Returns:</b>
 
-any
+void
 

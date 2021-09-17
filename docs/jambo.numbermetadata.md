@@ -4,7 +4,7 @@
 
 ## NumberMetadata class
 
-Metadata for an argument with type number.
+Metadata for a number argument.
 
 <b>Signature:</b>
 

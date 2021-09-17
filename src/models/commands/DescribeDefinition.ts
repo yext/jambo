@@ -36,7 +36,7 @@ type DescribeParamForPrimitive<T extends string | number | boolean> = {
   options?: T[]
   /**
    * @remarks 'string', 'number', and 'boolean' are deprecated
-   * These types can be automatically inferred from Command.args()
+   * These deprecated types can be automatically inferred from Command.args()
    **/
   type?: 'singleoption' | 'filesystem' | DeprecatedDescribeParamTypes
   /** @deprecated - specify in Command.args() instead */
