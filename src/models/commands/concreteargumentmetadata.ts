@@ -3,6 +3,10 @@ import { ArgumentType, ArgumentMetadata } from './ArgumentMetadata'
 /**
  * The base concrete ArgumentMetadata class.
  *
+ * @remarks
+ * This class should not be used directly. Instead, one of the concrete metadata
+ * implementations (e.g. BooleanMetadata, StringArrayMetadata, etc.) should be used.
+ *
  * @public
  */
 export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMetadata<T> {

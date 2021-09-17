@@ -13,6 +13,10 @@ export declare class ArgumentMetadataImpl<T extends ArgumentType> implements Arg
 ```
 <b>Implements:</b> [ArgumentMetadata](./jambo.argumentmetadata.md)<!-- -->&lt;T&gt;
 
+## Remarks
+
+This class should not be used directly. Instead, one of the concrete metadata implementations (e.g. BooleanMetadata, StringArrayMetadata, etc.) should be used.
+
 ## Constructors
 
 |  Constructor | Modifiers | Description |
