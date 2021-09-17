@@ -8,7 +8,12 @@ import {
   StringMetadata
 } from './concreteargumentmetadata';
 
-type ExecArgs<T extends ArgumentMetadataRecord> = {
+/**
+ * Type of arguments that can be passed to the execute command.
+ *
+ * @public
+ */
+export type ExecArgs<T extends ArgumentMetadataRecord> = {
   [arg in keyof T]:
     T[arg] extends StringMetadata ? string :
     T[arg] extends StringArrayMetadata ? string[] :
@@ -22,13 +27,15 @@ type ExecArgs<T extends ArgumentMetadataRecord> = {
 /**
  * Command interface that contains non static fields and methods
  * of a Command instance. It requires a type T that defines the
- * arguments pass to execute()
+ * arguments pass to execute().
+ *
+ * @public
  */
 export interface CommandExecutable<T extends ArgumentMetadataRecord> {
   /**
    * Executes the command with the provided arguments.
    *
-   * @param args The arguments passed to the execute command
+   * @param args - The arguments passed to the execute command
    */
-  execute(args: ExecArgs<T>): any
+  execute(args: ExecArgs<T>): void
 }

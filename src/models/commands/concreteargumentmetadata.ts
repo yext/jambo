@@ -2,12 +2,26 @@ import { ArgumentType, ArgumentMetadata } from './ArgumentMetadata'
 
 /**
  * The base concrete ArgumentMetadata class.
+ *
+ * @remarks
+ * This class should not be used directly. Instead, one of the concrete metadata
+ * implementations (e.g. BooleanMetadata, StringArrayMetadata, etc.) should be used.
+ *
+ * @public
  */
 export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMetadata<T> {
+  /**
+   * The description of the argument.
+   */
   description: string
+  /**
+   * Optional, a boolean indicating if the argument is required.
+   */
   isRequired?: boolean
+  /**
+   * Optional, a default value for the argument.
+   */
   defaultValue?: T
-  displayName?: string
 
   constructor(metadata: ArgumentMetadata<T>) {
     Object.assign(this, metadata);
@@ -32,25 +46,56 @@ interface InternalArrayMetadata {
  * by checking the `instanceof` for an ArgumentMetadata.
  * This allows us to hide the "type" and "itemType" implementation details.
  */
+
+/**
+ * Metadata for a string argument.
+ *
+ * @public
+ */
 export class StringMetadata extends ArgumentMetadataImpl<string> implements InternalMetadata {
   readonly type = 'string'
 }
+/**
+ * Metadata for an array of strings argument.
+ *
+ * @public
+ */
 export class StringArrayMetadata extends ArgumentMetadataImpl<string[]> implements InternalArrayMetadata {
   readonly type = 'array'
   readonly itemType = 'string'
 }
 
+/**
+ * Metadata for a boolean argument.
+ *
+ * @public
+ */
 export class BooleanMetadata extends ArgumentMetadataImpl<boolean> implements InternalMetadata {
   readonly type = 'boolean'
 }
+/**
+ * Metadata for an array of booleans argument.
+ *
+ * @public
+ */
 export class BooleanArrayMetadata extends ArgumentMetadataImpl<boolean[]> implements InternalArrayMetadata {
   readonly type = 'array'
   readonly itemType = 'boolean'
 }
 
+/**
+ * Metadata for a number argument.
+ *
+ * @public
+ */
 export class NumberMetadata extends ArgumentMetadataImpl<number> implements InternalMetadata {
   readonly type = 'number'
 }
+/**
+ * Metadata for an array of numbers argument.
+ *
+ * @public
+ */
 export class NumberArrayMetadata extends ArgumentMetadataImpl<number[]> implements InternalArrayMetadata {
   readonly type = 'array'
   readonly itemType = 'number'
@@ -59,6 +104,8 @@ export class NumberArrayMetadata extends ArgumentMetadataImpl<number[]> implemen
 
 /**
  * The specific ArgumentMetadata implementations we allow.
+ *
+ * @public
  */
 export type ConcreteArgumentMetadata =
   StringMetadata |
@@ -69,7 +116,7 @@ export type ConcreteArgumentMetadata =
   NumberArrayMetadata;
 
 /**
- * A type composed of the classes themselves, rather than instances of them
+ * A type composed of the classes themselves, rather than instances of them.
  */
 export type ConcreteMetadataClass =
   typeof StringMetadata |
@@ -81,5 +128,7 @@ export type ConcreteMetadataClass =
 
 /**
  * The shape of a Command.args() return type
+ *
+ * @public
  */
 export type ArgumentMetadataRecord = Record<string, ConcreteArgumentMetadata>;

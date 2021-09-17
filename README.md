@@ -163,3 +163,9 @@ Defaults to false.
 You can signal whether to pass an --isLegacy flag to the theme's upgrade.js.
 This can be useful when you need different/additional upgrade logic to upgrade
 from older versions of a theme. Defaults to false.
+
+### Custom Commands
+
+Custom commands can be created using our exported types.
+
+[Documentation for Exported Types](./docs/jambo.md)

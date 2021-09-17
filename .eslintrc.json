@@ -11,7 +11,8 @@
   },
   "ignorePatterns": [
     "tests/fixtures/**/*.js",
-    "lib"
+    "lib",
+    "dist"
   ],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",

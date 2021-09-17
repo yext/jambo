@@ -9,7 +9,15 @@
   ],
   "scripts": {
     "test": "eslint . && jest",
-    "build": "tsc"
+    "build": "tsc && npm run api-extractor && npm run generate-docs",
+    "build-ci": "tsc && npm run api-extractor-ci && npm run generate-docs",
+    "api-extractor": "api-extractor run --local --verbose",
+    "api-extractor-ci": "api-extractor run --verbose",
+    "generate-docs": "api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "validator": "13.6.0"
   },
   "repository": {
     "type": "git",
@@ -30,6 +38,8 @@
   "dependencies": {
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
+    "@microsoft/api-documenter": "^7.13.49",
+    "@microsoft/api-extractor": "^7.18.9",
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
