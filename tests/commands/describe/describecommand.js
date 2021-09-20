@@ -69,7 +69,7 @@ describe('DescribeCommand can describe a simple command', () => {
   });
 });
 
-it('deprecated params in a command\'s DescribeDefinition ' +
+it('deprecated params in a command\'s DescribeMetadata ' +
 'take precedence over params inferred from that command\'s args()', async () => {
   const mockCommand = {
     args() {

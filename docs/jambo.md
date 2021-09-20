@@ -23,6 +23,7 @@
 |  [ArgumentMetadata](./jambo.argumentmetadata.md) | The public interface outlining the metadata for a [Command](./jambo.command.md)<!-- -->'s argument. This includes the type of the argument's values, if it is required, and an optional default. |
 |  [Command](./jambo.command.md) | An interface that represents a command in the Jambo CLI. Contains non static (CommandExecutable interface) and static (specified in here) fields and methods. |
 |  [CommandExecutable](./jambo.commandexecutable.md) | Command interface that contains non static fields and methods of a Command instance. It requires a type T that defines the arguments pass to execute(). |
+|  [DescribeMetadata](./jambo.describemetadata.md) | DescribeMetadata provides static type checking for a [Command](./jambo.command.md)<!-- -->'s describe(), and ensures that the return value matches the same shape as the [Command](./jambo.command.md)<!-- -->'s args. |
 |  [JamboConfig](./jambo.jamboconfig.md) | Config that optionally contains paths to the various directories needed by Jambo. |
 
 ## Type Aliases
@@ -32,5 +33,6 @@
 |  [ArgumentMetadataRecord](./jambo.argumentmetadatarecord.md) | The shape of a Command.args() return type |
 |  [ArgumentType](./jambo.argumenttype.md) | The allowed types for an argument's value. |
 |  [ConcreteArgumentMetadata](./jambo.concreteargumentmetadata.md) | The specific ArgumentMetadata implementations we allow. |
+|  [DescribeMetadataParam](./jambo.describemetadataparam.md) | The describe() metadata for a [Command](./jambo.command.md)<!-- -->'s parameters. |
 |  [ExecArgs](./jambo.execargs.md) | Type of arguments that can be passed to the execute command. |
 

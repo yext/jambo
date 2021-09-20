@@ -2,7 +2,7 @@ import { RepositoryScaffolder, RepositorySettings } from './repositoryscaffolder
 import ThemeManager from '../../utils/thememanager';
 import Command from '../../models/commands/Command';
 import { BooleanMetadata, StringMetadata } from '../../models/commands/concreteargumentmetadata';
-import DescribeDefinition from '../../models/commands/DescribeDefinition';
+import DescribeMetadata from '../../models/commands/DescribeMetadata';
 
 const args = {
   themeUrl: new StringMetadata({
@@ -37,7 +37,7 @@ const InitCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe(): DescribeDefinition<typeof args> {
+  static describe(): DescribeMetadata<typeof args> {
     const importableThemes = ThemeManager.getKnownThemes();
     return {
       displayName: 'Initialize Jambo',

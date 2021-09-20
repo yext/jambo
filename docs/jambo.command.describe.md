@@ -9,7 +9,7 @@ Describes the command.
 <b>Signature:</b>
 
 ```typescript
-describe(jamboConfig: JamboConfig): null | DescribeDefinition<T> | Promise<DescribeDefinition<T>>;
+describe(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
 ```
 
 ## Parameters
@@ -20,7 +20,7 @@ describe(jamboConfig: JamboConfig): null | DescribeDefinition<T> | Promise<Descr
 
 <b>Returns:</b>
 
-null \| DescribeDefinition&lt;T&gt; \| Promise&lt;DescribeDefinition&lt;T&gt;&gt;
+null \| DescribeMetadata&lt;T&gt; \| Promise&lt;DescribeMetadata&lt;T&gt;&gt;
 
 description of the card command, including paths to all available cards. returning null causes no description to be output.
 

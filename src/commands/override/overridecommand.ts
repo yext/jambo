@@ -5,7 +5,7 @@ import { ShadowConfiguration, ThemeShadower } from './themeshadower';
 import { JamboConfig } from '../../models/JamboConfig';
 import Command from '../../models/commands/Command';
 import { StringMetadata } from '../../models/commands/concreteargumentmetadata';
-import DescribeDefinition from '../../models/commands/DescribeDefinition';
+import DescribeMetadata from '../../models/commands/DescribeMetadata';
 
 const args = {
   path: new StringMetadata({
@@ -38,7 +38,7 @@ const OverrideCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe(jamboConfig): DescribeDefinition<typeof args> {
+  static describe(jamboConfig): DescribeMetadata<typeof args> {
     const themeFiles = this._getThemeFiles(jamboConfig);
     return {
       displayName: 'Override Theme',

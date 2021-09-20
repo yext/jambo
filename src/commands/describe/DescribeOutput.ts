@@ -1,6 +1,5 @@
 /**
- * DescribeOutput provides static type checking for a {@link Command}'s describe(),
- * and ensures that the return value matches the same shape as the {@link Command}'s args.
+ * DescribeOutput represents the output for a {@link Command}'s describe().
  */
 export default interface DescribeOutput{
   displayName: string

@@ -48,8 +48,7 @@ export interface Command<T extends ArgumentMetadataRecord> {
     // (undocumented)
     new (...args: any[]): CommandExecutable<T>;
     args(): T;
-    // Warning: (ae-forgotten-export) The symbol "DescribeDefinition" needs to be exported by the entry point exports.d.ts
-    describe(jamboConfig: JamboConfig): null | DescribeDefinition<T> | Promise<DescribeDefinition<T>>;
+    describe(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
     getAlias(): string;
     getShortDescription(): string;
 }
@@ -61,6 +60,22 @@ export interface CommandExecutable<T extends ArgumentMetadataRecord> {
 
 // @public
 export type ConcreteArgumentMetadata = StringMetadata | StringArrayMetadata | BooleanMetadata | BooleanArrayMetadata | NumberMetadata | NumberArrayMetadata;
+
+// @public
+export interface DescribeMetadata<T extends ArgumentMetadataRecord = ArgumentMetadataRecord> {
+    // (undocumented)
+    displayName: string;
+    // (undocumented)
+    params?: {
+        [arg in keyof T]: DescribeMetadataParam<T[arg]>;
+    };
+}
+
+// Warning: (ae-forgotten-export) The symbol "DescribeParamForArray" needs to be exported by the entry point exports.d.ts
+// Warning: (ae-forgotten-export) The symbol "DescribeParamForPrimitive" needs to be exported by the entry point exports.d.ts
+//
+// @public
+export type DescribeMetadataParam<T extends ConcreteArgumentMetadata> = T extends StringArrayMetadata ? DescribeParamForArray<string> : T extends BooleanArrayMetadata ? DescribeParamForArray<boolean> : T extends NumberArrayMetadata ? DescribeParamForArray<number> : T extends StringMetadata ? DescribeParamForPrimitive<string> : T extends BooleanMetadata ? DescribeParamForPrimitive<boolean> : T extends NumberMetadata ? DescribeParamForPrimitive<number> : never;
 
 // @public
 export type ExecArgs<T extends ArgumentMetadataRecord> = {

@@ -19,6 +19,9 @@ import {
   CommandExecutable,
   ExecArgs
 } from './models/commands/commandexecutable'
+import DescribeMetadata, {
+  DescribeMetadataParam
+} from './models/commands/DescribeMetadata'
 
 
 export {
@@ -39,9 +42,11 @@ export {
   ArgumentMetadata,
   ArgumentType,
   ExecArgs,
+  DescribeMetadataParam,
 
   // interfaces
   JamboConfig,
   Command,
-  CommandExecutable
+  CommandExecutable,
+  DescribeMetadata
 }

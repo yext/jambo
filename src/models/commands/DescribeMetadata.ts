@@ -10,17 +10,24 @@ import {
 } from './concreteargumentmetadata';
 
 /**
- * DescribeOutput provides static type checking for a {@link Command}'s describe(),
+ * DescribeMetadata provides static type checking for a {@link Command}'s describe(),
  * and ensures that the return value matches the same shape as the {@link Command}'s args.
+ *
+ * @public
  */
-export default interface DescribeDefinition<T extends ArgumentMetadataRecord = ArgumentMetadataRecord> {
+export default interface DescribeMetadata<T extends ArgumentMetadataRecord = ArgumentMetadataRecord> {
   displayName: string
   params?: {
-    [arg in keyof T]: DescribeDefinitionParam<T[arg]>
+    [arg in keyof T]: DescribeMetadataParam<T[arg]>
   }
 }
 
-export type DescribeDefinitionParam<T extends ConcreteArgumentMetadata> =
+/**
+ * The describe() metadata for a {@link Command}'s parameters.
+ *
+ * @public
+ */
+export type DescribeMetadataParam<T extends ConcreteArgumentMetadata> =
   T extends StringArrayMetadata ? DescribeParamForArray<string> :
   T extends BooleanArrayMetadata ? DescribeParamForArray<boolean> :
   T extends NumberArrayMetadata ? DescribeParamForArray<number> :

@@ -1,7 +1,7 @@
 import { JamboConfig } from '../JamboConfig';
 import { ArgumentMetadataRecord } from './concreteargumentmetadata';
 import { CommandExecutable } from './commandexecutable';
-import DescribeDefinition from './DescribeDefinition';
+import DescribeMetadata from './DescribeMetadata';
 
 /**
  * An interface that represents a command in the Jambo CLI.
@@ -36,5 +36,5 @@ export default interface Command<T extends ArgumentMetadataRecord> {
    * @returns description of the card command, including paths to
    *          all available cards. returning null causes no description to be output.
    */
-  describe(jamboConfig: JamboConfig): null | DescribeDefinition<T> | Promise<DescribeDefinition<T>>;
+  describe(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
 }
