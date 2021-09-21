@@ -1,6 +1,6 @@
 import Command from '../../models/commands/Command';
 import { ArgumentMetadataRecord } from '../../models/commands/concreteargumentmetadata';
-import DescribeDefinition from '../../models/commands/DescribeDefinition';
+import DescribeMetadata from '../../models/commands/DescribeMetadata';
 import { JamboConfig } from '../../models/JamboConfig';
 import DescribeOutput from './DescribeOutput';
 
@@ -51,7 +51,7 @@ const DescribeCommand: Command<any> = class {
     const descriptions = {};
     const commands = this.getCommands();
     const describePromises = commands.map(command => {
-      const recordDescription = (value: DescribeDefinition) => {
+      const recordDescription = (value: DescribeMetadata) => {
         descriptions[command.getAlias()] = this.calculateDescribeOutput(command.args(), value);
       }
       const describeValue = command.describe(this._jamboConfig);
@@ -71,7 +71,7 @@ const DescribeCommand: Command<any> = class {
 
   private calculateDescribeOutput(
     args: ArgumentMetadataRecord,
-    describeDefinition: DescribeDefinition
+    describeDefinition: DescribeMetadata
   ): DescribeOutput {
     if (!describeDefinition.params) {
       return {
@@ -96,8 +96,8 @@ const DescribeCommand: Command<any> = class {
 }
 
 function isPromise(
-  describeValue: DescribeDefinition | Promise<DescribeDefinition>
-): describeValue is Promise<DescribeDefinition> {
+  describeValue: DescribeMetadata | Promise<DescribeMetadata>
+): describeValue is Promise<DescribeMetadata> {
   return ('then' in describeValue)
     && typeof describeValue.then === 'function';
 }

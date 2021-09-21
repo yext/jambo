@@ -7,7 +7,7 @@ import PageScaffolder from './pagescaffolder';
 import { StringArrayMetadata, StringMetadata } from '../../../models/commands/concreteargumentmetadata';
 import Command from '../../../models/commands/Command';
 import PageConfiguration from './pageconfiguration';
-import DescribeDefinition from '../../../models/commands/DescribeDefinition';
+import DescribeMetadata from '../../../models/commands/DescribeMetadata';
 
 const args = {
   name: new StringMetadata({
@@ -50,7 +50,7 @@ const PageCommand: Command<typeof args> = class {
     return args;
   }
 
-  static describe(jamboConfig): DescribeDefinition<typeof args> {
+  static describe(jamboConfig): DescribeMetadata<typeof args> {
     const pageTemplates = this._getPageTemplates(jamboConfig);
     const pageLocales = this._getAdditionalPageLocales(jamboConfig);
     return {
