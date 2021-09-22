@@ -322,8 +322,7 @@ class SitesGenerator {
       const translationFileName = 
         localizationConfig.getTranslationFile(locale) || `${locale}.po`;
       const translationFilePath = path.join(translationsDir, translationFileName);
-      const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
-      if (!isDefaultLocale && fs.existsSync(translationFilePath)) {
+      if (fs.existsSync(translationFilePath)) {
         const localeTranslations = await localFileParser
           .fetch(locale, translationFileName);
         translations[locale] = { translation: localeTranslations };
