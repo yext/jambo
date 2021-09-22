@@ -328,12 +328,8 @@ class SitesGenerator {
         warn(`Failed to find custom translation file for '${locale}' at '${translationFilePath}'`);
       }
       else {
-        const isDefaultLocale = (locale === localizationConfig.getDefaultLocale());
-        if (!isDefaultLocale) {
-          const localeTranslations = await localFileParser
-            .fetch(locale, translationFileName);
-          translations[locale] = { translation: localeTranslations };
-        }
+        const localeTranslations = await localFileParser.fetch(locale, translationFileName);
+        translations[locale] = { translation: localeTranslations };
       }
     }
 
