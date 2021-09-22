@@ -63,7 +63,7 @@ function isValidCustomCommand(commandClass) {
 
     const staticMethods = getMethods(commandClass);
     const expectedStaticMethods =
-      ['getAlias', 'getShortDescription', 'args', 'describe'];
+      ['getAlias', 'getShortDescription', 'args'];
 
     const instanceMethods = getMethods(commandClass.prototype);
     const expectedInstanceMethods = ['execute'];

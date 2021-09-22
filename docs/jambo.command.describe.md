@@ -9,7 +9,7 @@ Describes the command.
 <b>Signature:</b>
 
 ```typescript
-describe(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
+describe?(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
 ```
 
 ## Parameters
