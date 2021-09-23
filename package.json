@@ -3,13 +3,12 @@
   "version": "1.12.0",
   "description": "A JAMStack implementation using Handlebars",
   "main": "./lib/exports.js",
-  "types": "dist/jambo.d.ts",
+  "types": "./lib/cli.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
     "test": "eslint . && jest",
-    "tsc": "tsc",
     "build": "tsc && npm run api-extractor && npm run generate-docs",
     "build-ci": "tsc && npm run api-extractor-ci && npm run generate-docs",
     "api-extractor": "api-extractor run --local --verbose",
