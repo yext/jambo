@@ -31,6 +31,6 @@ describe('can adapt a command with static methods that uses legacy argument meta
   it('importing a legacy command without a describe function works', () => {
     const commandNoDescribe: CommandClassWithLegacyArguments = TestCommandWithLegacyArgsNoDescribe;
     const adaptedCommandNoDescribe = adaptCommandWithLegacyArgs(commandNoDescribe);
-    expect(adaptedCommandNoDescribe.describe({})).toBeUndefined();
+    expect(adaptedCommandNoDescribe.describe({})).toBeNull();
   });
 });

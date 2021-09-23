@@ -44,7 +44,7 @@ export default function adaptLegacyCommand(commandCreator: LegacyCommand): Comma
     }
 
     static describe(jamboConfig) {
-      return commandCreator(jamboConfig).describe?.();
+      return commandCreator(jamboConfig).describe?.() ?? null;
     }
 
     execute(args: any) {

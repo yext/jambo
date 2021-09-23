@@ -30,6 +30,6 @@ describe('can adapt legacy commands', () => {
   it('importing a legacy command without a describe function works', () => {
     const legacyCommandNoDescribe: LegacyCommand = TestLegacyCommandNoDescribe;
     const adaptedCommandNoDescribe = adaptLegacyCommand(legacyCommandNoDescribe) as CommandClassWithLegacyArguments;
-    expect(adaptedCommandNoDescribe.describe({})).toBeUndefined();
+    expect(adaptedCommandNoDescribe.describe({})).toBeNull();
   });
 });
