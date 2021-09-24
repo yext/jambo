@@ -3,6 +3,7 @@ import adaptCommandWithLegacyArgs, {
 } from '../../src/commands/adaptCommandWithLegacyArgs';
 import { StringArrayMetadata, StringMetadata } from '../../src/models/commands/concreteargumentmetadata';
 import TestCommandWithLegacyArgs from '../fixtures/customcommands/TestCommandWithLegacyArgs';
+import TestCommandWithLegacyArgsNoDescribe from '../fixtures/customcommands/TestLegacyCommandWithLegacyArgsNoDescribe';
 
 describe('can adapt a command with static methods that uses legacy argument metadata', () => {
   const command: CommandClassWithLegacyArguments = TestCommandWithLegacyArgs;
@@ -25,5 +26,11 @@ describe('can adapt a command with static methods that uses legacy argument meta
     const instance = new adaptedCommand({});
     expect(typeof instance.execute).toEqual('function');
     instance.execute({});
+  });
+
+  it('importing a legacy command without a describe function works', () => {
+    const commandNoDescribe: CommandClassWithLegacyArguments = TestCommandWithLegacyArgsNoDescribe;
+    const adaptedCommandNoDescribe = adaptCommandWithLegacyArgs(commandNoDescribe);
+    expect(adaptedCommandNoDescribe.describe({})).toBeNull();
   });
 });

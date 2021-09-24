@@ -12,7 +12,7 @@ export type LegacyCommand = (jamboConfig: JamboConfig) => {
   getAlias: () => string
   getShortDescription: () => string
   args: () => Record<string, LegacyArgumentMetadata>
-  describe: () => any
+  describe?: () => any
   execute: (params: any) => void
 }
 
@@ -44,7 +44,7 @@ export default function adaptLegacyCommand(commandCreator: LegacyCommand): Comma
     }
 
     static describe(jamboConfig) {
-      return commandCreator(jamboConfig).describe();
+      return commandCreator(jamboConfig).describe?.() ?? null;
     }
 
     execute(args: any) {

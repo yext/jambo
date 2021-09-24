@@ -53,7 +53,7 @@ export default function adaptCommandWithLegacyArgs(
       return commandToWrap.getShortDescription();
     }
     static describe(jamboConfig: JamboConfig) {
-      return commandToWrap.describe(jamboConfig);
+      return commandToWrap.describe?.(jamboConfig) ?? null;
     }
 
     execute(args: any) {

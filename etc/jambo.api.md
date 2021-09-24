@@ -48,7 +48,7 @@ export interface Command<T extends ArgumentMetadataRecord> {
     // (undocumented)
     new (...args: any[]): CommandExecutable<T>;
     args(): T;
-    describe(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
+    describe?(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
     getAlias(): string;
     getShortDescription(): string;
 }

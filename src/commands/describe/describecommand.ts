@@ -54,7 +54,7 @@ const DescribeCommand: Command<any> = class {
       const recordDescription = (value: DescribeMetadata) => {
         descriptions[command.getAlias()] = this.calculateDescribeOutput(command.args(), value);
       }
-      const describeValue = command.describe(this._jamboConfig);
+      const describeValue = command.describe?.(this._jamboConfig);
       if (!describeValue) {
         return;
       }

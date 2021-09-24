@@ -113,3 +113,24 @@ it('deprecated params in a command\'s DescribeMetadata ' +
     }
   });
 })
+
+it('when a describe function is not included, it returns undefined', async () => {
+  const mockCommand = {
+    args() {
+      return {
+        myParam: new StringMetadata({
+          description: 'the theme',
+          isRequired: false,
+          defaultValue: 'dont show me in describe'
+        })
+      }
+    },
+    getAlias() { return 'mocked'; }
+  }
+
+  await new DescribeCommand({}, () => [ mockCommand ]).execute();
+  const descriptions = JSON.parse(consoleSpy.mock.calls[0][0]);
+  consoleSpy.mockClear();
+
+  expect(descriptions.mocked).toBeUndefined();
+})

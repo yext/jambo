@@ -36,5 +36,5 @@ export default interface Command<T extends ArgumentMetadataRecord> {
    * @returns description of the card command, including paths to
    *          all available cards. returning null causes no description to be output.
    */
-  describe(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
+  describe?(jamboConfig: JamboConfig): null | DescribeMetadata<T> | Promise<DescribeMetadata<T>>;
 }

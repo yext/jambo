@@ -1,6 +1,7 @@
 import { CommandClassWithLegacyArguments } from '../../src/commands/adaptCommandWithLegacyArgs';
 import adaptLegacyCommand, { LegacyCommand } from '../../src/commands/adaptLegacyCommand';
 import TestLegacyCommand from '../fixtures/customcommands/TestLegacyCommand';
+import TestLegacyCommandNoDescribe from '../fixtures/customcommands/TestLegacyCommandNoDescribe';
 
 describe('can adapt legacy commands', () => {
   const legacyCommand: LegacyCommand = TestLegacyCommand;
@@ -24,5 +25,11 @@ describe('can adapt legacy commands', () => {
     const instance = new adaptedCommand({});
     expect(typeof instance.execute).toEqual('function');
     instance.execute({});
+  });
+
+  it('importing a legacy command without a describe function works', () => {
+    const legacyCommandNoDescribe: LegacyCommand = TestLegacyCommandNoDescribe;
+    const adaptedCommandNoDescribe = adaptLegacyCommand(legacyCommandNoDescribe) as CommandClassWithLegacyArguments;
+    expect(adaptedCommandNoDescribe.describe({})).toBeNull();
   });
 });
