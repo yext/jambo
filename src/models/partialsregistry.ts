@@ -6,7 +6,7 @@ import Partial from './partial';
  * PartialsRegistry is a registry of the partials provided to Jambo.
  */
 export default class PartialsRegistry {
-  partials: Partial[]
+  partials: Partial[];
 
   constructor(partials) {
     /**

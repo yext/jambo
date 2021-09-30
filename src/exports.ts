@@ -8,20 +8,20 @@ import {
   ArgumentMetadataRecord,
   ConcreteArgumentMetadata,
   ArgumentMetadataImpl
-} from './models/commands/concreteargumentmetadata'
+} from './models/commands/concreteargumentmetadata';
 import {
   ArgumentMetadata,
   ArgumentType
-} from './models/commands/ArgumentMetadata'
-import { JamboConfig } from './models/JamboConfig'
-import Command from './models/commands/Command'
+} from './models/commands/ArgumentMetadata';
+import { JamboConfig } from './models/JamboConfig';
+import Command from './models/commands/Command';
 import {
   CommandExecutable,
   ExecArgs
-} from './models/commands/commandexecutable'
+} from './models/commands/commandexecutable';
 import DescribeMetadata, {
   DescribeMetadataParam
-} from './models/commands/DescribeMetadata'
+} from './models/commands/DescribeMetadata';
 
 
 export {
@@ -49,4 +49,4 @@ export {
   Command,
   CommandExecutable,
   DescribeMetadata
-}
+};

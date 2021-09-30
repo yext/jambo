@@ -7,10 +7,10 @@ import { NO_LOCALE } from '../constants';
  * generate a page.
  */
 export default class PageTemplate {
-  path: string
-  fileContents: string
-  pageName: string
-  locale: string
+  path: string;
+  fileContents: string;
+  pageName: string;
+  locale: string;
 
   constructor({ path, fileContents, pageName, locale }: any) {
     /**

@@ -16,16 +16,16 @@ describe('PageConfigValidator works properly', () => {
   it(
     'throws a user error when locales are referenced but they aren\'t configured',
     () => {
-    const configWithMoreLanguages = {
-      'test.it': {},
-      'test.es': {},
-      'test.fr': {},
-      test: {}
-    }
-    const configuredLocales = ['en', 'fr'];
-    expect(() =>
+      const configWithMoreLanguages = {
+        'test.it': {},
+        'test.es': {},
+        'test.fr': {},
+        test: {}
+      };
+      const configuredLocales = ['en', 'fr'];
+      expect(() =>
         new PageConfigsConfigValidator(configWithMoreLanguages, configuredLocales)
           .validate())
-      .toThrow(UserError);
-  });
+        .toThrow(UserError);
+    });
 });

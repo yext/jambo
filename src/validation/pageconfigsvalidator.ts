@@ -7,8 +7,8 @@ import PageConfig from '../models/pageconfig';
  * Performs validation on page config files
  */
 export default class PageConfigsValidator {
-  private _pageConfigs: Record<string, PageConfig>
-  private _configuredLocales: string[]
+  private _pageConfigs: Record<string, PageConfig>;
+  private _configuredLocales: string[];
 
   constructor(pageConfigs, configuredLocales) {
     /**
@@ -72,7 +72,7 @@ export default class PageConfigsValidator {
    */
   _getLocalesMissingConfigs(pageLocales: string[]) {
     const locales = pageLocales.filter(locale => {
-      return !this._configuredLocales.includes(locale)
+      return !this._configuredLocales.includes(locale);
     });
     return locales;
   }

@@ -64,6 +64,6 @@ const InitCommand: Command<typeof args> = class {
     const repositoryScaffolder = new RepositoryScaffolder();
     await repositoryScaffolder.create(args);
   }
-}
+};
 
 export default InitCommand;

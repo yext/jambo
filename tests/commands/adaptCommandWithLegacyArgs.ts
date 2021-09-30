@@ -16,8 +16,8 @@ describe('can adapt a command with static methods that uses legacy argument meta
   });
 
   it('getAlias/getShortDescription', () => {
-    expect(adaptedCommand.getAlias()).toEqual('TestCommandWithLegacyArgs')
-    expect(adaptedCommand.getShortDescription()).toEqual('a command with legacy args')
+    expect(adaptedCommand.getAlias()).toEqual('TestCommandWithLegacyArgs');
+    expect(adaptedCommand.getShortDescription()).toEqual('a command with legacy args');
   });
 
   it('execute and describe exist and run without error', () => {

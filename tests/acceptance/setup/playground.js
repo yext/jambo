@@ -11,7 +11,7 @@ import TestInstance from './TestInstance';
 export const runInPlayground = async function(testFunction, procrastinateCleanup = false) {
   const originalDir = cwd();
   const id = parseInt(Math.random() * 99999999);
-  const playgroundDir = path.resolve(__dirname, '../playground-' + id )
+  const playgroundDir = path.resolve(__dirname, '../playground-' + id );
 
   async function setup() {
     fsExtra.mkdirpSync(playgroundDir);

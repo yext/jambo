@@ -62,7 +62,7 @@ const OverrideCommand: Command<typeof args> = class {
     if (!themesDir || !defaultTheme) {
       return [];
     }
-    const themeFiles = []
+    const themeFiles = [];
     fileSystem.recurseSync(
       path.join(themesDir, defaultTheme),
       function(filepath, relative) {
@@ -80,6 +80,6 @@ const OverrideCommand: Command<typeof args> = class {
     const themeShadower = new ThemeShadower(this.jamboConfig);
     themeShadower.createShadow(shadowConfiguration);
   }
-}
+};
 
 export default OverrideCommand;

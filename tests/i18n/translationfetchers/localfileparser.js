@@ -49,10 +49,10 @@ describe('LocalFileParser works correctly', () => {
 
     return localFileParser.fetch('fr-FR', 'fr-FR.po').then(translations => {
       expect(translations).toStrictEqual(expectedTranslations);
-    })
+    });
   });
 
   it('Rejects with an error when no translation file exists for the locale', () => {
     expect(localFileParser.fetch('es', 'es.po')).rejects.toThrow(UserError);
-  })
+  });
 });

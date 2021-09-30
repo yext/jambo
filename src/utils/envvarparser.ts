@@ -5,7 +5,7 @@ import { parse } from 'comment-json';
  * It exposes a method to retrieve unserialized values from this mapping.
  */
 class EnvironmentVariableParser {
-  private _envVars: any
+  private _envVars: any;
 
   constructor(envVars) {
     this._envVars = envVars;
@@ -28,7 +28,7 @@ class EnvironmentVariableParser {
         accumulator[envVar] = this._envVars[envVar];
       }
       return accumulator;
-    }
+    };
 
     return Object.keys(this._envVars).reduce(parsedValuesAccumulator, {});
   }

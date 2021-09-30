@@ -146,6 +146,6 @@ const ThemeImporter: Command<typeof args> = class {
     });
     new CustomCommandExecuter(this.config).execute(customCommand);
   }
-}
+};
 
 export default ThemeImporter;

@@ -22,7 +22,7 @@ export default interface Command<T extends ArgumentMetadataRecord> {
    * A short, one sentence description of the command. This
    * description appears as part of the help text in the CLI.
    */
-   getShortDescription() : string;
+   getShortDescription(): string;
 
   /**
    * Descriptions of each argument, keyed by name.

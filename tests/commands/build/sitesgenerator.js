@@ -1,4 +1,4 @@
-import SitesGenerator from '../../../src/commands/build/sitesgenerator'
+import SitesGenerator from '../../../src/commands/build/sitesgenerator';
 import LocalizationConfig from '../../../src/models/localizationconfig';
 import path from 'path';
 import log from 'npmlog';

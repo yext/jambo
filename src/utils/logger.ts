@@ -19,7 +19,7 @@ export const setLogLevel = function(level) {
  * @param  {...any} args
  */
 export const error = function(...args: any[]) {
-  log.error(PREFIX, ...args)
+  log.error(PREFIX, ...args);
 };
 
 /**
@@ -28,7 +28,7 @@ export const error = function(...args: any[]) {
  * @param  {...any} args
  */
 export const warn = function(...args: any[]) {
-  log.warn(PREFIX, ...args)
+  log.warn(PREFIX, ...args);
 };
 
 /**
@@ -37,5 +37,5 @@ export const warn = function(...args: any[]) {
  * @param  {...any} args
  */
 export const info = function(...args: any[]) {
-  log.info(PREFIX, ...args)
+  log.info(PREFIX, ...args);
 };

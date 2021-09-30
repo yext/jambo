@@ -48,7 +48,7 @@ describe('concat', () => {
       hbs.compile('const partialString = `{{{ read (concat "test" "Partial") }}}`;');
     const expectedResult =
       'const partialString = `this is a {{#if 1}}test{{/if}} partial`;';
-    expect(template()).toEqual(expectedResult)
+    expect(template()).toEqual(expectedResult);
   });
 });
 
@@ -91,7 +91,7 @@ describe('partialPattern', () => {
 
 describe('deepMerge', () => {
   it('can merge three nested objects', () => {
-    const template = hbs.compile('{{{json (deepMerge a b c) }}}')
+    const template = hbs.compile('{{{json (deepMerge a b c) }}}');
     const data = {
       a: {
         count: 1,
@@ -106,7 +106,7 @@ describe('deepMerge', () => {
         count: 3,
         third: 'c'
       }
-    }
+    };
     expect(template(data)).toEqual(JSON.stringify({
       count: 3,
       first: 'a',
@@ -215,7 +215,7 @@ describe('simple hbs expressions', () => {
 
     it('works for 1 !== 1', () => {
       const template = hbs.compile('{{#unless (ne 1 1) }}equal{{/unless}}');
-      expect(template()).toEqual('equal')
+      expect(template()).toEqual('equal');
     });
   });
 
@@ -246,14 +246,14 @@ describe('simple hbs expressions', () => {
 
     it('works for 1 === 1', () => {
       const template = hbs.compile('{{#if (lte 1 1) }}equal{{/if}}');
-      expect(template()).toEqual('equal')
+      expect(template()).toEqual('equal');
     });
   });
 
   describe('gt', () => {
     it('works for 1 > 2', () => {
       const template = hbs.compile('{{#unless (gt 1 2) }}1 is not > 2{{/unless}}');
-      expect(template()).toEqual('1 is not > 2')
+      expect(template()).toEqual('1 is not > 2');
     });
 
     it('works for 2 > 1', () => {
@@ -306,7 +306,7 @@ describe('simple hbs expressions', () => {
   describe('or', () => {
     it('works for all falsy values', () => {
       const template = hbs.compile('{{#unless (or 0 0 false) }}all false{{/unless}}');
-      expect(template()).toEqual('all false')
+      expect(template()).toEqual('all false');
     });
 
     it('rejects when there is 1 falsy value', () => {
@@ -318,7 +318,7 @@ describe('simple hbs expressions', () => {
   describe('any', () => {
     it('works for all falsy values', () => {
       const template = hbs.compile('{{#unless (any 0 0 false) }}all false{{/unless}}');
-      expect(template()).toEqual('all false')
+      expect(template()).toEqual('all false');
     });
 
     it('rejects when there is 1 falsy value', () => {

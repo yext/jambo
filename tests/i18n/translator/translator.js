@@ -13,7 +13,7 @@ describe('translations with one plural form (French)', () => {
     const translations = {
       fr: { translation: frTranslations },
       'fr-FR': { translation: frFRTranslations },
-    }
+    };
 
     translator = await Translator.create('fr-FR', ['fr'], translations);
   });
@@ -96,8 +96,8 @@ describe('translations with one plural form (French)', () => {
         'I am looking for my child named [[name]]', 'male');
       const translationWithFemaleContext = translator.translateWithContext(
         'I am looking for my child named [[name]]', 'female');
-      expect(translationWithMaleContext).toEqual('Je cherche mon fils nommé [[name]]')
-      expect(translationWithFemaleContext).toEqual('Je cherche mon fille nommé [[name]]')
+      expect(translationWithMaleContext).toEqual('Je cherche mon fils nommé [[name]]');
+      expect(translationWithFemaleContext).toEqual('Je cherche mon fille nommé [[name]]');
     });
   });
 
@@ -125,7 +125,7 @@ describe('translations with one plural form (French)', () => {
 
     it('Pluralization and interpolation works as expected', () => {
       const translationWithMaleContext = translator.translatePluralWithContext(
-      'The [[count]] person went on a walk',
+        'The [[count]] person went on a walk',
         'The [[count]] people went on a walk',
         'male');
       const translationWithFemaleContext = translator.translatePluralWithContext(
@@ -223,7 +223,7 @@ describe('translations with multiple plural forms (Lithuanian)', () => {
     const ltLT_Translations = await localFileParser.fetch('lt-LT', 'lt-LT.po');
     const translations = {
       'lt-LT': { translation: ltLT_Translations }
-    }
+    };
 
     translator = await Translator.create('lt-LT', [], translations);
   });

@@ -41,21 +41,21 @@ describe('parseLocale', () => {
       language: 'zh',
       modifier: 'Hans',
       region: 'CH'
-    })
+    });
   });
 
   it('chinese with modifier only', () => {
     expect(parseLocale('ZH_HANS')).toEqual({
       language: 'zh',
       modifier: 'Hans'
-    })
+    });
   });
 
   it('chinese with region only', () => {
     expect(parseLocale('ZH-cH')).toEqual({
       language: 'zh',
       region: 'CH'
-    })
+    });
   });
 
   it('2 section non-chinese locale', () => {

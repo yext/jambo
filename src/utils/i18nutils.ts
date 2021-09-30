@@ -1,4 +1,4 @@
-import UserError from '../errors/usererror'
+import UserError from '../errors/usererror';
 
 /**
  * Normalizes a locale code
@@ -47,10 +47,10 @@ export function parseLocale(localeCode) {
         `Encountered strangely formatted locale "${localeCode}", ` +
         `with ${numSections} sections.`);
     }
-  }
+  };
   const capitalizeFirstLetterOnly = raw => {
     return raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
-  }
+  };
   const parsedLocale = {
     language,
     ...parseModifierAndRegion()

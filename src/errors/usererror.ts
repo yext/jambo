@@ -7,7 +7,7 @@ class UserError extends Error {
   constructor(message, stack?) {
     super(message);
 
-    this.name = 'UserError'
+    this.name = 'UserError';
     this.exitCode = 13;
 
     if (stack) {

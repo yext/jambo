@@ -6,7 +6,7 @@ import LocalizationConfig from '../../models/localizationconfig';
  * per (pageTemplate, locale) combination.
  */
 export default class PageTemplateDirector {
-  private _localizationConfig: LocalizationConfig
+  private _localizationConfig: LocalizationConfig;
 
   constructor(localizationConfig) {
     /**

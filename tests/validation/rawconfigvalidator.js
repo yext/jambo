@@ -22,7 +22,7 @@ describe('RawConfigValidator works properly', () => {
       'index.es': {},
       'faqs.es': {},
       'people.es': {}
-    }
+    };
     expect(() => new RawConfigValidator(config).validate()).not.toThrow();
   });
 
@@ -32,12 +32,12 @@ describe('RawConfigValidator works properly', () => {
       index: {},
       faqs: {},
       people: {}
-    }
+    };
     expect(() => new RawConfigValidator(config).validate()).not.toThrow();
   });
 
   it('throws a user error with an invalid config', () => {
-    const config = {}
+    const config = {};
     expect(() => new RawConfigValidator(config).validate()).toThrow(UserError);
   });
 });

@@ -7,19 +7,19 @@ export default class GlobalConfig {
 	/**
 	 * @param {Object} rawConfig
 	 */
-  constructor(rawConfig: any) {
-		/**
+	constructor(rawConfig: any) {
+	  /**
 		 * @type {Object}
 		 */
-    this.rawConfig = rawConfig || {};
-  }
+	  this.rawConfig = rawConfig || {};
+	}
 
 	/**
 	 * Returns the raw config
 	 *
 	 * @returns {Object}
 	 */
-  getConfig() {
-    return this.rawConfig;
-  }
+	getConfig() {
+	  return this.rawConfig;
+	}
 }

@@ -24,8 +24,8 @@ const args = {
  * JamboTranslationExtractor extracts translations from a jambo repo.
  */
 const JamboTranslationExtractor: Command<typeof args> = class {
-  jamboConfig: JamboConfig
-  extractor: TranslationExtractor
+  jamboConfig: JamboConfig;
+  extractor: TranslationExtractor;
 
   constructor(jamboConfig) {
     this.jamboConfig = jamboConfig;
@@ -81,6 +81,6 @@ const JamboTranslationExtractor: Command<typeof args> = class {
     this.extractor.extract(globs);
     this.extractor.savePotFile(outputPath);
   }
-}
+};
 
 export default JamboTranslationExtractor;

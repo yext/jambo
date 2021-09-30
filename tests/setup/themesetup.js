@@ -13,7 +13,7 @@ export const setupTestThemes = async function() {
   async function initGitRepo(dir) {
     const originalDir = cwd();
     chdir(dir);
-    const git = simpleGit(dir)
+    const git = simpleGit(dir);
     await git.init();
     await git.add('-A');
     await git.commit('init test theme');

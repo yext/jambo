@@ -88,7 +88,9 @@ class Translator {
    *   well as the locale. A form is keyed by its gettext plural form count, see
    *   https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
-  translatePluralWithContext(phrase: string, pluralForm: string, context: string): Record<string|number, string> {
+  translatePluralWithContext(
+    phrase: string, pluralForm: string, context: string
+  ): Record<string|number, string> {
     const escapedPhraseAndContext = escapeRegExp(`${phrase}_${context}`);
     const pluralWithContextKeyRegex = new RegExp(
       `${escapedPhraseAndContext}_([0-9]+|plural)`);
@@ -216,8 +218,8 @@ class Translator {
     const i18nextInstance = i18next.createInstance();
     await i18nextInstance.init({
       lng: locale,
-      nsSeparator: false,     // allow keys to be phrases having `:`
-      keySeparator: false,    // allow keys to be phrases having `.`
+      nsSeparator: false, // allow keys to be phrases having `:`
+      keySeparator: false, // allow keys to be phrases having `.`
       fallbackLng: fallbacks,
       resources: translations,
     });

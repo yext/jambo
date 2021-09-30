@@ -2,7 +2,7 @@ import UserError from '../errors/usererror';
 
 const ThemeRepos = {
   'answers-hitchhiker-theme': 'https://github.com/yext/answers-hitchhiker-theme.git'
-}
+};
 
 /**
  * Responsible for providing information about themes known by Jambo
