@@ -1,4 +1,4 @@
-import { ArgumentType, ArgumentMetadata } from './ArgumentMetadata'
+import { ArgumentType, ArgumentMetadata } from './ArgumentMetadata';
 
 /**
  * The base concrete ArgumentMetadata class.
@@ -13,15 +13,15 @@ export class ArgumentMetadataImpl<T extends ArgumentType> implements ArgumentMet
   /**
    * The description of the argument.
    */
-  description: string
+  description: string;
   /**
    * Optional, a boolean indicating if the argument is required.
    */
-  isRequired?: boolean
+  isRequired?: boolean;
   /**
    * Optional, a default value for the argument.
    */
-  defaultValue?: T
+  defaultValue?: T;
 
   constructor(metadata: ArgumentMetadata<T>) {
     Object.assign(this, metadata);
@@ -53,7 +53,7 @@ interface InternalArrayMetadata {
  * @public
  */
 export class StringMetadata extends ArgumentMetadataImpl<string> implements InternalMetadata {
-  readonly type = 'string'
+  readonly type = 'string';
 }
 /**
  * Metadata for an array of strings argument.
@@ -61,8 +61,8 @@ export class StringMetadata extends ArgumentMetadataImpl<string> implements Inte
  * @public
  */
 export class StringArrayMetadata extends ArgumentMetadataImpl<string[]> implements InternalArrayMetadata {
-  readonly type = 'array'
-  readonly itemType = 'string'
+  readonly type = 'array';
+  readonly itemType = 'string';
 }
 
 /**
@@ -71,7 +71,7 @@ export class StringArrayMetadata extends ArgumentMetadataImpl<string[]> implemen
  * @public
  */
 export class BooleanMetadata extends ArgumentMetadataImpl<boolean> implements InternalMetadata {
-  readonly type = 'boolean'
+  readonly type = 'boolean';
 }
 /**
  * Metadata for an array of booleans argument.
@@ -79,8 +79,8 @@ export class BooleanMetadata extends ArgumentMetadataImpl<boolean> implements In
  * @public
  */
 export class BooleanArrayMetadata extends ArgumentMetadataImpl<boolean[]> implements InternalArrayMetadata {
-  readonly type = 'array'
-  readonly itemType = 'boolean'
+  readonly type = 'array';
+  readonly itemType = 'boolean';
 }
 
 /**
@@ -89,7 +89,7 @@ export class BooleanArrayMetadata extends ArgumentMetadataImpl<boolean[]> implem
  * @public
  */
 export class NumberMetadata extends ArgumentMetadataImpl<number> implements InternalMetadata {
-  readonly type = 'number'
+  readonly type = 'number';
 }
 /**
  * Metadata for an array of numbers argument.
@@ -97,8 +97,8 @@ export class NumberMetadata extends ArgumentMetadataImpl<number> implements Inte
  * @public
  */
 export class NumberArrayMetadata extends ArgumentMetadataImpl<number[]> implements InternalArrayMetadata {
-  readonly type = 'array'
-  readonly itemType = 'number'
+  readonly type = 'array';
+  readonly itemType = 'number';
 }
 
 

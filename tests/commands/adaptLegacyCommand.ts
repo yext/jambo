@@ -15,8 +15,8 @@ describe('can adapt legacy commands', () => {
   });
 
   it('getAlias/getShortDescription', () => {
-    expect(adaptedCommand.getAlias()).toEqual('TestLegacyCommand')
-    expect(adaptedCommand.getShortDescription()).toEqual('a legacy command for unit tests')
+    expect(adaptedCommand.getAlias()).toEqual('TestLegacyCommand');
+    expect(adaptedCommand.getShortDescription()).toEqual('a legacy command for unit tests');
   });
 
   it('execute and describe exist and run without error', () => {
@@ -29,7 +29,8 @@ describe('can adapt legacy commands', () => {
 
   it('importing a legacy command without a describe function works', () => {
     const legacyCommandNoDescribe: LegacyCommand = TestLegacyCommandNoDescribe;
-    const adaptedCommandNoDescribe = adaptLegacyCommand(legacyCommandNoDescribe) as CommandClassWithLegacyArguments;
+    const adaptedCommandNoDescribe =
+      adaptLegacyCommand(legacyCommandNoDescribe) as CommandClassWithLegacyArguments;
     expect(adaptedCommandNoDescribe.describe({})).toBeNull();
   });
 });

@@ -66,6 +66,6 @@ function importCustomCommands(jamboConfig: JamboConfig, commandRegistry: Command
     new CommandImporter(jamboConfig.dirs.output);
 
   commandImporter.import().forEach(customCommand => {
-    commandRegistry.addCommand(customCommand)
+    commandRegistry.addCommand(customCommand);
   });
 }

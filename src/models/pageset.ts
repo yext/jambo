@@ -8,11 +8,11 @@ import Page from './page';
  * the globalConfig, pageNameToConfig, and params.
  */
 export default class PageSet {
-  locale: string
-  pages: Page[]
-  globalConfig: GlobalConfig
-  pageNameToConfig: Record<string, any>
-  currentLocaleConfig: LocalizationConfig
+  locale: string;
+  pages: Page[];
+  globalConfig: GlobalConfig;
+  pageNameToConfig: Record<string, any>;
+  currentLocaleConfig: LocalizationConfig;
 
   /**
    * @param {String} locale
@@ -41,9 +41,9 @@ export default class PageSet {
      */
     this.pageNameToConfig = pages && pages.length > 0
       ? this.pages.reduce((obj, page) => {
-          obj[page.getName()] = page.getConfig();
-          return obj;
-        }, {})
+        obj[page.getName()] = page.getConfig();
+        return obj;
+      }, {})
       : {};
 
     /**

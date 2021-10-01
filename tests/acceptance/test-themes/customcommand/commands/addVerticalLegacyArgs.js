@@ -18,7 +18,7 @@ class ArgumentMetadata {
   }
 
   getDescription() {
-    return this._description
+    return this._description;
   }
 
   isRequired() {
@@ -123,13 +123,13 @@ module.exports = class VerticalAdder {
     };
   }
 
-/**
- * Executes a command that creates an html file.
- *
- * @param {Object<string, string>} args The arguments, keyed by name
- */
+  /**
+   * Executes a command that creates an html file.
+   *
+   * @param {Object<string, string>} args The arguments, keyed by name
+   */
   execute(args) {
     const content = args.name + args.template + args.verticalKey;
     fs.writeFileSync('indexLegacy.html', content);
   }
-}
+};

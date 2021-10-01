@@ -9,7 +9,7 @@ import UserError from '../../errors/usererror';
  */
 class LocalFileParser {
   private _translationsDir: string;
-  private _options: Record<string, unknown>
+  private _options: Record<string, unknown>;
 
   /**
    * Creates a new instance of {@link LocalFileParser}.

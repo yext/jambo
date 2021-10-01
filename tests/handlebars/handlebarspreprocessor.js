@@ -2,14 +2,14 @@ import path from 'path';
 import { readFileSync } from 'file-system';
 import Translator from '../../src/i18n/translator/translator';
 import HandlebarsPreprocessor from '../../src/handlebars/handlebarspreprocessor';
-jest.mock('../../src/i18n/translator/translator')
+jest.mock('../../src/i18n/translator/translator');
 
 describe('HandlebarsPreprocessor works correctly', () => {
   Translator.mockImplementation(() => {
     return {
       translate: (phrase) => {
         if (phrase === 'Hello') {
-          return 'Bonjour'
+          return 'Bonjour';
         } else if (phrase === 'The man') {
           return 'L\'homme';
         } else if (phrase === '<span class="yext">The dog\'s bone</span>') {
@@ -60,26 +60,26 @@ describe('HandlebarsPreprocessor works correctly', () => {
               return {
                 0: 'Le [[count]] homme est parti en promenade',
                 1: 'Les [[count]] Hommes fait une promenade'
-              }
+              };
             } else if (context === 'female') {
               return {
                 0: 'La [[count]] femme a fait une promenade',
                 1: 'Les [[count]] femmes fait une promenade'
-              }
+              };
             }
           case '<a href="https://www.yext.com">View our website [[name]]</a>':
             if (context === 'internet web, not spider web') {
               return {
                 0: '<a href="https://www.yext.com">Voir notre site web [[name]]</a>',
                 1: '<a href="https://www.yext.com">Voir nos sites web [[name]]</a>'
-              }
+              };
             }
           case 'The person':
             if (context === 'male') {
               return {
                 0: 'L\'homme',
                 1: 'Les hommes'
-              }
+              };
             }
         }
       }

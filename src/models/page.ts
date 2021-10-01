@@ -6,9 +6,9 @@ import { stripExtension } from '../utils/fileutils';
  * page-specific information necessary to write an output HTML file for a given page.
  */
 export default class Page {
-  pageConfig: PageConfig
-  templateContents: string
-  outputPath: string
+  pageConfig: PageConfig;
+  templateContents: string;
+  outputPath: string;
 
   /**
    * @param {PageConfig} pageConfig
@@ -66,9 +66,9 @@ export default class Page {
    */
   getConfig() {
     return Object.assign({}, {
-        url: this.outputPath,
-      },
-      this.pageConfig.getConfig(),
+      url: this.outputPath,
+    },
+    this.pageConfig.getConfig(),
     );
   }
 
@@ -117,7 +117,9 @@ export default class Page {
    * @param {String} urlFormatter
    * @returns {String}
    */
-  static buildUrl(pageName: string, path: string, urlFormatter: (pageName: string, pageExct: string) => string) {
+  static buildUrl(
+    pageName: string, path: string, urlFormatter: (pageName: string, pageExct: string) => string
+  ) {
     const pathWithoutHbsExtension = stripExtension(path);
     const pageExt = pathWithoutHbsExtension
       .substring(pathWithoutHbsExtension.lastIndexOf('.') + 1);

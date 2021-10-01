@@ -35,7 +35,7 @@ export default function adaptCommandWithLegacyArgs(
   commandToWrap: CommandClassWithLegacyArguments
 ): Command<any> {
   return class {
-    _wrappedInstance: CommandExecutable<any>
+    _wrappedInstance: CommandExecutable<any>;
 
     constructor(jamboConfig: JamboConfig) {
       this._wrappedInstance = new commandToWrap(jamboConfig);
@@ -59,7 +59,7 @@ export default function adaptCommandWithLegacyArgs(
     execute(args: any) {
       return this._wrappedInstance.execute(args);
     }
-  }
+  };
 }
 
 /**
@@ -72,7 +72,7 @@ export default function adaptCommandWithLegacyArgs(
 function adaptLegacyArguments(
   legacyArgs: Record<string, LegacyArgumentMetadata | ConcreteArgumentMetadata>
 ): Record<string, ConcreteArgumentMetadata> {
-  const args: Record<string, ConcreteArgumentMetadata> = {}
+  const args: Record<string, ConcreteArgumentMetadata> = {};
   for (const argName in legacyArgs) {
     const argumentMetadata = legacyArgs[argName];
     if (argumentMetadata instanceof ArgumentMetadataImpl) {
@@ -85,7 +85,7 @@ function adaptLegacyArguments(
         description: legacyArg.getDescription(),
         isRequired: legacyArg.isRequired(),
         defaultValue: legacyArg.defaultValue()
-      }
+      };
       const MetadataClass = getMetadataClassFromType(type, itemType);
       const adaptedMetadata = new MetadataClass(metadata);
       args[argName] = adaptedMetadata;
@@ -97,19 +97,19 @@ function adaptLegacyArguments(
 function getMetadataClassFromType(
   type: LegacyArgumentType,
   itemType?: LegacyArgumentItemType
-): ConcreteMetadataClass  {
+): ConcreteMetadataClass {
   function getArrayMetadataType() {
     switch(itemType) {
-      case 'string': return StringArrayMetadata
-      case 'number': return NumberArrayMetadata
-      case 'boolean': return BooleanArrayMetadata
+      case 'string': return StringArrayMetadata;
+      case 'number': return NumberArrayMetadata;
+      case 'boolean': return BooleanArrayMetadata;
       default: throw new UserError(`Unrecognized itemType ${itemType} for legacy argument type ${type}`);
     }
   }
   switch(type) {
-    case 'string': return StringMetadata
-    case 'number': return NumberMetadata
-    case 'boolean': return BooleanMetadata
+    case 'string': return StringMetadata;
+    case 'number': return NumberMetadata;
+    case 'boolean': return BooleanMetadata;
     case 'array': return getArrayMetadataType();
     default: throw new UserError(`Unrecognized legacy argument type ${type}`);
   }

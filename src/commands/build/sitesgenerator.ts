@@ -24,7 +24,7 @@ import { info, warn } from '../../utils/logger';
 import { JamboConfig } from '../../models/JamboConfig';
 
 class SitesGenerator {
-  config: JamboConfig
+  config: JamboConfig;
 
   constructor(jamboConfig) {
     this.config = jamboConfig;
@@ -144,7 +144,7 @@ class SitesGenerator {
 
     // Register the default theme's Handlebars helpers from the hbshelpers folder.
     const customHbsHelpersDir =
-      path.resolve(config.dirs.themes, config.defaultTheme, 'hbshelpers')
+      path.resolve(config.dirs.themes, config.defaultTheme, 'hbshelpers');
     if (fs.existsSync(customHbsHelpersDir)) {
       try {
         info('Registering custom Handlebars helpers from the default theme');

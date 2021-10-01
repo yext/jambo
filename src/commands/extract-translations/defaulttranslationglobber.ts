@@ -5,10 +5,10 @@ import fs from 'fs';
  * which files are scanned by the extract-translations command.
  */
 export default class DefaultTranslationGlobber {
-  pages: string
-  partials: string[]
-  ignoredPaths: string[]
-  extensions: ['.js', '.hbs']
+  pages: string;
+  partials: string[];
+  ignoredPaths: string[];
+  extensions: ['.js', '.hbs'];
 
   constructor(dirs: any = {}, ignoredPaths = []) {
     this.pages = dirs.pages || '';
@@ -36,7 +36,7 @@ export default class DefaultTranslationGlobber {
    * @param {string[]} ignoredPaths paths to recursively ignore
    * @returns {string[]}
    */
-   _globInputFilePaths(directories: string[], files: string[], ignoredPaths: string[]) {
+  _globInputFilePaths(directories: string[], files: string[], ignoredPaths: string[]) {
     const extensions = this.extensions.join(',');
     const directoryGlobs = directories.map(dirpath => `${dirpath}/**/*{${extensions}}`);
     const ignoreGlobs = ignoredPaths.map(dirpath => `!${dirpath}`);
@@ -49,7 +49,7 @@ export default class DefaultTranslationGlobber {
    *
    * @returns {{files: Array.<string>, directories: Array.<string>}}
    */
-   _getFilesAndDirsFromJamboConfig() {
+  _getFilesAndDirsFromJamboConfig() {
     const files = [];
     const directories = [];
     const pathsThatExist = [this.pages, ...this.partials].filter(p => fs.existsSync(p));

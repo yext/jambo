@@ -1,5 +1,8 @@
 const fs = require('fs');
-const { StringMetadata, StringArrayMetadata } = require('../../../../../src/models/commands/concreteargumentmetadata');
+const {
+  StringMetadata,
+  StringArrayMetadata
+} = require('../../../../../src/models/commands/concreteargumentmetadata');
 
 /**
  * VerticalAdder represents the `vertical` custom jambo command. The command adds
@@ -83,13 +86,13 @@ module.exports = class VerticalAdder {
     };
   }
 
-/**
- * Executes a command that creates an html file.
- *
- * @param {Object<string, string>} args The arguments, keyed by name
- */
+  /**
+   * Executes a command that creates an html file.
+   *
+   * @param {Object<string, string>} args The arguments, keyed by name
+   */
   execute(args) {
     const content = args.name + args.template + args.verticalKey;
     fs.writeFileSync('index.html', content);
   }
-}
+};

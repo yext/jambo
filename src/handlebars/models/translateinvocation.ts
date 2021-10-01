@@ -22,7 +22,7 @@ const ParamTypes = {
   COUNT: 'count',
   ESCAPE: 'escapeHTML',
   OTHER: 'other'
-}
+};
 Object.freeze(ParamTypes);
 
 /**
@@ -30,9 +30,9 @@ Object.freeze(ParamTypes);
  * helpers.
  */
 class TranslateInvocation {
-  _invokedHelper: string
-  _providedParams: Record<string, string>
-  _lineNumber: number
+  _invokedHelper: string;
+  _providedParams: Record<string, string>;
+  _lineNumber: number;
 
   constructor(invokedHelper, providedParams, lineNumber) {
     this._invokedHelper = invokedHelper;
@@ -124,7 +124,7 @@ class TranslateInvocation {
    *
    * @returns {Object<string, string>} The interpolation params.
    */
-  getInterpolationParams(): Record<string, string>  {
+  getInterpolationParams(): Record<string, string> {
     const interpParams = _.cloneDeep(this._providedParams);
     const paramsToRemove =
       [ParamTypes.CONTEXT, ParamTypes.PHRASE, ParamTypes.PLURAL, ParamTypes.ESCAPE];

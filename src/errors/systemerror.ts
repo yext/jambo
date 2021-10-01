@@ -3,12 +3,12 @@
  * not likely to be caused by users of jambo
  */
 class SystemError extends Error {
-  exitCode: number
+  exitCode: number;
 
   constructor(message, stack?) {
     super(message);
 
-    this.name = 'SystemError'
+    this.name = 'SystemError';
     this.exitCode = 14;
 
     if (stack) {

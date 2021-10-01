@@ -14,7 +14,7 @@ export type LegacyCommand = (jamboConfig: JamboConfig) => {
   args: () => Record<string, LegacyArgumentMetadata>
   describe?: () => any
   execute: (params: any) => void
-}
+};
 
 /**
  * Creates an implementation of the current {@link Command} interface that wraps the
@@ -23,9 +23,11 @@ export type LegacyCommand = (jamboConfig: JamboConfig) => {
  * @param {Function} commandCreator The function provided by a legacy command import.
  * @returns {class} An implemenation of the current {@link Command} interface.
  */
-export default function adaptLegacyCommand(commandCreator: LegacyCommand): Command<any> | CommandClassWithLegacyArguments {
+export default function adaptLegacyCommand(
+  commandCreator: LegacyCommand
+): Command<any> | CommandClassWithLegacyArguments {
   return class {
-    _wrappedInstance: ReturnType<LegacyCommand>
+    _wrappedInstance: ReturnType<LegacyCommand>;
 
     constructor(jamboConfig: JamboConfig) {
       this._wrappedInstance = commandCreator(jamboConfig);
@@ -50,5 +52,5 @@ export default function adaptLegacyCommand(commandCreator: LegacyCommand): Comma
     execute(args: any) {
       return this._wrappedInstance.execute(args);
     }
-  }
+  };
 }

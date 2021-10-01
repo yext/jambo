@@ -14,7 +14,7 @@ describe('DescribeCommand can describe a simple command', () => {
         useSubmodules: new BooleanMetadata({
           description: 'use submodules'
         })
-      }
+      };
     },
     getAlias() {
       return 'init';
@@ -32,15 +32,15 @@ describe('DescribeCommand can describe a simple command', () => {
             displayName: 'Use Submodules',
           }
         }
-      }
+      };
     }
-  }
+  };
   let descriptions;
   beforeAll(async () => {
     await new DescribeCommand({}, () => [ mockInitCommand ]).execute();
     descriptions = JSON.parse(consoleSpy.mock.calls[0][0]);
     consoleSpy.mockClear();
-  })
+  });
 
   it('describes all provided commands and nothing more', () => {
     const expectedCommandNames = [
@@ -79,7 +79,7 @@ it('deprecated params in a command\'s DescribeMetadata ' +
           isRequired: false,
           defaultValue: 'dont show me in describe'
         })
-      }
+      };
     },
     getAlias() { return 'mocked'; },
     describe() {
@@ -93,9 +93,9 @@ it('deprecated params in a command\'s DescribeMetadata ' +
             type: 'number'
           },
         }
-      }
+      };
     }
-  }
+  };
 
   await new DescribeCommand({}, () => [ mockCommand ]).execute();
   const descriptions = JSON.parse(consoleSpy.mock.calls[0][0]);
@@ -112,7 +112,7 @@ it('deprecated params in a command\'s DescribeMetadata ' +
       }
     }
   });
-})
+});
 
 it('when a describe function is not included, it returns undefined', async () => {
   const mockCommand = {
@@ -123,14 +123,14 @@ it('when a describe function is not included, it returns undefined', async () =>
           isRequired: false,
           defaultValue: 'dont show me in describe'
         })
-      }
+      };
     },
     getAlias() { return 'mocked'; }
-  }
+  };
 
   await new DescribeCommand({}, () => [ mockCommand ]).execute();
   const descriptions = JSON.parse(consoleSpy.mock.calls[0][0]);
   consoleSpy.mockClear();
 
   expect(descriptions.mocked).toBeUndefined();
-})
+});

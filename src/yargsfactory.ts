@@ -19,8 +19,8 @@ import {
  * Creates the {@link yargs} instance that powers the Jambo CLI.
  */
 class YargsFactory {
-  private _commandRegistry: CommandRegistry
-  private _jamboConfig: JamboConfig
+  private _commandRegistry: CommandRegistry;
+  private _jamboConfig: JamboConfig;
 
   constructor(commandRegistry: CommandRegistry, jamboConfig: JamboConfig) {
     this._commandRegistry = commandRegistry;
@@ -57,14 +57,14 @@ class YargsFactory {
       command: commandClass.getAlias(),
       describe: commandClass.getShortDescription(),
       builder: yargs => {
-        const args = Object.entries(commandClass.args())
+        const args = Object.entries(commandClass.args());
         args.forEach(([name, metadata]) => {
           if (!(metadata instanceof ArgumentMetadataImpl)) {
             throw new Error(
               `The "${name}"" argument for the ${commandClass.getAlias()} command ` +
               'is not an instance of a jambo ArgumentMetadata class.\n' +
               'Please import and use one of them, for example `const { StringMetadata } = require(\'jambo\')`'
-            )
+            );
           }
           if (metadata.type === 'array') {
             this._addListOption(name, metadata, yargs);
@@ -85,7 +85,7 @@ class YargsFactory {
         const commandInstance = this._createCommandInstance(commandClass);
         await commandInstance.execute(argv);
       }
-    }
+    };
   }
 
   /**

@@ -12,7 +12,7 @@ describe('Properly builds PageConfig object', () => {
       pageName: pageName,
       rawConfig: rawConfig,
       locale: locale
-    })
+    });
     expect(pageConfig.getPageName()).toEqual(pageName);
     expect(pageConfig.getConfig()).toEqual(rawConfig);
     expect(pageConfig.getLocale()).toEqual(locale);
@@ -22,7 +22,7 @@ describe('Properly builds PageConfig object', () => {
     const pageConfig = new PageConfig({
       pageName: pageName,
       rawConfig: rawConfig,
-    })
+    });
     expect(pageConfig.getPageName()).toEqual(pageName);
     expect(pageConfig.getLocale()).toEqual(NO_LOCALE);
     expect(pageConfig.getConfig()).toEqual(rawConfig);

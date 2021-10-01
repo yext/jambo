@@ -9,8 +9,8 @@ import { JamboConfig } from '../../models/JamboConfig';
  * indicates which file(s) in the Theme should have local shadows.
  */
 export class ShadowConfiguration {
-  private _theme: string
-  private _path: string
+  private _theme: string;
+  private _path: string;
 
   constructor({ theme, path }: any) {
     if (!theme || !path) {
@@ -37,7 +37,7 @@ export class ShadowConfiguration {
  * pieces of a theme.
  */
 export class ThemeShadower {
-  config: JamboConfig
+  config: JamboConfig;
 
   constructor(jamboConfig) {
     this.config = jamboConfig;

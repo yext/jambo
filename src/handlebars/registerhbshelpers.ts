@@ -104,7 +104,7 @@ export default function registerHbsHelpers(hbs: typeof Handlebars) {
     let result = '';
     Object.keys(hbs.partials)
       .filter(key => key.match(new RegExp(cardPath)))
-      .map(key => {return {key}})
+      .map(key => { return {key}; })
       .forEach(key => result += opt.fn(key));
     return result;
   });

@@ -36,7 +36,7 @@ export type DescribeMetadataParam<T extends ConcreteArgumentMetadata> =
   T extends NumberMetadata ? DescribeParamForPrimitive<number> :
   never;
 
-type DeprecatedDescribeParamTypes = 'string' | 'number' | 'boolean'
+type DeprecatedDescribeParamTypes = 'string' | 'number' | 'boolean';
 
 type DescribeParamForPrimitive<T extends string | number | boolean> = {
   displayName: string
@@ -50,7 +50,7 @@ type DescribeParamForPrimitive<T extends string | number | boolean> = {
   required?: boolean,
   /** @deprecated - specify in Command.args() instead */
   default?: T
-}
+};
 
 interface DescribeParamForArray<T extends string | number | boolean> {
   displayName: string

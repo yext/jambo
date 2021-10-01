@@ -34,7 +34,15 @@ export default class TemplateArgsBuilder {
    * @param {Object<string, Object>} pageNameToConfig
    * @returns {Object}
    */
-  buildArgs({ relativePath, pageName, currentLocaleConfig, globalConfig, locale, env, pageNameToConfig }: any) {
+  buildArgs({
+    relativePath,
+    pageName,
+    currentLocaleConfig,
+    globalConfig,
+    locale,
+    env,
+    pageNameToConfig
+  }: any) {
     const pageMetadata = {
       relativePath,
       pageName
@@ -62,7 +70,11 @@ export default class TemplateArgsBuilder {
    * @param {Object<string, Object>} pageNameToConfig
    * @returns {Object}
    */
-  _getTemplateDataFromFormatter(pageMetadata: any, siteLevelAttributes: any, pageNameToConfig: Record<string, any>) {
+  _getTemplateDataFromFormatter(
+    pageMetadata: any,
+    siteLevelAttributes: any,
+    pageNameToConfig: Record<string, any>
+  ) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const formatterFunction = require(this.templateDataFormatterHook);

@@ -14,7 +14,7 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     const rawLocaleConfig = {
       default: 'en',
       localeConfig: {}
-    }
+    };
     const configRegistry = ConfigurationRegistry.from({
       global_config: rawGlobalConfig,
       locale_config: rawLocaleConfig
@@ -92,17 +92,17 @@ describe('ConfigurationRegistry forms object properly using static frm', () => {
     });
 
     expect(configRegistry.getPageConfigs())
-    .toEqual([
-      new PageConfig({
-        pageName: 'configName',
-        locale: NO_LOCALE,
-        rawConfig: {}
-      }),
-      new PageConfig({
-        pageName: 'configName',
-        locale: 'es',
-        rawConfig: {}
-      })
-    ]);
+      .toEqual([
+        new PageConfig({
+          pageName: 'configName',
+          locale: NO_LOCALE,
+          rawConfig: {}
+        }),
+        new PageConfig({
+          pageName: 'configName',
+          locale: 'es',
+          rawConfig: {}
+        })
+      ]);
   });
 });

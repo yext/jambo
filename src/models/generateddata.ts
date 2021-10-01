@@ -7,8 +7,8 @@ import PageSetsBuilder from '../commands/build/pagesetsbuilder';
  * the {@link LocalizationConfig}, a group of {@link PageSet}s.
  */
 export default class GeneratedData {
-  private _localizationConfig: LocalizationConfig
-  private _pageSets: PageSet[]
+  private _localizationConfig: LocalizationConfig;
+  private _pageSets: PageSet[];
 
   /**
    * @param {LocalizationConfig} localizationConfig

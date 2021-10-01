@@ -13,9 +13,9 @@ import { info } from '../utils/logger';
  * This class does not mutate or localize the configuration in any way.
  */
 export default class ConfigurationRegistry {
-  private _globalConfig: GlobalConfig
-  private _localizationConfig: LocalizationConfig
-  private _pageConfigs: PageConfig[]
+  private _globalConfig: GlobalConfig;
+  private _localizationConfig: LocalizationConfig;
+  private _pageConfigs: PageConfig[];
 
   /**
    * @param {GlobalConfig} globalConfig

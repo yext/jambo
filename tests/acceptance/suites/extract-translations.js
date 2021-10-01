@@ -6,7 +6,7 @@ it('extract translations w/ default settings', () => runInPlayground(async t => 
   await t.jambo('import --themeUrl ../test-themes/basic-flow');
   await t.jambo('override --path translations/translation-folder');
   await t.jambo('override --path translations/lonewolf.hbs');
-  fs.writeFileSync('.gitignore', '**/ignored.hbs')
+  fs.writeFileSync('.gitignore', '**/ignored.hbs');
   await t.jambo('extract-translations');
   const expectedPot = fs.readFileSync('messages.pot', 'utf-8');
   const actualPot = fs.readFileSync(
@@ -19,7 +19,7 @@ it('extract translations w/ custom globs', () => runInPlayground(async t => {
   await t.jambo('import --themeUrl ../test-themes/basic-flow');
   await t.jambo('override --path translations/translation-folder');
   await t.jambo('override --path translations/lonewolf.hbs');
-  fs.writeFileSync('.gitignore', '**/ignored.hbs')
+  fs.writeFileSync('.gitignore', '**/ignored.hbs');
   await fs.writeFileSync(
     'user-created.js',
     '{{ translateJS phrase=\'RSVP\' context=\'RSVP is a verb\' }}'

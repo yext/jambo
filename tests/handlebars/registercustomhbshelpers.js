@@ -39,7 +39,7 @@ it('registers baked-in hbs helpers + isNonRelativeUrl', () => {
     'isNonRelativeUrl'
   ];
   expect(Object.keys(hbs.helpers)).toEqual(expectedHelpers);
-})
+});
 
 it('does not register helpers in subfolders', () => {
   expect(Object.keys(hbs.helpers)).toEqual(

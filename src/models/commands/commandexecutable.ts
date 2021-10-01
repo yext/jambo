@@ -22,7 +22,7 @@ export type ExecArgs<T extends ArgumentMetadataRecord> = {
     T[arg] extends NumberMetadata ? number :
     T[arg] extends NumberArrayMetadata ? number[] :
     never;
-}
+};
 
 /**
  * Command interface that contains non static fields and methods

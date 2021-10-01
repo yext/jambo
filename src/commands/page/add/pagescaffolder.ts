@@ -4,7 +4,7 @@ import { JamboConfig } from '../../../models/JamboConfig';
 import PageConfiguration from './pageconfiguration';
 
 class PageScaffolder {
-  config: JamboConfig
+  config: JamboConfig;
 
   constructor(jamboConfig) {
     this.config = jamboConfig;

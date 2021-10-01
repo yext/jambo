@@ -9,8 +9,8 @@ import DescribeOutput from './DescribeOutput';
  * and their possible arguments.
  */
 const DescribeCommand: Command<any> = class {
-  private _jamboConfig: JamboConfig
-  getCommands: () => Command<ArgumentMetadataRecord>[]
+  private _jamboConfig: JamboConfig;
+  getCommands: () => Command<ArgumentMetadataRecord>[];
 
   constructor(jamboConfig, getCommands) {
     /**
@@ -53,7 +53,7 @@ const DescribeCommand: Command<any> = class {
     const describePromises = commands.map(command => {
       const recordDescription = (value: DescribeMetadata) => {
         descriptions[command.getAlias()] = this.calculateDescribeOutput(command.args(), value);
-      }
+      };
       const describeValue = command.describe?.(this._jamboConfig);
       if (!describeValue) {
         return;
@@ -86,14 +86,14 @@ const DescribeCommand: Command<any> = class {
         default: concreteMetadata.defaultValue,
         type: concreteMetadata.type,
         ...describeParam
-      }
+      };
     }
     return {
       displayName: describeDefinition.displayName,
       params: mergedParams
     };
   }
-}
+};
 
 function isPromise(
   describeValue: DescribeMetadata | Promise<DescribeMetadata>

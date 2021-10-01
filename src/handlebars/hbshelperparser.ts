@@ -7,9 +7,9 @@ import Handlebars from 'handlebars';
  * hbs helpers found of the requested types.
  */
 export default class HbsHelperParser {
-  helpersToParse: string[]
-  vistor: Handlebars.Visitor
-  helperStatements: MustacheStatement[]
+  helpersToParse: string[];
+  vistor: Handlebars.Visitor;
+  helperStatements: MustacheStatement[];
 
   constructor(helpersToParse) {
     /**
@@ -98,7 +98,7 @@ export default class HbsHelperParser {
     const getIndex = ({ line, column }) => {
       const lineStart = line === 1 ? 0 : lineEndIndices[line - 2];
       return lineStart + column;
-    }
+    };
     const { start, end } = statement.loc;
     const startIndex = getIndex(start);
     const endIndex = getIndex(end);

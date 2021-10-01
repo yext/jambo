@@ -74,7 +74,7 @@ const ThemeUpgrader: Command<typeof args> = class {
           displayName: 'Branch of theme to upgrade to'
         }
       }
-    }
+    };
   }
 
   async execute(args: {
@@ -114,7 +114,7 @@ const ThemeUpgrader: Command<typeof args> = class {
         `Theme "${themeName}" not found within the "${this._themesDir}" folder`);
     }
     if (await this._isGitSubmodule(themePath)) {
-      await this._upgradeSubmodule(themePath, branch)
+      await this._upgradeSubmodule(themePath, branch);
     } else {
       const tempDir = fs.mkdtempSync('./');
       try {
@@ -158,13 +158,13 @@ const ThemeUpgrader: Command<typeof args> = class {
    */
   _executePostUpgradeScript(themePath: string, isLegacy: boolean) {
     const upgradeScriptName =
-      searchDirectoryIgnoringExtensions(this.postUpgradeFileName, themePath)
+      searchDirectoryIgnoringExtensions(this.postUpgradeFileName, themePath);
     const upgradeScriptPath = path.join(themePath, upgradeScriptName);
     const customCommand = new CustomCommand({
       executable: `./${upgradeScriptPath}`
     });
     if (isLegacy) {
-      customCommand.addArgs(['--isLegacy'])
+      customCommand.addArgs(['--isLegacy']);
     }
     new CustomCommandExecuter(this.jamboConfig).execute(customCommand);
   }
@@ -205,8 +205,8 @@ const ThemeUpgrader: Command<typeof args> = class {
     const submodulePaths = await git.subModule(['foreach', '--quiet', 'echo $sm_path']);
     return !!submodulePaths
       .split('\n')
-      .find(p => p === submodulePath)
+      .find(p => p === submodulePath);
   }
-}
+};
 
 export default ThemeUpgrader;

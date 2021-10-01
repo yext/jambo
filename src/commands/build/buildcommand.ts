@@ -38,7 +38,7 @@ const BuildCommand: Command<typeof args> = class {
   static describe(): DescribeMetadata<typeof args> {
     return {
       displayName: 'Build Pages'
-    }
+    };
   }
 
   async execute(args: { jsonEnvVars: string[] }): Promise<void> {
@@ -51,6 +51,6 @@ const BuildCommand: Command<typeof args> = class {
       throw new UserError('Failed to generate the site', err.stack);
     }
   }
-}
+};
 
 export default BuildCommand;

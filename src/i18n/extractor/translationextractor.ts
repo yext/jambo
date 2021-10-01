@@ -13,7 +13,7 @@ import { error } from '../../utils/logger';
  */
 class TranslationExtractor {
   private _extractor: GettextExtractor;
-  private _options: Record<string, any>
+  private _options: Record<string, any>;
 
   constructor(options?: any) {
     this._options = {
@@ -32,7 +32,7 @@ class TranslationExtractor {
     */
   extract(globs: string[]) {
     const filepaths = globby.sync(globs).map(fp => {
-      return path.resolve(this._options.baseDirectory, fp)
+      return path.resolve(this._options.baseDirectory, fp);
     });
     for (const filepath of filepaths) {
       const template = fs.readFileSync(filepath).toString();
@@ -69,7 +69,7 @@ class TranslationExtractor {
         mustacheStatement => this._handleMustacheStatement(mustacheStatement, filepath);
       visitor.accept(tree);
     } catch (err) {
-      error(`Unable to extract translations from ${filepath}`)
+      error(`Unable to extract translations from ${filepath}`);
       error(err.message);
     }
   }

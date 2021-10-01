@@ -14,7 +14,7 @@ describe('LocaleConfigValidator works properly', () => {
     const defaultMispelledConfig = {
       defautl: 'en',
       localeConfig: {}
-    }
+    };
     expect(() => new LocaleConfigValidator(defaultMispelledConfig).validate())
       .toThrow(UserError);
   });
@@ -23,7 +23,7 @@ describe('LocaleConfigValidator works properly', () => {
     const localeConfigMispelledConfig = {
       default: 'en',
       localeConfiggg: {}
-    }
+    };
     expect(() => new LocaleConfigValidator(localeConfigMispelledConfig).validate())
       .toThrow(UserError);
   });

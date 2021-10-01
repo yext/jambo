@@ -132,6 +132,6 @@ const PageCommand: Command<typeof args> = class {
       throw new UserError('Failed to add page', err.stack);
     }
   }
-}
+};
 
 export default PageCommand;

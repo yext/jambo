@@ -15,7 +15,7 @@ export default class TestInstance {
       .scriptName('jambo')
       .fail(function(msg, err) {
         error('Error running command:', command);
-        if (err) throw err
+        if (err) throw err;
       })
       .exitProcess(false)
       .parseAsync(commandArgs);

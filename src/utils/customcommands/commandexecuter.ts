@@ -8,7 +8,7 @@ import { JamboConfig } from '../../models/JamboConfig';
  * flags.
  */
 export class CustomCommandExecuter {
-  private _jamboFlags: any
+  private _jamboFlags: any;
 
   constructor(jamboConfig) {
     this._jamboFlags = this._generateJamboFlags(jamboConfig);
@@ -49,7 +49,7 @@ export class CustomCommandExecuter {
       return path.isAbsolute(jamboDir) ?
         jamboDir :
         path.join(process.cwd(), jamboDir);
-    }
+    };
     Object.entries(jamboConfig.dirs).forEach(([name, value]) => {
       jamboFlags.push([prefix, 'dirs', name].join('.'));
       if (Array.isArray(value)) {

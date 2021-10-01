@@ -17,6 +17,10 @@
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/semi": ["error"],
+    "@typescript-eslint/type-annotation-spacing": ["error"],
+    "indent": ["error", 2, { "SwitchCase": 1, "ignoreComments": true }],
+    "no-multi-spaces" : "error",
     "no-trailing-spaces": "error",
     "no-multiple-empty-lines": "error",
     "arrow-spacing": "error",
@@ -38,7 +42,8 @@
     "max-len": [
       "error",
       {
-        "code": 125
+        "code": 110,
+        "ignorePattern": "^import\\s.+\\sfrom\\s.+;$"
       }
     ]
   },

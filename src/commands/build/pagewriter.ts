@@ -13,10 +13,10 @@ import { info } from '../../utils/logger';
  * the given output directory.
  */
 export default class PageWriter {
-  private _env: any
-  private _outputDirectory: string
-  private _templateArgsBuilder: TemplateArgsBuilder
-  private _templateDataValidator: TemplateDataValidator
+  private _env: any;
+  private _outputDirectory: string;
+  private _templateArgsBuilder: TemplateArgsBuilder;
+  private _templateDataValidator: TemplateDataValidator;
 
   constructor(config) {
     /**
