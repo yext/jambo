@@ -1,4 +1,5 @@
-import fs from 'file-system';
+import fileSystem from 'file-system';
+import fs from 'fs';
 import hbs from 'handlebars';
 import path from 'path';
 import { parse } from 'comment-json';
@@ -51,7 +52,7 @@ class SitesGenerator {
 
     info('Reading config files');
     const configNameToRawConfig = {};
-    fs.recurseSync(config.dirs.config, (path, relative, filename) => {
+    fileSystem.recurseSync(config.dirs.config, (path, relative, filename) => {
       if (isValidFile(filename)) {
         const configName = stripExtension(relative);
         try {
@@ -75,7 +76,7 @@ class SitesGenerator {
     const hasLocalizationConfig = configRegistry.getLocalizationConfig().hasConfig();
 
     const pageTemplates = [];
-    fs.recurseSync(config.dirs.pages, (path, _relative, filename) => {
+    fileSystem.recurseSync(config.dirs.pages, (path, _relative, filename) => {
       if (isValidFile(filename)) {
         const fileContents = fs.readFileSync(path).toString();
         pageTemplates.push(new PageTemplate({
@@ -253,7 +254,7 @@ class SitesGenerator {
   _containsPreservedFiles(directory: string, preservedFiles: Array<any>) {
     let hasPreservedFile = false;
     if (preservedFiles) {
-      fs.recurseSync(directory, (path) => {
+      fileSystem.recurseSync(directory, (path) => {
         if (this._isPreserved(path, preservedFiles)) {
           hasPreservedFile = true;
         }
@@ -275,7 +276,7 @@ class SitesGenerator {
    */
   _createStaticOutput(staticDirs: Array<any>, outputDir: string) {
     for (const staticDir of staticDirs) {
-      fs.recurseSync(staticDir, (path, relative) => {
+      fileSystem.recurseSync(staticDir, (path, relative) => {
         if (fs.lstatSync(path).isFile()) {
           fs.copyFileSync(path, `${outputDir}/static/${relative}`);
         }

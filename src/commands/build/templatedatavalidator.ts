@@ -1,4 +1,4 @@
-import fs from 'file-system';
+import fs from 'fs';
 import UserError from '../../errors/usererror';
 import { info } from '../../utils/logger';
 
@@ -8,7 +8,7 @@ import { info } from '../../utils/logger';
  */
 export default class TemplateDataValidator {
   private _templateDataValidationHook: string
-  private _hasHook: string
+  private _hasHook: boolean
 
   constructor(templateDataValidationHook) {
     /**

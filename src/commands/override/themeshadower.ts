@@ -1,4 +1,5 @@
-import fs from 'file-system';
+import fs from 'fs';
+import fileSystem from 'file-system';
 import { addToPartials } from '../../utils/jamboconfigutils';
 import UserError from '../../errors/usererror';
 import { JamboConfig } from '../../models/JamboConfig';
@@ -70,7 +71,7 @@ export class ThemeShadower {
     if (fs.lstatSync(fullPathInThemes).isFile()) {
       fs.copyFileSync(fullPathInThemes, localShadowPath);
     } else if (fs.lstatSync(fullPathInThemes).isDirectory()) {
-      fs.recurseSync(fullPathInThemes, (path, relative) => {
+      fileSystem.recurseSync(fullPathInThemes, (path, relative) => {
         if (fs.lstatSync(path).isFile()) {
           fs.copyFileSync(path, `${localShadowPath}/${relative}`);
         } else {

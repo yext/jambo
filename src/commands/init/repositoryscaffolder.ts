@@ -1,5 +1,5 @@
 import ThemeImporter from '../import/themeimporter';
-import fs from 'file-system';
+import fs from 'fs';
 import process from 'process';
 import simpleGit from 'simple-git/promise';
 import SystemError from '../../errors/systemerror';

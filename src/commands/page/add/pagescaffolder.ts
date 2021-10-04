@@ -1,4 +1,4 @@
-import fs from 'file-system';
+import fs from 'fs';
 import { parse, stringify } from 'comment-json';
 import { JamboConfig } from '../../../models/JamboConfig';
 import PageConfiguration from './pageconfiguration';

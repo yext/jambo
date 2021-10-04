@@ -1,4 +1,5 @@
-import fs from 'file-system';
+import fs from 'fs';
+import fileSystem from 'file-system';
 import { isValidFile, isValidPartialPath } from '../utils/fileutils';
 import Partial from './partial';
 
@@ -58,7 +59,7 @@ export default class PartialsRegistry {
     const partials = [];
     const pathExists = fs.existsSync(partialsPath);
     if (pathExists && !fs.lstatSync(partialsPath).isFile()) {
-      fs.recurseSync(partialsPath, (path, relative, filename) => {
+      fileSystem.recurseSync(partialsPath, (path, relative, filename) => {
         if (isValidFile(filename) && isValidPartialPath(path)) {
           const partialPath = useFullyQualifiedName
             ? path

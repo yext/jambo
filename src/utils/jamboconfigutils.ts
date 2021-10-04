@@ -1,4 +1,4 @@
-import fs from 'file-system';
+import fs from 'fs';
 import path from 'path';
 import mergeOptions from 'merge-options';
 import { parse, stringify } from 'comment-json';

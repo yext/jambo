@@ -1,4 +1,4 @@
-import fs from 'file-system';
+import fs from 'fs';
 import hbs from 'handlebars';
 import path from 'path';
 import PageSet from '../../models/pageset';
