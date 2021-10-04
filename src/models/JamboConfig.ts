@@ -8,8 +8,8 @@ export interface JamboConfig {
     themes: string
     config: string
     output: string
+    pages: string
     partials: string[]
-    pages?: string
     preservedFiles?: string[]
     translations?: string
   }
