@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/yext/jambo#readme",
   "dependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
@@ -42,7 +42,7 @@
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-object-assign": "^7.12.1",
+    "@babel/plugin-transform-object-assign": "^7.14.5",
     "@types/jest": "^26.0.23",
     "eslint": "^7.8.1",
     "jest": "^25.4.0",
