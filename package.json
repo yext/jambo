@@ -1,6 +1,6 @@
 {
   "name": "jambo",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "description": "A JAMStack implementation using Handlebars",
   "main": "./lib/exports.js",
   "types": "./lib/cli.d.ts",
