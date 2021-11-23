@@ -1,12 +1,11 @@
 import UserError from '../errors/usererror';
 
+type ParsedLocale = { language: string, modifier?: string, region?: string };
+
 /**
  * Normalizes a locale code
- *
- * @param {string} localeCode
- * @returns {string}
  */
-export function canonicalizeLocale(localeCode: string) {
+export function canonicalizeLocale(localeCode: string): string {
   if (!localeCode) {
     return;
   }
@@ -17,11 +16,8 @@ export function canonicalizeLocale(localeCode: string) {
 /**
  * Parses a locale code into its constituent parts.
  * Performs case formatting on the result.
- *
- * @param {string} localeCode
- * @returns { language: string, modifier?: string, region?: string }
  */
-export function parseLocale(localeCode) {
+export function parseLocale(localeCode: string): ParsedLocale {
   const localeCodeSections = localeCode.replace(/-/g, '_').split('_');
   const language = localeCodeSections[0].toLowerCase();
   const parseModifierAndRegion = () => {
@@ -69,12 +65,11 @@ export function parseLocale(localeCode) {
 /**
  * Formats a locale code given its constituent parts.
  *
- * @param {string} language zh in zh-Hans_CH
- * @param {string?} modifier Hans in zh-Hans_CH
- * @param {string?} region CH in zh-Hans_CH
- * @returns
+ * @param language zh in zh-Hans_CH
+ * @param modifier Hans in zh-Hans_CH
+ * @param region CH in zh-Hans_CH
  */
-function formatLocale(language, modifier, region) {
+function formatLocale(language: string, modifier?: string, region?: string): string {
   let result = language.toLowerCase();
   if (modifier) {
     result += '-' + modifier;

@@ -254,3 +254,23 @@ describe('translations with multiple plural forms (Lithuanian)', () => {
     expect(translation).toEqual(expectedResult);
   });
 });
+
+describe('formats chinese locales and resources in i18next style instead of jambo style', () => {
+  const jamboStyleLocale = 'zh-Hant_TW';
+  const translations = {
+    [jamboStyleLocale]: {
+      translation: {
+        chinese: '中文',
+        rockOneFly: '石一飛'
+      }
+    }
+  };
+  let translator;
+  beforeAll(async () => {
+    translator = await Translator.create(jamboStyleLocale, [], translations);
+  });
+  it('can translate to chinese', () => {
+    expect(translator.translate('chinese')).toEqual('中文');
+    expect(translator.translate('rockOneFly')).toEqual('石一飛');
+  });
+});
