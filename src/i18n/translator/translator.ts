@@ -1,5 +1,6 @@
 import i18next, { i18n, Resource } from 'i18next';
 import escapeRegExp from 'lodash/escapeRegExp';
+import { parseLocale } from '../../utils/i18nutils';
 
 /**
  * This class wraps an instance of the i18next library and provides methods supporting
@@ -44,7 +45,7 @@ class Translator {
   translateWithContext(phrase: string, context: string) {
     const interpPlaceholders = this._getInterpolationPlaceholders(phrase);
 
-    return this._i18next.t(phrase, { context, ...interpPlaceholders});
+    return this._i18next.t(phrase, { context, ...interpPlaceholders });
   }
 
   /**
@@ -57,7 +58,7 @@ class Translator {
    *   well as the locale. A form is keyed by its gettext plural form count see
    *   https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
    */
-  translatePlural(phrase: string, pluralForm: string): Record<string|number, string> {
+  translatePlural(phrase: string, pluralForm: string): Record<string | number, string> {
     const escapedPhrase = escapeRegExp(phrase);
     const pluralKeyRegex = new RegExp(`${escapedPhrase}_([0-9]+|plural)`);
     const i18nextOptions = this._i18next.options;
@@ -90,7 +91,7 @@ class Translator {
    */
   translatePluralWithContext(
     phrase: string, pluralForm: string, context: string
-  ): Record<string|number, string> {
+  ): Record<string | number, string> {
     const escapedPhraseAndContext = escapeRegExp(`${phrase}_${context}`);
     const pluralWithContextKeyRegex = new RegExp(
       `${escapedPhraseAndContext}_([0-9]+|plural)`);
@@ -141,17 +142,16 @@ class Translator {
   _generateMapOfPluralizationsToTranslations(
     locale: string,
     pluralRegex: RegExp,
-    translationKey: string): Record<string|number, string>
-  {
+    translationKey: string): Record<string | number, string> {
     const localeTranslations =
-        this._i18next.options.resources[locale].translation;
+      this._i18next.options.resources[locale].translation;
 
     return Object.keys(localeTranslations)
       .filter(translationKey => pluralRegex.test(translationKey))
       .reduce(
         (pluralForms, translationKey) => {
           const splitTranslationKeys = translationKey.split('_');
-          const keySuffix = splitTranslationKeys[splitTranslationKeys.length-1];
+          const keySuffix = splitTranslationKeys[splitTranslationKeys.length - 1];
           const pluralFormIndex = keySuffix === 'plural' ? '1' : keySuffix;
           pluralForms[pluralFormIndex] = localeTranslations[translationKey];
           return pluralForms;
@@ -216,17 +216,42 @@ class Translator {
    */
   static async create(locale: string, fallbacks: string[], translations: Resource): Promise<Translator> {
     const i18nextInstance = i18next.createInstance();
+    const formattedLocale = canonicalizeLocaleForI18Next(locale);
+    const formattedTranslations: Resource = Object.keys(translations)
+      .reduce((updatedTranslations, originalLocale) => {
+        const updatedLocale = canonicalizeLocaleForI18Next(originalLocale);
+        updatedTranslations[updatedLocale] = translations[originalLocale];
+        return updatedTranslations;
+      }, {});
     await i18nextInstance.init({
-      lng: locale,
+      lng: formattedLocale,
       nsSeparator: false, // allow keys to be phrases having `:`
       keySeparator: false, // allow keys to be phrases having `.`
       fallbackLng: fallbacks,
-      resources: translations,
+      resources: formattedTranslations,
     });
     const translator = new Translator(i18nextInstance);
 
     return translator;
   }
+}
+
+/**
+ * i18next requires slightly differently formatted locale than what Jambo uses.
+ * They are picky about dashes vs underscores and capitalization.
+ * For example, zh-Hant-TW will work, while zh-hant-TW and zh-Hant_TW
+ * (the latter being the jambo format) will not.
+ */
+function canonicalizeLocaleForI18Next(locale: string): string {
+  const { language, modifier, region } = parseLocale(locale);
+  let result = language.toLowerCase();
+  if (modifier) {
+    result += '-' + modifier.charAt(0).toUpperCase() + modifier.slice(1).toLowerCase();
+  }
+  if (region) {
+    result += '-' + region.toUpperCase();
+  }
+  return result;
 }
 
 export default Translator;
