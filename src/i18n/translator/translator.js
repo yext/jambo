@@ -1,5 +1,6 @@
 const i18next = require('i18next');
 const escapeRegExp = require('lodash/escapeRegExp');
+const { parseLocale } = require('../../utils/i18nutils');
 
 /**
  * This class wraps an instance of the i18next library and provides methods supporting
@@ -208,17 +209,42 @@ class Translator {
    */
   static async create(locale, fallbacks, translations) {
     const i18nextInstance = i18next.createInstance();
+    const formattedLocale = canonicalizeLocaleForI18Next(locale);
+    const formattedTranslations = Object.keys(translations)
+      .reduce((updatedTranslations, originalLocale) => {
+        const updatedLocale = canonicalizeLocaleForI18Next(originalLocale);
+        updatedTranslations[updatedLocale] = translations[originalLocale];
+        return updatedTranslations;
+      }, {});
     await i18nextInstance.init({
-      lng: locale,
+      lng: formattedLocale,
       nsSeparator: false,     // allow keys to be phrases having `:`
       keySeparator: false,    // allow keys to be phrases having `.`
       fallbackLng: fallbacks,
-      resources: translations,
+      resources: formattedTranslations,
     });
     const translator = new Translator(i18nextInstance);
 
     return translator;
   }
+}
+
+/**
+ * i18next requires slightly differently formatted locale than what Jambo uses.
+ * They are picky about dashes vs underscores and capitalization.
+ * For example, zh-Hant-TW will work, while zh-hant-TW and zh-Hant_TW
+ * (the latter being the jambo format) will not.
+ */
+ function canonicalizeLocaleForI18Next(locale) {
+  const { language, modifier, region } = parseLocale(locale);
+  let result = language.toLowerCase();
+  if (modifier) {
+    result += '-' + modifier.charAt(0).toUpperCase() + modifier.slice(1).toLowerCase();
+  }
+  if (region) {
+    result += '-' + region.toUpperCase();
+  }
+  return result;
 }
 
 module.exports = Translator;
