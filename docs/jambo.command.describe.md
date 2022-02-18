@@ -4,7 +4,7 @@
 
 ## Command.describe() method
 
-Describes the command. TEST
+Describes the command.
 
 <b>Signature:</b>
 

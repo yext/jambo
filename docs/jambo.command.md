@@ -18,7 +18,7 @@ export default interface Command<T extends ArgumentMetadataRecord>
 |  --- | --- |
 |  [(new)(args)](./jambo.command._new_.md) |  |
 |  [args()](./jambo.command.args.md) | Descriptions of each argument, keyed by name. |
-|  [describe(jamboConfig)?](./jambo.command.describe.md) | <i>(Optional)</i> Describes the command. TEST |
+|  [describe(jamboConfig)?](./jambo.command.describe.md) | <i>(Optional)</i> Describes the command. |
 |  [getAlias()](./jambo.command.getalias.md) | The alias for the command. |
 |  [getShortDescription()](./jambo.command.getshortdescription.md) | A short, one sentence description of the command. This description appears as part of the help text in the CLI. |
 
