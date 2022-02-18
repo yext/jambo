@@ -30,7 +30,7 @@ export default interface Command<T extends ArgumentMetadataRecord> {
    args(): T;
 
   /**
-   * Describes the command. TEST
+   * Describes the command.
    *
    * @param jamboConfig - the config of the jambo repository
    * @returns description of the card command, including paths to
