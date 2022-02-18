@@ -23,6 +23,6 @@ jobs:
     - run: npm ci
     - run: git config --global user.email "slapshot@yext.com"
     - run: git config --global user.name "Jambo run-tests.yml"
-    - run: npm run build-ci
+    - run: npm run build
     - run: ./scripts/validate-docs.sh
     - run: npm test
