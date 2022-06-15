@@ -21,7 +21,7 @@ const registerCustomHbsHelpers = require('../../handlebars/registercustomhbshelp
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
-const { info, error } = require('../../utils/logger');
+const { info } = require('../../utils/logger');
 
 class SitesGenerator {
   constructor(jamboConfig) {
@@ -59,14 +59,8 @@ class SitesGenerator {
             true
           );
         } catch (err) {
-          if (err instanceof SyntaxError ||
-            err.message && err.message.includes('Invalid regular expression')) {
-            throw new UserError(
-              `Could not parse JSON page config at ${path}`, err.stack);
-          } else {
-            error('Error parsing JSON page config at', path);
-            throw err;
-          }
+          throw new UserError(
+            `JSON syntax error for page config at ${path}`, err.stack);
         }
       }
     });
