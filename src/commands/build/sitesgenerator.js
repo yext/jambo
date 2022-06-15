@@ -21,7 +21,8 @@ const registerCustomHbsHelpers = require('../../handlebars/registercustomhbshelp
 const SystemError = require('../../errors/systemerror');
 const Translator = require('../../i18n/translator/translator');
 const UserError = require('../../errors/usererror');
-const { info } = require('../../utils/logger');
+const { info, error } = require('../../utils/logger');
+const UnknownError = require('../../errors/unknownerror');
 
 class SitesGenerator {
   constructor(jamboConfig) {
@@ -36,7 +37,7 @@ class SitesGenerator {
    * @param {Array<string>} jsonEnvVars Those environment variables that were serialized
    *                                    using JSON.
    */
-  async generate(jsonEnvVars=[]) {
+  async generate(jsonEnvVars = []) {
     const config = this.config;
     if (!config) {
       throw new UserError('Cannot find Jambo config in this directory, exiting.');
@@ -59,8 +60,12 @@ class SitesGenerator {
             true
           );
         } catch (err) {
-          throw new UserError(
-            `JSON syntax error for page config at ${path}`, err.stack);
+          const ErrType = err instanceof SyntaxError ||
+            err.message && err.message.includes('Invalid regular expression')
+            ? UserError
+            : UnknownError;
+          throw new ErrType(
+            `Could not parse JSON page config at ${path}`, err.stack);
         }
       }
     });
@@ -125,7 +130,7 @@ class SitesGenerator {
 
     info('Extracting translations');
     const locales = GENERATED_DATA.getLocales();
-    const translations = 
+    const translations =
       await this._extractTranslations(locales, configRegistry.getLocalizationConfig());
 
     // Register built-in Jambo Handlebars helpers.
@@ -315,7 +320,7 @@ class SitesGenerator {
     const translations = {};
 
     for (const locale of locales) {
-      const translationFileName = 
+      const translationFileName =
         localizationConfig.getTranslationFile(locale) || `${locale}.po`;
       const translationFilePath = path.join(translationsDir, translationFileName);
       if (fs.existsSync(translationFilePath)) {
