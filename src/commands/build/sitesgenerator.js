@@ -60,12 +60,14 @@ class SitesGenerator {
             true
           );
         } catch (err) {
-          const ErrType = err instanceof SyntaxError ||
+          if (err instanceof SyntaxError ||
             err.message && err.message.includes('Invalid regular expression')
-            ? UserError
-            : UnknownError;
-          throw new ErrType(
-            `Could not parse JSON page config at ${path}`, err.stack);
+          ) {
+            throw new UserError(
+              `JSON syntax error found in page config at "${path}"`, err.stack);
+          } else {
+            throw new UnknownError(`Unable to parse json config at "${path}"`, err.stack);
+          }
         }
       }
     });
