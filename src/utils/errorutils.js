@@ -1,6 +1,7 @@
 const UserError = require('../errors/usererror');
 const SystemError = require('../errors/systemerror');
 const { error } = require('./logger');
+const UnknownError = require('../errors/unknownerror');
 
 /**
  * Print the error, and then forcefully end the 
@@ -20,5 +21,9 @@ exports.exitWithError = (err = {}) => {
  * @param {Error} err The error to evaluate
  */
 exports.isCustomError = (err) => {
-  return (err instanceof UserError || err instanceof SystemError);
+  return (
+    err instanceof UserError ||
+    err instanceof SystemError ||
+    err instanceof UnknownError
+  );
 }
