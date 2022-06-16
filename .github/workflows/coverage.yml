@@ -15,5 +15,6 @@ jobs:
       test_script: 'git config --global user.email "slapshot@yext.com"
         && git config --global user.name "Jambo run-tests.yml"
         && npx jest --config=jest-coverage.json'
+      comparison_branch: master
     secrets:
       caller_github_token: ${{ secrets.GITHUB_TOKEN }}
