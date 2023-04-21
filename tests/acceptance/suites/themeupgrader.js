@@ -1,5 +1,5 @@
 const process = require('process');
-const git = require('simple-git/promise')();
+const git = require('simple-git')();
 const { runInPlayground } = require('../setup/playground');
 const ThemeManager = require('../../../src/utils/thememanager');
 const path = require('path');
