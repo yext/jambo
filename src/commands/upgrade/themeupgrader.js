@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const simpleGit = require('simple-git/promise');
+const simpleGit = require('simple-git');
 const ThemeManager = require('../../utils/thememanager');
 const { CustomCommand } = require('../../utils/customcommands/command');
 const { CustomCommandExecuter } = require('../../utils/customcommands/commandexecuter');
