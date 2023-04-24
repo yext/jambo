@@ -2,7 +2,7 @@ const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
 const { chdir, cwd } = require('process');
-const simpleGit = require('simple-git/promise');
+const simpleGit = require('simple-git');
 
 const testThemesDir = path.resolve(__dirname, '../acceptance/test-themes');
 

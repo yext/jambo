@@ -1,5 +1,5 @@
 const path = require('path');
-const simpleGit = require('simple-git/promise');
+const simpleGit = require('simple-git');
 const git = simpleGit();
 const { ThemeShadower } = require('../override/themeshadower');
 const ThemeManager = require('../../utils/thememanager');
