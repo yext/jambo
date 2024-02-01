@@ -28,7 +28,7 @@ exports.CustomCommandExecuter = class {
             command.getArgs(),
             {
                 cwd: command.getCwd(),
-                shell: false,
+                shell: true,
                 stdio: 'inherit'
             }
         );
