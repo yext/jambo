@@ -1,6 +1,6 @@
 {
   "name": "jambo",
-  "version": "1.12.4",
+  "version": "1.12.5",
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
@@ -31,10 +31,10 @@
     "gettext-extractor": "^3.5.2",
     "glob-to-regexp": "^0.4.1",
     "globby": "^11.0.1",
-    "handlebars": "^4.7.3",
+    "handlebars": "^4.7.8",
     "i18next": "^19.6.2",
     "i18next-conv": "^10.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "merge-options": "^2.0.0",
     "npmlog": "^6.0.2",
     "prompts": "^2.3.1",
@@ -47,7 +47,7 @@
     "eslint": "^7.8.1",
     "jest": "^25.4.0",
     "prettier": "^2.2.1",
-    "shell-quote": "^1.7.2"
+    "shell-quote": "^1.8.1"
   },
   "jest": {
     "collectCoverageFrom": [
