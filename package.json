@@ -28,7 +28,7 @@
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
-    "gettext-extractor": "^3.5.2",
+    "gettext-extractor": "~3.6.2",
     "glob-to-regexp": "^0.4.1",
     "globby": "^11.0.1",
     "handlebars": "^4.7.8",
