@@ -20,8 +20,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Clear npm cache
-      run: npm cache clean --force
     - run: npm ci
     - run: git config --global user.email "slapshot@yext.com"
     - run: git config --global user.name "Jambo run-tests.yml"
