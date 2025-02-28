@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/yext/jambo#readme",
   "dependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
+    "@babel/core": "^7.26.9",
+    "@babel/preset-env": "^7.23.2",
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
