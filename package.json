@@ -47,7 +47,7 @@
     "@babel/plugin-transform-object-assign": "^7.12.1",
     "@types/jest": "^26.0.23",
     "eslint": "^7.8.1",
-    "jest": "^25.4.0",
+    "jest": "^27.4.0",
     "prettier": "^2.2.1",
     "shell-quote": "^1.8.1"
   },
