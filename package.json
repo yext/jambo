@@ -1,6 +1,6 @@
 {
   "name": "jambo",
-  "version": "1.12.6",
+  "version": "1.12.7",
   "description": "A JAMStack implementation using Handlebars",
   "main": "index.js",
   "scripts": {
@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/yext/jambo#readme",
   "dependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
+    "@babel/core": "^7.26.9",
+    "@babel/preset-env": "^7.23.2",
     "comment-json": "^3.0.2",
     "file-system": "^2.2.2",
     "fs-extra": "^8.1.0",
@@ -43,9 +43,11 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-object-assign": "^7.12.1",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@types/jest": "^26.0.23",
     "eslint": "^7.8.1",
-    "jest": "^25.4.0",
+    "jest": "^27.4.0",
     "prettier": "^2.2.1",
     "shell-quote": "^1.8.1"
   },
